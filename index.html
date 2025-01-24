@@ -31,6 +31,8 @@
             --social-icon-dark: #fff;
             --profile-border-light: #000; /* Black border in light mode */
             --profile-border-dark: #fff; /* White border in dark mode */
+            --switch-border-light: #000;
+            --switch-border-dark: #fff;
         }
 
         body {
@@ -179,11 +181,13 @@
             appearance: none;
             background-color: var(--button-bg-light);
             position: relative;
-            transition: background-color 0.3s ease;
+            border: 2px solid var(--switch-border-light); /* Border for light mode */
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .theme-toggle input:checked {
             background-color: var(--button-bg-dark);
+            border-color: var(--switch-border-dark); /* Border for dark mode */
         }
 
         .theme-toggle input:before {
@@ -321,7 +325,6 @@
         const themeToggleCheckbox = document.getElementById('theme-toggle-checkbox');
         const themeLabel = document.getElementById('theme-label');
 
-        // Dark/Light Mode Toggle
         themeToggleCheckbox.addEventListener('change', () => {
             if (themeToggleCheckbox.checked) {
                 document.documentElement.style.setProperty('--bg-light', '#121212');
@@ -355,6 +358,5 @@
             }
         });
     </script>
-
 </body>
 </html>
