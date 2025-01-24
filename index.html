@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Jonathan Mwaniki - Web Developer Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Light and Dark Mode CSS Variables */
+        :root {
+            --bg-light: #f0f0f0;
+            --bg-dark: #121212;
+            --text-light: #000;
+            --text-dark: #fff;
+            --button-bg-light: #000;
+            --button-bg-dark: #fff;
+            --button-text-light: #fff;
+            --button-text-dark: #000;
+            --border-light: #ddd;
+            --border-dark: #444;
+            --social-icon-light: #000;
+            --social-icon-dark: #fff;
+            --profile-border-light: #000; /* Black border in light mode */
+            --profile-border-dark: #fff; /* White border in dark mode */
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: url(./images/file.enc) center/cover; /* Update with your local image path */
+            border: 5px solid var(--profile-border-light); /* Default to black border in light mode */
+            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+
+        header p {
+            font-size: 1.2em;
+            font-weight: 300;
+            margin-top: 10px;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 2em;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            color: var(--social-icon-light);
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 50%; /* Ensure circular shape */
+            background-color: var(--bg-light);
+            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+            width: 60px; /* Fixed size for consistency */
+            height: 60px; /* Fixed size for consistency */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #FFD700;
+            transform: scale(1.1);
+        }
+
+        /* About Section */
+        .about {
+            padding: 40px 20px;
+            text-align: center;
+            max-width: 900px;
+            margin: auto;
+            background-color: var(--bg-light);
+            border-radius: 10px;
+            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .about h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .about p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .about button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: var(--button-bg-light);
+            color: var(--button-text-light);
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .about button:hover {
+            background-color: var(--button-bg-dark);
+            color: var(--button-text-dark);
+        }
+
+        .portfolio {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 40px 20px;
+        }
+
+        .portfolio-item {
+            background-color: var(--border-light);
+            height: 250px;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .portfolio-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: var(--button-bg-light);
+            color: var(--button-text-light);
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--button-bg-dark);
+            color: var(--button-text-dark);
+        }
+
+        /* Copyright Section */
+        .copyright {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            font-size: 1em;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="theme-toggle">Switch to Dark Mode</button>
+
+    <header>
+        <div class="profile-img"></div>
+        <h1>Jonathan Mwaniki</h1>
+        <p>Self-Taught Web Developer from Nairobi, Kenya</p>
+
+        <div class="social-icons">
+            <a href="https://twitter.com/maestropuns" target="_blank">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://www.instagram.com/jonaahrojo" target="_blank">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://wa.me/254706396305" target="_blank">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="tel:+254706396305" target="_blank">
+                <i class="fas fa-phone-alt"></i>
+            </a>
+            <a href="sms:+254706396305" target="_blank">
+                <i class="fas fa-sms"></i>
+            </a>
+        </div>
+    </header>
+
+    <section class="about">
+        <h2>About Me</h2>
+        <p id="about-text">I'm Jonathan Mwaniki, a self-taught web developer based in Nairobi, Kenya. I started learning web development through YouTube tutorials and hands-on projects. With a passion for creating intuitive, responsive websites, I specialize in front-end web development, focusing on HTML, CSS, JavaScript, and modern web frameworks.</p>
+        <button id="read-more-btn">Read More</button>
+    </section>
+
+    <section class="portfolio">
+        <div class="portfolio-item">
+            <img src="https://via.placeholder.com/300" alt="Project 1">
+        </div>
+        <div class="portfolio-item">
+            <img src="https://via.placeholder.com/300" alt="Project 2">
+        </div>
+        <div class="portfolio-item">
+            <img src="https://via.placeholder.com/300" alt="Project 3">
+        </div>
+    </section>
+
+    <div class="copyright">
+        <p>&copy; 2025 Jonathan Mwaniki. All Rights Reserved.</p>
+    </div>
+
+    <script>
+        // Dark/Light Mode Toggle
+        const themeToggleButton = document.getElementById('theme-toggle');
+        let isDarkMode = false;
+
+        themeToggleButton.addEventListener('click', () => {
+            if (isDarkMode) {
+                document.documentElement.style.setProperty('--bg-light', '#f0f0f0');
+                document.documentElement.style.setProperty('--bg-dark', '#121212');
+                document.documentElement.style.setProperty('--text-light', '#000');
+                document.documentElement.style.setProperty('--text-dark', '#fff');
+                document.documentElement.style.setProperty('--profile-border-light', '#000'); // Black border for light mode
+                themeToggleButton.textContent = 'Switch to Dark Mode';
+            } else {
+                document.documentElement.style.setProperty('--bg-light', '#121212');
+                document.documentElement.style.setProperty('--bg-dark', '#fff');
+                document.documentElement.style.setProperty('--text-light', '#fff');
+                document.documentElement.style.setProperty('--text-dark', '#000');
+                document.documentElement.style.setProperty('--profile-border-light', '#fff'); // White border for dark mode
+                themeToggleButton.textContent = 'Switch to Light Mode';
+            }
+            isDarkMode = !isDarkMode;
+        });
+
+        // Read More/Read Less Functionality
+        const aboutText = document.getElementById('about-text');
+        const readMoreBtn = document.getElementById('read-more-btn');
+        const fullText = " I also continuously work on personal projects to enhance my skills and learn new technologies. Feel free to reach out for collaboration!";
+        
+        readMoreBtn.addEventListener('click', () => {
+            if (aboutText.textContent.length > 150) {
+                aboutText.textContent = aboutText.textContent.substring(0, 150);
+                readMoreBtn.textContent = "Read More";
+            } else {
+                aboutText.textContent += fullText;
+                readMoreBtn.textContent = "Read Less";
+            }
+        });
+    </script>
+
+</body>
+</html>
