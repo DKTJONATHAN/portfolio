@@ -8,66 +8,79 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
-        /* Global Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Light and Dark Mode CSS Variables */
-        :root {
-            --bg-light: #f0f0f0;
-            --bg-dark: #121212;
-            --text-light: #000;
-            --text-dark: #fff;
-            --button-bg-light: #000;
-            --button-bg-dark: #fff;
-            --button-text-light: #fff;
-            --button-text-dark: #000;
-            --border-light: #ddd;
-            --border-dark: #444;
-            --social-icon-light: #000;
-            --social-icon-dark: #fff;
-            --profile-border-light: #000; /* Black border in light mode */
-            --profile-border-dark: #fff; /* White border in dark mode */
-            --switch-border-light: #000;
-            --switch-border-dark: #fff;
-        }
-
         body {
             font-family: 'Open Sans', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-light);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: #f5f5f5;
+            color: #333;
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body.dark-mode {
+            background-color: #333;
+            color: #f5f5f5;
         }
 
         header {
             text-align: center;
-            padding: 30px 20px;
+            padding: 50px 20px;
+            position: relative;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header.dark-mode {
+            background-color: #444;
+            color: #f5f5f5;
         }
 
         .profile-img {
             width: 150px;
             height: 150px;
             border-radius: 50%;
-            background: url(./images/file.enc) center/cover; /* Update with your local image path */
-            border: 5px solid var(--profile-border-light); /* Default to black border in light mode */
-            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+            background: url(./images/file.enc) center/cover;
+            border: 5px solid #ddd;
             margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            transition: border-color 0.3s ease;
         }
 
-        header h1 {
+        body.dark-mode .profile-img {
+            border-color: #fff;
+        }
+
+        /* Vanishing Text Effect */
+        .vanishing-text {
             font-size: 2em;
-            font-weight: 600;
+            font-weight: bold;
+            color: #333;
+            display: block;
+            text-align: center;
+            position: relative;
+            animation: vanishing-animation 2s ease-in-out infinite;
+            transform-origin: center;
+            opacity: 1;
         }
 
-        header p {
-            font-size: 1.1em;
-            font-weight: 300;
-            margin-top: 10px;
+        body.dark-mode .vanishing-text {
+            color: #f5f5f5;
+        }
+
+        header h1, header p {
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode header h1, body.dark-mode header p {
+            color: #f5f5f5;
         }
 
         .social-icons {
@@ -79,18 +92,23 @@
         }
 
         .social-icons a {
-            color: var(--social-icon-light);
+            color: #000;
             text-decoration: none;
             padding: 15px;
             border-radius: 50%;
-            background-color: var(--bg-light);
+            background-color: #f5f5f5;
             box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
             width: 50px;
             height: 50px;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode .social-icons a {
+            background-color: #444;
+            color: #f5f5f5;
         }
 
         .social-icons a:hover {
@@ -98,34 +116,28 @@
             transform: scale(1.1);
         }
 
-        /* About Section */
         .about {
             padding: 40px 20px;
             text-align: center;
             max-width: 900px;
             margin: auto;
-            background-color: var(--bg-light);
+            background-color: #f5f5f5;
             border-radius: 10px;
             box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .about h2 {
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        .about p {
-            font-size: 1.1em;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: auto;
+        body.dark-mode .about {
+            background-color: #444;
+            color: #f5f5f5;
+            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
         }
 
         .about button {
             margin-top: 20px;
             padding: 10px 20px;
-            background-color: var(--button-bg-light);
-            color: var(--button-text-light);
+            background-color: #333;
+            color: #fff;
             border: none;
             cursor: pointer;
             border-radius: 5px;
@@ -133,152 +145,207 @@
             transition: background-color 0.3s ease;
         }
 
+        body.dark-mode .about button {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
         .about button:hover {
-            background-color: var(--button-bg-dark);
-            color: var(--button-text-dark);
+            background-color: #555;
         }
 
         .portfolio {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
             padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode .portfolio {
+            background-color: #444;
+            color: #f5f5f5;
         }
 
         .portfolio-item {
-            background-color: var(--border-light);
-            height: 250px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 40px;
+            text-align: center;
+            background-color: #f5f5f5;
             border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease;
+            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        body.dark-mode .portfolio-item {
+            background-color: #333;
+            color: #f5f5f5;
+            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
         }
 
         .portfolio-item img {
             width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .portfolio-item h3 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .portfolio-item h3 {
+            color: #f5f5f5;
+        }
+
+        .portfolio-item p {
+            font-size: 1em;
+            color: #333;
+            line-height: 1.6;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .portfolio-item p {
+            color: #f5f5f5;
+        }
+
+        footer {
+            background-color: black;
+            position: relative;
+            width: 100%;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode footer {
+            background-color: #444;
+        }
+
+        /* Light Flare Animation */
+        .flare {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
             height: 100%;
-            object-fit: cover;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.2));
+            animation: flare-animation 5s linear infinite;
         }
 
-        .portfolio-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+        @keyframes flare-animation {
+            from {
+                left: -100%;
+            }
+            to {
+                left: 100%;
+            }
         }
 
-        /* Theme Switch (Toggle) */
-        .theme-toggle {
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .hamburger div {
+            width: 30px;
+            height: 4px;
+            margin: 6px 0;
+            background-color: #333;
+            transition: 0.3s;
+        }
+
+        .menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        body.dark-mode .menu {
+            background-color: #444;
+        }
+
+        .menu a {
+            display: block;
+            color: #333;
+            text-decoration: none;
+            padding: 10px 0;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .menu a {
+            color: #f5f5f5;
+        }
+
+        .menu a:hover {
+            color: #FFD700;
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* Mode Toggle Icon */
+        .mode-toggle {
+            cursor: pointer;
             position: absolute;
             top: 20px;
             right: 20px;
-            display: flex;
-            align-items: center;
+            z-index: 1000;
+            font-size: 1.5em;
         }
 
-        .theme-toggle input {
-            width: 50px;
-            height: 25px;
-            border-radius: 50px;
-            appearance: none;
-            background-color: var(--button-bg-light);
-            position: relative;
-            border: 2px solid var(--switch-border-light); /* Border for light mode */
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+        body.dark-mode .mode-toggle.sun {
+            display: none;
         }
 
-        .theme-toggle input:checked {
-            background-color: var(--button-bg-dark);
-            border-color: var(--switch-border-dark); /* Border for dark mode */
+        body.dark-mode .mode-toggle.moon {
+            display: block;
         }
 
-        .theme-toggle input:before {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: var(--button-text-light);
-            transition: 0.3s ease;
-            left: 2px;
-            top: 2px;
-        }
-
-        .theme-toggle input:checked:before {
-            left: 28px;
-        }
-
-        .theme-toggle label {
-            margin-left: 10px;
-            font-size: 1em;
-            font-weight: 600;
-        }
-
-        /* Copyright Section */
-        .copyright {
-            text-align: center;
-            padding: 20px;
-            background-color: var(--bg-light);
-            color: var(--text-light);
-            font-size: 1em;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.8em;
-            }
-
-            header p {
-                font-size: 1em;
-            }
-
-            .social-icons a {
-                font-size: 1.3em;
-                padding: 12px;
-            }
-
-            .about h2 {
-                font-size: 1.8em;
-            }
-
-            .about p {
-                font-size: 1em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .portfolio {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            }
-
-            .about button {
-                font-size: 0.9em;
-            }
-
-            .theme-toggle input {
-                width: 40px;
-                height: 20px;
-            }
-
-            .theme-toggle input:before {
-                width: 16px;
-                height: 16px;
-            }
+        body .mode-toggle.moon {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="theme-toggle">
-        <input type="checkbox" id="theme-toggle-checkbox">
-        <label for="theme-toggle-checkbox" id="theme-label">Dark Mode</label>
+    <div class="hamburger" id="hamburger">
+        <div class="line1"></div>
+        <div class="line2"></div>
+        <div class="line3"></div>
+    </div>
+
+    <div class="menu" id="menu">
+        <a href="#">Home</a>
+        <a href="#">About</a>
     </div>
 
     <header>
         <div class="profile-img"></div>
         <h1>Jonathan Mwaniki</h1>
         <p>Self-Taught Web Developer from Nairobi, Kenya</p>
+
+        <!-- Vanishing Text -->
+        <div class="vanishing-text">
+            UI/UX Designer • Hire me today
+        </div>
 
         <div class="social-icons">
             <a href="https://twitter.com/maestropuns" target="_blank">
@@ -297,67 +364,67 @@
                 <i class="fas fa-sms"></i>
             </a>
         </div>
+
+        <!-- Light/Dark Mode Toggle Icon -->
+        <div class="mode-toggle sun" id="mode-toggle">
+            <i class="fas fa-sun"></i>
+        </div>
+        <div class="mode-toggle moon" id="mode-toggle">
+            <i class="fas fa-moon"></i>
+        </div>
     </header>
 
     <section class="about">
         <h2>About Me</h2>
-        <p id="about-text">I'm Jonathan Mwaniki, a self-taught web developer based in Nairobi, Kenya. I started learning web development through YouTube tutorials and hands-on projects. With a passion for creating intuitive, responsive websites, I specialize in front-end web development, focusing on HTML, CSS, JavaScript, and modern web frameworks.</p>
+        <p id="about-text">I'm Jonathan Mwaniki, a self-taught web developer based in Nairobi, Kenya. I started learning web development through YouTube tutorials and hands-on projects. With a passion for creating intuitive, responsive websites, I specialize in front-end web development, focusing on HTML, CSS, JavaScript, and modern web frameworks. <span id="more-text" style="display:none;">In addition to web development, I have experience in graphics design and software development, which helps me create seamless and visually appealing user experiences. I've built various websites and applications for clients and personal projects. My goal is to continue learning, growing, and creating impactful digital experiences.</span></p>
         <button id="read-more-btn">Read More</button>
     </section>
 
     <section class="portfolio">
         <div class="portfolio-item">
-            <img src="./images/3.PNG" alt="Project 1">
-            <h1>Jamtech website</h1>
+            <img src="./images/3.PNG" alt="Jamtech Website">
+            <h3>Jamtech Website</h3>
+            <p>Designed and developed an e-commerce site for Jamtech, a local electronics and electrical store. The goal was to create a seamless shopping experience with product search, secure checkout, and mobile optimization.</p>
         </div>
+
         <div class="portfolio-item">
-            <img src="./images/2.PNG" alt="Project 2">
-            <h1>Ruto Must Go website</h1>
+            <img src="./images/2.PNG" alt="Ruto Must Go Website">
+            <h3>Ruto Must Go Website</h3>
+            <p>Built a website for the "Ruto Must Go" campaign, focused on raising awareness about political wrongdoings. The site was designed to engage users through articles, social media sharing, and petitions.</p>
         </div>
+
         <div class="portfolio-item">
-            <img src="./images/1.PNG" alt="Project 3">
-            <h1>Ngwai store website</h1>
+            <img src="./images/1.PNG" alt="Ngwai Store Website">
+            <h3>Ngwai Store Website</h3>
+            <p>Created an e-commerce website for Ngwai Store, focusing on showcasing their products and providing a seamless shopping experience. Integrated secure payment gateways and real-time product updates.</p>
         </div>
     </section>
 
-    <div class="copyright">
+    <footer>
+        <div class="flare"></div>
         <p>&copy; 2025 Jonathan Mwaniki. All Rights Reserved.</p>
-    </div>
+    </footer>
 
     <script>
-        const themeToggleCheckbox = document.getElementById('theme-toggle-checkbox');
-        const themeLabel = document.getElementById('theme-label');
+        const modeToggle = document.querySelectorAll('.mode-toggle');
+        const aboutText = document.getElementById('about-text');
+        const moreText = document.getElementById('more-text');
+        const readMoreBtn = document.getElementById('read-more-btn');
 
-        themeToggleCheckbox.addEventListener('change', () => {
-            if (themeToggleCheckbox.checked) {
-                document.documentElement.style.setProperty('--bg-light', '#121212');
-                document.documentElement.style.setProperty('--bg-dark', '#fff');
-                document.documentElement.style.setProperty('--text-light', '#fff');
-                document.documentElement.style.setProperty('--text-dark', '#000');
-                document.documentElement.style.setProperty('--profile-border-light', '#fff');
-                themeLabel.textContent = 'Light Mode';
-            } else {
-                document.documentElement.style.setProperty('--bg-light', '#f0f0f0');
-                document.documentElement.style.setProperty('--bg-dark', '#121212');
-                document.documentElement.style.setProperty('--text-light', '#000');
-                document.documentElement.style.setProperty('--text-dark', '#fff');
-                document.documentElement.style.setProperty('--profile-border-light', '#000');
-                themeLabel.textContent = 'Dark Mode';
-            }
+        modeToggle.forEach(icon => {
+            icon.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                modeToggle.forEach(icon => icon.classList.toggle('active'));
+            });
         });
 
-        // Read More/Read Less Functionality
-        const aboutText = document.getElementById('about-text');
-        const readMoreBtn = document.getElementById('read-more-btn');
-        const fullText = " I also continuously work on personal projects to enhance my skills and learn new technologies. Feel free to reach out for collaboration!";
-        
         readMoreBtn.addEventListener('click', () => {
-            if (aboutText.textContent.length > 150) {
-                aboutText.textContent = aboutText.textContent.substring(0, 150);
-                readMoreBtn.textContent = "Read More";
+            if (moreText.style.display === "none") {
+                moreText.style.display = "inline";
+                readMoreBtn.innerHTML = "Read Less";
             } else {
-                aboutText.textContent += fullText;
-                readMoreBtn.textContent = "Read Less";
+                moreText.style.display = "none";
+                readMoreBtn.innerHTML = "Read More";
             }
         });
     </script>
