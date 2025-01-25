@@ -222,6 +222,7 @@
             color: white;
             text-align: center;
             transition: background-color 0.3s ease, color 0.3s ease;
+            z-index: 1;
         }
 
         body.dark-mode footer {
@@ -237,6 +238,7 @@
             height: 100%;
             background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.2));
             animation: flare-animation 5s linear infinite;
+            pointer-events: none; /* Prevent interaction with flare animation */
         }
 
         @keyframes flare-animation {
@@ -335,6 +337,23 @@
     <div class="menu" id="menu">
         <a href="#">Home</a>
         <a href="#">About</a>
+        <div class="social-icons">
+            <a href="https://twitter.com/maestropuns" target="_blank">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://www.instagram.com/jonaahrojo" target="_blank">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://wa.me/254706396305" target="_blank">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="tel:+254706396305" target="_blank">
+                <i class="fas fa-phone-alt"></i>
+            </a>
+            <a href="sms:+254706396305" target="_blank">
+                <i class="fas fa-sms"></i>
+            </a>
+        </div>
     </div>
 
     <header>
@@ -408,24 +427,29 @@
     <script>
         const modeToggle = document.querySelectorAll('.mode-toggle');
         const aboutText = document.getElementById('about-text');
-        const moreText = document.getElementById('more-text');
         const readMoreBtn = document.getElementById('read-more-btn');
+        const hamburger = document.getElementById('hamburger');
+        const menu = document.getElementById('menu');
 
-        modeToggle.forEach(icon => {
-            icon.addEventListener('click', () => {
+        modeToggle.forEach((toggle) => {
+            toggle.addEventListener('click', () => {
                 document.body.classList.toggle('dark-mode');
-                modeToggle.forEach(icon => icon.classList.toggle('active'));
             });
         });
 
         readMoreBtn.addEventListener('click', () => {
-            if (moreText.style.display === "none") {
-                moreText.style.display = "inline";
-                readMoreBtn.innerHTML = "Read Less";
+            const moreText = document.getElementById('more-text');
+            if (moreText.style.display === 'none') {
+                moreText.style.display = 'inline';
+                readMoreBtn.textContent = 'Read Less';
             } else {
-                moreText.style.display = "none";
-                readMoreBtn.innerHTML = "Read More";
+                moreText.style.display = 'none';
+                readMoreBtn.textContent = 'Read More';
             }
+        });
+
+        hamburger.addEventListener('click', () => {
+            menu.classList.toggle('active');
         });
     </script>
 </body>
