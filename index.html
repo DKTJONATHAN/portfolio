@@ -83,11 +83,13 @@
     <section class="about">
         <h2>About Me</h2>
         <p id="about-text" style="text-align: justify;">
-            I'm Jonathan Mwaniki, a self-taught web developer based in Nairobi, Kenya. I started learning web development through YouTube tutorials and hands-on projects. With a passion for creating intuitive, responsive websites, I specialize in front-end web development, focusing on HTML, CSS, JavaScript, and modern web frameworks. <span id="more-text" style="display: none;">
-            In addition to web development, I have experience in graphics design and software development, which helps me create seamless and visually appealing user experiences. I've built various websites and applications for clients and personal projects. My goal is to continue learning, growing, and creating impactful digital experiences.</span>
+            I'm Jonathan Mwaniki, a self-taught web developer based in Nairobi, Kenya. I started learning web development through YouTube tutorials and hands-on projects. With a passion for creating intuitive, responsive websites, I specialize in front-end web development, focusing on HTML, CSS, JavaScript, and modern web frameworks. 
+            <span id="more-text" style="display: none;">
+                In addition to web development, I have experience in graphics design and software development, which helps me create seamless and visually appealing user experiences. I've built various websites and applications for clients and personal projects. My goal is to continue learning, growing, and creating impactful digital experiences.
+            </span>
         </p>
         <button id="read-more-btn">Read More</button>
-    </section>
+    </section>    
     
     <script>
         const sunToggle = document.getElementById('sun-toggle');
@@ -162,5 +164,23 @@ moonToggle.addEventListener('click', () => {
         <div class="flare"></div>
         <p>&copy; 2025 Jonathan Mwaniki. All Rights Reserved.</p>
     </footer>
+    <script>
+        // Get elements
+        const readMoreBtn = document.getElementById('read-more-btn');
+        const moreText = document.getElementById('more-text');
+    
+        // Handle click event on Read More button
+        readMoreBtn.addEventListener('click', function() {
+            // Toggle the display of extra text
+            if (moreText.style.display === 'none') {
+                moreText.style.display = 'inline'; // Show more text
+                readMoreBtn.textContent = 'Read Less'; // Change button text
+            } else {
+                moreText.style.display = 'none'; // Hide extra text
+                readMoreBtn.textContent = 'Read More'; // Change button text back
+            }
+        });
+    </script>
+    
 </body>
 </html>
