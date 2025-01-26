@@ -7,349 +7,21 @@
     <title>Jonathan Mwaniki - Web Developer Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Open Sans', sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
-
-        body.dark-mode {
-            background-color: #333;
-            color: #f5f5f5;
-        }
-
-        header {
-            text-align: center;
-            padding: 50px 20px;
-            position: relative;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        header.dark-mode {
-            background-color: #444;
-            color: #f5f5f5;
-        }
-
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: url(./images/file.enc) center/cover;
-            border: 5px solid #ddd;
-            margin-bottom: 20px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            transition: border-color 0.3s ease;
-        }
-
-        body.dark-mode .profile-img {
-            border-color: #fff;
-        }
-
-        /* Vanishing Text Effect */
-        .vanishing-text {
-            font-size: 2em;
-            font-weight: bold;
-            color: #333;
-            display: block;
-            text-align: center;
-            position: relative;
-            animation: vanishing-animation 2s ease-in-out infinite;
-            transform-origin: center;
-            opacity: 1;
-        }
-
-        body.dark-mode .vanishing-text {
-            color: #f5f5f5;
-        }
-
-        header h1, header p {
-            color: #333;
-            transition: color 0.3s ease;
-        }
-
-        body.dark-mode header h1, body.dark-mode header p {
-            color: #f5f5f5;
-        }
-
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            font-size: 1.5em;
-            margin-top: 20px;
-        }
-
-        .social-icons a {
-            color: #000;
-            text-decoration: none;
-            padding: 15px;
-            border-radius: 50%;
-            background-color: #f5f5f5;
-            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-        }
-
-        body.dark-mode .social-icons a {
-            background-color: #444;
-            color: #f5f5f5;
-        }
-
-        .social-icons a:hover {
-            color: #FFD700;
-            transform: scale(1.1);
-        }
-
-        .about {
-            padding: 40px 20px;
-            text-align: center;
-            max-width: 900px;
-            margin: auto;
-            background-color: #f5f5f5;
-            border-radius: 10px;
-            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        body.dark-mode .about {
-            background-color: #444;
-            color: #f5f5f5;
-            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .about button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #333;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-        }
-
-        body.dark-mode .about button {
-            background-color: #f5f5f5;
-            color: #333;
-        }
-
-        .about button:hover {
-            background-color: #555;
-        }
-
-        .portfolio {
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        body.dark-mode .portfolio {
-            background-color: #444;
-            color: #f5f5f5;
-        }
-
-        .portfolio-item {
-            width: 100%;
-            max-width: 800px;
-            margin-bottom: 40px;
-            text-align: center;
-            background-color: #f5f5f5;
-            border-radius: 10px;
-            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        body.dark-mode .portfolio-item {
-            background-color: #333;
-            color: #f5f5f5;
-            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .portfolio-item img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .portfolio-item h3 {
-            font-size: 1.5em;
-            color: #333;
-            margin-bottom: 10px;
-            transition: color 0.3s ease;
-        }
-
-        body.dark-mode .portfolio-item h3 {
-            color: #f5f5f5;
-        }
-
-        .portfolio-item p {
-            font-size: 1em;
-            color: #333;
-            line-height: 1.6;
-            transition: color 0.3s ease;
-        }
-
-        body.dark-mode .portfolio-item p {
-            color: #f5f5f5;
-        }
-
-        footer {
-            background-color: black;
-            position: relative;
-            width: 100%;
-            padding: 20px;
-            color: white;
-            text-align: center;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            z-index: 1;
-        }
-
-        body.dark-mode footer {
-            background-color: #444;
-        }
-
-        footer {
-    background-color: black;
-    position: relative;
-    width: 100%;
-    padding: 20px;
-    color: white;
-    text-align: center;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    z-index: 1;
-    height: 60px; /* Add a fixed height to footer */
-    overflow: hidden; /* Prevent content from spilling over */
-}
-
-.flare {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 100%;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.2));
-    animation: flare-animation 5s linear infinite;
-    pointer-events: none;
-    transform: translateX(-100%); /* Start the animation off-screen */
-}
-
-@keyframes flare-animation {
-    0% {
-        transform: translateX(-100%); /* Start from the left side */
-    }
-    100% {
-        transform: translateX(100%); /* Move to the right side */
-    }
-}
-
-        /* Hamburger Menu */
-        .hamburger {
-            display: none;
-            cursor: pointer;
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        .hamburger div {
-            width: 30px;
-            height: 4px;
-            margin: 6px 0;
-            background-color: #333;
-            transition: 0.3s;
-        }
-
-        .menu {
-            display: none;
-            position: absolute;
-            top: 60px;
-            left: 20px;
-            background-color: #f5f5f5;
-            border-radius: 10px;
-            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            transition: background-color 0.3s ease;
-        }
-
-        body.dark-mode .menu {
-            background-color: #444;
-        }
-
-        .menu a {
-            display: block;
-            color: #333;
-            text-decoration: none;
-            padding: 10px 0;
-            transition: color 0.3s ease;
-        }
-
-        body.dark-mode .menu a {
-            color: #f5f5f5;
-        }
-
-        .menu a:hover {
-            color: #FFD700;
-        }
-
-        .active {
-            display: block;
-        }
-
-        /* Mode Toggle Icon */
-        .mode-toggle {
-            cursor: pointer;
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            font-size: 1.5em;
-        }
-
-        body.dark-mode .mode-toggle.sun {
-            display: none;
-        }
-
-        body.dark-mode .mode-toggle.moon {
-            display: block;
-        }
-
-        body .mode-toggle.moon {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css"> <!-- Link to external CSS file -->
 </head>
 <body>
     <div class="hamburger" id="hamburger">
-        <div class="line1"></div>
-        <div class="line2"></div>
-        <div class="line3"></div>
+        <div></div>
+        <div></div>
+        <div></div>
     </div>
-
+    
     <div class="menu" id="menu">
         <a href="#">Home</a>
         <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Contact</a>
+    
         <div class="social-icons">
             <a href="https://twitter.com/maestropuns" target="_blank">
                 <i class="fab fa-twitter"></i>
@@ -368,6 +40,7 @@
             </a>
         </div>
     </div>
+    
 
     <header>
         <div class="profile-img"></div>
@@ -397,13 +70,14 @@
             </a>
         </div>
 
-        <!-- Light/Dark Mode Toggle Icon -->
-        <div class="mode-toggle sun" id="mode-toggle">
-            <i class="fas fa-sun"></i>
-        </div>
-        <div class="mode-toggle moon" id="mode-toggle">
-            <i class="fas fa-moon"></i>
-        </div>
+      <!-- Light/Dark Mode Toggle Icons -->
+<div class="mode-toggle sun" id="sun-toggle">
+    <i class="fas fa-sun"></i>
+</div>
+<div class="mode-toggle moon" id="moon-toggle">
+    <i class="fas fa-moon"></i>
+</div>
+
     </header>
 
     <section class="about">
@@ -416,20 +90,53 @@
     </section>
     
     <script>
-        const readMoreBtn = document.getElementById('read-more-btn');
-        const moreText = document.getElementById('more-text');
-    
-        readMoreBtn.addEventListener('click', () => {
-            if (moreText.style.display === 'none') {
-                moreText.style.display = 'inline';
-                readMoreBtn.textContent = 'Read Less';
-            } else {
-                moreText.style.display = 'none';
-                readMoreBtn.textContent = 'Read More';
+        const sunToggle = document.getElementById('sun-toggle');
+const moonToggle = document.getElementById('moon-toggle');
+
+// Initial state of the toggle
+if (document.body.classList.contains('dark-mode')) {
+    sunToggle.style.display = 'none'; // Hide sun icon when in dark mode
+    moonToggle.style.display = 'inline'; // Show moon icon when in dark mode
+} else {
+    sunToggle.style.display = 'inline'; // Show sun icon when in light mode
+    moonToggle.style.display = 'none'; // Hide moon icon when in light mode
+}
+
+// Switch between light and dark mode on click
+sunToggle.addEventListener('click', () => {
+    document.body.classList.add('dark-mode');
+    sunToggle.style.display = 'none'; // Hide sun
+    moonToggle.style.display = 'inline'; // Show moon
+});
+
+moonToggle.addEventListener('click', () => {
+    document.body.classList.remove('dark-mode');
+    sunToggle.style.display = 'inline'; // Show sun
+    moonToggle.style.display = 'none'; // Hide moon
+});
+
+
+        const hamburger = document.getElementById('hamburger');
+        const menu = document.getElementById('menu');
+
+        // Toggle the menu visibility when hamburger is clicked
+        hamburger.addEventListener('click', (event) => {
+            event.stopPropagation();  // Prevent click from propagating to document
+            menu.classList.toggle('active');
+        });
+
+        // Close menu if clicking anywhere outside the menu
+        document.addEventListener('click', (event) => {
+            if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                menu.classList.remove('active');
             }
         });
+
+        // Prevent the menu from closing if clicked inside the menu
+        menu.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
     </script>
-    
 
     <section class="portfolio">
         <div class="portfolio-item">
@@ -455,34 +162,5 @@
         <div class="flare"></div>
         <p>&copy; 2025 Jonathan Mwaniki. All Rights Reserved.</p>
     </footer>
-
-    <script>
-        const modeToggle = document.querySelectorAll('.mode-toggle');
-        const aboutText = document.getElementById('about-text');
-        const readMoreBtn = document.getElementById('read-more-btn');
-        const hamburger = document.getElementById('hamburger');
-        const menu = document.getElementById('menu');
-
-        modeToggle.forEach((toggle) => {
-            toggle.addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-            });
-        });
-
-        readMoreBtn.addEventListener('click', () => {
-            const moreText = document.getElementById('more-text');
-            if (moreText.style.display === 'none') {
-                moreText.style.display = 'inline';
-                readMoreBtn.textContent = 'Read Less';
-            } else {
-                moreText.style.display = 'none';
-                readMoreBtn.textContent = 'Read More';
-            }
-        });
-
-        hamburger.addEventListener('click', () => {
-            menu.classList.toggle('active');
-        });
-    </script>
 </body>
 </html>
