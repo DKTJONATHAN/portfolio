@@ -286,7 +286,7 @@ body.dark-mode .menu a {
     display: flex;
     justify-content: center;
     margin-top: 20px;
-    gap: 5px; /* Adjust the gap to reduce spacing between icons */
+    gap: 10px; /* Adjust the gap to reduce spacing between icons */
 }
 
 .menu .social-icons a {
@@ -304,7 +304,7 @@ body.dark-mode .menu a {
 }
 
 body.dark-mode .menu .social-icons a {
-    background-color: #444;
+    background-color: #000000;
     color: #f5f5f5;
 }
 
