@@ -286,15 +286,15 @@ body.dark-mode .menu a {
     display: flex;
     justify-content: center;
     margin-top: 20px;
-    gap: 10px; /* Adjust the gap to reduce spacing between icons */
+    gap: 5px; /* Adjust the gap to reduce spacing between icons */
 }
 
 .menu .social-icons a {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: 40px; /* Set a smaller width for the icons */
-    height: 40px; /* Set a smaller height for the icons */
+    width: 20px; /* Set a smaller width for the icons */
+    height: 20px; /* Set a smaller height for the icons */
     background-color: #f5f5f5;
     color: #333;
     border-radius: 50%; /* Make the icons circular */
@@ -341,15 +341,6 @@ body.dark-mode #darkModeToggle {
 /* Prevent the icon from shifting on hover or when toggling modes */
 #darkModeToggle:hover {
     transform: scale(1); /* Remove scaling on hover to prevent shift */
-}
-
-/* Mobile version specific fixes */
-@media (max-width: 768px) {
-    #darkModeToggle {
-        top: 10px;  /* Adjust top position for mobile */
-        right: 10px; /* Adjust right position for mobile */
-        font-size: 1.2em;  /* Slightly smaller font for mobile */
-    }
 }
 
 /* Optional: Apply a subtle effect on active state */
