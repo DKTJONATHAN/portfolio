@@ -408,9 +408,28 @@
 
     <section class="about">
         <h2>About Me</h2>
-        <p id="about-text">I'm Jonathan Mwaniki, a self-taught web developer based in Nairobi, Kenya. I started learning web development through YouTube tutorials and hands-on projects. With a passion for creating intuitive, responsive websites, I specialize in front-end web development, focusing on HTML, CSS, JavaScript, and modern web frameworks. <span id="more-text" style="display:none;">In addition to web development, I have experience in graphics design and software development, which helps me create seamless and visually appealing user experiences. I've built various websites and applications for clients and personal projects. My goal is to continue learning, growing, and creating impactful digital experiences.</span></p>
+        <p id="about-text" style="text-align: justify;">
+            I'm Jonathan Mwaniki, a self-taught web developer based in Nairobi, Kenya. I started learning web development through YouTube tutorials and hands-on projects. With a passion for creating intuitive, responsive websites, I specialize in front-end web development, focusing on HTML, CSS, JavaScript, and modern web frameworks. <span id="more-text" style="display: none;">
+            In addition to web development, I have experience in graphics design and software development, which helps me create seamless and visually appealing user experiences. I've built various websites and applications for clients and personal projects. My goal is to continue learning, growing, and creating impactful digital experiences.</span>
+        </p>
         <button id="read-more-btn">Read More</button>
     </section>
+    
+    <script>
+        const readMoreBtn = document.getElementById('read-more-btn');
+        const moreText = document.getElementById('more-text');
+    
+        readMoreBtn.addEventListener('click', () => {
+            if (moreText.style.display === 'none') {
+                moreText.style.display = 'inline';
+                readMoreBtn.textContent = 'Read Less';
+            } else {
+                moreText.style.display = 'none';
+                readMoreBtn.textContent = 'Read More';
+            }
+        });
+    </script>
+    
 
     <section class="portfolio">
         <div class="portfolio-item">
