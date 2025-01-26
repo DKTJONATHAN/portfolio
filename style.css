@@ -329,12 +329,34 @@ body.dark-mode .menu .social-icons a {
     font-size: 1.5em;
     cursor: pointer;
     z-index: 1001;
-    transition: transform 0.3s ease;
+    transition: color 0.3s ease; /* Avoid transition on transform */
+    transform: none; /* Reset any transform applied */
 }
 
+/* Ensure icon stays in place */
 body.dark-mode #darkModeToggle {
     color: #f5f5f5;
 }
+
+/* Prevent the icon from shifting on hover or when toggling modes */
+#darkModeToggle:hover {
+    transform: scale(1); /* Remove scaling on hover to prevent shift */
+}
+
+/* Mobile version specific fixes */
+@media (max-width: 768px) {
+    #darkModeToggle {
+        top: 10px;  /* Adjust top position for mobile */
+        right: 10px; /* Adjust right position for mobile */
+        font-size: 1.2em;  /* Slightly smaller font for mobile */
+    }
+}
+
+/* Optional: Apply a subtle effect on active state */
+#darkModeToggle:active {
+    transform: scale(1.05); /* Keep it small and subtle on click */
+}
+
 
 /* Hover effect for the dark mode toggle */
 #darkModeToggle:hover {
