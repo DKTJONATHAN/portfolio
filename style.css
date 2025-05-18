@@ -326,3 +326,38 @@ footer {
         width: 200px;
     }
 }
+/* Hardware acceleration for smooth scrolling */
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+/* Optimize elements with backdrop-filter */
+header, .about, .portfolio-item, footer, .menu {
+    transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    perspective: 1000;
+    isolation: isolate; /* Creates a new stacking context */
+}
+
+/* Reduce blur effects */
+.burst-1, .burst-2, .burst-3, .burst-4 {
+    filter: blur(40px);
+}
+
+/* Optimize body background */
+body {
+    background: #1a1a2e;
+}
+
+/* Remove or hide flare element */
+.flare {
+    display: none;
+}
+
+/* Will-change for animated elements */
+.splash-screen, .color-burst, .burst-1, .burst-2, .burst-3, .burst-4 {
+    will-change: transform, opacity;
+}
