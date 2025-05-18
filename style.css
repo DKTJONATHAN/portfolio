@@ -1,4 +1,328 @@
-/* Reset default margin, padding, and box-sizing */
+/* Splash Screen Styles */
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.splash-container {
+    position: relative;
+    text-align: center;
+    max-width: 800px;
+    padding: 2rem;
+    z-index: 2;
+}
+
+.logo-animation {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    perspective: 1000px;
+}
+
+.logo-initial {
+    font-size: 5rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 10px;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    animation: float 3s ease-in-out infinite;
+}
+
+.logo-initial:nth-child(1) {
+    animation-delay: 0.1s;
+    color: #ff6b6b;
+}
+
+.logo-initial:nth-child(2) {
+    animation-delay: 0.2s;
+    color: #4ecdc4;
+}
+
+.splash-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    animation: fadeIn 1.5s ease-out;
+}
+
+.splash-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 3rem;
+    animation: fadeIn 2s ease-out;
+}
+
+/* Liquid Loader */
+.liquid-loader {
+    position: relative;
+    width: 200px;
+    height: 100px;
+    margin: 2rem auto;
+}
+
+.liquid-drop {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #4ecdc4;
+    border-radius: 50%;
+    filter: drop-shadow(0 0 10px #4ecdc4);
+    animation: liquidDrop 2s infinite ease-in-out;
+}
+
+.liquid-drop-1 {
+    left: 10%;
+    animation-delay: 0s;
+    background: #ff6b6b;
+    filter: drop-shadow(0 0 10px #ff6b6b);
+}
+
+.liquid-drop-2 {
+    left: 30%;
+    animation-delay: 0.2s;
+    background: #4ecdc4;
+    filter: drop-shadow(0 0 10px #4ecdc4);
+}
+
+.liquid-drop-3 {
+    left: 50%;
+    animation-delay: 0.4s;
+    background: #ffe66d;
+    filter: drop-shadow(0 0 10px #ffe66d);
+}
+
+.liquid-drop-4 {
+    left: 70%;
+    animation-delay: 0.6s;
+    background: #ff9ff3;
+    filter: drop-shadow(0 0 10px #ff9ff3);
+}
+
+.liquid-drop-5 {
+    left: 90%;
+    animation-delay: 0.8s;
+    background: #1dd1a1;
+    filter: drop-shadow(0 0 10px #1dd1a1);
+}
+
+.liquid-bubble {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    animation: bubbleRise 3s infinite ease-in;
+    opacity: 0;
+}
+
+.liquid-bubble-1 {
+    left: 15%;
+    bottom: 0;
+    animation-delay: 0.5s;
+}
+
+.liquid-bubble-2 {
+    left: 35%;
+    bottom: 0;
+    animation-delay: 1s;
+}
+
+.liquid-bubble-3 {
+    left: 55%;
+    bottom: 0;
+    animation-delay: 1.5s;
+}
+
+.liquid-bubble-4 {
+    left: 75%;
+    bottom: 0;
+    animation-delay: 2s;
+}
+
+.liquid-bubble-5 {
+    left: 95%;
+    bottom: 0;
+    animation-delay: 2.5s;
+}
+
+/* Progress Bar */
+.progress-container {
+    width: 80%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin: 2rem auto;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #ff6b6b, #ff9ff3, #4ecdc4, #1dd1a1);
+    border-radius: 10px;
+    transition: width 0.1s linear;
+    animation: progressGradient 3s infinite;
+}
+
+/* Loading Text */
+.loading-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    margin-top: 1rem;
+}
+
+.loading-dots::after {
+    content: '';
+    animation: loadingDots 1.5s infinite;
+}
+
+/* Color Burst Background */
+.color-burst {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.burst-1, .burst-2, .burst-3, .burst-4 {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.3;
+}
+
+.burst-1 {
+    width: 300px;
+    height: 300px;
+    background: #ff6b6b;
+    top: -100px;
+    left: -100px;
+    animation: burstMove 15s infinite alternate;
+}
+
+.burst-2 {
+    width: 400px;
+    height: 400px;
+    background: #4ecdc4;
+    bottom: -150px;
+    right: -100px;
+    animation: burstMove 18s infinite alternate-reverse;
+}
+
+.burst-3 {
+    width: 250px;
+    height: 250px;
+    background: #ffe66d;
+    top: 50%;
+    left: 20%;
+    animation: burstMove 12s infinite alternate;
+}
+
+.burst-4 {
+    width: 350px;
+    height: 350px;
+    background: #ff9ff3;
+    bottom: 20%;
+    right: 20%;
+    animation: burstMove 20s infinite alternate-reverse;
+}
+
+/* Animations */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotateY(0deg);
+    }
+    50% {
+        transform: translateY(-20px) rotateY(20deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes liquidDrop {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-30px) scale(1.2);
+    }
+}
+
+@keyframes bubbleRise {
+    0% {
+        transform: translateY(0);
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+}
+
+@keyframes progressGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes loadingDots {
+    0% {
+        content: '.';
+    }
+    33% {
+        content: '..';
+    }
+    66% {
+        content: '...';
+    }
+    100% {
+        content: '.';
+    }
+}
+
+@keyframes burstMove {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(50px, 50px);
+    }
+}
 * {
     margin: 0;
     padding: 0;
