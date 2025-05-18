@@ -5,6 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Jonathan Mwaniki - Web Developer Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="splash.css"> <!-- Link to splash screen CSS -->
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-container">
+            <div class="logo-animation">
+                <div class="logo-initial">J</div>
+                <div class="logo-initial">M</div>
+            </div>
+            
+            <h1 class="splash-title">Jonathan Mwaniki</h1>
+            <p class="splash-subtitle">Designer & Web Developer</p>
+            
+            <div class="liquid-loader">
+                <div class="liquid-drop liquid-drop-1"></div>
+                <div class="liquid-drop liquid-drop-2"></div>
+                <div class="liquid-drop liquid-drop-3"></div>
+                <div class="liquid-drop liquid-drop-4"></div>
+                <div class="liquid-drop liquid-drop-5"></div>
+                <div class="liquid-bubble liquid-bubble-1"></div>
+                <div class="liquid-bubble liquid-bubble-2"></div>
+                <div class="liquid-bubble liquid-bubble-3"></div>
+                <div class="liquid-bubble liquid-bubble-4"></div>
+                <div class="liquid-bubble liquid-bubble-5"></div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div class="loading-text">
+                <span class="loading-dots">Loading creativity</span>
+            </div>
+            
+            <div class="color-burst">
+                <div class="burst-1"></div>
+                <div class="burst-2"></div>
+                <div class="burst-3"></div>
+                <div class="burst-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent" style="display: none;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Jonathan Mwaniki - Web Developer Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css"> <!-- Link to external CSS file -->
@@ -169,23 +222,40 @@ moonToggle.addEventListener('click', () => {
         <div class="flare"></div>
         <p>&copy; 2025 Jonathan Mwaniki. All Rights Reserved.</p>
     </footer>
-    <script>
-        // Get elements
-        const readMoreBtn = document.getElementById('read-more-btn');
-        const moreText = document.getElementById('more-text');
-    
-        // Handle click event on Read More button
-        readMoreBtn.addEventListener('click', function() {
-            // Toggle the display of extra text
-            if (moreText.style.display === 'none') {
-                moreText.style.display = 'inline'; // Show more text
-                readMoreBtn.textContent = 'Read Less'; // Change button text
+   <script>
+    // Splash screen functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const splashScreen = document.getElementById('splashScreen');
+        const mainContent = document.getElementById('mainContent');
+        const progressBar = document.getElementById('progressBar');
+        
+        // Start progress bar animation
+        let width = 0;
+        const interval = setInterval(function() {
+            if (width >= 100) {
+                clearInterval(interval);
+                // Animate splash screen exit
+                splashScreen.style.opacity = '0';
+                splashScreen.style.transition = 'opacity 0.5s ease-out';
+                
+                // Show main content after splash fades
+                setTimeout(function() {
+                    splashScreen.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    document.body.style.overflow = 'auto';
+                }, 500);
             } else {
-                moreText.style.display = 'none'; // Hide extra text
-                readMoreBtn.textContent = 'Read More'; // Change button text back
+                width += 0.2; // Adjust for 55 seconds (100% in 500 steps)
+                progressBar.style.width = width + '%';
             }
-        });
-    </script>
+        }, 110); // 55,000ms / 500 steps = 110ms per step
+        
+        // Prevent scrolling during splash
+        document.body.style.overflow = 'hidden';
+    });
+
+    // Your existing JavaScript code...
+</script>
     
 </body>
 </html>
