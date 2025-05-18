@@ -223,13 +223,13 @@ moonToggle.addEventListener('click', () => {
         <p>&copy; 2025 Jonathan Mwaniki. All Rights Reserved.</p>
     </footer>
    <script>
-    // Splash screen functionality
+    // Splash screen functionality - 10 second version
     document.addEventListener('DOMContentLoaded', function() {
         const splashScreen = document.getElementById('splashScreen');
         const mainContent = document.getElementById('mainContent');
         const progressBar = document.getElementById('progressBar');
         
-        // Start progress bar animation
+        // Start progress bar animation (10 seconds)
         let width = 0;
         const interval = setInterval(function() {
             if (width >= 100) {
@@ -245,17 +245,16 @@ moonToggle.addEventListener('click', () => {
                     document.body.style.overflow = 'auto';
                 }, 500);
             } else {
-                width += 0.2; // Adjust for 55 seconds (100% in 500 steps)
+                width += 1; // Adjust for 10 seconds (100% in 100 steps)
                 progressBar.style.width = width + '%';
             }
-        }, 110); // 55,000ms / 500 steps = 110ms per step
+        }, 100); // 10,000ms / 100 steps = 100ms per step
         
         // Prevent scrolling during splash
         document.body.style.overflow = 'hidden';
     });
-
-    // Your existing JavaScript code...
 </script>
+</body>
     
 </body>
 </html>
