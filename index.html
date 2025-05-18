@@ -212,5 +212,21 @@
         });
     </script>
     </div>
+    <script>
+    // Read More Button Functionality
+    const readMoreBtn = document.getElementById('read-more-btn');
+    const moreText = document.getElementById('more-text');
+    const aboutText = document.getElementById('about-text');
+
+    readMoreBtn.addEventListener('click', function() {
+        if (moreText.style.display === 'none') {
+            moreText.style.display = 'inline';
+            readMoreBtn.textContent = 'Read Less';
+        } else {
+            moreText.style.display = 'none';
+            readMoreBtn.textContent = 'Read More';
+        }
+    });
+</script>
 </body>
 </html>
