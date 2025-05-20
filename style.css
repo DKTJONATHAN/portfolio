@@ -514,31 +514,34 @@ header p {
 .about button:hover::after {
     opacity: 1;
 }
-.portfolio {
-    padding: 60px 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
 
-.portfolio h1 {
-    font-size: 3rem;
-    margin: -15px 0 40px 0; /* Pulled up 15px, with 40px bottom margin */
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-    animation: fadeIn 1s ease-out;
-    position: relative;
-    z-index: 2; /* Higher z-index to stay above items */
-}
-
+/* ===== PORTFOLIO SECTION ===== */
 .portfolio {
-    padding: 60px 40px;
+    padding: 80px 40px; /* Increased padding */
     text-align: center;
     max-width: 900px;
-    margin: 40px auto;
+    margin: 60px auto; /* Increased margin */
     background: rgba(26, 26, 46, 0.7);
     backdrop-filter: blur(10px);
     border-radius: 30px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
+}
+
+.portfolio h1 {
+    font-size: 3rem;
+    margin: -20px 0 70px 0; /* Pulled up 20px + huge 70px bottom margin */
+    padding-top: 30px; /* Added padding */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    animation: fadeIn 1s ease-out;
+    position: relative;
+    z-index: 10; /* High z-index */
+}
+
+.portfolio-items-wrapper {
+    margin-top: 40px; /* Buffer space below header */
 }
 
 .portfolio-item {
@@ -546,7 +549,7 @@ header p {
     backdrop-filter: blur(10px);
     border-radius: 20px;
     padding: 30px;
-    margin-bottom: 40px;
+    margin-bottom: 60px; /* Increased spacing between items */
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     transition: all 0.4s ease;
@@ -555,13 +558,17 @@ header p {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     position: relative;
-    z-index: 1; /* Lower than h1 */
+    z-index: 2;
+}
+
+.portfolio-item:last-child {
+    margin-bottom: 30px; /* Reduced space after last item */
 }
 
 .portfolio-item:hover {
     transform: translateY(-10px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    z-index: 3; /* Higher than default but still below h1 */
+    z-index: 5; /* Higher when hovered */
 }
 
 .portfolio-item img {
@@ -594,6 +601,26 @@ header p {
     color: #ff6b6b;
     text-decoration: underline;
 }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .portfolio {
+        padding: 60px 20px;
+        margin: 40px auto;
+    }
+    
+    .portfolio h1 {
+        margin: -10px 0 50px 0;
+        padding-top: 20px;
+        font-size: 2.5rem;
+    }
+    
+    .portfolio-item {
+        padding: 25px;
+        margin-bottom: 50px;
+    }
+}
+
 /* Footer Styles */
 footer {
     text-align: center;
