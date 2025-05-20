@@ -521,6 +521,14 @@ header p {
     max-width: 1200px;
     margin: 0 auto;
 }
+
+.portfolio h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    animation: fadeIn 1s ease-out;
+}
+
 .portfolio {
     padding: 60px 40px;
     text-align: center;
