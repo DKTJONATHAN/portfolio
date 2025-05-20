@@ -524,9 +524,12 @@ header p {
 
 .portfolio h1 {
     font-size: 3rem;
-    margin-bottom: 10px;
+    margin-bottom: 40px; /* Increased from 10px to create more space */
+    padding-bottom: 20px; /* Added padding to create even more space */
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     animation: fadeIn 1s ease-out;
+    position: relative; /* For potential pseudo-element if needed */
+    z-index: 1; /* Ensures heading stays above other elements */
 }
 
 .portfolio {
@@ -554,13 +557,16 @@ header p {
     transform: translate3d(0, 0, 0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+    position: relative; /* Ensures proper stacking */
 }
 
 .portfolio-item:hover {
     transform: translateY(-10px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    z-index: 2; /* Ensures hovered item stays above others */
 }
 
+/* Rest of your CSS remains the same */
 .portfolio-item img {
     width: 100%;
     border-radius: 15px;
