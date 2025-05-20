@@ -514,8 +514,6 @@ header p {
 .about button:hover::after {
     opacity: 1;
 }
-
-/* Portfolio Section Styles */
 .portfolio {
     padding: 60px 20px;
     max-width: 1200px;
@@ -524,12 +522,11 @@ header p {
 
 .portfolio h1 {
     font-size: 3rem;
-    margin-bottom: 40px; /* Increased from 10px to create more space */
-    padding-bottom: 20px; /* Added padding to create even more space */
+    margin: -15px 0 40px 0; /* Pulled up 15px, with 40px bottom margin */
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     animation: fadeIn 1s ease-out;
-    position: relative; /* For potential pseudo-element if needed */
-    z-index: 1; /* Ensures heading stays above other elements */
+    position: relative;
+    z-index: 2; /* Higher z-index to stay above items */
 }
 
 .portfolio {
@@ -557,16 +554,16 @@ header p {
     transform: translate3d(0, 0, 0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    position: relative; /* Ensures proper stacking */
+    position: relative;
+    z-index: 1; /* Lower than h1 */
 }
 
 .portfolio-item:hover {
     transform: translateY(-10px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    z-index: 2; /* Ensures hovered item stays above others */
+    z-index: 3; /* Higher than default but still below h1 */
 }
 
-/* Rest of your CSS remains the same */
 .portfolio-item img {
     width: 100%;
     border-radius: 15px;
@@ -597,7 +594,6 @@ header p {
     color: #ff6b6b;
     text-decoration: underline;
 }
-
 /* Footer Styles */
 footer {
     text-align: center;
