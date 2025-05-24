@@ -10,12 +10,12 @@
     <title>Jonathan Mwaniki - Digital Solutions Expert</title>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css"> <!-- Single CSS file -->
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </head>
 <body>
-    <!-- Splash Screen (Retained) -->
+    <!-- Splash Screen -->
     <div class="splash-screen" id="splashScreen">
         <div class="splash-container">
             <div class="logo-animation">
@@ -55,10 +55,10 @@
     <!-- Main Content -->
     <div class="main-content" id="mainContent" style="display: none;">
         <!-- Hamburger Menu -->
-        <div class="hamburger" id="hamburger" aria-label="Toggle navigation">
-            <div></div>
-            <div></div>
-            <div></div>
+        <div class="hamburger" id="hamburger" role="button" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
         <nav class="menu" id="menu">
             <a href="#home">Home</a>
@@ -93,10 +93,6 @@
                 <p>Expert Web Development, Graphic Design, Social Media Marketing, Tech Solutions, and AI Innovation – All Under One Roof.</p>
                 <a href="#contact" class="cta-button">Create With Me Now!</a>
             </div>
-            <video autoplay muted loop class="hero-video">
-                <source src="./videos/hero-bg.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
         </section>
 
         <!-- Service Overview -->
@@ -139,44 +135,50 @@
         <!-- Testimonials -->
         <section id="testimonials" class="testimonials">
             <h2>What Clients Say</h2>
-            <div class="testimonials-slider">
-                <div class="testimonial">
-                    <p>“Jonathan transformed our online presence with a stunning website and targeted social media campaigns!”</p>
-                    <cite>– Jane Doe, CEO of TechStartup</cite>
+            <div class="swiper-container testimonials-slider">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide testimonial">
+                        <p>“Jonathan transformed our online presence with a stunning website and targeted social media campaigns!”</p>
+                        <cite>– Jane Doe, CEO of TechStartup</cite>
+                    </div>
+                    <div class="swiper-slide testimonial">
+                        <p>“The AI solution provided by Jonathan streamlined our operations and boosted efficiency.”</p>
+                        <cite>– John Smith, Founder of InnovateCo</cite>
+                    </div>
+                    <div class="swiper-slide testimonial">
+                        <p>“His graphic design work gave our brand a fresh, professional look!”</p>
+                        <cite>– Sarah Kimani, Marketing Director</cite>
+                    </div>
                 </div>
-                <div class="testimonial">
-                    <p>“The AI solution provided by Jonathan streamlined our operations and boosted efficiency.”</p>
-                    <cite>– John Smith, Founder of InnovateCo</cite>
-                </div>
-                <div class="testimonial">
-                    <p>“His graphic design work gave our brand a fresh, professional look!”</p>
-                    <cite>– Sarah Kimani, Marketing Director</cite>
-                </div>
+                <div class="swiper-pagination"></div>
             </div>
         </section>
 
         <!-- Portfolio Highlights -->
         <section id="portfolio-highlights" class="portfolio-highlights">
             <h2>Recent Projects</h2>
-            <div class="portfolio-grid">
-                <div class="portfolio-item" data-category="web">
-                    <img src="./images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani Website">
-                    <h3>Nooki Mtaani</h3>
-                    <p>Developed a rental platform with secure payment processing and real-time updates.</p>
-                    <a href="#portfolio" class="portfolio-cta">View Details</a>
+            <div class="swiper-container portfolio-grid">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide portfolio-item" data-category="web">
+                        <img src="./images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani Website">
+                        <h3>Nooki Mtaani</h3>
+                        <p>Developed a rental platform with secure payment processing and real-time updates.</p>
+                        <a href="#portfolio" class="portfolio-cta">View Details</a>
+                    </div>
+                    <div class="swiper-slide portfolio-item" data-category="web">
+                        <img src="./images/3.PNG" alt="Jamtech Website">
+                        <h3>Jamtech Website</h3>
+                        <p>Designed an e-commerce site with seamless product search and mobile optimization.</p>
+                        <a href="#portfolio" class="portfolio-cta">View Details</a>
+                    </div>
+                    <div class="swiper-slide portfolio-item" data-category="web">
+                        <img src="./images/afri.png" alt="Africhain Website">
+                        <h3>AfriChain WEB3</h3>
+                        <p>Built a web3 platform with secure payment gateways and real-time updates.</p>
+                        <a href="#portfolio" class="portfolio-cta">View Details</a>
+                    </div>
                 </div>
-                <div class="portfolio-item" data-category="web">
-                    <img src="./images/3.PNG" alt="Jamtech Website">
-                    <h3>Jamtech Website</h3>
-                    <p>Designed an e-commerce site with seamless product search and mobile optimization.</p>
-                    <a href="#portfolio" class="portfolio-cta">View Details</a>
-                </div>
-                <div class="portfolio-item" data-category="web">
-                    <img src="./images/afri.png" alt="Africhain Website">
-                    <h3>AfriChain WEB3</h3>
-                    <p>Built a web3 platform with secure payment gateways and real-time updates.</p>
-                    <a href="#portfolio" class="portfolio-cta">View Details</a>
-                </div>
+                <div class="swiper-pagination"></div>
             </div>
             <a href="#portfolio" class="cta-button">Explore Full Portfolio</a>
         </section>
@@ -186,9 +188,11 @@
             <h2>Meet Jonathan Mwaniki – Your Partner in Digital Success</h2>
             <div class="about-content">
                 <img src="./images/profile.jpg" alt="Jonathan Mwaniki Headshot" class="profile-img">
-                <p>I’m Jonathan Mwaniki, a passionate web developer, graphic designer, social media strategist, tech solutions expert, and AI innovator based in Nairobi, Kenya. With over 5 years of experience, my mission is to empower businesses by combining creativity, technology, and strategy to deliver solutions that drive results. From crafting pixel-perfect websites to designing impactful branding and implementing cutting-edge AI tools, I bring a holistic approach to every project. My work is fueled by a love for innovation and a commitment to exceeding client expectations.</p>
-                <p><strong>Mission:</strong> To deliver transformative digital solutions that blend creativity, technology, and strategy, helping businesses thrive in a competitive world.</p>
-                <p><strong>Fun Fact:</strong> When I’m not coding or designing, you’ll find me exploring the latest AI trends or sipping coffee while sketching new ideas.</p>
+                <div>
+                    <p>I’m Jonathan Mwaniki, a passionate web developer, graphic designer, social media strategist, tech solutions expert, and AI innovator based in Nairobi, Kenya. With over 5 years of experience, my mission is to empower businesses by combining creativity, technology, and strategy to deliver solutions that drive results. From crafting pixel-perfect websites to designing impactful branding and implementing cutting-edge AI tools, I bring a holistic approach to every project.</p>
+                    <p><strong>Mission:</strong> To deliver transformative digital solutions that blend creativity, technology, and strategy, helping businesses thrive in a competitive world.</p>
+                    <p><strong>Fun Fact:</strong> When I’m not coding or designing, you’ll find me exploring the latest AI trends or sipping coffee while sketching new ideas.</p>
+                </div>
             </div>
             <div class="skills">
                 <h3>Skills & Certifications</h3>
@@ -212,7 +216,7 @@
                 <div class="service-item">
                     <i class="fas fa-code"></i>
                     <h3>Web Development</h3>
-                    <p>From sleek landing pages to complex e-commerce platforms, I create responsive, SEO-optimized websites that deliver exceptional user experiences. Using modern frameworks like React, Next.js, and WordPress, I ensure your site is fast, secure, and tailored to your brand.</p>
+                    <p>From sleek landing pages to complex e-commerce platforms, I create responsive, SEO-optimized websites that deliver exceptional user experiences.</p>
                     <ul>
                         <li>Custom website design</li>
                         <li>E-commerce solutions</li>
@@ -224,7 +228,7 @@
                 <div class="service-item">
                     <i class="fas fa-paint-brush"></i>
                     <h3>Graphic Design</h3>
-                    <p>Your brand deserves to stand out. I design stunning logos, marketing collateral, and digital assets that resonate with your audience. Whether it’s a complete brand identity or eye-catching social media graphics, I bring your vision to life with creativity and precision.</p>
+                    <p>Your brand deserves to stand out. I design stunning logos, marketing collateral, and digital assets that resonate with your audience.</p>
                     <ul>
                         <li>Logo design</li>
                         <li>Branding</li>
@@ -236,7 +240,7 @@
                 <div class="service-item">
                     <i class="fas fa-bullhorn"></i>
                     <h3>Social Media Marketing</h3>
-                    <p>Amplify your online presence with targeted social media strategies. From content creation to ad campaigns, I help businesses engage their audience and drive conversions on platforms like Instagram, LinkedIn, and Twitter/X. Let’s build a community around your brand.</p>
+                    <p>Amplify your online presence with targeted social media strategies, from content creation to ad campaigns.</p>
                     <ul>
                         <li>Content creation</li>
                         <li>Ad management</li>
@@ -248,7 +252,7 @@
                 <div class="service-item">
                     <i class="fas fa-cogs"></i>
                     <h3>Tech Solutions</h3>
-                    <p>Need custom software or IT solutions? I provide tailored tech solutions, including app development, cloud integration, and IT consulting, to optimize your operations. My expertise ensures your business stays ahead in a tech-driven world.</p>
+                    <p>Need custom software or IT solutions? I provide tailored tech solutions to optimize your operations.</p>
                     <ul>
                         <li>Custom software development</li>
                         <li>IT consulting</li>
@@ -260,7 +264,7 @@
                 <div class="service-item">
                     <i class="fas fa-robot"></i>
                     <h3>AI Solutions</h3>
-                    <p>From chatbots to predictive analytics, I design AI-powered solutions that automate processes and enhance decision-making. Whether you need machine learning models or AI-driven apps, I deliver innovative solutions to give your business a competitive edge.</p>
+                    <p>From chatbots to predictive analytics, I design AI-powered solutions that automate processes and enhance decision-making.</p>
                     <ul>
                         <li>AI app development</li>
                         <li>Machine learning</li>
@@ -273,13 +277,13 @@
             <div class="faq">
                 <h3>Frequently Asked Questions</h3>
                 <div class="faq-item">
-                    <button class="faq-question">How long does a website project take?</button>
+                    <button class="faq-question" aria-expanded="false">How long does a website project take?</button>
                     <div class="faq-answer" style="display: none;">
                         <p>Typically 4-8 weeks, depending on complexity.</p>
                     </div>
                 </div>
                 <div class="faq-item">
-                    <button class="faq-question">Do you offer ongoing support?</button>
+                    <button class="faq-question" aria-expanded="false">Do you offer ongoing support?</button>
                     <div class="faq-answer" style="display: none;">
                         <p>Yes, I provide maintenance and support plans.</p>
                     </div>
@@ -299,55 +303,58 @@
                 <button class="filter-btn" data-filter="tech">Tech Solutions</button>
                 <button class="filter-btn" data-filter="ai">AI Solutions</button>
             </div>
-            <div class="portfolio-grid">
-                <div class="portfolio-item" data-category="web">
-                    <img src="./images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani Website">
-                    <h3>Nooki Mtaani</h3>
-                    <p>Developed a rental platform website for <a href="https://nookimtaani.netlify.app">Nooki Mtaani</a>, specializing in listing and renting spaces. Integrated secure payment processing and real-time availability updates.</p>
-                    <p><strong>Testimonial:</strong> “The website exceeded our expectations!” – Client Name</p>
+            <div class="swiper-container portfolio-grid">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide portfolio-item" data-category="web">
+                        <img src="./images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani Website">
+                        <h3>Nooki Mtaani</h3>
+                        <p>Developed a rental platform website for <a href="https://nookimtaani.netlify.app">Nooki Mtaani</a>, specializing in listing and renting spaces.</p>
+                        <p><strong>Testimonial:</strong> “The website exceeded our expectations!” – Client Name</p>
+                    </div>
+                    <div class="swiper-slide portfolio-item" data-category="web">
+                        <img src="./images/3.PNG" alt="Jamtech Website">
+                        <h3>Jamtech Website</h3>
+                        <p>Designed and developed an e-commerce site for <a href="https://jamtech.pages.dev">Jamtech Electronics</a>, with product search and mobile optimization.</p>
+                        <p><strong>Testimonial:</strong> “A seamless shopping experience!” – Client Name</p>
+                    </div>
+                    <div class="swiper-slide portfolio-item" data-category="web">
+                        <img src="./images/afri.png" alt="Africhain Website">
+                        <h3>AfriChain WEB3</h3>
+                        <p>Created a web3 website for <a href="https://africhainke.netlify.app">AfriChain</a>, focusing on secure payment gateways.</p>
+                        <p><strong>Testimonial:</strong> “Innovative and user-friendly!” – Client Name</p>
+                    </div>
+                    <div class="swiper-slide portfolio-item" data-category="web">
+                        <img src="./images/2.PNG" alt="Ruto Must Go Website">
+                        <h3>Ruto Must Go Website</h3>
+                        <p>Built a website for the <a href="https://rutomustgo.pages.dev">Ruto Must Go</a> campaign, designed to engage users.</p>
+                        <p><strong>Testimonial:</strong> “Highly engaging platform!” – Client Name</p>
+                    </div>
+                    <div class="swiper-slide portfolio-item" data-category="web">
+                        <img src="./images/1.PNG" alt="Ngwai Store Website">
+                        <h3>Ngwai Store Website</h3>
+                        <p>Created an e-commerce website for Ngwai Store with secure payment gateways.</p>
+                        <p><strong>Testimonial:</strong> “Boosted our sales significantly!” – Client Name</p>
+                    </div>
+                    <div class="swiper-slide portfolio-item" data-category="graphic">
+                        <img src="./images/brand.png" alt="Brand Identity">
+                        <h3>Brand Identity for Startup</h3>
+                        <p>Designed a complete brand identity, including logo and social media graphics.</p>
+                        <p><strong>Testimonial:</strong> “Our brand now stands out!” – Client Name</p>
+                    </div>
+                    <div class="swiper-slide portfolio-item" data-category="social">
+                        <img src="./images/campaign.png" alt="Social Media Campaign">
+                        <h3>Social Media Campaign</h3>
+                        <p>Developed a targeted Instagram campaign, increasing engagement by 40%.</p>
+                        <p><strong>Testimonial:</strong> “Our audience loves the content!” – Client Name</p>
+                    </div>
+                    <div class="swiper-slide portfolio-item" data-category="ai">
+                        <img src="./images/chatbot.jpeg" alt="AI Chatbot">
+                        <h3>AI Chatbot Integration</h3>
+                        <p>Integrated an AI-powered chatbot for a retail website, improving support efficiency.</p>
+                        <p><strong>Testimonial:</strong> “A game-changer for our support!” – Client Name</p>
+                    </div>
                 </div>
-                <div class="portfolio-item" data-category="web">
-                    <img src="./images/3.PNG" alt="Jamtech Website">
-                    <h3>Jamtech Website</h3>
-                    <p>Designed and developed an e-commerce site for <a href="https://jamtech.pages.dev">Jamtech Electronics</a>, with product search, secure checkout, and mobile optimization.</p>
-                    <p><strong>Testimonial:</strong> “A seamless shopping experience!” – Client Name</p>
-                </div>
-                <div class="portfolio-item" data-category="web">
-                    <img src="./images/afri.png" alt="Africhain Website">
-                    <h3>AfriChain WEB3</h3>
-                    <p>Created a web3 website for <a href="https://africhainke.netlify.app">AfriChain</a>, focusing on secure payment gateways and real-time product updates.</p>
-                    <p><strong>Testimonial:</strong> “Innovative and user-friendly!” – Client Name</p>
-                </div>
-                <div class="portfolio-item" data-category="web">
-                    <img src="./images/2.PNG" alt="Ruto Must Go Website">
-                    <h3>Ruto Must Go Website</h3>
-                    <p>Built a website for the <a href="https://rutomustgo.pages.dev">Ruto Must Go</a> campaign, designed to engage users through articles and petitions.</p>
-                    <p><strong>Testimonial:</strong> “Highly engaging platform!” – Client Name</p>
-                </div>
-                <div class="portfolio-item" data-category="web">
-                    <img src="./images/1.PNG" alt="Ngwai Store Website">
-                    <h3>Ngwai Store Website</h3>
-                    <p>Created an e-commerce website for Ngwai Store with secure payment gateways and real-time product updates.</p>
-                    <p><strong>Testimonial:</strong> “Boosted our sales significantly!” – Client Name</p>
-                </div>
-                <div class="portfolio-item" data-category="graphic">
-                    <img src="./images/brand.png" alt="Brand Identity">
-                    <h3>Brand Identity for Startup</h3>
-                    <p>Designed a complete brand identity, including logo, business cards, and social media graphics for a Nairobi-based startup.</p>
-                    <p><strong>Testimonial:</strong> “Our brand now stands out!” – Client Name</p>
-                </div>
-                <div class="portfolio-item" data-category="social">
-                    <img src="./images/campaign.png" alt="Social Media Campaign">
-                    <h3>Social Media Campaign</h3>
-                    <p>Developed a targeted Instagram campaign for a local business, increasing engagement by 40%.</p>
-                    <p><strong>Testimonial:</strong> “Our audience loves the content!” – Client Name</p>
-                </div>
-                <div class="portfolio-item" data-category="ai">
-                    <img src="./images/chatbot.jpeg" alt="AI Chatbot">
-                    <h3>AI Chatbot Integration</h3>
-                    <p>Integrated an AI-powered chatbot for a retail website, improving customer support efficiency.</p>
-                    <p><strong>Testimonial:</strong> “A game-changer for our support!” – Client Name</p>
-                </div>
+                <div class="swiper-pagination"></div>
             </div>
         </section>
 
@@ -359,19 +366,19 @@
                 <div class="blog-post">
                     <img src="./images/trends.jpeg" alt="Web Design Trends">
                     <h3>Top 5 Web Design Trends for 2025</h3>
-                    <p>Explore the latest trends shaping the future of web design, from immersive UI to AI-driven personalization.</p>
+                    <p>Explore the latest trends shaping the future of web design.</p>
                     <a href="#" class="blog-cta">Read More</a>
                 </div>
                 <div class="blog-post">
                     <img src="./images/business.jpeg" alt="AI for Business">
                     <h3>How AI is Revolutionizing Small Business Marketing</h3>
-                    <p>Discover how AI tools can enhance your marketing efforts with automation and analytics.</p>
+                    <p>Discover how AI tools can enhance your marketing efforts.</p>
                     <a href="#" class="blog-cta">Read More</a>
                 </div>
                 <div class="blog-post">
                     <img src="./images/socialmedia.png" alt="Social Media Guide">
                     <h3>The Ultimate Guide to Social Media Advertising</h3>
-                    <p>Learn strategies to maximize ROI on platforms like Instagram and Twitter/X.</p>
+                    <p>Learn strategies to maximize ROI on platforms like Instagram.</p>
                     <a href="#" class="blog-cta">Read More</a>
                 </div>
             </div>
@@ -386,7 +393,7 @@
         <!-- Contact Section -->
         <section id="contact" class="contact">
             <h2>Let’s Bring Your Ideas to Life</h2>
-            <p>Ready to start your next project? Fill out the form below, and I’ll get back to you within 24 hours.</p>
+            <p>Ready to start your next project? I’ll get back to you within 24 hours.</p>
             <form class="contact-form" action="submit-form.php" method="POST">
                 <label for="name">Name</label>
                 <input type="text" id="name" name="name" required aria-label="Your name">
@@ -423,7 +430,6 @@
                     </a>
                 </div>
             </div>
-        
         </section>
 
         <!-- Footer -->
@@ -446,88 +452,132 @@
         </div>
     </div>
 
-  <script>
-    // Splash Screen
-    document.addEventListener('DOMContentLoaded', function() {
-        const splashScreen = document.getElementById('splashScreen');
-        const mainContent = document.getElementById('mainContent');
-        const progressBar = document.getElementById('progressBar');
-        
-        let width = 0;
-        const totalTime = 3000; // 3 seconds in milliseconds
-        const increment = 100 / (totalTime / 100); // Calculate increment per 100ms
-        const interval = setInterval(function() {
-            if (width >= 100) {
-                clearInterval(interval);
-                splashScreen.style.opacity = '0';
-                splashScreen.style.transition = 'opacity 0.5s ease-out';
-                setTimeout(function() {
-                    splashScreen.style.display = 'none';
-                    mainContent.style.display = 'block';
-                    document.body.style.overflow = 'auto';
-                }, 500);
-            } else {
-                width += increment;
-                progressBar.style.width = Math.min(width, 100) + '%';
-            }
-        }, 100); // Update every 100ms
-        document.body.style.overflow = 'hidden';
-    });
-
-    // Hamburger Menu
-    const hamburger = document.getElementById('hamburger');
-    const menu = document.getElementById('menu');
-    hamburger.addEventListener('click', (event) => {
-        event.stopPropagation();
-        menu.classList.toggle('active');
-    });
-    document.addEventListener('click', (event) => {
-        if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
-            menu.classList.remove('active');
-        }
-    });
-    menu.addEventListener('click', (event) => {
-        event.stopPropagation();
-    });
-
-    // FAQ Accordion
-    const faqQuestions = document.querySelectorAll('.faq-question');
-    faqQuestions.forEach(question => {
-        question.addEventListener('click', () => {
-            const answer = question.nextElementSibling;
-            answer.style.display = answer.style.display === 'none' ? 'block' : 'none';
-        });
-    });
-
-    // Portfolio Filter
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            const filter = button.getAttribute('data-filter');
-            portfolioItems.forEach(item => {
-                if (filter === 'all' || item.getAttribute('data-category') === filter) {
-                    item.style.visibility = 'visible';
-                    item.style.opacity = '1';
-                    item.style.height = 'auto'; // Ensure item takes full height
+    <script>
+        // Splash Screen
+        document.addEventListener('DOMContentLoaded', function() {
+            const splashScreen = document.getElementById('splashScreen');
+            const mainContent = document.getElementById('mainContent');
+            const progressBar = document.getElementById('progressBar');
+            
+            let width = 0;
+            const totalTime = 3000; // 3 seconds in milliseconds
+            const increment = 100 / (totalTime / 100);
+            const interval = setInterval(function() {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    splashScreen.style.opacity = '0';
+                    splashScreen.style.transition = 'opacity 0.5s ease-out';
+                    setTimeout(function() {
+                        splashScreen.style.display = 'none';
+                        mainContent.style.display = 'block';
+                        document.body.style.overflow = 'auto';
+                    }, 500);
                 } else {
-                    item.style.visibility = 'hidden';
-                    item.style.opacity = '0';
-                    item.style.height = '0'; // Collapse item to avoid gaps
-                    item.style.margin = '0'; // Remove margins to collapse space
+                    width += increment;
+                    progressBar.style.width = Math.min(width, 100) + '%';
+                }
+            }, 100);
+            document.body.style.overflow = 'hidden';
+        });
+
+        // Hamburger Menu
+        const hamburger = document.getElementById('hamburger');
+        const menu = document.getElementById('menu');
+        hamburger.addEventListener('click', (event) => {
+            event.stopPropagation();
+            menu.classList.toggle('active');
+            hamburger.setAttribute('aria-expanded', menu.classList.contains('active'));
+        });
+        document.addEventListener('click', (event) => {
+            if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                menu.classList.remove('active');
+                hamburger.setAttribute('aria-expanded', 'false');
+            }
+        });
+        menu.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+
+        // FAQ Accordion
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isOpen = answer.style.display === 'block';
+                answer.style.display = isOpen ? 'none' : 'block';
+                question.setAttribute('aria-expanded', !isOpen);
+            });
+        });
+
+        // Portfolio Filter
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+        const portfolioSwiper = document.querySelector('#portfolio .portfolio-grid');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                const filter = button.getAttribute('data-filter');
+                portfolioItems.forEach(item => {
+                    if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                        item.style.visibility = 'visible';
+                        item.style.opacity = '1';
+                        item.style.height = 'auto';
+                    } else {
+                        item.style.visibility = 'hidden';
+                        item.style.opacity = '0';
+                        item.style.height = '0';
+                    }
+                });
+                if (portfolioSwiper.swiper) {
+                    setTimeout(() => portfolioSwiper.swiper.update(), 300);
                 }
             });
         });
-    });
 
-    // Live Chat Toggle
-    const chatToggle = document.getElementById('chat-toggle');
-    const chatWindow = document.getElementById('chat-window');
-    chatToggle.addEventListener('click', () => {
-        chatWindow.style.display = chatWindow.style.display === 'none' ? 'block' : 'none';
-    });
-</script>
+        // Swiper for Portfolio and Portfolio Highlights
+        const portfolioSwipers = document.querySelectorAll('.portfolio-grid');
+        portfolioSwipers.forEach(swiper => {
+            new Swiper(swiper, {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                grabCursor: true,
+                breakpoints: {
+                    768: {
+                        slidesPerView: 'auto',
+                        spaceBetween: 30,
+                    }
+                }
+            });
+        });
+
+        // Swiper for Testimonials
+        new Swiper('.testimonials-slider', {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            grabCursor: true,
+        });
+
+        // Live Chat Toggle
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatWindow = document.getElementById('chat-window');
+        chatToggle.addEventListener('click', () => {
+            const isOpen = chatWindow.style.display === 'block';
+            chatWindow.style.display = isOpen ? 'none' : 'block';
+            chatToggle.setAttribute('aria-expanded', !isOpen);
+        });
+    </script>
 </body>
 </html>
