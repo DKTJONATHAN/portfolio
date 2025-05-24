@@ -1421,3 +1421,34 @@ footer p {
         right: 5%;
     }
 }
+
+/* Pop-up Styling */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #28a745;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: none;
+  text-align: center;
+}
+.popup.error {
+  background: #dc3545;
+}
+.popup.show {
+  display: block;
+}
+.popup button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
