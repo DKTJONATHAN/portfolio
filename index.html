@@ -351,7 +351,7 @@
                         <img src="./images/chatbot.jpeg" alt="AI Chatbot">
                         <h3>AI Chatbot Integration</h3>
                         <p>Integrated an AI-powered chatbot for a retail website, improving support efficiency.</p>
-                        <p><strong>Testimonial:</strong> “A game-changer for our support!” – Confidential Client/p>
+                        <p><strong>Testimonial:</strong> “A game-changer for our support!” – Confidential Client</p>
                     </div>
                 </div>
                 <div class="swiper-pagination"></div>
@@ -382,48 +382,48 @@
                     <a href="#" class="blog-cta">Read More</a>
                 </div>
             </div>
-          <form class="newsletter-signup" id="newsletterForm">
-  <h3>Subscribe for Updates</h3>
-  <p>Get the latest insights and exclusive offers.</p>
-  <input type="email" id="newsletterEmail" placeholder="Enter your email" aria-label="Email for newsletter" required>
-  <button type="submit" class="cta-button">Subscribe</button>
-</form>
-<div id="newsletterPopup" class="popup">
-  <p id="newsletterPopupMessage"></p>
-  <button onclick="closePopup('newsletterPopup')">OK</button>
-</div>
+            <form class="newsletter-signup" id="newsletterForm">
+                <h3>Subscribe for Updates</h3>
+                <p>Get the latest insights and exclusive offers.</p>
+                <input type="email" id="newsletterEmail" placeholder="Enter your email" aria-label="Email for newsletter" required>
+                <button type="submit" class="cta-button">Subscribe</button>
+            </form>
+            <div id="newsletterPopup" class="popup">
+                <p id="newsletterPopupMessage"></p>
+                <button onclick="closePopup('newsletterPopup')">OK</button>
+            </div>
         </section>
 
         <!-- Contact Section -->
         <section id="contact" class="contact">
             <h2>Let’s Bring Your Ideas to Life</h2>
             <p>Ready to start your next project? I’ll get back to you within 24 hours.</p>
-           <form class="contact-form" id="contactForm">
-  <label for="name">Name</label>
-  <input type="text" id="name" name="name" required aria-label="Your name" aria-required="true">
-  <label for="email">Email</label>
-  <input type="email" id="email" name="email" required aria-label="Your email" aria-required="true">
-  <label for="phone">Phone</label>
-  <input type="tel" id="phone" name="phone" aria-label="Your phone number">
-  <label for="service">Service</label>
-  <select id="service" name="service" required aria-label="Select a service" aria-required="true">
-    <option value="">Select a Service</option>
-    <option value="web">Web Development</option>
-    <option value="graphic">Graphic Design</option>
-    <option value="social">Social Media Marketing</option>
-    <option value="tech">Tech Solutions</option>
-    <option value="ai">AI Solutions</option>
-  </select>
-  <label for="message">Message</label>
-  <textarea id="message" name="message" required aria-label="Your message" aria-required="true"></textarea>
-  <button type="submit" class="cta-button">Submit Your Inquiry</button>
-</form>
-<div id="contactPopup" class="popup">
-  <p id="contactPopupMessage"></p>
-  <button onclick="closePopup('contactPopup')">OK</button>
-</div>
+            <form class="contact-form" id="contactForm">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required aria-label="Your name" aria-required="true">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required aria-label="Your email" aria-required="true">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" aria-label="Your phone number">
+                <label for="service">Service</label>
+                <select id="service" name="service" required aria-label="Select a service" aria-required="true">
+                    <option value="">Select a Service</option>
+                    <option value="web">Web Development</option>
+                    <option value="graphic">Graphic Design</option>
+                    <option value="social">Social Media Marketing</option>
+                    <option value="tech">Tech Solutions</option>
+                    <option value="ai">AI Solutions</option>
+                </select>
+                <label for="message">Message</label>
+                <textarea id="message" name="message" required aria-label="Your message" aria-required="true"></textarea>
+                <button type="submit" class="cta-button">Submit Your Inquiry</button>
+            </form>
+            <div id="contactPopup" class="popup">
+                <p id="contactPopupMessage"></p>
+                <button onclick="closePopup('contactPopup')">OK</button>
+            </div>
             <div class="contact-details">
-                <p><strong>Email:</strong> <a href="mailto:your.email@example.com">jonathanmwaniki07@gmail.com</a></p>
+                <p><strong>Email:</strong> <a href="mailto:jonathanmwaniki07@gmail.com">jonathanmwaniki07@gmail.com</a></p>
                 <p><strong>Phone:</strong> <a href="tel:+254706396305">+254 706 396 305</a></p>
                 <p><strong>Business Hours:</strong> Mon-Fri, 9 AM - 5 PM</p>
                 <div class="social-icons">
@@ -586,80 +586,103 @@
             chatWindow.style.display = isOpen ? 'none' : 'block';
             chatToggle.setAttribute('aria-expanded', !isOpen);
         });
+
         // Google Apps Script URL
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_jD0DFgpN3I9IDCLAlvLlhjRhC5acv7MiyeFB1YS4GyVjDlVg_TdArO57YazV22AdOQ/exec'; // Replace with your Web app URL
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_jD0DFgpN3I9IDCLAlvLlhjRhC5acv7MiyeFB1YS4GyVjDlVg_TdArO57YazV22AdOQ/exec';
 
-// Close popup function
-function closePopup(popupId) {
-  document.getElementById(popupId).classList.remove('show');
-}
+        // Close popup function
+        function closePopup(popupId) {
+            document.getElementById(popupId).classList.remove('show');
+        }
 
-// Handle subscription form submission
-document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const email = document.getElementById('newsletterEmail').value;
-  const popup = document.getElementById('newsletterPopup');
-  const popupMessage = document.getElementById('newsletterPopupMessage');
+        // Handle subscription form submission
+        document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('newsletterEmail').value;
+            const popup = document.getElementById('newsletterPopup');
+            const popupMessage = document.getElementById('newsletterPopupMessage');
 
-  try {
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({ formType: 'subscription', email }),
-      headers: { 'Content-Type': 'application/json' }
-    });
-    const result = await response.json();
-    
-    popupMessage.textContent = result.message;
-    popup.classList.remove('error');
-    popup.classList.add('show');
-    if (result.status === 'success') {
-      document.getElementById('newsletterForm').reset();
-    } else {
-      popup.classList.add('error');
-    }
-  } catch (error) {
-    popupMessage.textContent = 'Error: Could not subscribe. Try again later.';
-    popup.classList.add('error');
-    popup.classList.add('show');
-  }
-});
+            // Validate email
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                popupMessage.textContent = 'Please enter a valid email address';
+                popup.classList.add('error');
+                popup.classList.add('show');
+                return;
+            }
 
-// Handle contact form submission
-document.getElementById('contactForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = {
-    formType: 'contact',
-    name: document.getElementById('name').value,
-    email: document.getElementById('email').value,
-    phone: document.getElementById('phone').value,
-    service: document.getElementById('service').value,
-    message: document.getElementById('message').value
-  };
-  const popup = document.getElementById('contactPopup');
-  const popupMessage = document.getElementById('contactPopupMessage');
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ formType: 'subscription', email }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await response.json();
+                
+                popupMessage.textContent = result.message;
+                popup.classList.remove('error');
+                popup.classList.add('show');
+                if (result.status === 'success') {
+                    document.getElementById('newsletterForm').reset();
+                } else {
+                    popup.classList.add('error');
+                }
+            } catch (error) {
+                popupMessage.textContent = 'Error: Could not subscribe. Please try again later.';
+                popup.classList.add('error');
+                popup.classList.add('show');
+            }
+        });
 
-  try {
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(formData),
-      headers: { 'Content-Type': 'application/json' }
-    });
-    const result = await response.json();
-    
-    popupMessage.textContent = result.message;
-    popup.classList.remove('error');
-    popup.classList.add('show');
-    if (result.status === 'success') {
-      document.getElementById('contactForm').reset();
-    } else {
-      popup.classList.add('error');
-    }
-  } catch (error) {
-    popupMessage.textContent = 'Error: Could not send message. Try again later.';
-    popup.classList.add('error');
-    popup.classList.add('show');
-  }
-});
+        // Handle contact form submission
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                formType: 'contact',
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                service: document.getElementById('service').value,
+                message: document.getElementById('message').value
+            };
+            const popup = document.getElementById('contactPopup');
+            const popupMessage = document.getElementById('contactPopupMessage');
+
+            // Validate required fields
+            if (!formData.name || !formData.email || !formData.service || !formData.message) {
+                popupMessage.textContent = 'Please fill in all required fields';
+                popup.classList.add('error');
+                popup.classList.add('show');
+                return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+                popupMessage.textContent = 'Please enter a valid email address';
+                popup.classList.add('error');
+                popup.classList.add('show');
+                return;
+            }
+
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(formData),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await response.json();
+                
+                popupMessage.textContent = result.message;
+                popup.classList.remove('error');
+                popup.classList.add('show');
+                if (result.status === 'success') {
+                    document.getElementById('contactForm').reset();
+                } else {
+                    popup.classList.add('error');
+                }
+            } catch (error) {
+                popupMessage.textContent = 'Error: Could not send message. Please try again later.';
+                popup.classList.add('error');
+                popup.classList.add('show');
+            }
+        });
     </script>
 </body>
 </html>
