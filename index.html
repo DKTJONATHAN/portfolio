@@ -16,7 +16,7 @@
     <meta property="og:image" content="./images/file.enc">
     <meta property="og:url" content="https://www.jonathanmwaniki.com">
     <meta property="og:type" content="website">
-    <!-- Twitter Card Tags (Updated for X) -->
+    <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Jonathan Mwaniki - Digital Solutions Expert">
     <meta name="twitter:description" content="Transform your vision with web development, graphic design, social media marketing, and AI solutions by Jonathan Mwaniki in Nairobi, Kenya.">
@@ -28,8 +28,8 @@
     <link rel="dns-prefetch" href="https://unpkg.com">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@300;400;600;700&display=swap" as="style" onload="this.rel='stylesheet'">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js" defer></script>
 </head>
@@ -89,13 +89,13 @@
                 <a href="#contact">Contact</a>
                 <div class="social-icons">
                     <a href="https://x.com/maestropuns" target="_blank" aria-label="X">
-                        <i class="fab fa-x-twitter"></i>
+                        <i class="fa-brands fa-x-twitter"></i>
                     </a>
                     <a href="https://www.instagram.com/jonaahrojo" target="_blank" aria-label="Instagram">
-                        <i class="fab fa-instagram"></i>
+                        <i class="fa-brands fa-instagram"></i>
                     </a>
                     <a href="https://wa.me/254706396305" target="_blank" aria-label="WhatsApp">
-                        <i class="fab fa-whatsapp"></i>
+                        <i class="fa-brands fa-whatsapp"></i>
                     </a>
                     <a href="tel:+254706396305" target="_blank" aria-label="Phone">
                         <i class="fas fa-phone-alt"></i>
@@ -404,7 +404,7 @@
                         <a href="#" class="blog-cta">Read More</a>
                     </article>
                 </div>
-                <!-- Subscription Form (Blog Section) -->
+                <!-- Subscription Form -->
                 <form class="newsletter-signup" id="subscriptionForm" action="https://script.google.com/macros/s/AKfycbxdPlBWT28gJbk4Za3zOln3g65EMQCnQaeqlss5-_SKqebDNvjg4lIGp9y3oDF0E95RdA/exec" method="POST">
                     <h3>Subscribe for Updates</h3>
                     <p>Get the latest insights and exclusive offers.</p>
@@ -415,7 +415,7 @@
                 </form>
                 <div id="subscriptionPopup" class="popup" style="display: none;">
                     <div class="popup-content">
-                        <span class="popup-close" onclick="closePopup('subscriptionPopup')">×</span>
+                        <span class="popup-close">×</span>
                         <p id="subscriptionPopupMessage"></p>
                     </div>
                 </div>
@@ -449,7 +449,7 @@
                 </form>
                 <div id="contactPopup" class="popup" style="display: none;">
                     <div class="popup-content">
-                        <span class="popup-close" onclick="closePopup('contactPopup')">×</span>
+                        <span class="popup-close">×</span>
                         <p id="contactPopupMessage"></p>
                     </div>
                 </div>
@@ -459,13 +459,13 @@
                     <p><strong>Business Hours:</strong> Mon-Fri, 9 AM - 5 PM</p>
                     <div class="social-icons">
                         <a href="https://x.com/maestropuns" target="_blank" aria-label="X">
-                            <i class="fab fa-x-twitter"></i>
+                            <i class="fa-brands fa-x-twitter"></i>
                         </a>
                         <a href="https://www.instagram.com/jonaahrojo" target="_blank" aria-label="Instagram">
-                            <i class="fab fa-instagram"></i>
+                            <i class="fa-brands fa-instagram"></i>
                         </a>
                         <a href="https://wa.me/+254706396305" target="_blank" aria-label="WhatsApp">
-                            <i class="fab fa-whatsapp"></i>
+                            <i class="fa-brands fa-whatsapp"></i>
                         </a>
                     </div>
                 </div>
@@ -532,249 +532,7 @@
     }
     </script>
 
-    <!-- Original JavaScript (Unchanged) -->
-    <script>
-        // Splash Screen
-        document.addEventListener('DOMContentLoaded', function() {
-            const splashScreen = document.getElementById('splashScreen');
-            const mainContent = document.getElementById('mainContent');
-            const progressBar = document.getElementById('progressBar');
-            
-            let width = 0;
-            const totalTime = 3000; // 3 seconds in milliseconds
-            const increment = 100 / (totalTime / 100);
-            const interval = setInterval(function() {
-                if (width >= 100) {
-                    clearInterval(interval);
-                    splashScreen.style.opacity = '0';
-                    splashScreen.style.transition = 'opacity 0.5s ease-out';
-                    setTimeout(function() {
-                        splashScreen.style.display = 'none';
-                        mainContent.style.display = 'block';
-                        document.body.style.overflow = 'auto';
-                    }, 500);
-                } else {
-                    width += increment;
-                    progressBar.style.width = Math.min(width, 100) + '%';
-                }
-            }, 100);
-            document.body.style.overflow = 'hidden';
-        });
-
-        // Hamburger Menu
-        const hamburger = document.getElementById('hamburger');
-        const menu = document.getElementById('menu');
-        hamburger.addEventListener('click', (event) => {
-            event.stopPropagation();
-            menu.classList.toggle('active');
-            hamburger.setAttribute('aria-expanded', menu.classList.contains('active'));
-        });
-        document.addEventListener('click', (event) => {
-            if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
-                menu.classList.remove('active');
-                hamburger.setAttribute('aria-expanded', 'false');
-            }
-        });
-        menu.addEventListener('click', (event) => {
-            event.stopPropagation();
-        });
-
-        // FAQ Accordion
-        const faqQuestions = document.querySelectorAll('.faq-question');
-        faqQuestions.forEach(question => {
-            question.addEventListener('click', () => {
-                const answer = question.nextElementSibling;
-                const isOpen = answer.style.display === 'block';
-                answer.style.display = isOpen ? 'none' : 'block';
-                question.setAttribute('aria-expanded', !isOpen);
-            });
-        });
-
-        // Portfolio Filter
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        const portfolioItems = document.querySelectorAll('.portfolio-item');
-        const portfolioSwiper = document.querySelector('#portfolio .portfolio-grid');
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                const filter = button.getAttribute('data-filter');
-                portfolioItems.forEach(item => {
-                    if (filter === 'all' || item.getAttribute('data-category') === filter) {
-                        item.style.visibility = 'visible';
-                        item.style.opacity = '1';
-                        item.style.height = 'auto';
-                    } else {
-                        item.style.visibility = 'hidden';
-                        item.style.opacity = '0';
-                        item.style.height = '0';
-                    }
-                });
-                if (portfolioSwiper.swiper) {
-                    setTimeout(() => portfolioSwiper.swiper.update(), 300);
-                }
-            });
-        });
-
-        // Swiper for Portfolio and Portfolio Highlights
-        const portfolioSwipers = document.querySelectorAll('.portfolio-grid');
-        portfolioSwipers.forEach(swiper => {
-            new Swiper(swiper, {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-                grabCursor: true,
-                breakpoints: {
-                    768: {
-                        slidesPerView: 'auto',
-                        spaceBetween: 30,
-                    }
-                }
-            });
-        });
-
-        // Swiper for Testimonials
-        new Swiper('.testimonials-slider', {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            autoplay: {
-                delay: 5000,
-                disableOnInteraction: false,
-            },
-            grabCursor: true,
-        });
-
-        // Live Chat Toggle
-        const chatToggle = document.getElementById('chat-toggle');
-        const chatWindow = document.getElementById('chat-window');
-        chatToggle.addEventListener('click', () => {
-            const isOpen = chatWindow.style.display === 'block';
-            chatWindow.style.display = isOpen ? 'none' : 'block';
-            chatToggle.setAttribute('aria-expanded', !isOpen);
-        });
-
-        // Close popup function
-        function closePopup(popupId) {
-            document.getElementById(popupId).style.display = 'none';
-        }
-
-        // Handle subscription form submission
-        document.getElementById('subscriptionForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const email = document.getElementById('subscriptionEmail').value;
-            const popup = document.getElementById('subscriptionPopup');
-            const popupMessage = document.getElementById('subscriptionPopupMessage');
-            const form = document.getElementById('subscriptionForm');
-            const submitButton = form.querySelector('button');
-
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                popupMessage.textContent = 'Please enter a valid email address';
-                popup.classList.add('error');
-                popup.style.display = 'flex';
-                return;
-            }
-
-            submitButton.disabled = true;
-
-            try {
-                const formData = new FormData(form);
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'Accept': 'application/json' }
-                });
-
-                const result = await response.json();
-
-                if (result.result === 'success') {
-                    popupMessage.textContent = 'Subscription successful!';
-                    popup.classList.remove('error');
-                    popup.style.display = 'flex';
-                    form.reset();
-                    setTimeout(() => closePopup('subscriptionPopup'), 3000);
-                } else {
-                    popupMessage.textContent = `Error: ${result.message || 'Could not subscribe'}`;
-                    popup.classList.add('error');
-                    popup.style.display = 'flex';
-                }
-            } catch (error) {
-                popupMessage.textContent = 'Error: Could not subscribe. Please try again.';
-                popup.classList.add('error');
-                popup.style.display = 'flex';
-                console.error('Submission error:', error);
-            } finally {
-                submitButton.disabled = false;
-            }
-        });
-
-        // Handle contact form submission
-        document.getElementById('contactForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                service: document.getElementById('service').value,
-                message: document.getElementById('message').value
-            };
-            const popup = document.getElementById('contactPopup');
-            const popupMessage = document.getElementById('contactPopupMessage');
-            const form = document.getElementById('contactForm');
-            const submitButton = form.querySelector('button');
-
-            if (!formData.name || !formData.email || !formData.service || !formData.message) {
-                popupMessage.textContent = 'Please fill in all required fields';
-                popup.classList.add('error');
-                popup.style.display = 'flex';
-                return;
-            }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-                popupMessage.textContent = 'Please enter a valid email address';
-                popup.classList.add('error');
-                popup.style.display = 'flex';
-                return;
-            }
-
-            submitButton.disabled = true;
-
-            try {
-                const formDataObj = new FormData(form);
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formDataObj,
-                    headers: { 'Accept': 'application/json' }
-                });
-
-                const result = await response.json();
-
-                if (result.result === 'success') {
-                    popupMessage.textContent = 'Message sent!';
-                    popup.classList.remove('error');
-                    popup.style.display = 'flex';
-                    form.reset();
-                    setTimeout(() => closePopup('contactPopup'), 3000);
-                } else {
-                    popupMessage.textContent = `Error: ${result.message || 'Could not send message'}`;
-                    popup.classList.add('error');
-                    popup.style.display = 'flex';
-                }
-            } catch (error) {
-                popupMessage.textContent = 'Error: Could not send message. Please try again.';
-                popup.classList.add('error');
-                popup.style.display = 'flex';
-                console.error('Submission error:', error);
-            } finally {
-                submitButton.disabled = false;
-            }
-        });
-    </script>
+    <!-- JavaScript -->
+    <script src="script.js" defer></script>
 </body>
 </html>
