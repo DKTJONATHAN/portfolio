@@ -601,113 +601,77 @@
         document.getElementById(popupId).style.display = 'none';
     }
 
-   // Handle subscription form submission
-document.getElementById('subscriptionForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const email = document.getElementById('subscriptionEmail').value;
-    const popup = document.getElementById('subscriptionPopup');
-    const popupMessage = document.getElementById('subscriptionPopupMessage');
-    const form = document.getElementById('subscriptionForm');
-    const submitButton = form.querySelector('button');
+function doGet(e) {
+  try {
+    const params = e.parameters;
+    const formName = params['form-name'] ? params['form-name'][0] : '';
+    if (formName === 'subscription' || formName === 'contact') {
+      const ss = SpreadsheetApp.openById('18O66kfxR8H6sL81i8bJGtS0ekww1KCzU-sAi1Q5ndlI');
+      if (formName === 'subscription') {
+        const sheet = ss.getSheetByName('Subscriptions');
+        const date = new Date().toISOString();
+        const alert = params['type'] ? params['type'][0] : 'New Subscriber Alert!';
+        const email = params['email'] ? params['email'][0] : '';
+        sheet.appendRow([date, alert, email]);
+      } else if (formName === 'contact') {
+        const sheet = ss.getSheetByName('Contacts');
+        const name = params['name'] ? params['name'][0] : '';
+        const email = params['email'] ? params['email'][0] : '';
+        const phone = params['phone'] ? params['phone'][0] : '';
+        const service = params['service'] ? params['service'][0] : '';
+        const message = params['message'] ? params['message'][0] : '';
+        sheet.appendRow([name, email, phone, service, message]);
+      }
+      return ContentService.createTextOutput(
+        JSON.stringify({ result: 'success', message: 'Test submission recorded', params })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+    return ContentService.createTextOutput(
+      JSON.stringify({ result: 'error', message: 'Use POST for form submissions or include form-name=subscription or contact for GET testing' })
+    ).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ result: 'error', message: error.toString() })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+}
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        popupMessage.textContent = 'Please enter a valid email address';
-        popup.classList.add('error');
-        popup.style.display = 'flex';
-        return;
+function doPost(e) {
+  try {
+    const ss = SpreadsheetApp.openById('18O66kfxR8H6sL81i8bJGtS0ekww1KCzU-sAi1Q5ndlI');
+    const subscriptionSheet = ss.getSheetByName('Subscriptions');
+    const contactSheet = ss.getSheetByName('Contacts');
+
+    const params = e.parameters;
+    const formName = params['form-name'] ? params['form-name'][0] : '';
+
+    if (formName === 'subscription') {
+      const date = new Date().toISOString();
+      const alert = params['type'] ? params['type'][0] : 'New Subscriber Alert!';
+      const email = params['email'] ? params['email'][0] : '';
+      subscriptionSheet.appendRow([date, alert, email]);
+    } else if (formName === 'contact') {
+      const name = params['name'] ? params['name'][0] : '';
+      const email = params['email'] ? params['email'][0] : '';
+      const phone = params['phone'] ? params['phone'][0] : '';
+      const service = params['service'] ? params['service'][0] : '';
+      const message = params['message'] ? params['message'][0] : '';
+      contactSheet.appendRow([name, email, phone, service, message]);
+    } else {
+      return ContentService.createTextOutput(
+        JSON.stringify({ result: 'error', message: 'Invalid form-name' })
+      ).setMimeType(ContentService.MimeType.JSON);
     }
 
-    submitButton.disabled = true;
-
-    try {
-        const formData = new FormData(form);
-        const response = await fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
-        });
-
-        const result = await response.json();
-
-        if (result.result === 'success') {
-            popupMessage.textContent = 'Subscription successful!';
-            popup.classList.remove('error');
-            popup.style.display = 'flex';
-            form.reset();
-            setTimeout(() => closePopup('subscriptionPopup'), 3000);
-        } else {
-            popupMessage.textContent = `Error: ${result.message || 'Could not subscribe'}`;
-            popup.classList.add('error');
-            popup.style.display = 'flex';
-        }
-    } catch (error) {
-        popupMessage.textContent = 'Error: Could not subscribe. Please try again.';
-        popup.classList.add('error');
-        popup.style.display = 'flex';
-        console.error('Submission error:', error);
-    } finally {
-        submitButton.disabled = false;
-    }
-});
-// Handle contact form submission
-document.getElementById('contactForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const service = document.getElementById('service').value;
-    const message = document.getElementById('message').value;
-    const popup = document.getElementById('contactPopup');
-    const popupMessage = document.getElementById('contactPopupMessage');
-    const form = document.getElementById('contactForm');
-    const submitButton = form.querySelector('button');
-
-    if (!name || !email || !service || !message) {
-        popupMessage.textContent = 'Please fill in all required fields';
-        popup.classList.add('error');
-        popup.style.display = 'flex';
-        return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        popupMessage.textContent = 'Please enter a valid email address';
-        popup.classList.add('error');
-        popup.style.display = 'flex';
-        return;
-    }
-
-    submitButton.disabled = true;
-
-    try {
-        const formData = new FormData(form);
-        const response = await fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
-        });
-
-        const result = await response.json();
-
-        if (result.result === 'success') {
-            popupMessage.textContent = 'Message sent!';
-            popup.classList.remove('error');
-            popup.style.display = 'flex';
-            form.reset();
-            setTimeout(() => closePopup('contactPopup'), 3000);
-        } else {
-            popupMessage.textContent = `Error: ${result.message || 'Could not send message'}`;
-            popup.classList.add('error');
-            popup.style.display = 'flex';
-        }
-    } catch (error) {
-        popupMessage.textContent = 'Error: Could not send message. Please try again.';
-        popup.classList.add('error');
-        popup.style.display = 'flex';
-        console.error('Submission error:', error);
-    } finally {
-        submitButton.disabled = false;
-    }
-});
+    return ContentService.createTextOutput(
+      JSON.stringify({ result: 'success', message: 'Submission recorded' })
+    ).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ result: 'error', message: error.toString() })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+}
 </script>
 </body>
 </html>
