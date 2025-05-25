@@ -1,195 +1,780 @@
 <!DOCTYPE html>
-<html lang="en" itemscope itemtype="http://schema.org/Person" class="no-js">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Jonathan Mwaniki - Premier Web Developer & Digital Solutions Expert in Nairobi, Kenya. Specializing in AI Solutions, Web Development, and Social Media Marketing.">
-    <meta name="keywords" content="Nairobi Web Developer, Kenya Tech Solutions, AI Development Kenya, Graphic Design Nairobi, Social Media Marketing Kenya">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Jonathan Mwaniki - Expert Web Developer, Graphic Designer, Social Media Marketer, Tech Solutions Specialist, and AI Solutions Provider based in Nairobi, Kenya. Transform your business with cutting-edge digital solutions.">
+    <meta name="keywords" content="web development, graphic design, social media marketing, tech solutions, AI solutions, Nairobi, Kenya, digital marketing, web design, AI innovation">
     <meta name="author" content="Jonathan Mwaniki">
-    <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta name="revisit-after" content="7 days">
-    <meta name="geo.region" content="KE">
-    <meta name="geo.placename" content="Nairobi">
-    <link rel="canonical" href="https://yourdomain.com">
-
-    <!-- Social Meta -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Jonathan Mwaniki - Digital Solutions Expert">
-    <meta property="og:description" content="Transform Your Vision into Reality with Cutting-Edge Digital Solutions from Nairobi's Leading Tech Expert">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <link rel="canonical" href="https://www.jonathanmwaniki.com">
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Jonathan Mwaniki - Digital Solutions Expert in Nairobi, Kenya">
+    <meta property="og:description" content="Expert web development, graphic design, social media marketing, tech solutions, and AI innovation services by Jonathan Mwaniki in Nairobi, Kenya.">
     <meta property="og:image" content="./images/file.enc">
-    <meta property="og:url" content="https://yourdomain.com">
-    <meta property="og:site_name" content="Jonathan Mwaniki Digital Solutions">
-    
+    <meta property="og:url" content="https://www.jonathanmwaniki.com">
+    <meta property="og:type" content="website">
+    <!-- Twitter Card Tags (Updated for X) -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Jonathan Mwaniki - Digital Solutions Expert">
-    <meta name="twitter:description" content="Expert Web Development & AI Solutions in Nairobi, Kenya">
+    <meta name="twitter:description" content="Transform your vision with web development, graphic design, social media marketing, and AI solutions by Jonathan Mwaniki in Nairobi, Kenya.">
     <meta name="twitter:image" content="./images/file.enc">
     <meta name="twitter:site" content="@maestropuns">
+    <title>Jonathan Mwaniki - Digital Solutions Expert</title>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@300;400;600;700&display=swap" as="style" onload="this.rel='stylesheet'">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js" defer></script>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-container">
+            <div class="logo-animation">
+                <div class="logo-image">
+                    <img src="./images/file.enc" alt="Jonathan Mwaniki Logo" class="splash-logo" loading="eager">
+                </div>
+            </div>
+            <h1 class="splash-title">Jonathan Mwaniki</h1>
+            <p class="splash-subtitle">Web Developer, Designer, Marketer & AI Innovator</p>
+            <div class="liquid-loader">
+                <div class="liquid-drop liquid-drop-1"></div>
+                <div class="liquid-drop liquid-drop-2"></div>
+                <div class="liquid-drop liquid-drop-3"></div>
+                <div class="liquid-drop liquid-drop-4"></div>
+                <div class="liquid-drop liquid-drop-5"></div>
+                <div class="liquid-bubble liquid-bubble-1"></div>
+                <div class="liquid-bubble liquid-bubble-2"></div>
+                <div class="liquid-bubble liquid-bubble-3"></div>
+                <div class="liquid-bubble liquid-bubble-4"></div>
+                <div class="liquid-bubble liquid-bubble-5"></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="loading-text">
+                <span class="loading-dots">Loading creativity</span>
+            </div>
+            <div class="color-burst">
+                <div class="burst-1"></div>
+                <div class="burst-2"></div>
+                <div class="burst-3"></div>
+                <div class="burst-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent" style="display: none;">
+        <header>
+            <!-- Hamburger Menu -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation" type="button">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="menu" id="menu" aria-label="Main navigation">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#services">Services</a>
+                <a href="#portfolio">Portfolio</a>
+                <a href="#blog">Blog</a>
+                <a href="#contact">Contact</a>
+                <div class="social-icons">
+                    <a href="https://x.com/maestropuns" target="_blank" aria-label="X">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://www.instagram.com/jonaahrojo" target="_blank" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://wa.me/254706396305" target="_blank" aria-label="WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="tel:+254706396305" target="_blank" aria-label="Phone">
+                        <i class="fas fa-phone-alt"></i>
+                    </a>
+                    <a href="sms:+254706396305" target="_blank" aria-label="SMS">
+                        <i class="fas fa-sms"></i>
+                    </a>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Homepage -->
+            <section id="home" class="hero">
+                <div class="hero-content">
+                    <h1>Transform Your Vision into Reality with Cutting-Edge Digital Solutions</h1>
+                    <p>Expert Web Development, Graphic Design, Social Media Marketing, Tech Solutions, and AI Innovation – All Under One Roof.</p>
+                    <a href="#contact" class="cta-button">Create With Me Now!</a>
+                </div>
+            </section>
+
+            <!-- Service Overview -->
+            <section id="services-overview" class="services-overview">
+                <h2>Our Services</h2>
+                <div class="services-grid">
+                    <article class="service-card">
+                        <i class="fas fa-code" aria-hidden="true"></i>
+                        <h3>Web Development</h3>
+                        <p>Build fast, responsive, and user-friendly websites tailored to your business needs.</p>
+                        <a href="#services" class="service-cta">Learn More</a>
+                    </article>
+                    <article class="service-card">
+                        <i class="fas fa-paint-brush" aria-hidden="true"></i>
+                        <h3>Graphic Design</h3>
+                        <p>Create stunning visuals, from logos to branding, that captivate and engage your audience.</p>
+                        <a href="#services" class="service-cta">Learn More</a>
+                    </article>
+                    <article class="service-card">
+                        <i class="fas fa-bullhorn" aria-hidden="true"></i>
+                        <h3>Social Media Marketing</h3>
+                        <p>Grow your brand’s presence with strategic campaigns and engaging content.</p>
+                        <a href="#services" class="service-cta">Learn More</a>
+                    </article>
+                    <article class="service-card">
+                        <i class="fas fa-cogs" aria-hidden="true"></i>
+                        <h3>Tech Solutions</h3>
+                        <p>Streamline operations with custom software, IT solutions, and technical expertise.</p>
+                        <a href="#services" class="service-cta">Learn More</a>
+                    </article>
+                    <article class="service-card">
+                        <i class="fas fa-robot" aria-hidden="true"></i>
+                        <h3>AI Solutions</h3>
+                        <p>Harness the power of AI with innovative tools and intelligent automation.</p>
+                        <a href="#services" class="service-cta">Learn More</a>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Testimonials -->
+            <section id="testimonials" class="testimonials">
+                <h2>What Clients Say</h2>
+                <div class="swiper-container testimonials-slider">
+                    <div class="swiper-wrapper">
+                        <article class="swiper-slide testimonial">
+                            <p>“Jonathan transformed our online presence with a stunning website and targeted social media campaigns!”</p>
+                            <cite>– Irene Kendi, CEO of TechStartup</cite>
+                        </article>
+                        <article class="swiper-slide testimonial">
+                            <p>“The AI solution provided by Jonathan streamlined our operations and boosted efficiency.”</p>
+                            <cite>– John Otieno, Founder of InnovateCo</cite>
+                        </article>
+                        <article class="swiper-slide testimonial">
+                            <p>“His graphic design work gave our brand a fresh, professional look!”</p>
+                            <cite>– Sarah Kimani, Marketing Director</cite>
+                        </article>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </section>
+
+            <!-- Portfolio Highlights -->
+            <section id="portfolio-highlights" class="portfolio-highlights">
+                <h2>Recent Projects</h2>
+                <div class="swiper-container portfolio-grid">
+                    <div class="swiper-wrapper">
+                        <article class="swiper-slide portfolio-item" data-category="web">
+                            <img src="./images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani Website" loading="lazy">
+                            <h3>Nooki Mtaani</h3>
+                            <p>Developed a rental platform with secure payment processing and real-time updates.</p>
+                            <a href="#portfolio" class="portfolio-cta">View Details</a>
+                        </article>
+                        <article class="swiper-slide portfolio-item" data-category="web">
+                            <img src="./images/3.PNG" alt="Jamtech Website" loading="lazy">
+                            <h3>Jamtech Website</h3>
+                            <p>Designed an e-commerce site with seamless product search and mobile optimization.</p>
+                            <a href="#portfolio" class="portfolio-cta">View Details</a>
+                        </article>
+                        <article class="swiper-slide portfolio-item" data-category="web">
+                            <img src="./images/afri.png" alt="Africhain Website" loading="lazy">
+                            <h3>AfriChain WEB3</h3>
+                            <p>Built a web3 platform with secure payment gateways and real-time updates.</p>
+                            <a href="#portfolio" class="portfolio-cta">View Details</a>
+                        </article>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+                <a href="#portfolio" class="cta-button">Explore Full Portfolio</a>
+            </section>
+
+            <!-- About Section -->
+            <section id="about" class="about">
+                <h2>Meet Jonathan Mwaniki – Your Partner in Digital Success</h2>
+                <div class="about-content">
+                    <img src="./images/file.enc" alt="Jonathan Mwaniki Headshot" class="profile-img" loading="lazy">
+                    <div>
+                        <p>I’m Jonathan Mwaniki, a passionate web developer, graphic designer, social media strategist, tech solutions expert, and AI innovator based in Nairobi, Kenya. With over 5 years of experience, my mission is to empower businesses by combining creativity, technology, and strategy to deliver solutions that drive results. From crafting pixel-perfect websites to designing impactful branding and implementing cutting-edge AI tools, I bring a holistic approach to every project.</p>
+                        <p><strong>Mission:</strong> To deliver transformative digital solutions that blend creativity, technology, and strategy, helping businesses thrive in a competitive world.</p>
+                        <p><strong>Fun Fact:</strong> When I’m not coding or designing, you’ll find me exploring the latest AI trends or sipping coffee while sketching new ideas.</p>
+                    </div>
+                </div>
+                <div class="skills">
+                    <h3>Skills & Certifications</h3>
+                    <ul class="skills-grid">
+                        <li><i class="fab fa-html5" aria-hidden="true"></i> HTML5</li>
+                        <li><i class="fab fa-css3-alt" aria-hidden="true"></i> CSS3</li>
+                        <li><i class="fab fa-js" aria-hidden="true"></i> JavaScript</li>
+                        <li><i class="fab fa-react" aria-hidden="true"></i> React</li>
+                        <li><i class="fas fa-paint-brush" aria-hidden="true"></i> Adobe Creative Suite</li>
+                        <li><i class="fas fa-chart-line" aria-hidden="true"></i> Google Analytics</li>
+                        <li><i class="fas fa-robot" aria-hidden="true"></i> TensorFlow</li>
+                        <li><i class="fas fa-certificate" aria-hidden="true"></i> Certified Web Developer</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Services Section -->
+            <section id="services" class="services">
+                <h2>Our Services</h2>
+                <div class="service-details">
+                    <article class="service-item">
+                        <i class="fas fa-code" aria-hidden="true"></i>
+                        <h3>Web Development</h3>
+                        <p>From sleek landing pages to complex e-commerce platforms, I create responsive, SEO-optimized websites that deliver exceptional user experiences.</p>
+                        <ul>
+                            <li>Custom website design</li>
+                            <li>E-commerce solutions</li>
+                            <li>CMS integration</li>
+                            <li>Website maintenance</li>
+                        </ul>
+                        <a href="#contact" class="cta-button">Start Your Website Project</a>
+                    </article>
+                    <article class="service-item">
+                        <i class="fas fa-paint-brush" aria-hidden="true"></i>
+                        <h3>Graphic Design</h3>
+                        <p>Your brand deserves to stand out. I design stunning logos, marketing collateral, and digital assets that resonate with your audience.</p>
+                        <ul>
+                            <li>Logo design</li>
+                            <li>Branding</li>
+                            <li>Print media</li>
+                            <li>Social media graphics</li>
+                        </ul>
+                        <a href="#contact" class="cta-button">Get Stunning Designs</a>
+                    </article>
+                    <article class="service-item">
+                        <i class="fas fa-bullhorn" aria-hidden="true"></i>
+                        <h3>Social Media Marketing</h3>
+                        <p>Amplify your online presence with targeted social media strategies, from content creation to ad campaigns.</p>
+                        <ul>
+                            <li>Content creation</li>
+                            <li>Ad management</li>
+                            <li>Analytics</li>
+                            <li>Strategy planning</li>
+                        </ul>
+                        <a href="#contact" class="cta-button">Boost Your Social Media</a>
+                    </article>
+                    <article class="service-item">
+                        <i class="fas fa-cogs" aria-hidden="true"></i>
+                        <h3>Tech Solutions</h3>
+                        <p>Need custom software or IT solutions? I provide tailored tech solutions to optimize your operations.</p>
+                        <ul>
+                            <li>Custom software development</li>
+                            <li>IT consulting</li>
+                            <li>Cloud solutions</li>
+                            <li>Cybersecurity</li>
+                        </ul>
+                        <a href="#contact" class="cta-button">Explore Tech Solutions</a>
+                    </article>
+                    <article class="service-item">
+                        <i class="fas fa-robot" aria-hidden="true"></i>
+                        <h3>AI Solutions</h3>
+                        <p>From chatbots to predictive analytics, I design AI-powered solutions that automate processes and enhance decision-making.</p>
+                        <ul>
+                            <li>AI app development</li>
+                            <li>Machine learning</li>
+                            <li>Chatbot integration</li>
+                            <li>Data analytics</li>
+                        </ul>
+                        <a href="#contact" class="cta-button">Innovate with AI</a>
+                    </article>
+                </div>
+                <div class="faq">
+                    <h3>Frequently Asked Questions</h3>
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">How long does a website project take?</button>
+                        <div class="faq-answer" style="display: none;">
+                            <p>Typically 4-8 weeks, depending on complexity.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">Do you offer ongoing support?</button>
+                        <div class="faq-answer" style="display: none;">
+                            <p>Yes, I provide maintenance and support plans.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Portfolio Section -->
+            <section id="portfolio" class="portfolio">
+                <h2>Explore My Work</h2>
+                <p>A showcase of innovative projects that blend creativity and technology.</p>
+                <div class="portfolio-filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="web">Web Development</button>
+                    <button class="filter-btn" data-filter="graphic">Graphic Design</button>
+                    <button class="filter-btn" data-filter="social">Social Media</button>
+                    <button class="filter-btn" data-filter="tech">Tech Solutions</button>
+                    <button class="filter-btn" data-filter="ai">AI Solutions</button>
+                </div>
+                <div class="swiper-container portfolio-grid">
+                    <div class="swiper-wrapper">
+                        <article class="swiper-slide portfolio-item" data-category="web">
+                            <img src="./images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani Website" loading="lazy">
+                            <h3>Nooki Mtaani</h3>
+                            <p>Developed a rental platform website for <a href="https://nookimtaani.netlify.app">Nooki Mtaani</a>, specializing in listing and renting spaces.</p>
+                            <p><strong>Testimonial:</strong> “The website exceeded our expectations!” – Personal Project</p>
+                        </article>
+                        <article class="swiper-slide portfolio-item" data-category="web">
+                            <img src="./images/3.PNG" alt="Jamtech Website" loading="lazy">
+                            <h3>Jamtech Website</h3>
+                            <p>Designed and developed an e-commerce site for <a href="https://jamtech.pages.dev">Jamtech Electronics</a>, with product search and mobile optimization.</p>
+                            <p><strong>Testimonial:</strong> “A seamless shopping experience!” – Jamleck Ntonjira</p>
+                        </article>
+                        <article class="swiper-slide portfolio-item" data-category="web">
+                            <img src="./images/afri.png" alt="Africhain Website" loading="lazy">
+                            <h3>AfriChain WEB3</h3>
+                            <p>Created a web3 website for <a href="https://africhainke.netlify.app">AfriChain</a>, focusing on secure payment gateways.</p>
+                            <p><strong>Testimonial:</strong> “Innovative and user-friendly!” – Personal Project</p>
+                        </article>
+                        <article class="swiper-slide portfolio-item" data-category="web">
+                            <img src="./images/2.PNG" alt="Ruto Must Go Website" loading="lazy">
+                            <h3>Ruto Must Go Website</h3>
+                            <p>Built a website for the <a href="https://rutomustgo.pages.dev">Ruto Must Go</a> campaign, designed to engage users.</p>
+                            <p><strong>Testimonial:</strong> “Highly engaging platform!” – Personal Project</p>
+                        </article>
+                        <article class="swiper-slide portfolio-item" data-category="web">
+                            <img src="./images/1.PNG" alt="Ngwai Store Website" loading="lazy">
+                            <h3>Ngwai Store Website</h3>
+                            <p>Created an e-commerce website for Ngwai Store with secure payment gateways.</p>
+                            <p><strong>Testimonial:</strong> “Boosted our sales significantly!” – Private Client</p>
+                        </article>
+                        <article class="swiper-slide portfolio-item" data-category="graphic">
+                            <img src="./images/brand.png" alt="Brand Identity" loading="lazy">
+                            <h3>Brand Identity for Startup</h3>
+                            <p>Designed a complete brand identity, including logo and social media graphics.</p>
+                            <p><strong>Testimonial:</strong> “Our brand now stands out!” – Clients projects</p>
+                        </article>
+                        <article class="swiper-slide portfolio-item" data-category="social">
+                            <img src="./images/campaign.png" alt="Social Media Campaign" loading="lazy">
+                            <h3>Social Media Campaign</h3>
+                            <p>Developed a targeted Instagram campaign, increasing engagement by 40%.</p>
+                            <p><strong>Testimonial:</strong> “Our audience loves the content!” – Clients projects</p>
+                        </article>
+                        <article class="swiper-slide portfolio-item" data-category="ai">
+                            <img src="./images/chatbot.jpeg" alt="AI Chatbot" loading="lazy">
+                            <h3>AI Chatbot Integration</h3>
+                            <p>Integrated an AI-powered chatbot for a retail website, improving support efficiency.</p>
+                            <p><strong>Testimonial:</strong> “A game-changer for our support!” – Confidential Client</p>
+                        </article>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </section>
+
+            <!-- Blog Section -->
+            <section id="blog" class="blog">
+                <h2>Insights, Tips, and Trends</h2>
+                <p>Stay updated with the latest in web development, design, marketing, and AI.</p>
+                <div class="blog-grid">
+                    <article class="blog-post">
+                        <img src="./images/trends.jpeg" alt="Web Design Trends" loading="lazy">
+                        <h3>Top 5 Web Design Trends for 2025</h3>
+                        <p>Explore the latest trends shaping the future of web design.</p>
+                        <a href="#" class="blog-cta">Read More</a>
+                    </article>
+                    <article class="blog-post">
+                        <img src="./images/business.jpeg" alt="AI for Business" loading="lazy">
+                        <h3>How AI is Revolutionizing Small Business Marketing</h3>
+                        <p>Discover how AI tools can enhance your marketing efforts.</p>
+                        <a href="#" class="blog-cta">Read More</a>
+                    </article>
+                    <article class="blog-post">
+                        <img src="./images/socialmedia.png" alt="Social Media Guide" loading="lazy">
+                        <h3>The Ultimate Guide to Social Media Advertising</h3>
+                        <p>Learn strategies to maximize ROI on platforms like Instagram.</p>
+                        <a href="#" class="blog-cta">Read More</a>
+                    </article>
+                </div>
+                <!-- Subscription Form (Blog Section) -->
+                <form class="newsletter-signup" id="subscriptionForm" action="https://script.google.com/macros/s/AKfycbxdPlBWT28gJbk4Za3zOln3g65EMQCnQaeqlss5-_SKqebDNvjg4lIGp9y3oDF0E95RdA/exec" method="POST">
+                    <h3>Subscribe for Updates</h3>
+                    <p>Get the latest insights and exclusive offers.</p>
+                    <input type="hidden" name="form-name" value="subscription">
+                    <input type="email" id="subscriptionEmail" name="email" placeholder="Enter your email" aria-label="Email for subscription" required>
+                    <input type="hidden" name="type" value="New Subscriber Alert!">
+                    <button type="submit" class="cta-button">Subscribe</button>
+                </form>
+                <div id="subscriptionPopup" class="popup" style="display: none;">
+                    <div class="popup-content">
+                        <span class="popup-close" onclick="closePopup('subscriptionPopup')">×</span>
+                        <p id="subscriptionPopupMessage"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact" class="contact">
+                <h2>Let’s Bring Your Ideas to Life</h2>
+                <p>Ready to start your next project? I’ll get back to you within 24 hours.</p>
+                <form class="contact-form" id="contactForm" action="https://script.google.com/macros/s/AKfycbxdPlBWT28gJbk4Za3zOln3g65EMQCnQaeqlss5-_SKqebDNvjg4lIGp9y3oDF0E95RdA/exec" method="POST">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required aria-label="Your name" aria-required="true">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required aria-label="Your email" aria-required="true">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" aria-label="Your phone number">
+                    <label for="service">Service</label>
+                    <select id="service" name="service" required aria-label="Select a service" aria-required="true">
+                        <option value="">Select a Service</option>
+                        <option value="web">Web Development</option>
+                        <option value="graphic">Graphic Design</option>
+                        <option value="social">Social Media Marketing</option>
+                        <option value="tech">Tech Solutions</option>
+                        <option value="ai">AI Solutions</option>
+                    </select>
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required aria-label="Your message" aria-required="true"></textarea>
+                    <input type="hidden" name="type" value="New Client Alert!">
+                    <input type="hidden" name="form-name" value="contact">
+                    <button type="submit" class="cta-button">Submit Your Inquiry</button>
+                </form>
+                <div id="contactPopup" class="popup" style="display: none;">
+                    <div class="popup-content">
+                        <span class="popup-close" onclick="closePopup('contactPopup')">×</span>
+                        <p id="contactPopupMessage"></p>
+                    </div>
+                </div>
+                <div class="contact-details">
+                    <p><strong>Email:</strong> <a href="mailto:jonathanmwaniki07@gmail.com">jonathanmwaniki07@gmail.com</a></p>
+                    <p><strong>Phone:</strong> <a href="tel:+254706396305">+254 706 396 305</a></p>
+                    <p><strong>Business Hours:</strong> Mon-Fri, 9 AM - 5 PM</p>
+                    <div class="social-icons">
+                        <a href="https://x.com/maestropuns" target="_blank" aria-label="X">
+                            <i class="fab fa-x-twitter"></i>
+                        </a>
+                        <a href="https://www.instagram.com/jonaahrojo" target="_blank" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://wa.me/+254706396305" target="_blank" aria-label="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="flare"></div>
+            <p>© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+            </div>
+            <a href="./downloads/ai-guide.pdf" class="download-cta">Download Free AI Guide</a>
+        </footer>
+
+        <!-- Live Chat -->
+        <div class="live-chat">
+            <button id="chat-toggle" aria-label="Open live chat">Chat with Us</button>
+            <div id="chat-window" style="display: none;">
+                <p>Live chat functionality (AI-powered) to be integrated.</p>
+            </div>
+        </div>
+    </div>
 
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": ["Person", "Organization"],
+        "@type": "Person",
         "name": "Jonathan Mwaniki",
-        "brand": "Jonathan Mwaniki Digital Solutions",
-        "foundingDate": "2020",
-        "image": "./images/file.enc",
-        "email": "mailto:jonathanmwaniki07@gmail.com",
-        "telephone": "+254706396305",
+        "jobTitle": "Digital Solutions Expert",
         "address": {
             "@type": "PostalAddress",
-            "streetAddress": "Nairobi",
             "addressLocality": "Nairobi",
-            "addressRegion": "Nairobi",
-            "postalCode": "00100",
-            "addressCountry": "KE"
+            "addressCountry": "Kenya"
         },
-        "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": "-1.286389",
-            "longitude": "36.817223"
-        },
-        "openingHoursSpecification": {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-            "opens": "09:00",
-            "closes": "17:00"
-        },
+        "email": "mailto:jonathanmwaniki07@gmail.com",
+        "telephone": "+254706396305",
+        "url": "https://www.jonathanmwaniki.com",
         "sameAs": [
-            "https://twitter.com/maestropuns",
-            "https://www.instagram.com/jonaahrojo"
-        ],
-        "hasOfferCatalog": {
-            "@type": "OfferCatalog",
-            "name": "Digital Services",
-            "itemListElement": [
-                {
-                    "@type": "Offer",
-                    "itemOffered": {
-                        "@type": "Service",
-                        "name": "Web Development"
-                    }
-                },
-                {
-                    "@type": "Offer",
-                    "itemOffered": {
-                        "@type": "Service",
-                        "name": "AI Solutions"
-                    }
-                }
-            ]
+            "https://x.com/maestropuns",
+            "https://www.instagram.com/jonaahrojo",
+            "https://wa.me/+254706396305"
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Jonathan Mwaniki Digital Solutions",
+        "url": "https://www.jonathanmwaniki.com",
+        "logo": "./images/file.enc",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+254706396305",
+            "contactType": "Customer Service",
+            "email": "jonathanmwaniki07@gmail.com",
+            "areaServed": "KE",
+            "availableLanguage": "English"
         }
     }
     </script>
 
-    <title>Jonathan Mwaniki | Nairobi-based Web Developer & AI Solutions Expert</title>
-    
-    <!-- Preload Critical Resources -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="style.css" as="style">
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" as="style">
-    
-    <!-- Stylesheets -->
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-
-    <!-- Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
+    <!-- Original JavaScript (Unchanged) -->
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-XXXXXX');
-    </script>
-</head>
+        // Splash Screen
+        document.addEventListener('DOMContentLoaded', function() {
+            const splashScreen = document.getElementById('splashScreen');
+            const mainContent = document.getElementById('mainContent');
+            const progressBar = document.getElementById('progressBar');
+            
+            let width = 0;
+            const totalTime = 3000; // 3 seconds in milliseconds
+            const increment = 100 / (totalTime / 100);
+            const interval = setInterval(function() {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    splashScreen.style.opacity = '0';
+                    splashScreen.style.transition = 'opacity 0.5s ease-out';
+                    setTimeout(function() {
+                        splashScreen.style.display = 'none';
+                        mainContent.style.display = 'block';
+                        document.body.style.overflow = 'auto';
+                    }, 500);
+                } else {
+                    width += increment;
+                    progressBar.style.width = Math.min(width, 100) + '%';
+                }
+            }, 100);
+            document.body.style.overflow = 'hidden';
+        });
 
-<body itemscope itemtype="http://schema.org/WebPage">
-    <!-- Splash Screen -->
-    <div class="splash-screen" id="splashScreen" role="status" aria-live="polite">
-        <!-- Original splash content unchanged -->
-    </div>
+        // Hamburger Menu
+        const hamburger = document.getElementById('hamburger');
+        const menu = document.getElementById('menu');
+        hamburger.addEventListener('click', (event) => {
+            event.stopPropagation();
+            menu.classList.toggle('active');
+            hamburger.setAttribute('aria-expanded', menu.classList.contains('active'));
+        });
+        document.addEventListener('click', (event) => {
+            if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                menu.classList.remove('active');
+                hamburger.setAttribute('aria-expanded', 'false');
+            }
+        });
+        menu.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
 
-    <!-- Main Content -->
-    <main class="main-content" id="mainContent" style="display: none;">
-        <!-- Breadcrumbs -->
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-            <ol itemscope itemtype="https://schema.org/BreadcrumbList">
-                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                    <a href="#home" itemprop="item">
-                        <span itemprop="name">Home</span>
-                        <meta itemprop="position" content="1">
-                    </a>
-                </li>
-            </ol>
-        </nav>
+        // FAQ Accordion
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isOpen = answer.style.display === 'block';
+                answer.style.display = isOpen ? 'none' : 'block';
+                question.setAttribute('aria-expanded', !isOpen);
+            });
+        });
 
-        <!-- Hamburger Menu -->
-        <div class="hamburger" id="hamburger" role="button" aria-label="Toggle navigation">
-            <!-- Original menu code -->
-        </div>
+        // Portfolio Filter
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+        const portfolioSwiper = document.querySelector('#portfolio .portfolio-grid');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                const filter = button.getAttribute('data-filter');
+                portfolioItems.forEach(item => {
+                    if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                        item.style.visibility = 'visible';
+                        item.style.opacity = '1';
+                        item.style.height = 'auto';
+                    } else {
+                        item.style.visibility = 'hidden';
+                        item.style.opacity = '0';
+                        item.style.height = '0';
+                    }
+                });
+                if (portfolioSwiper.swiper) {
+                    setTimeout(() => portfolioSwiper.swiper.update(), 300);
+                }
+            });
+        });
 
-        <!-- All original sections remain exactly the same but with added schema -->
-        <section id="home" class="hero" itemscope itemtype="http://schema.org/Service">
-            <!-- Hero content with schema -->
-        </section>
+        // Swiper for Portfolio and Portfolio Highlights
+        const portfolioSwipers = document.querySelectorAll('.portfolio-grid');
+        portfolioSwipers.forEach(swiper => {
+            new Swiper(swiper, {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                grabCursor: true,
+                breakpoints: {
+                    768: {
+                        slidesPerView: 'auto',
+                        spaceBetween: 30,
+                    }
+                }
+            });
+        });
 
-        <!-- Services Overview -->
-        <section id="services-overview" class="services-overview">
-            <!-- Services grid with enhanced schema -->
-        </section>
+        // Swiper for Testimonials
+        new Swiper('.testimonials-slider', {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            grabCursor: true,
+        });
 
-        <!-- Testimonials with Review schema -->
-        <section id="testimonials" class="testimonials">
-            <!-- Testimonial slides with review markup -->
-        </section>
+        // Live Chat Toggle
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatWindow = document.getElementById('chat-window');
+        chatToggle.addEventListener('click', () => {
+            const isOpen = chatWindow.style.display === 'block';
+            chatWindow.style.display = isOpen ? 'none' : 'block';
+            chatToggle.setAttribute('aria-expanded', !isOpen);
+        });
 
-        <!-- Portfolio with CreativeWork schema -->
-        <section id="portfolio" class="portfolio">
-            <!-- Portfolio items with enhanced markup -->
-        </section>
+        // Close popup function
+        function closePopup(popupId) {
+            document.getElementById(popupId).style.display = 'none';
+        }
 
-        <!-- About Section -->
-        <section id="about" class="about">
-            <!-- About content with Person schema -->
-        </section>
+        // Handle subscription form submission
+        document.getElementById('subscriptionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const email = document.getElementById('subscriptionEmail').value;
+            const popup = document.getElementById('subscriptionPopup');
+            const popupMessage = document.getElementById('subscriptionPopupMessage');
+            const form = document.getElementById('subscriptionForm');
+            const submitButton = form.querySelector('button');
 
-        <!-- Services Details -->
-        <section id="services" class="services">
-            <!-- Service items with Offer schema -->
-        </section>
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                popupMessage.textContent = 'Please enter a valid email address';
+                popup.classList.add('error');
+                popup.style.display = 'flex';
+                return;
+            }
 
-        <!-- Blog Section -->
-        <section id="blog" class="blog">
-            <!-- Original blog content -->
-            <!-- Subscription Form (UNCHANGED) -->
-        </section>
+            submitButton.disabled = true;
 
-        <!-- Contact Section -->
-        <section id="contact" class="contact">
-            <!-- Original contact form -->
-            <!-- Contact Form (UNCHANGED) -->
-        </section>
+            try {
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
 
-        <!-- Footer -->
-        <footer itemscope itemtype="http://schema.org/WPFooter">
-            <!-- Original footer content -->
-        </footer>
+                const result = await response.json();
 
-        <!-- Live Chat -->
-        <div class="live-chat">
-            <!-- Original chat code -->
-        </div>
-    </main>
+                if (result.result === 'success') {
+                    popupMessage.textContent = 'Subscription successful!';
+                    popup.classList.remove('error');
+                    popup.style.display = 'flex';
+                    form.reset();
+                    setTimeout(() => closePopup('subscriptionPopup'), 3000);
+                } else {
+                    popupMessage.textContent = `Error: ${result.message || 'Could not subscribe'}`;
+                    popup.classList.add('error');
+                    popup.style.display = 'flex';
+                }
+            } catch (error) {
+                popupMessage.textContent = 'Error: Could not subscribe. Please try again.';
+                popup.classList.add('error');
+                popup.style.display = 'flex';
+                console.error('Submission error:', error);
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
 
-    <!-- Scripts (UNCHANGED) -->
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js" defer></script>
-    <script>
-        // All original JavaScript code remains exactly the same
+        // Handle contact form submission
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                service: document.getElementById('service').value,
+                message: document.getElementById('message').value
+            };
+            const popup = document.getElementById('contactPopup');
+            const popupMessage = document.getElementById('contactPopupMessage');
+            const form = document.getElementById('contactForm');
+            const submitButton = form.querySelector('button');
+
+            if (!formData.name || !formData.email || !formData.service || !formData.message) {
+                popupMessage.textContent = 'Please fill in all required fields';
+                popup.classList.add('error');
+                popup.style.display = 'flex';
+                return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+                popupMessage.textContent = 'Please enter a valid email address';
+                popup.classList.add('error');
+                popup.style.display = 'flex';
+                return;
+            }
+
+            submitButton.disabled = true;
+
+            try {
+                const formDataObj = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formDataObj,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    popupMessage.textContent = 'Message sent!';
+                    popup.classList.remove('error');
+                    popup.style.display = 'flex';
+                    form.reset();
+                    setTimeout(() => closePopup('contactPopup'), 3000);
+                } else {
+                    popupMessage.textContent = `Error: ${result.message || 'Could not send message'}`;
+                    popup.classList.add('error');
+                    popup.style.display = 'flex';
+                }
+            } catch (error) {
+                popupMessage.textContent = 'Error: Could not send message. Please try again.';
+                popup.classList.add('error');
+                popup.style.display = 'flex';
+                console.error('Submission error:', error);
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>
