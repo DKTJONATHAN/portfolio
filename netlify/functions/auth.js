@@ -1,11 +1,9 @@
-const crypto = require('crypto');
-
-// Pre-computed SHA-256 hashes of valid PINs (0000, 1711, 2000)
-const validHashes = [
-    '4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5', // 0000
-    'efd4f5146a9d0e3ea250d4eb9f57a7a098c5a82e6e3c7a1a8f0e5f2a0a3b3c4', // 1711
-    'b472106090b82539b3c0d0d20bc2e1e3e0c8c9c9c9c9c9c9c9c9c9c9c9c9c9c9'  // 2000
-];
+// Plain-text PIN verification
+const validPins = ['0000', '1711', '2000'];
+let failedAttempts = 0;
+const MAX_ATTEMPTS = 5;
+const BLOCK_TIME_MS = 5 * 60 * 1000; // 5 minutes
+let lastFailedAttempt = 0;
 
 exports.handler = async (event) => {
     // Handle CORS preflight
@@ -21,19 +19,33 @@ exports.handler = async (event) => {
     }
 
     try {
-        const { token } = JSON.parse(event.body);
+        const { pin } = JSON.parse(event.body);
         
-        if (validHashes.includes(token)) {
+        // Check if temporarily blocked
+        const now = Date.now();
+        if (failedAttempts >= MAX_ATTEMPTS && (now - lastFailedAttempt) < BLOCK_TIME_MS) {
+            return {
+                statusCode: 429,
+                headers: { 'Access-Control-Allow-Origin': '*' },
+                body: JSON.stringify({ error: 'Too many attempts. Try again later.' })
+            };
+        }
+
+        if (validPins.includes(pin)) {
+            failedAttempts = 0; // Reset on success
             return {
                 statusCode: 200,
-                headers: {
+                headers: { 
                     'Access-Control-Allow-Origin': '*',
-                    'Cache-Control': 'no-store, max-age=0'
+                    'Cache-Control': 'no-store'
                 },
                 body: JSON.stringify({ authorized: true })
             };
         }
         
+        // Track failed attempts
+        failedAttempts++;
+        lastFailedAttempt = now;
         return {
             statusCode: 403,
             headers: { 'Access-Control-Allow-Origin': '*' },
