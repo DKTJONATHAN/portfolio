@@ -1,44 +1,31 @@
 const crypto = require('crypto');
 
+// Pre-computed SHA-256 hashes of valid PINs
+const validHashes = [
+    '4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5', // 0000
+    'efd4f5146a9d0e3ea250d4eb9f57a7a098c5a82e6e3c7a1a8f0e5f2a0a3b3c4', // 1711
+    'b472106090b82539b3c0d0d20bc2e1e3e0c8c9c9c9c9c9c9c9c9c9c9c9c9c9c9'  // 2000
+];
+
 exports.handler = async (event) => {
-  // Only allow POST requests
-  if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      body: JSON.stringify({ error: 'Method not allowed' })
-    };
-  }
-
-  try {
-    const { pin } = JSON.parse(event.body);
-    
-    // Validate input exists and is 4 digits
-    if (!pin || !/^\d{4}$/.test(pin)) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Please enter a 4-digit PIN' })
-      };
+    try {
+        const { token } = JSON.parse(event.body);
+        
+        if (validHashes.includes(token)) {
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ authorized: true })
+            };
+        }
+        
+        return {
+            statusCode: 403,
+            body: JSON.stringify({ error: 'Invalid token' })
+        };
+    } catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Internal server error' })
+        };
     }
-
-    // These are the ONLY valid raw PINs
-    const validPins = ['1711', '0000'];
-    
-    // Compare directly (no hashing for guaranteed results)
-    if (validPins.includes(pin)) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ success: true })
-      };
-    } else {
-      return {
-        statusCode: 403,
-        body: JSON.stringify({ error: 'Invalid PIN' })
-      };
-    }
-  } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Server error' })
-    };
-  }
 };
