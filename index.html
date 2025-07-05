@@ -269,6 +269,24 @@
                 </div>
             </section>
 
+            <!-- Newsletter Subscription -->
+            <section class="py-16 bg-gradient-to-r from-primary-500 to-secondary-500 text-white">
+                <div class="container mx-auto px-6 text-center">
+                    <h2 class="text-3xl font-bold mb-4">Stay Updated</h2>
+                    <p class="max-w-2xl mx-auto mb-8">Subscribe to my newsletter for the latest tips, trends, and insights in digital solutions.</p>
+                    
+                    <form name="subscribe" method="POST" netlify class="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
+                        <input type="email" name="email" required placeholder="Your email address" 
+                               class="flex-grow px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-white">
+                        <button type="submit" class="px-6 py-3 bg-white text-primary-600 font-medium rounded-lg hover:bg-gray-100 transition-colors duration-300">
+                            Subscribe
+                        </button>
+                    </form>
+                    
+                    <p class="mt-4 text-sm opacity-80">I respect your privacy. Unsubscribe at any time.</p>
+                </div>
+            </section>
+
             <!-- Testimonials -->
             <section id="testimonials" class="py-20 bg-white">
                 <div class="container mx-auto px-6">
@@ -455,7 +473,7 @@
 
                     <div class="flex flex-col lg:flex-row gap-12">
                         <div class="lg:w-1/2">
-                            <form class="contact-form bg-white rounded-lg shadow-sm p-8" id="contactForm">
+                            <form class="contact-form bg-white rounded-lg shadow-sm p-8" name="contact" method="POST" netlify>
                                 <div class="grid grid-cols-1 gap-6">
                                     <div>
                                         <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
@@ -646,65 +664,114 @@
         }
 
         // Handle contact form submission
-        document.getElementById('contactForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                service: document.getElementById('service').value,
-                message: document.getElementById('message').value,
-                type: "New Client Alert!",
-                timestamp: new Date().toISOString()
-            };
-            
-            const popup = document.getElementById('contactPopup');
-            const popupMessage = document.getElementById('contactPopupMessage');
-            const form = document.getElementById('contactForm');
-            const submitButton = form.querySelector('button');
-
-            if (!formData.name || !formData.email || !formData.service || !formData.message) {
-                popupMessage.textContent = 'Please fill in all required fields';
-                popup.classList.remove('hidden');
-                return;
-            }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-                popupMessage.textContent = 'Please enter a valid email address';
-                popup.classList.remove('hidden');
-                return;
-            }
-
-            submitButton.disabled = true;
-            submitButton.innerHTML = 'Sending...';
-
-            try {
-                const response = await fetch('/.netlify/functions/saveForm', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
+        document.addEventListener('DOMContentLoaded', function() {
+            const contactForm = document.querySelector('form[name="contact"]');
+            if (contactForm) {
+                contactForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const form = e.target;
+                    const formData = new FormData(form);
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    
+                    // Validation
+                    const name = formData.get('name');
+                    const email = formData.get('email');
+                    const service = formData.get('service');
+                    const message = formData.get('message');
+                    
+                    if (!name || !email || !service || !message) {
+                        showPopup('Please fill in all required fields');
+                        return;
+                    }
+                    
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                        showPopup('Please enter a valid email address');
+                        return;
+                    }
+                    
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = 'Sending...';
+                    
+                    try {
+                        // Try Netlify's built-in form handling
+                        const response = await fetch('/', {
+                            method: 'POST',
+                            body: new FormData(form),
+                            headers: { 'Accept': 'application/json' }
+                        });
+                        
+                        if (response.ok) {
+                            showPopup('Thank you for your message! I\'ll get back to you soon.');
+                            form.reset();
+                        } else {
+                            throw new Error('Submission failed');
+                        }
+                    } catch (error) {
+                        showPopup('Error: Could not send message. Please try again or contact me directly.');
+                        console.error('Submission error:', error);
+                    } finally {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = 'Submit Your Inquiry';
+                    }
                 });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    popupMessage.textContent = 'Thank you for your message! I\'ll get back to you soon.';
-                    popup.classList.remove('hidden');
-                    form.reset();
-                    setTimeout(() => popup.classList.add('hidden'), 3000);
-                } else {
-                    popupMessage.textContent = `Error: ${result.message || 'Could not send message'}`;
-                    popup.classList.remove('hidden');
-                }
-            } catch (error) {
-                popupMessage.textContent = 'Error: Could not send message. Please try again.';
-                popup.classList.remove('hidden');
-                console.error('Submission error:', error);
-            } finally {
-                submitButton.disabled = false;
-                submitButton.innerHTML = 'Submit Your Inquiry';
+            }
+            
+            // Handle newsletter form submission
+            const newsletterForm = document.querySelector('form[name="subscribe"]');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const form = e.target;
+                    const formData = new FormData(form);
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    const email = formData.get('email');
+                    
+                    if (!email) {
+                        showPopup('Please enter your email address');
+                        return;
+                    }
+                    
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                        showPopup('Please enter a valid email address');
+                        return;
+                    }
+                    
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = 'Subscribing...';
+                    
+                    try {
+                        const response = await fetch('/', {
+                            method: 'POST',
+                            body: new FormData(form),
+                            headers: { 'Accept': 'application/json' }
+                        });
+                        
+                        if (response.ok) {
+                            showPopup('Thank you for subscribing!');
+                            form.reset();
+                        } else {
+                            throw new Error('Subscription failed');
+                        }
+                    } catch (error) {
+                        showPopup('Error: Could not subscribe. Please try again.');
+                        console.error('Subscription error:', error);
+                    } finally {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = 'Subscribe';
+                    }
+                });
             }
         });
+
+        function showPopup(message) {
+            const popup = document.getElementById('contactPopup');
+            const popupMessage = document.getElementById('contactPopupMessage');
+            popupMessage.textContent = message;
+            popup.classList.remove('hidden');
+            setTimeout(() => popup.classList.add('hidden'), 3000);
+        }
 
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
