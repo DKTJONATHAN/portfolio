@@ -9,6 +9,7 @@
     <style>
         .data-table { overflow-x: auto; }
         .nav-item.active { border-bottom: 2px solid #3b82f6; }
+        [data-loading] { display: none; }
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -25,71 +26,80 @@
 
         <!-- Main Content -->
         <main class="container mx-auto px-4 py-8">
-            <!-- Tabs -->
-            <div class="flex border-b mb-6">
-                <button class="nav-item px-4 py-2 font-medium text-gray-600 active" data-tab="contact">
-                    Contact Forms
-                </button>
-                <button class="nav-item px-4 py-2 font-medium text-gray-600" data-tab="subscribers">
-                    Subscribers
-                </button>
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="text-center py-8">
+                <i class="fas fa-spinner fa-spin text-3xl text-blue-500"></i>
+                <p class="mt-4 text-gray-600">Loading dashboard...</p>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="flex flex-wrap gap-4 mb-6">
-                <button id="exportCSV" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
-                    <i class="fas fa-file-csv mr-2"></i>Export CSV
-                </button>
-                <button id="exportJSON" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                    <i class="fas fa-file-code mr-2"></i>Export JSON
-                </button>
-                <button id="deleteAll" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
-                    <i class="fas fa-trash-alt mr-2"></i>Delete All
-                </button>
-            </div>
-
-            <!-- Data Tables -->
-            <div id="contactTab" class="tab-content bg-white rounded-lg shadow overflow-hidden">
-                <div class="data-table">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="contactData" class="bg-white divide-y divide-gray-200">
-                            <!-- Filled by JavaScript -->
-                        </tbody>
-                    </table>
+            <!-- Content (initially hidden) -->
+            <div id="dashboardContent" class="hidden">
+                <!-- Tabs -->
+                <div class="flex border-b mb-6">
+                    <button class="nav-item px-4 py-2 font-medium text-gray-600 active" data-tab="contact">
+                        Contact Forms
+                    </button>
+                    <button class="nav-item px-4 py-2 font-medium text-gray-600" data-tab="subscribers">
+                        Subscribers
+                    </button>
                 </div>
-            </div>
 
-            <div id="subscribersTab" class="tab-content bg-white rounded-lg shadow overflow-hidden hidden">
-                <div class="data-table">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="subscriberData" class="bg-white divide-y divide-gray-200">
-                            <!-- Filled by JavaScript -->
-                        </tbody>
-                    </table>
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-4 mb-6">
+                    <button id="exportCSV" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                        <i class="fas fa-file-csv mr-2"></i>Export CSV
+                    </button>
+                    <button id="exportJSON" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                        <i class="fas fa-file-code mr-2"></i>Export JSON
+                    </button>
+                    <button id="deleteAll" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                        <i class="fas fa-trash-alt mr-2"></i>Delete All
+                    </button>
+                </div>
+
+                <!-- Data Tables -->
+                <div id="contactTab" class="tab-content bg-white rounded-lg shadow overflow-hidden">
+                    <div class="data-table">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contactData" class="bg-white divide-y divide-gray-200">
+                                <!-- Filled by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="subscribersTab" class="tab-content bg-white rounded-lg shadow overflow-hidden hidden">
+                    <div class="data-table">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subscriberData" class="bg-white divide-y divide-gray-200">
+                                <!-- Filled by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        // Session management - enhanced version
+        // Session management
         const AUTH_CHECK_INTERVAL = 300000; // 5 minutes
         let authCheckInterval;
 
@@ -108,88 +118,56 @@
                 if (!response.ok) throw new Error('Invalid token');
                 return true;
             } catch (error) {
-                localStorage.removeItem('authToken');
-                window.location.href = '/admin/index.html';
+                endSession();
                 return false;
             }
         }
 
-        // Initialize with session monitoring
-        async function initDashboard() {
-            if (!await verifyAuth()) return;
-            
-            // Start periodic auth checks
-            authCheckInterval = setInterval(verifyAuth, AUTH_CHECK_INTERVAL);
-            
-            // Load initial data
-            await loadData();
-            
-            // Setup event listeners
-            setupEventListeners();
+        function endSession() {
+            clearInterval(authCheckInterval);
+            localStorage.removeItem('authToken');
+            window.location.href = '/admin/index.html';
         }
 
-        // Setup all event listeners
-        function setupEventListeners() {
-            // Tab switching
-            document.querySelectorAll('[data-tab]').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.nav-item').forEach(item => 
-                        item.classList.toggle('active', item === tab));
-                    
-                    document.querySelectorAll('.tab-content').forEach(content => 
-                        content.classList.toggle('hidden', content.id !== `${tab.dataset.tab}Tab`));
-                });
-            });
-
-            // Export buttons
-            document.getElementById('exportCSV').addEventListener('click', () => exportData('csv'));
-            document.getElementById('exportJSON').addEventListener('click', () => exportData('json'));
-
-            // Delete all button
-            document.getElementById('deleteAll').addEventListener('click', handleDeleteAll);
-
-            // Logout button
-            document.getElementById('logoutBtn').addEventListener('click', () => {
-                clearInterval(authCheckInterval);
-                localStorage.removeItem('authToken');
-                window.location.href = '/admin/index.html';
-            });
-
-            // Window beforeunload
-            window.addEventListener('beforeunload', () => {
-                clearInterval(authCheckInterval);
-            });
-        }
-
-        // Load data
+        // Load data from server
         async function loadData() {
-            const [contacts, subscribers] = await Promise.all([
-                fetch('/.netlify/functions/getForms').then(res => res.json()),
-                fetch('/.netlify/functions/getSubscribers').then(res => res.json())
-            ]);
+            try {
+                const [contacts, subscribers] = await Promise.all([
+                    fetch('/.netlify/functions/getForms').then(res => res.json()),
+                    fetch('/.netlify/functions/getSubscribers').then(res => res.json())
+                ]);
 
-            renderData('contactData', contacts, (item) => `
-                <td class="px-6 py-4 whitespace-nowrap">${item.name || 'N/A'}</td>
-                <td class="px-6 py-4 whitespace-nowrap">${item.email}</td>
-                <td class="px-6 py-4 whitespace-nowrap">${item.service || 'N/A'}</td>
-                <td class="px-6 py-4 max-w-xs truncate">${item.message || 'N/A'}</td>
-                <td class="px-6 py-4 whitespace-nowrap">${new Date(item.timestamp).toLocaleString()}</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <button onclick="deleteItem('contact', '${item.id}')" class="text-red-500 hover:text-red-700">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </td>
-            `);
+                renderData('contactData', contacts, (item) => `
+                    <td class="px-6 py-4 whitespace-nowrap">${item.name || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${item.email}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${item.service || 'N/A'}</td>
+                    <td class="px-6 py-4 max-w-xs truncate">${item.message || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${new Date(item.timestamp).toLocaleString()}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <button onclick="deleteItem('contact', '${item.id}')" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                `);
 
-            renderData('subscriberData', subscribers, (item) => `
-                <td class="px-6 py-4 whitespace-nowrap">${item.email}</td>
-                <td class="px-6 py-4 whitespace-nowrap">${new Date(item.timestamp).toLocaleString()}</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <button onclick="deleteItem('subscriber', '${item.id}')" class="text-red-500 hover:text-red-700">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </td>
-            `);
+                renderData('subscriberData', subscribers, (item) => `
+                    <td class="px-6 py-4 whitespace-nowrap">${item.email}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${new Date(item.timestamp).toLocaleString()}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <button onclick="deleteItem('subscriber', '${item.id}')" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                `);
+
+                // Show content after data loads
+                document.getElementById('loadingIndicator').classList.add('hidden');
+                document.getElementById('dashboardContent').classList.remove('hidden');
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                alert('Failed to load data. Please try again.');
+                endSession();
+            }
         }
 
         function renderData(elementId, data, rowTemplate) {
@@ -199,23 +177,41 @@
                 : `<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No data available</td></tr>`;
         }
 
+        // Tab switching
+        function setupTabs() {
+            document.querySelectorAll('[data-tab]').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-item').forEach(item => 
+                        item.classList.toggle('active', item === tab));
+                    
+                    document.querySelectorAll('.tab-content').forEach(content => 
+                        content.classList.toggle('hidden', content.id !== `${tab.dataset.tab}Tab`));
+                });
+            });
+        }
+
         // Export functions
         async function exportData(format) {
-            const activeTab = document.querySelector('.nav-item.active').dataset.tab;
-            const endpoint = activeTab === 'contact' ? 'getForms' : 'getSubscribers';
-
-            const data = await fetch(`/.netlify/functions/${endpoint}`).then(res => res.json());
-
-            if (format === 'csv') {
-                const headers = Object.keys(data[0] || {});
-                const csv = [
-                    headers.join(','),
-                    ...data.map(row => headers.map(header => `"${row[header]}"`).join(','))
-                ].join('\n');
-
-                downloadFile(`${activeTab}-${new Date().toISOString()}.csv`, csv);
-            } else {
-                downloadFile(`${activeTab}-${new Date().toISOString()}.json`, JSON.stringify(data, null, 2));
+            try {
+                const activeTab = document.querySelector('.nav-item.active').dataset.tab;
+                const endpoint = activeTab === 'contact' ? 'getForms' : 'getSubscribers';
+                
+                const data = await fetch(`/.netlify/functions/${endpoint}`).then(res => res.json());
+                
+                if (format === 'csv') {
+                    const headers = Object.keys(data[0] || {});
+                    const csv = [
+                        headers.join(','),
+                        ...data.map(row => headers.map(header => `"${row[header]}"`).join(','))
+                    ].join('\n');
+                    
+                    downloadFile(`${activeTab}-${new Date().toISOString()}.csv`, csv);
+                } else {
+                    downloadFile(`${activeTab}-${new Date().toISOString()}.json`, JSON.stringify(data, null, 2));
+                }
+            } catch (error) {
+                console.error('Export failed:', error);
+                alert('Export failed. Please try again.');
             }
         }
 
@@ -232,28 +228,58 @@
         // Delete functions
         async function deleteItem(type, id) {
             if (!confirm(`Delete this ${type} entry?`)) return;
+            
+            try {
+                const endpoint = type === 'contact' ? 'deleteForm' : 'deleteSubscriber';
+                const response = await fetch(`/.netlify/functions/${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
 
-            const endpoint = type === 'contact' ? 'deleteForm' : 'deleteSubscriber';
-            const response = await fetch(`/.netlify/functions/${endpoint}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id })
-            });
-
-            if (response.ok) loadData();
+                if (response.ok) loadData();
+            } catch (error) {
+                console.error('Delete failed:', error);
+                alert('Failed to delete item. Please try again.');
+            }
         }
 
         async function handleDeleteAll() {
             const activeTab = document.querySelector('.nav-item.active').dataset.tab;
             if (!confirm(`Delete ALL ${activeTab} entries? This cannot be undone!`)) return;
-
-            const endpoint = activeTab === 'contact' ? 'deleteAllForms' : 'deleteAllSubscribers';
-            const response = await fetch(`/.netlify/functions/${endpoint}`, { method: 'POST' });
-
-            if (response.ok) loadData();
+            
+            try {
+                const endpoint = activeTab === 'contact' ? 'deleteAllForms' : 'deleteAllSubscribers';
+                const response = await fetch(`/.netlify/functions/${endpoint}`, { method: 'POST' });
+                
+                if (response.ok) loadData();
+            } catch (error) {
+                console.error('Delete all failed:', error);
+                alert('Failed to delete items. Please try again.');
+            }
         }
 
         // Initialize the dashboard
+        async function initDashboard() {
+            if (!await verifyAuth()) return;
+            
+            // Start periodic auth checks
+            authCheckInterval = setInterval(async () => {
+                await verifyAuth();
+            }, AUTH_CHECK_INTERVAL);
+            
+            // Setup event listeners
+            setupTabs();
+            document.getElementById('exportCSV').addEventListener('click', () => exportData('csv'));
+            document.getElementById('exportJSON').addEventListener('click', () => exportData('json'));
+            document.getElementById('deleteAll').addEventListener('click', handleDeleteAll);
+            document.getElementById('logoutBtn').addEventListener('click', endSession);
+            
+            // Load data
+            await loadData();
+        }
+
+        // Start when DOM is ready
         document.addEventListener('DOMContentLoaded', initDashboard);
     </script>
 </body>
