@@ -4,25 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Login</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.tailwindcss.com" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    }
-    .login-card {
-      backdrop-filter: blur(10px);
-      background: rgba(255, 255, 255, 0.8);
+      height: 100vh;
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
-  <div class="login-card rounded-xl shadow-2xl p-8 w-full max-w-md">
+<body class="flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md">
     <div class="text-center mb-8">
       <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
         <i class="fas fa-lock text-blue-500 text-3xl"></i>
       </div>
-      <h1 class="text-2xl font-bold text-gray-800">Admin Portal</h1>
+      <h1 class="text-2xl font-bold text-gray-800">Admin Login</h1>
       <p class="text-gray-600">Enter your secure PIN</p>
     </div>
 
@@ -31,7 +28,7 @@
         <input 
           type="password" 
           id="pin" 
-          placeholder="Enter PIN" 
+          placeholder="Enter 4-digit PIN" 
           class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           maxlength="4"
           inputmode="numeric"
@@ -43,27 +40,35 @@
         </button>
       </div>
 
-      <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center">
-        <i class="fas fa-sign-in-alt mr-2"></i> Access Dashboard
+      <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium transition-colors">
+        <i class="fas fa-sign-in-alt mr-2"></i> Login
       </button>
     </form>
 
     <div id="errorMsg" class="mt-4 text-red-500 text-center hidden">
-      <i class="fas fa-exclamation-circle mr-2"></i> Invalid PIN. Try again.
+      <i class="fas fa-exclamation-circle mr-2"></i> <span id="errorText">Invalid PIN</span>
     </div>
   </div>
 
   <script>
+    // Toggle PIN visibility
     document.getElementById('togglePin').addEventListener('click', function() {
       const pinInput = document.getElementById('pin');
       pinInput.type = pinInput.type === 'password' ? 'text' : 'password';
       this.innerHTML = pinInput.type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
     });
 
+    // Handle form submission
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const pin = document.getElementById('pin').value;
       const errorMsg = document.getElementById('errorMsg');
+      const errorText = document.getElementById('errorText');
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Verifying...';
 
       try {
         const response = await fetch('/.netlify/functions/auth', {
@@ -77,11 +82,18 @@
         if (data.success) {
           window.location.href = '/admin/dashboard.html';
         } else {
+          errorText.textContent = data.error || "Invalid PIN";
           errorMsg.classList.remove('hidden');
+          document.getElementById('pin').value = '';
+          document.getElementById('pin').focus();
         }
       } catch (err) {
+        errorText.textContent = "Network error. Try again.";
         errorMsg.classList.remove('hidden');
         console.error('Login error:', err);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Login';
       }
     });
   </script>
