@@ -8,555 +8,1581 @@
     <meta name="keywords" content="web development, graphic design, social media marketing, tech solutions, AI solutions, Nairobi, Kenya">
     <meta name="author" content="Jonathan Mwaniki">
     <title>Jonathan Mwaniki - Digital Solutions Expert</title>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        },
+                        accent: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 6s infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'wave': 'wave 1.5s linear infinite',
+                        'fade-in': 'fadeIn 1s ease-in',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        wave: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '10%': { transform: 'rotate(14deg)' },
+                            '20%': { transform: 'rotate(-8deg)' },
+                            '30%': { transform: 'rotate(14deg)' },
+                            '40%': { transform: 'rotate(-4deg)' },
+                            '50%': { transform: 'rotate(10deg)' },
+                            '60%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(0deg)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/css">
+        .animate-delay-100 { animation-delay: 0.1s; }
+        .animate-delay-200 { animation-delay: 0.2s; }
+        .animate-delay-300 { animation-delay: 0.3s; }
+        .animate-delay-400 { animation-delay: 0.4s; }
+        .animate-delay-500 { animation-delay: 0.5s; }
+        
+        .blob {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.8) 0%, rgba(139, 92, 246, 0.8) 100%);
+            filter: blur(40px);
+            border-radius: 50%;
+            position: absolute;
+            z-index: -1;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .menu-item {
+            position: relative;
+        }
+        
+        .menu-item::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #0ea5e9;
+            transition: width 0.3s ease;
+        }
+        
+        .menu-item:hover::after {
+            width: 100%;
+        }
+        
+        .swiper-pagination-bullet {
+            background: #0ea5e9 !important;
+            opacity: 0.5 !important;
+        }
+        
+        .swiper-pagination-bullet-active {
+            opacity: 1 !important;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .portfolio-item:hover .portfolio-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .portfolio-overlay {
+            background: linear-gradient(to top, rgba(14, 165, 233, 0.9), rgba(139, 92, 246, 0.8));
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .faq-item {
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .faq-question[aria-expanded="true"] + .faq-answer {
+            max-height: 300px;
+        }
+        
+        .chat-window {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .splash-logo {
+            filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.5));
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
+            transition: width 0.1s linear;
+        }
+        
+        .particle {
+            position: absolute;
+            background: #0ea5e9;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+    </style>
 </head>
-<body>
+<body class="font-sans antialiased text-gray-800 bg-gray-50 overflow-x-hidden">
     <!-- Splash Screen -->
-    <div class="splash-screen" id="splashScreen">
-        <div class="splash-container">
-            <div class="logo-animation">
-                <div class="logo-image">
-                    <img src="./images/file.enc" alt="Jonathan Mwaniki Logo" class="splash-logo">
+    <div id="splashScreen" class="fixed inset-0 w-full h-full bg-white z-50 flex flex-col items-center justify-center transition-opacity duration-500">
+        <!-- Animated Background -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="blob w-64 h-64 top-1/4 left-1/4 animate-blob opacity-70"></div>
+            <div class="blob w-72 h-72 bottom-1/4 right-1/4 animate-blob opacity-70 animation-delay-2000"></div>
+            <div class="blob w-80 h-80 top-1/3 right-1/3 animate-blob opacity-70 animation-delay-4000"></div>
+        </div>
+        
+        <div class="relative z-10 flex flex-col items-center justify-center text-center px-4 max-w-md">
+            <!-- Animated Logo -->
+            <div class="mb-8 animate-float">
+                <div class="w-32 h-32 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-lg splash-logo">
+                    <span class="text-white text-4xl font-bold">JM</span>
                 </div>
             </div>
-            <h1 class="splash-title">Jonathan Mwaniki</h1>
-            <p class="splash-subtitle">Web Developer, Designer, Marketer & AI Innovator</p>
-            <div class="liquid-loader">
-                <div class="liquid-drop liquid-drop-1"></div>
-                <div class="liquid-drop liquid-drop-2"></div>
-                <div class="liquid-drop liquid-drop-3"></div>
-                <div class="liquid-drop liquid-drop-4"></div>
-                <div class="liquid-drop liquid-drop-5"></div>
-                <div class="liquid-bubble liquid-bubble-1"></div>
-                <div class="liquid-bubble liquid-bubble-2"></div>
-                <div class="liquid-bubble liquid-bubble-3"></div>
-                <div class="liquid-bubble liquid-bubble-4"></div>
-                <div class="liquid-bubble liquid-bubble-5"></div>
+            
+            <h1 class="text-4xl font-bold text-gray-900 mb-2 animate-fade-in">Jonathan Mwaniki</h1>
+            <p class="text-lg text-gray-600 mb-8 animate-fade-in animate-delay-200">Web Developer, Designer, Marketer & AI Innovator</p>
+            
+            <!-- Loading Animation -->
+            <div class="w-full max-w-xs mb-6">
+                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="progressBar" class="h-full progress-bar rounded-full"></div>
+                </div>
             </div>
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
-            <div class="loading-text">
+            
+            <p class="text-gray-500 animate-pulse-slow">
                 <span class="loading-dots">Loading creativity</span>
-            </div>
-            <div class="color-burst">
-                <div class="burst-1"></div>
-                <div class="burst-2"></div>
-                <div class="burst-3"></div>
-                <div class="burst-4"></div>
-            </div>
+            </p>
+            
+            <!-- Floating Particles -->
+            <div id="particles"></div>
         </div>
     </div>
 
     <!-- Main Content -->
-    <div class="main-content" id="mainContent" style="display: none;">
-        <!-- Hamburger Menu -->
-        <div class="hamburger" id="hamburger" role="button" aria-label="Toggle navigation">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        <nav class="menu" id="menu">
-            <a href="#home">Home</a>
-            <a href="#about">About</a>
-            <a href="#services">Services</a>
-            <a href="#portfolio">Portfolio</a>
-            <a href="#blog">Blog</a>
-            <a href="#contact">Contact</a>
-            <div class="social-icons">
-                <a href="https://twitter.com/maestropuns" target="_blank" aria-label="Twitter">
-                    <i class="fab fa-twitter"></i>
-                </a>
-                <a href="https://www.instagram.com/jonaahrojo" target="_blank" aria-label="Instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="https://wa.me/254706396305" target="_blank" aria-label="WhatsApp">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-                <a href="tel:+254706396305" target="_blank" aria-label="Phone">
-                    <i class="fas fa-phone-alt"></i>
-                </a>
-                <a href="sms:+254706396305" target="_blank" aria-label="SMS">
-                    <i class="fas fa-sms"></i>
-                </a>
+    <div id="mainContent" class="hidden">
+        <!-- Mobile Menu Button -->
+        <button id="hamburger" class="fixed top-6 right-6 z-50 w-12 h-12 rounded-full bg-white shadow-lg flex flex-col items-center justify-center space-y-2 p-3 focus:outline-none lg:hidden" aria-label="Toggle navigation">
+            <span class="block w-6 h-0.5 bg-gray-800 transition-all duration-300"></span>
+            <span class="block w-6 h-0.5 bg-gray-800 transition-all duration-300"></span>
+            <span class="block w-6 h-0.5 bg-gray-800 transition-all duration-300"></span>
+        </button>
+        
+        <!-- Navigation -->
+        <nav id="menu" class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out z-40 lg:translate-x-0 lg:w-20 lg:hover:w-64 group">
+            <div class="h-full flex flex-col justify-between py-8 px-4 overflow-y-auto">
+                <div>
+                    <div class="flex items-center justify-center mb-12 lg:justify-start lg:pl-2">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-lg">
+                            <span class="text-white text-xl font-bold">JM</span>
+                        </div>
+                        <span class="ml-3 text-xl font-bold text-gray-800 hidden lg:block group-hover:block">Jonathan</span>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <a href="#home" class="menu-item block px-4 py-2 text-gray-700 hover:text-primary-600 transition-colors duration-300 flex items-center">
+                            <i class="fas fa-home text-lg w-6 text-center"></i>
+                            <span class="ml-4 hidden lg:block group-hover:block">Home</span>
+                        </a>
+                        <a href="#about" class="menu-item block px-4 py-2 text-gray-700 hover:text-primary-600 transition-colors duration-300 flex items-center">
+                            <i class="fas fa-user text-lg w-6 text-center"></i>
+                            <span class="ml-4 hidden lg:block group-hover:block">About</span>
+                        </a>
+                        <a href="#services" class="menu-item block px-4 py-2 text-gray-700 hover:text-primary-600 transition-colors duration-300 flex items-center">
+                            <i class="fas fa-cogs text-lg w-6 text-center"></i>
+                            <span class="ml-4 hidden lg:block group-hover:block">Services</span>
+                        </a>
+                        <a href="#portfolio" class="menu-item block px-4 py-2 text-gray-700 hover:text-primary-600 transition-colors duration-300 flex items-center">
+                            <i class="fas fa-briefcase text-lg w-6 text-center"></i>
+                            <span class="ml-4 hidden lg:block group-hover:block">Portfolio</span>
+                        </a>
+                        <a href="#blog" class="menu-item block px-4 py-2 text-gray-700 hover:text-primary-600 transition-colors duration-300 flex items-center">
+                            <i class="fas fa-newspaper text-lg w-6 text-center"></i>
+                            <span class="ml-4 hidden lg:block group-hover:block">Blog</span>
+                        </a>
+                        <a href="#contact" class="menu-item block px-4 py-2 text-gray-700 hover:text-primary-600 transition-colors duration-300 flex items-center">
+                            <i class="fas fa-envelope text-lg w-6 text-center"></i>
+                            <span class="ml-4 hidden lg:block group-hover:block">Contact</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <div class="flex justify-center space-x-4 lg:justify-start lg:pl-2">
+                        <a href="https://twitter.com/maestropuns" target="_blank" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-primary-100 flex items-center justify-center text-gray-600 hover:text-primary-600 transition-colors duration-300" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.instagram.com/jonaahrojo" target="_blank" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-primary-100 flex items-center justify-center text-gray-600 hover:text-primary-600 transition-colors duration-300" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://wa.me/254706396305" target="_blank" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-primary-100 flex items-center justify-center text-gray-600 hover:text-primary-600 transition-colors duration-300" aria-label="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                    <div class="mt-4 text-center lg:text-left lg:pl-2 hidden lg:block group-hover:block">
+                        <a href="tel:+254706396305" class="text-sm text-gray-600 hover:text-primary-600 transition-colors duration-300">
+                            <i class="fas fa-phone-alt mr-2"></i>+254 706 396 305
+                        </a>
+                    </div>
+                </div>
             </div>
         </nav>
-
-        <!-- Homepage -->
-        <section id="home" class="hero">
-            <div class="hero-content">
-                <h1>Transform Your Vision into Reality with Cutting-Edge Digital Solutions</h1>
-                <p>Expert Web Development, Graphic Design, Social Media Marketing, Tech Solutions, and AI Innovation – All Under One Roof.</p>
-                <a href="#contact" class="cta-button">Create With Me Now!</a>
-            </div>
-        </section>
-
-        <!-- Service Overview -->
-        <section id="services-overview" class="services-overview">
-            <h2>Our Services</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <i class="fas fa-code"></i>
-                    <h3>Web Development</h3>
-                    <p>Build fast, responsive, and user-friendly websites tailored to your business needs.</p>
-                    <a href="#services" class="service-cta">Learn More</a>
+        
+        <!-- Main Sections -->
+        <div class="lg:ml-20">
+            <!-- Hero Section -->
+            <section id="home" class="min-h-screen flex items-center relative overflow-hidden">
+                <div class="absolute inset-0 overflow-hidden">
+                    <div class="blob w-96 h-96 -top-32 -left-32 animate-blob opacity-30"></div>
+                    <div class="blob w-80 h-80 bottom-0 right-0 animate-blob opacity-30 animation-delay-2000"></div>
                 </div>
-                <div class="service-card">
-                    <i class="fas fa-paint-brush"></i>
-                    <h3>Graphic Design</h3>
-                    <p>Create stunning visuals, from logos to branding, that captivate and engage your audience.</p>
-                    <a href="#services" class="service-cta">Learn More</a>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-bullhorn"></i>
-                    <h3>Social Media Marketing</h3>
-                    <p>Grow your brand’s presence with strategic campaigns and engaging content.</p>
-                    <a href="#services" class="service-cta">Learn More</a>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-cogs"></i>
-                    <h3>Tech Solutions</h3>
-                    <p>Streamline operations with custom software, IT solutions, and technical expertise.</p>
-                    <a href="#services" class="service-cta">Learn More</a>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-robot"></i>
-                    <h3>AI Solutions</h3>
-                    <p>Harness the power of AI with innovative tools and intelligent automation.</p>
-                    <a href="#services" class="service-cta">Learn More</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testimonials -->
-        <section id="testimonials" class="testimonials">
-            <h2>What Clients Say</h2>
-            <div class="swiper-container testimonials-slider">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide testimonial">
-                        <p>“Jonathan transformed our online presence with a stunning website and targeted social media campaigns!”</p>
-                        <cite>– Irene Kendi, CEO of TechStartup</cite>
-                    </div>
-                    <div class="swiper-slide testimonial">
-                        <p>“The AI solution provided by Jonathan streamlined our operations and boosted efficiency.”</p>
-                        <cite>– John Otieno, Founder of InnovateCo</cite>
-                    </div>
-                    <div class="swiper-slide testimonial">
-                        <p>“His graphic design work gave our brand a fresh, professional look!”</p>
-                        <cite>– Sarah Kimani, Marketing Director</cite>
+                
+                <div class="container mx-auto px-6 py-20 relative z-10">
+                    <div class="max-w-2xl animate-slide-up">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+                            Transform Your Vision into <span class="gradient-text">Digital Reality</span>
+                        </h1>
+                        <p class="text-lg md:text-xl text-gray-600 mb-8">
+                            Expert Web Development, Graphic Design, Social Media Marketing, Tech Solutions, and AI Innovation – All Under One Roof.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#contact" class="px-8 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                                Create With Me Now!
+                            </a>
+                            <a href="#portfolio" class="px-8 py-3 bg-white text-gray-800 font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200">
+                                View My Work
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div class="swiper-pagination"></div>
-            </div>
-        </section>
-
-        <!-- Portfolio Highlights -->
-        <section id="portfolio-highlights" class="portfolio-highlights">
-            <h2>Recent Projects</h2>
-            <div class="swiper-container portfolio-grid">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide portfolio-item" data-category="web">
-                        <img src="./images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani Website">
-                        <h3>Nooki Mtaani</h3>
-                        <p>Developed a rental platform with secure payment processing and real-time updates.</p>
-                        <a href="#portfolio" class="portfolio-cta">View Details</a>
-                    </div>
-                    <div class="swiper-slide portfolio-item" data-category="web">
-                        <img src="./images/3.PNG" alt="Jamtech Website">
-                        <h3>Jamtech Website</h3>
-                        <p>Designed an e-commerce site with seamless product search and mobile optimization.</p>
-                        <a href="#portfolio" class="portfolio-cta">View Details</a>
-                    </div>
-                    <div class="swiper-slide portfolio-item" data-category="web">
-                        <img src="./images/afri.png" alt="Africhain Website">
-                        <h3>AfriChain WEB3</h3>
-                        <p>Built a web3 platform with secure payment gateways and real-time updates.</p>
-                        <a href="#portfolio" class="portfolio-cta">View Details</a>
-                    </div>
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
-            <a href="#portfolio" class="cta-button">Explore Full Portfolio</a>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="about">
-            <h2>Meet Jonathan Mwaniki – Your Partner in Digital Success</h2>
-            <div class="about-content">
-                <img src="./images/file.enc" alt="Jonathan Mwaniki Headshot" class="profile-img">
-                <div>
-                    <p>I’m Jonathan Mwaniki, a passionate web developer, graphic designer, social media strategist, tech solutions expert, and AI innovator based in Nairobi, Kenya. With over 5 years of experience, my mission is to empower businesses by combining creativity, technology, and strategy to deliver solutions that drive results. From crafting pixel-perfect websites to designing impactful branding and implementing cutting-edge AI tools, I bring a holistic approach to every project.</p>
-                    <p><strong>Mission:</strong> To deliver transformative digital solutions that blend creativity, technology, and strategy, helping businesses thrive in a competitive world.</p>
-                    <p><strong>Fun Fact:</strong> When I’m not coding or designing, you’ll find me exploring the latest AI trends or sipping coffee while sketching new ideas.</p>
-                </div>
-            </div>
-            <div class="skills">
-                <h3>Skills & Certifications</h3>
-                <ul class="skills-grid">
-                    <li><i class="fab fa-html5"></i> HTML5</li>
-                    <li><i class="fab fa-css3-alt"></i> CSS3</li>
-                    <li><i class="fab fa-js"></i> JavaScript</li>
-                    <li><i class="fab fa-react"></i> React</li>
-                    <li><i class="fas fa-paint-brush"></i> Adobe Creative Suite</li>
-                    <li><i class="fas fa-chart-line"></i> Google Analytics</li>
-                    <li><i class="fas fa-robot"></i> TensorFlow</li>
-                    <li><i class="fas fa-certificate"></i> Certified Web Developer</li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- Services Section -->
-        <section id="services" class="services">
-            <h2>Our Services</h2>
-            <div class="service-details">
-                <div class="service-item">
-                    <i class="fas fa-code"></i>
-                    <h3>Web Development</h3>
-                    <p>From sleek landing pages to complex e-commerce platforms, I create responsive, SEO-optimized websites that deliver exceptional user experiences.</p>
-                    <ul>
-                        <li>Custom website design</li>
-                        <li>E-commerce solutions</li>
-                        <li>CMS integration</li>
-                        <li>Website maintenance</li>
-                    </ul>
-                    <a href="#contact" class="cta-button">Start Your Website Project</a>
-                </div>
-                <div class="service-item">
-                    <i class="fas fa-paint-brush"></i>
-                    <h3>Graphic Design</h3>
-                    <p>Your brand deserves to stand out. I design stunning logos, marketing collateral, and digital assets that resonate with your audience.</p>
-                    <ul>
-                        <li>Logo design</li>
-                        <li>Branding</li>
-                        <li>Print media</li>
-                        <li>Social media graphics</li>
-                    </ul>
-                    <a href="#contact" class="cta-button">Get Stunning Designs</a>
-                </div>
-                <div class="service-item">
-                    <i class="fas fa-bullhorn"></i>
-                    <h3>Social Media Marketing</h3>
-                    <p>Amplify your online presence with targeted social media strategies, from content creation to ad campaigns.</p>
-                    <ul>
-                        <li>Content creation</li>
-                        <li>Ad management</li>
-                        <li>Analytics</li>
-                        <li>Strategy planning</li>
-                    </ul>
-                    <a href="#contact" class="cta-button">Boost Your Social Media</a>
-                </div>
-                <div class="service-item">
-                    <i class="fas fa-cogs"></i>
-                    <h3>Tech Solutions</h3>
-                    <p>Need custom software or IT solutions? I provide tailored tech solutions to optimize your operations.</p>
-                    <ul>
-                        <li>Custom software development</li>
-                        <li>IT consulting</li>
-                        <li>Cloud solutions</li>
-                        <li>Cybersecurity</li>
-                    </ul>
-                    <a href="#contact" class="cta-button">Explore Tech Solutions</a>
-                </div>
-                <div class="service-item">
-                    <i class="fas fa-robot"></i>
-                    <h3>AI Solutions</h3>
-                    <p>From chatbots to predictive analytics, I design AI-powered solutions that automate processes and enhance decision-making.</p>
-                    <ul>
-                        <li>AI app development</li>
-                        <li>Machine learning</li>
-                        <li>Chatbot integration</li>
-                        <li>Data analytics</li>
-                    </ul>
-                    <a href="#contact" class="cta-button">Innovate with AI</a>
-                </div>
-            </div>
-            <div class="faq">
-                <h3>Frequently Asked Questions</h3>
-                <div class="faq-item">
-                    <button class="faq-question" aria-expanded="false">How long does a website project take?</button>
-                    <div class="faq-answer" style="display: none;">
-                        <p>Typically 4-8 weeks, depending on complexity.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-question" aria-expanded="false">Do you offer ongoing support?</button>
-                    <div class="faq-answer" style="display: none;">
-                        <p>Yes, I provide maintenance and support plans.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Portfolio Section -->
-        <section id="portfolio" class="portfolio">
-            <h2>Explore My Work</h2>
-            <p>A showcase of innovative projects that blend creativity and technology.</p>
-            <div class="portfolio-filters">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="web">Web Development</button>
-                <button class="filter-btn" data-filter="graphic">Graphic Design</button>
-                <button class="filter-btn" data-filter="social">Social Media</button>
-                <button class="filter-btn" data-filter="tech">Tech Solutions</button>
-                <button class="filter-btn" data-filter="ai">AI Solutions</button>
-            </div>
-            <div class="swiper-container portfolio-grid">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide portfolio-item" data-category="web">
-                        <img src="./images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani Website">
-                        <h3>Nooki Mtaani</h3>
-                        <p>Developed a rental platform website for <a href="https://nookimtaani.netlify.app">Nooki Mtaani</a>, specializing in listing and renting spaces.</p>
-                        <p><strong>Testimonial:</strong> “The website exceeded our expectations!” – Personal Project</p>
-                    </div>
-                    <div class="swiper-slide portfolio-item" data-category="web">
-                        <img src="./images/3.PNG" alt="Jamtech Website">
-                        <h3>Jamtech Website</h3>
-                        <p>Designed and developed an e-commerce site for <a href="https://jamtech.pages.dev">Jamtech Electronics</a>, with product search and mobile optimization.</p>
-                        <p><strong>Testimonial:</strong> “A seamless shopping experience!” – Jamleck Ntonjira</p>
-                    </div>
-                    <div class="swiper-slide portfolio-item" data-category="web">
-                        <img src="./images/afri.png" alt="Africhain Website">
-                        <h3>AfriChain WEB3</h3>
-                        <p>Created a web3 website for <a href="https://africhainke.netlify.app">AfriChain</a>, focusing on secure payment gateways.</p>
-                        <p><strong>Testimonial:</strong> “Innovative and user-friendly!” – Personal Project</p>
-                    </div>
-                    <div class="swiper-slide portfolio-item" data-category="web">
-                        <img src="./images/2.PNG" alt="Ruto Must Go Website">
-                        <h3>Ruto Must Go Website</h3>
-                        <p>Built a website for the <a href="https://rutomustgo.pages.dev">Ruto Must Go</a> campaign, designed to engage users.</p>
-                        <p><strong>Testimonial:</strong> “Highly engaging platform!” – Personal Project</p>
-                    </div>
-                    <div class="swiper-slide portfolio-item" data-category="web">
-                        <img src="./images/1.PNG" alt="Ngwai Store Website">
-                        <h3>Ngwai Store Website</h3>
-                        <p>Created an e-commerce website for Ngwai Store with secure payment gateways.</p>
-                        <p><strong>Testimonial:</strong> “Boosted our sales significantly!” – Private Client</p>
-                    </div>
-                    <div class="swiper-slide portfolio-item" data-category="graphic">
-                        <img src="./images/brand.png" alt="Brand Identity">
-                        <h3>Brand Identity for Startup</h3>
-                        <p>Designed a complete brand identity, including logo and social media graphics.</p>
-                        <p><strong>Testimonial:</strong> “Our brand now stands out!” – Clients projects</p>
-                    </div>
-                    <div class="swiper-slide portfolio-item" data-category="social">
-                        <img src="./images/campaign.png" alt="Social Media Campaign">
-                        <h3>Social Media Campaign</h3>
-                        <p>Developed a targeted Instagram campaign, increasing engagement by 40%.</p>
-                        <p><strong>Testimonial:</strong> “Our audience loves the content!” – Clients projects</p>
-                    </div>
-                    <div class="swiper-slide portfolio-item" data-category="ai">
-                        <img src="./images/chatbot.jpeg" alt="AI Chatbot">
-                        <h3>AI Chatbot Integration</h3>
-                        <p>Integrated an AI-powered chatbot for a retail website, improving support efficiency.</p>
-                        <p><strong>Testimonial:</strong> “A game-changer for our support!” – Confidential Client</p>
-                    </div>
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
-        </section>
-
-        <!-- Blog Section -->
-        <section id="blog" class="blog">
-            <h2>Insights, Tips, and Trends</h2>
-            <p>Stay updated with the latest in web development, design, marketing, and AI.</p>
-            <div class="blog-grid">
-                <div class="blog-post">
-                    <img src="./images/trends.jpeg" alt="Web Design Trends">
-                    <h3>Top 5 Web Design Trends for 2025</h3>
-                    <p>Explore the latest trends shaping the future of web design.</p>
-                    <a href="#" class="blog-cta">Read More</a>
-                </div>
-                <div class="blog-post">
-                    <img src="./images/business.jpeg" alt="AI for Business">
-                    <h3>How AI is Revolutionizing Small Business Marketing</h3>
-                    <p>Discover how AI tools can enhance your marketing efforts.</p>
-                    <a href="#" class="blog-cta">Read More</a>
-                </div>
-                <div class="blog-post">
-                    <img src="./images/socialmedia.png" alt="Social Media Guide">
-                    <h3>The Ultimate Guide to Social Media Advertising</h3>
-                    <p>Learn strategies to maximize ROI on platforms like Instagram.</p>
-                    <a href="#" class="blog-cta">Read More</a>
-                </div>
-            </div>
-          <!-- Subscription Form (Blog Section) -->
-<form class="newsletter-signup" id="subscriptionForm" action="https://script.google.com/macros/s/AKfycbxdPlBWT28gJbk4Za3zOln3g65EMQCnQaeqlss5-_SKqebDNvjg4lIGp9y3oDF0E95RdA/exec" method="POST">
-    <h3>Subscribe for Updates</h3>
-    <p>Get the latest insights and exclusive offers.</p>
-    <input type="hidden" name="form-name" value="subscription">
-    <input type="email" id="subscriptionEmail" name="email" placeholder="Enter your email" aria-label="Email for subscription" required>
-    <input type="hidden" name="type" value="New Subscriber Alert!">
-    <button type="submit" class="cta-button">Subscribe</button>
-</form>
-<div id="subscriptionPopup" class="popup" style="display: none;">
-    <div class="popup-content">
-        <span class="popup-close" onclick="closePopup('subscriptionPopup')">×</span>
-        <p id="subscriptionPopupMessage"></p>
-    </div>
-</div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="contact">
-            <h2>Let’s Bring Your Ideas to Life</h2>
-            <p>Ready to start your next project? I’ll get back to you within 24 hours.</p>
-        <form class="contact-form" id="contactForm" action="https://script.google.com/macros/s/AKfycbxdPlBWT28gJbk4Za3zOln3g65EMQCnQaeqlss5-_SKqebDNvjg4lIGp9y3oDF0E95RdA/exec" method="POST">
-    <label for="name">Name</label>
-    <input type="text" id="name" name="name" required aria-label="Your name" aria-required="true">
-    <label for="email">Email</label>
-    <input type="email" id="email" name="email" required aria-label="Your email" aria-required="true">
-    <label for="phone">Phone</label>
-    <input type="tel" id="phone" name="phone" aria-label="Your phone number">
-    <label for="service">Service</label>
-    <select id="service" name="service" required aria-label="Select a service" aria-required="true">
-        <option value="">Select a Service</option>
-        <option value="web">Web Development</option>
-        <option value="graphic">Graphic Design</option>
-        <option value="social">Social Media Marketing</option>
-        <option value="tech">Tech Solutions</option>
-        <option value="ai">AI Solutions</option>
-    </select>
-    <label for="message">Message</label>
-    <textarea id="message" name="message" required aria-label="Your message" aria-required="true"></textarea>
-    <input type="hidden" name="type" value="New Client Alert!">
-    <input type="hidden" name="form-name" value="contact">
-    <button type="submit" class="cta-button">Submit Your Inquiry</button>
-</form>
-<div id="contactPopup" class="popup" style="display: none;">
-    <div class="popup-content">
-        <span class="popup-close" onclick="closePopup('contactPopup')">×</span>
-        <p id="contactPopupMessage"></p>
-    </div>
-</div>
-            <div class="contact-details">
-                <p><strong>Email:</strong> <a href="mailto:jonathanmwaniki07@gmail.com">jonathanmwaniki07@gmail.com</a></p>
-                <p><strong>Phone:</strong> <a href="tel:+254706396305">+254 706 396 305</a></p>
-                <p><strong>Business Hours:</strong> Mon-Fri, 9 AM - 5 PM</p>
-                <div class="social-icons">
-                    <a href="https://twitter.com/maestropuns" target="_blank" aria-label="Twitter">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="https://www.instagram.com/jonaahrojo" target="_blank" aria-label="Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://wa.me/+254706396305" target="_blank" aria-label="WhatsApp">
-                        <i class="fab fa-whatsapp"></i>
+                
+                <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce-slow">
+                    <a href="#services-overview" class="text-gray-400 hover:text-primary-500 transition-colors duration-300">
+                        <i class="fas fa-chevron-down text-2xl"></i>
                     </a>
                 </div>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer>
-            <div class="flare"></div>
-            <p>© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
-            <div class="footer-links">
-                <a href="#privacy">Privacy Policy</a>
-                <a href="#terms">Terms of Service</a>
-            </div>
-            <a href="./downloads/ai-guide.pdf" class="download-cta">Download Free AI Guide</a>
-        </footer>
-
+            </section>
+            
+            <!-- Services Overview -->
+            <section id="services-overview" class="py-20 bg-gray-50">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Our Services</h2>
+                        <p class="max-w-2xl mx-auto text-gray-600">Comprehensive digital solutions tailored to your business needs</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="service-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                            <div class="p-6">
+                                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mb-4">
+                                    <i class="fas fa-code text-2xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">Web Development</h3>
+                                <p class="text-gray-600 mb-4">Build fast, responsive, and user-friendly websites tailored to your business needs.</p>
+                                <a href="#services" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300">
+                                    Learn More
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="service-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                            <div class="p-6">
+                                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mb-4">
+                                    <i class="fas fa-paint-brush text-2xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">Graphic Design</h3>
+                                <p class="text-gray-600 mb-4">Create stunning visuals, from logos to branding, that captivate and engage your audience.</p>
+                                <a href="#services" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300">
+                                    Learn More
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="service-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                            <div class="p-6">
+                                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mb-4">
+                                    <i class="fas fa-bullhorn text-2xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">Social Media Marketing</h3>
+                                <p class="text-gray-600 mb-4">Grow your brand's presence with strategic campaigns and engaging content.</p>
+                                <a href="#services" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300">
+                                    Learn More
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="service-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                            <div class="p-6">
+                                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mb-4">
+                                    <i class="fas fa-cogs text-2xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">Tech Solutions</h3>
+                                <p class="text-gray-600 mb-4">Streamline operations with custom software, IT solutions, and technical expertise.</p>
+                                <a href="#services" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300">
+                                    Learn More
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="service-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                            <div class="p-6">
+                                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mb-4">
+                                    <i class="fas fa-robot text-2xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">AI Solutions</h3>
+                                <p class="text-gray-600 mb-4">Harness the power of AI with innovative tools and intelligent automation.</p>
+                                <a href="#services" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300">
+                                    Learn More
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="service-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                            <div class="p-6">
+                                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mb-4">
+                                    <i class="fas fa-lightbulb text-2xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">Consulting</h3>
+                                <p class="text-gray-600 mb-4">Get expert advice on digital strategy and technology implementation.</p>
+                                <a href="#services" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300">
+                                    Learn More
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Testimonials -->
+            <section id="testimonials" class="py-20 bg-gradient-to-r from-primary-50 to-secondary-50">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">What Clients Say</h2>
+                        <p class="max-w-2xl mx-auto text-gray-600">Don't just take our word for it - here's what our clients have to say</p>
+                    </div>
+                    
+                    <div class="swiper-container testimonials-slider">
+                        <div class="swiper-wrapper pb-12">
+                            <div class="swiper-slide">
+                                <div class="testimonial-card bg-white rounded-xl shadow-md p-8 h-full">
+                                    <div class="flex items-center mb-4">
+                                        <div class="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 mr-4">
+                                            <i class="fas fa-user text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-900">Irene Kendi</h4>
+                                            <p class="text-sm text-gray-600">CEO of TechStartup</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-700 mb-6">"Jonathan transformed our online presence with a stunning website and targeted social media campaigns! His attention to detail and creative approach exceeded our expectations."</p>
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper-slide">
+                                <div class="testimonial-card bg-white rounded-xl shadow-md p-8 h-full">
+                                    <div class="flex items-center mb-4">
+                                        <div class="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 mr-4">
+                                            <i class="fas fa-user text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-900">John Otieno</h4>
+                                            <p class="text-sm text-gray-600">Founder of InnovateCo</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-700 mb-6">"The AI solution provided by Jonathan streamlined our operations and boosted efficiency. His technical expertise and problem-solving skills are truly impressive."</p>
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper-slide">
+                                <div class="testimonial-card bg-white rounded-xl shadow-md p-8 h-full">
+                                    <div class="flex items-center mb-4">
+                                        <div class="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 mr-4">
+                                            <i class="fas fa-user text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-900">Sarah Kimani</h4>
+                                            <p class="text-sm text-gray-600">Marketing Director</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-700 mb-6">"His graphic design work gave our brand a fresh, professional look! Jonathan understands branding at a deep level and delivered designs that perfectly captured our vision."</p>
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Portfolio Highlights -->
+            <section id="portfolio-highlights" class="py-20 bg-white">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Recent Projects</h2>
+                        <p class="max-w-2xl mx-auto text-gray-600">A showcase of our latest and most impactful work</p>
+                    </div>
+                    
+                    <div class="swiper-container portfolio-grid">
+                        <div class="swiper-wrapper pb-12">
+                            <div class="swiper-slide" style="width: 300px;">
+                                <div class="portfolio-item relative rounded-xl overflow-hidden shadow-md h-full">
+                                    <img src="./images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani Website" class="w-full h-48 object-cover">
+                                    <div class="p-6">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Nooki Mtaani</h3>
+                                        <p class="text-gray-600 mb-4">Developed a rental platform with secure payment processing and real-time updates.</p>
+                                        <a href="#portfolio" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300">
+                                            View Details
+                                            <i class="fas fa-arrow-right ml-2"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper-slide" style="width: 300px;">
+                                <div class="portfolio-item relative rounded-xl overflow-hidden shadow-md h-full">
+                                    <img src="./images/3.PNG" alt="Jamtech Website" class="w-full h-48 object-cover">
+                                    <div class="p-6">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Jamtech Website</h3>
+                                        <p class="text-gray-600 mb-4">Designed an e-commerce site with seamless product search and mobile optimization.</p>
+                                        <a href="#portfolio" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300">
+                                            View Details
+                                            <i class="fas fa-arrow-right ml-2"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper-slide" style="width: 300px;">
+                                <div class="portfolio-item relative rounded-xl overflow-hidden shadow-md h-full">
+                                    <img src="./images/afri.png" alt="Africhain Website" class="w-full h-48 object-cover">
+                                    <div class="p-6">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-2">AfriChain WEB3</h3>
+                                        <p class="text-gray-600 mb-4">Built a web3 platform with secure payment gateways and real-time updates.</p>
+                                        <a href="#portfolio" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300">
+                                            View Details
+                                            <i class="fas fa-arrow-right ml-2"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper-slide" style="width: 300px;">
+                                <div class="portfolio-item relative rounded-xl overflow-hidden shadow-md h-full">
+                                    <img src="./images/2.PNG" alt="Ruto Must Go Website" class="w-full h-48 object-cover">
+                                    <div class="p-6">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Ruto Must Go Website</h3>
+                                        <p class="text-gray-600 mb-4">Built a website for the Ruto Must Go campaign, designed to engage users.</p>
+                                        <a href="#portfolio" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300">
+                                            View Details
+                                            <i class="fas fa-arrow-right ml-2"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                    
+                    <div class="text-center mt-12">
+                        <a href="#portfolio" class="inline-block px-8 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                            Explore Full Portfolio
+                        </a>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- About Section -->
+            <section id="about" class="py-20 bg-gray-50">
+                <div class="container mx-auto px-6">
+                    <div class="flex flex-col lg:flex-row items-center">
+                        <div class="lg:w-1/3 mb-12 lg:mb-0 lg:pr-12">
+                            <div class="relative">
+                                <div class="w-full h-full bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl absolute -z-10 top-4 left-4"></div>
+                                <img src="./images/file.enc" alt="Jonathan Mwaniki Headshot" class="w-full rounded-xl shadow-lg relative z-10">
+                            </div>
+                        </div>
+                        
+                        <div class="lg:w-2/3">
+                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Meet Jonathan Mwaniki – Your Partner in Digital Success</h2>
+                            <div class="prose text-gray-600 mb-8">
+                                <p>I'm Jonathan Mwaniki, a passionate web developer, graphic designer, social media strategist, tech solutions expert, and AI innovator based in Nairobi, Kenya. With over 5 years of experience, my mission is to empower businesses by combining creativity, technology, and strategy to deliver solutions that drive results. From crafting pixel-perfect websites to designing impactful branding and implementing cutting-edge AI tools, I bring a holistic approach to every project.</p>
+                                <p><strong class="text-gray-900">Mission:</strong> To deliver transformative digital solutions that blend creativity, technology, and strategy, helping businesses thrive in a competitive world.</p>
+                                <p><strong class="text-gray-900">Fun Fact:</strong> When I'm not coding or designing, you'll find me exploring the latest AI trends or sipping coffee while sketching new ideas.</p>
+                            </div>
+                            
+                            <div class="mb-8">
+                                <h3 class="text-xl font-bold text-gray-900 mb-4">Skills & Certifications</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    <div class="flex items-center">
+                                        <i class="fab fa-html5 text-primary-600 mr-2"></i>
+                                        <span>HTML5</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fab fa-css3-alt text-primary-600 mr-2"></i>
+                                        <span>CSS3</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fab fa-js text-primary-600 mr-2"></i>
+                                        <span>JavaScript</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fab fa-react text-primary-600 mr-2"></i>
+                                        <span>React</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-paint-brush text-primary-600 mr-2"></i>
+                                        <span>Adobe Creative Suite</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-chart-line text-primary-600 mr-2"></i>
+                                        <span>Google Analytics</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-robot text-primary-600 mr-2"></i>
+                                        <span>TensorFlow</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-certificate text-primary-600 mr-2"></i>
+                                        <span>Certified Web Developer</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <a href="#contact" class="inline-block px-8 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                                Let's Work Together
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Services Section -->
+            <section id="services" class="py-20 bg-white">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Our Services</h2>
+                        <p class="max-w-2xl mx-auto text-gray-600">Comprehensive digital solutions tailored to your specific needs</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <div class="service-item bg-gray-50 rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
+                            <div class="flex items-start mb-6">
+                                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mr-6">
+                                    <i class="fas fa-code text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Web Development</h3>
+                                    <p class="text-gray-600">From sleek landing pages to complex e-commerce platforms, I create responsive, SEO-optimized websites that deliver exceptional user experiences.</p>
+                                </div>
+                            </div>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Custom website design</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>E-commerce solutions</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>CMS integration</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Website maintenance</span>
+                                </li>
+                            </ul>
+                            <a href="#contact" class="inline-block px-6 py-2 bg-white border border-primary-500 text-primary-600 font-medium rounded-full shadow-sm hover:bg-primary-50 transition-colors duration-300">
+                                Start Your Website Project
+                            </a>
+                        </div>
+                        
+                        <div class="service-item bg-gray-50 rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
+                            <div class="flex items-start mb-6">
+                                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mr-6">
+                                    <i class="fas fa-paint-brush text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Graphic Design</h3>
+                                    <p class="text-gray-600">Your brand deserves to stand out. I design stunning logos, marketing collateral, and digital assets that resonate with your audience.</p>
+                                </div>
+                            </div>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Logo design</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Branding</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Print media</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Social media graphics</span>
+                                </li>
+                            </ul>
+                            <a href="#contact" class="inline-block px-6 py-2 bg-white border border-primary-500 text-primary-600 font-medium rounded-full shadow-sm hover:bg-primary-50 transition-colors duration-300">
+                                Get Stunning Designs
+                            </a>
+                        </div>
+                        
+                        <div class="service-item bg-gray-50 rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
+                            <div class="flex items-start mb-6">
+                                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mr-6">
+                                    <i class="fas fa-bullhorn text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Social Media Marketing</h3>
+                                    <p class="text-gray-600">Amplify your online presence with targeted social media strategies, from content creation to ad campaigns.</p>
+                                </div>
+                            </div>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Content creation</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Ad management</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Analytics</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Strategy planning</span>
+                                </li>
+                            </ul>
+                            <a href="#contact" class="inline-block px-6 py-2 bg-white border border-primary-500 text-primary-600 font-medium rounded-full shadow-sm hover:bg-primary-50 transition-colors duration-300">
+                                Boost Your Social Media
+                            </a>
+                        </div>
+                        
+                        <div class="service-item bg-gray-50 rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
+                            <div class="flex items-start mb-6">
+                                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mr-6">
+                                    <i class="fas fa-cogs text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Tech Solutions</h3>
+                                    <p class="text-gray-600">Need custom software or IT solutions? I provide tailored tech solutions to optimize your operations.</p>
+                                </div>
+                            </div>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Custom software development</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>IT consulting</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Cloud solutions</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Cybersecurity</span>
+                                </li>
+                            </ul>
+                            <a href="#contact" class="inline-block px-6 py-2 bg-white border border-primary-500 text-primary-600 font-medium rounded-full shadow-sm hover:bg-primary-50 transition-colors duration-300">
+                                Explore Tech Solutions
+                            </a>
+                        </div>
+                        
+                        <div class="service-item bg-gray-50 rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
+                            <div class="flex items-start mb-6">
+                                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mr-6">
+                                    <i class="fas fa-robot text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">AI Solutions</h3>
+                                    <p class="text-gray-600">From chatbots to predictive analytics, I design AI-powered solutions that automate processes and enhance decision-making.</p>
+                                </div>
+                            </div>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>AI app development</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Machine learning</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Chatbot integration</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Data analytics</span>
+                                </li>
+                            </ul>
+                            <a href="#contact" class="inline-block px-6 py-2 bg-white border border-primary-500 text-primary-600 font-medium rounded-full shadow-sm hover:bg-primary-50 transition-colors duration-300">
+                                Innovate with AI
+                            </a>
+                        </div>
+                        
+                        <div class="service-item bg-gray-50 rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
+                            <div class="flex items-start mb-6">
+                                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mr-6">
+                                    <i class="fas fa-lightbulb text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Consulting</h3>
+                                    <p class="text-gray-600">Get expert advice on digital strategy, technology implementation, and business growth.</p>
+                                </div>
+                            </div>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Digital strategy</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Technology roadmap</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Business optimization</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-primary-600 mr-2"></i>
+                                    <span>Growth planning</span>
+                                </li>
+                            </ul>
+                            <a href="#contact" class="inline-block px-6 py-2 bg-white border border-primary-500 text-primary-600 font-medium rounded-full shadow-sm hover:bg-primary-50 transition-colors duration-300">
+                                Schedule Consultation
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-20 max-w-3xl mx-auto">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">Frequently Asked Questions</h3>
+                        
+                        <div class="faq-item bg-white rounded-xl shadow-sm p-6 mb-4">
+                            <button class="faq-question w-full flex justify-between items-center text-left font-medium text-gray-900" aria-expanded="false">
+                                <span>How long does a website project take?</span>
+                                <i class="fas fa-chevron-down text-primary-600 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-answer mt-4 text-gray-600">
+                                <p>Typically 4-8 weeks, depending on complexity. A simple brochure website might take 4 weeks, while a complex e-commerce platform with custom features could take 8 weeks or more. We'll provide a detailed timeline after our initial consultation.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item bg-white rounded-xl shadow-sm p-6 mb-4">
+                            <button class="faq-question w-full flex justify-between items-center text-left font-medium text-gray-900" aria-expanded="false">
+                                <span>Do you offer ongoing support?</span>
+                                <i class="fas fa-chevron-down text-primary-600 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-answer mt-4 text-gray-600">
+                                <p>Yes, I provide flexible maintenance and support plans tailored to your needs. Options include monthly maintenance packages, hourly support, and emergency support. We can discuss the best option for your business during our project planning.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item bg-white rounded-xl shadow-sm p-6 mb-4">
+                            <button class="faq-question w-full flex justify-between items-center text-left font-medium text-gray-900" aria-expanded="false">
+                                <span>What's your pricing structure?</span>
+                                <i class="fas fa-chevron-down text-primary-600 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-answer mt-4 text-gray-600">
+                                <p>Projects are typically priced based on scope and requirements. We offer fixed-price projects for well-defined work and hourly rates for ongoing or flexible projects. During our consultation, we'll discuss your budget and requirements to determine the best approach.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item bg-white rounded-xl shadow-sm p-6">
+                            <button class="faq-question w-full flex justify-between items-center text-left font-medium text-gray-900" aria-expanded="false">
+                                <span>Do you work with clients outside Kenya?</span>
+                                <i class="fas fa-chevron-down text-primary-600 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-answer mt-4 text-gray-600">
+                                <p>Absolutely! I regularly work with clients internationally. Communication is handled via email, video calls, and project management tools. Time zone differences are accommodated, and all work is delivered digitally.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Portfolio Section -->
+            <section id="portfolio" class="py-20 bg-gray-50">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Explore My Work</h2>
+                        <p class="max-w-2xl mx-auto text-gray-600">A showcase of innovative projects that blend creativity and technology</p>
+                    </div>
+                    
+                    <div class="portfolio-filters flex flex-wrap justify-center gap-3 mb-12">
+                        <button class="filter-btn px-4 py-2 bg-white border border-gray-200 rounded-full font-medium text-gray-700 hover:bg-primary-50 hover:border-primary-300 hover:text-primary-600 transition-colors duration-300 active" data-filter="all">
+                            All
+                        </button>
+                        <button class="filter-btn px-4 py-2 bg-white border border-gray-200 rounded-full font-medium text-gray-700 hover:bg-primary-50 hover:border-primary-300 hover:text-primary-600 transition-colors duration-300" data-filter="web">
+                            Web Development
+                        </button>
+                        <button class="filter-btn px-4 py-2 bg-white border border-gray-200 rounded-full font-medium text-gray-700 hover:bg-primary-50 hover:border-primary-300 hover:text-primary-600 transition-colors duration-300" data-filter="graphic">
+                            Graphic Design
+                        </button>
+                        <button class="filter-btn px-4 py-2 bg-white border border-gray-200 rounded-full font-medium text-gray-700 hover:bg-primary-50 hover:border-primary-300 hover:text-primary-600 transition-colors duration-300" data-filter="social">
+                            Social Media
+                        </button>
+                        <button class="filter-btn px-4 py-2 bg-white border border-gray-200 rounded-full font-medium text-gray-700 hover:bg-primary-50 hover:border-primary-300 hover:text-primary-600 transition-colors duration-300" data-filter="tech">
+                            Tech Solutions
+                        </button>
+                        <button class="filter-btn px-4 py-2 bg-white border border-gray-200 rounded-full font-medium text-gray-700 hover:bg-primary-50 hover:border-primary-300 hover:text-primary-600 transition-colors duration-300" data-filter="ai">
+                            AI Solutions
+                        </button>
+                    </div>
+                    
+                    <div class="swiper-container portfolio-grid">
+                        <div class="swiper-wrapper pb-12">
+                            <div class="swiper-slide" style="width: 300px;">
+                                <div class="portfolio-item relative rounded-xl overflow-hidden shadow-md h-full" data-category="web">
+                                    <img src="./images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani Website" class="w-full h-48 object-cover">
+                                    <div class="portfolio-overlay absolute inset-0 flex items-end opacity-0 transform translate-y-4">
+                                        <div class="p-6 text-white">
+                                            <h3 class="text-xl font-bold mb-2">Nooki Mtaani</h3>
+                                            <p class="mb-4">Developed a rental platform website for <a href="https://nookimtaani.netlify.app" class="underline">Nooki Mtaani</a>, specializing in listing and renting spaces.</p>
+                                            <p class="text-sm"><strong>Testimonial:</strong> "The website exceeded our expectations!" – Personal Project</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-6 bg-white">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Nooki Mtaani</h3>
+                                        <p class="text-gray-600">Rental platform with secure payments</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper-slide" style="width: 300px;">
+                                <div class="portfolio-item relative rounded-xl overflow-hidden shadow-md h-full" data-category="web">
+                                    <img src="./images/3.PNG" alt="Jamtech Website" class="w-full h-48 object-cover">
+                                    <div class="portfolio-overlay absolute inset-0 flex items-end opacity-0 transform translate-y-4">
+                                        <div class="p-6 text-white">
+                                            <h3 class="text-xl font-bold mb-2">Jamtech Website</h3>
+                                            <p class="mb-4">Designed and developed an e-commerce site for <a href="https://jamtech.pages.dev" class="underline">Jamtech Electronics</a>, with product search and mobile optimization.</p>
+                                            <p class="text-sm"><strong>Testimonial:</strong> "A seamless shopping experience!" – Jamleck Ntonjira</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-6 bg-white">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Jamtech Website</h3>
+                                        <p class="text-gray-600">E-commerce platform for electronics</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper-slide" style="width: 300px;">
+                                <div class="portfolio-item relative rounded-xl overflow-hidden shadow-md h-full" data-category="web">
+                                    <img src="./images/afri.png" alt="Africhain Website" class="w-full h-48 object-cover">
+                                    <div class="portfolio-overlay absolute inset-0 flex items-end opacity-0 transform translate-y-4">
+                                        <div class="p-6 text-white">
+                                            <h3 class="text-xl font-bold mb-2">AfriChain WEB3</h3>
+                                            <p class="mb-4">Created a web3 website for <a href="https://africhainke.netlify.app" class="underline">AfriChain</a>, focusing on secure payment gateways.</p>
+                                            <p class="text-sm"><strong>Testimonial:</strong> "Innovative and user-friendly!" – Personal Project</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-6 bg-white">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-2">AfriChain WEB3</h3>
+                                        <p class="text-gray-600">Blockchain-based platform</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper-slide" style="width: 300px;">
+                                <div class="portfolio-item relative rounded-xl overflow-hidden shadow-md h-full" data-category="web">
+                                    <img src="./images/2.PNG" alt="Ruto Must Go Website" class="w-full h-48 object-cover">
+                                    <div class="portfolio-overlay absolute inset-0 flex items-end opacity-0 transform translate-y-4">
+                                        <div class="p-6 text-white">
+                                            <h3 class="text-xl font-bold mb-2">Ruto Must Go Website</h3>
+                                            <p class="mb-4">Built a website for the <a href="https://rutomustgo.pages.dev" class="underline">Ruto Must Go</a> campaign, designed to engage users.</p>
+                                            <p class="text-sm"><strong>Testimonial:</strong> "Highly engaging platform!" – Personal Project</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-6 bg-white">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Ruto Must Go Website</h3>
+                                        <p class="text-gray-600">Political campaign platform</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper-slide" style="width: 300px;">
+                                <div class="portfolio-item relative rounded-xl overflow-hidden shadow-md h-full" data-category="web">
+                                    <img src="./images/1.PNG" alt="Ngwai Store Website" class="w-full h-48 object-cover">
+                                    <div class="portfolio-overlay absolute inset-0 flex items-end opacity-0 transform translate-y-4">
+                                        <div class="p-6 text-white">
+                                            <h3 class="text-xl font-bold mb-2">Ngwai Store Website</h3>
+                                            <p class="mb-4">Created an e-commerce website for Ngwai Store with secure payment gateways.</p>
+                                            <p class="text-sm"><strong>Testimonial:</strong> "Boosted our sales significantly!" – Private Client</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-6 bg-white">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Ngwai Store Website</h3>
+                                        <p class="text-gray-600">E-commerce solution</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper-slide" style="width: 300px;">
+                                <div class="portfolio-item relative rounded-xl overflow-hidden shadow-md h-full" data-category="graphic">
+                                    <img src="./images/brand.png" alt="Brand Identity" class="w-full h-48 object-cover">
+                                    <div class="portfolio-overlay absolute inset-0 flex items-end opacity-0 transform translate-y-4">
+                                        <div class="p-6 text-white">
+                                            <h3 class="text-xl font-bold mb-2">Brand Identity for Startup</h3>
+                                            <p class="mb-4">Designed a complete brand identity, including logo and social media graphics.</p>
+                                            <p class="text-sm"><strong>Testimonial:</strong> "Our brand now stands out!" – Clients projects</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-6 bg-white">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Brand Identity</h3>
+                                        <p class="text-gray-600">Startup branding package</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper-slide" style="width: 300px;">
+                                <div class="portfolio-item relative rounded-xl overflow-hidden shadow-md h-full" data-category="social">
+                                    <img src="./images/campaign.png" alt="Social Media Campaign" class="w-full h-48 object-cover">
+                                    <div class="portfolio-overlay absolute inset-0 flex items-end opacity-0 transform translate-y-4">
+                                        <div class="p-6 text-white">
+                                            <h3 class="text-xl font-bold mb-2">Social Media Campaign</h3>
+                                            <p class="mb-4">Developed a targeted Instagram campaign, increasing engagement by 40%.</p>
+                                            <p class="text-sm"><strong>Testimonial:</strong> "Our audience loves the content!" – Clients projects</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-6 bg-white">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Social Media Campaign</h3>
+                                        <p class="text-gray-600">Instagram marketing strategy</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper-slide" style="width: 300px;">
+                                <div class="portfolio-item relative rounded-xl overflow-hidden shadow-md h-full" data-category="ai">
+                                    <img src="./images/chatbot.jpeg" alt="AI Chatbot" class="w-full h-48 object-cover">
+                                    <div class="portfolio-overlay absolute inset-0 flex items-end opacity-0 transform translate-y-4">
+                                        <div class="p-6 text-white">
+                                            <h3 class="text-xl font-bold mb-2">AI Chatbot Integration</h3>
+                                            <p class="mb-4">Integrated an AI-powered chatbot for a retail website, improving support efficiency.</p>
+                                            <p class="text-sm"><strong>Testimonial:</strong> "A game-changer for our support!" – Confidential Client</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-6 bg-white">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-2">AI Chatbot</h3>
+                                        <p class="text-gray-600">Customer support automation</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Blog Section -->
+            <section id="blog" class="py-20 bg-white">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Insights, Tips, and Trends</h2>
+                        <p class="max-w-2xl mx-auto text-gray-600">Stay updated with the latest in web development, design, marketing, and AI.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                        <div class="blog-post bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                            <img src="./images/trends.jpeg" alt="Web Design Trends" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <div class="flex items-center text-sm text-gray-500 mb-3">
+                                    <span>May 15, 2025</span>
+                                    <span class="mx-2">•</span>
+                                    <span>Web Design</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-3">Top 5 Web Design Trends for 2025</h3>
+                                <p class="text-gray-600 mb-4">Explore the latest trends shaping the future of web design, from immersive 3D elements to sustainable design practices.</p>
+                                <a href="#" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300">
+                                    Read More
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="blog-post bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                            <img src="./images/business.jpeg" alt="AI for Business" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <div class="flex items-center text-sm text-gray-500 mb-3">
+                                    <span>April 28, 2025</span>
+                                    <span class="mx-2">•</span>
+                                    <span>AI</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-3">How AI is Revolutionizing Small Business Marketing</h3>
+                                <p class="text-gray-600 mb-4">Discover how AI tools can enhance your marketing efforts, from personalized content creation to predictive analytics.</p>
+                                <a href="#" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300">
+                                    Read More
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="blog-post bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                            <img src="./images/socialmedia.png" alt="Social Media Guide" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <div class="flex items-center text-sm text-gray-500 mb-3">
+                                    <span>March 10, 2025</span>
+                                    <span class="mx-2">•</span>
+                                    <span>Marketing</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-3">The Ultimate Guide to Social Media Advertising</h3>
+                                <p class="text-gray-600 mb-4">Learn strategies to maximize ROI on platforms like Instagram, Facebook, and TikTok in our comprehensive guide.</p>
+                                <a href="#" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300">
+                                    Read More
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Subscription Form -->
+                    <div class="max-w-2xl mx-auto bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl p-8 shadow-sm">
+                        <form class="newsletter-signup" id="subscriptionForm" action="https://script.google.com/macros/s/AKfycbxdPlBWT28gJbk4Za3zOln3g65EMQCnQaeqlss5-_SKqebDNvjg4lIGp9y3oDF0E95RdA/exec" method="POST">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2 text-center">Subscribe for Updates</h3>
+                            <p class="text-gray-600 text-center mb-6">Get the latest insights and exclusive offers delivered to your inbox.</p>
+                            
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <input type="hidden" name="form-name" value="subscription">
+                                <input type="email" id="subscriptionEmail" name="email" placeholder="Enter your email" aria-label="Email for subscription" required
+                                    class="flex-grow px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                <input type="hidden" name="type" value="New Subscriber Alert!">
+                                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-medium rounded-lg shadow hover:shadow-md transition-all duration-300">
+                                    Subscribe
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div id="subscriptionPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                            <div class="bg-white rounded-xl p-8 max-w-md w-full relative">
+                                <button onclick="closePopup('subscriptionPopup')" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <p id="subscriptionPopupMessage" class="text-center"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Contact Section -->
+            <section id="contact" class="py-20 bg-gray-50">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Let's Bring Your Ideas to Life</h2>
+                        <p class="max-w-2xl mx-auto text-gray-600">Ready to start your next project? I'll get back to you within 24 hours.</p>
+                    </div>
+                    
+                    <div class="flex flex-col lg:flex-row gap-12">
+                        <div class="lg:w-1/2">
+                            <form class="contact-form bg-white rounded-xl shadow-sm p-8" id="contactForm" action="https://script.google.com/macros/s/AKfycbxdPlBWT28gJbk4Za3zOln3g65EMQCnQaeqlss5-_SKqebDNvjg4lIGp9y3oDF0E95RdA/exec" method="POST">
+                                <div class="grid grid-cols-1 gap-6">
+                                    <div>
+                                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                        <input type="text" id="name" name="name" required aria-label="Your name" aria-required="true"
+                                            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                        <input type="email" id="email" name="email" required aria-label="Your email" aria-required="true"
+                                            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                        <input type="tel" id="phone" name="phone" aria-label="Your phone number"
+                                            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="service" class="block text-sm font-medium text-gray-700 mb-1">Service</label>
+                                        <select id="service" name="service" required aria-label="Select a service" aria-required="true"
+                                            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                            <option value="">Select a Service</option>
+                                            <option value="web">Web Development</option>
+                                            <option value="graphic">Graphic Design</option>
+                                            <option value="social">Social Media Marketing</option>
+                                            <option value="tech">Tech Solutions</option>
+                                            <option value="ai">AI Solutions</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                        <textarea id="message" name="message" required aria-label="Your message" aria-required="true" rows="5"
+                                            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"></textarea>
+                                    </div>
+                                    
+                                    <input type="hidden" name="type" value="New Client Alert!">
+                                    <input type="hidden" name="form-name" value="contact">
+                                    
+                                    <button type="submit" class="w-full px-6 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-medium rounded-lg shadow hover:shadow-md transition-all duration-300">
+                                        Submit Your Inquiry
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <div id="contactPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                                <div class="bg-white rounded-xl p-8 max-w-md w-full relative">
+                                    <button onclick="closePopup('contactPopup')" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <p id="contactPopupMessage" class="text-center"></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="lg:w-1/2">
+                            <div class="bg-white rounded-xl shadow-sm p-8 h-full">
+                                <h3 class="text-xl font-bold text-gray-900 mb-6">Contact Information</h3>
+                                
+                                <div class="space-y-6">
+                                    <div class="flex items-start">
+                                        <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mr-4 flex-shrink-0">
+                                            <i class="fas fa-envelope"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-gray-900 mb-1">Email</h4>
+                                            <a href="mailto:jonathanmwaniki07@gmail.com" class="text-gray-600 hover:text-primary-600 transition-colors duration-300">jonathanmwaniki07@gmail.com</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mr-4 flex-shrink-0">
+                                            <i class="fas fa-phone-alt"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-gray-900 mb-1">Phone</h4>
+                                            <a href="tel:+254706396305" class="text-gray-600 hover:text-primary-600 transition-colors duration-300">+254 706 396 305</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mr-4 flex-shrink-0">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-gray-900 mb-1">Business Hours</h4>
+                                            <p class="text-gray-600">Mon-Fri, 9 AM - 5 PM EAT</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pt-6 border-t border-gray-200">
+                                        <h4 class="font-medium text-gray-900 mb-4">Connect With Me</h4>
+                                        <div class="flex space-x-4">
+                                            <a href="https://twitter.com/maestropuns" target="_blank" class="w-10 h-10 bg-gray-100 hover:bg-primary-100 rounded-full flex items-center justify-center text-gray-600 hover:text-primary-600 transition-colors duration-300" aria-label="Twitter">
+                                                <i class="fab fa-twitter"></i>
+                                            </a>
+                                            <a href="https://www.instagram.com/jonaahrojo" target="_blank" class="w-10 h-10 bg-gray-100 hover:bg-primary-100 rounded-full flex items-center justify-center text-gray-600 hover:text-primary-600 transition-colors duration-300" aria-label="Instagram">
+                                                <i class="fab fa-instagram"></i>
+                                            </a>
+                                            <a href="https://wa.me/+254706396305" target="_blank" class="w-10 h-10 bg-gray-100 hover:bg-primary-100 rounded-full flex items-center justify-center text-gray-600 hover:text-primary-600 transition-colors duration-300" aria-label="WhatsApp">
+                                                <i class="fab fa-whatsapp"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Footer -->
+            <footer class="bg-gray-900 text-white py-12 relative overflow-hidden">
+                <div class="absolute inset-0 overflow-hidden">
+                    <div class="blob w-96 h-96 -top-64 -right-64 animate-blob opacity-10 animation-delay-2000"></div>
+                    <div class="blob w-80 h-80 bottom-0 left-0 animate-blob opacity-10"></div>
+                </div>
+                
+                <div class="container mx-auto px-6 relative z-10">
+                    <div class="flex flex-col md:flex-row justify-between items-center">
+                        <div class="mb-8 md:mb-0">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center mr-3">
+                                    <span class="text-white font-bold">JM</span>
+                                </div>
+                                <span class="text-xl font-bold">Jonathan Mwaniki</span>
+                            </div>
+                            <p class="mt-4 text-gray-400 max-w-md">Digital solutions expert helping businesses thrive through technology, design, and innovation.</p>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-8">
+                            <div>
+                                <h4 class="text-lg font-bold mb-4">Quick Links</h4>
+                                <ul class="space-y-2">
+                                    <li><a href="#home" class="text-gray-400 hover:text-white transition-colors duration-300">Home</a></li>
+                                    <li><a href="#services" class="text-gray-400 hover:text-white transition-colors duration-300">Services</a></li>
+                                    <li><a href="#portfolio" class="text-gray-400 hover:text-white transition-colors duration-300">Portfolio</a></li>
+                                    <li><a href="#blog" class="text-gray-400 hover:text-white transition-colors duration-300">Blog</a></li>
+                                    <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors duration-300">Contact</a></li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-lg font-bold mb-4">Services</h4>
+                                <ul class="space-y-2">
+                                    <li><a href="#services" class="text-gray-400 hover:text-white transition-colors duration-300">Web Development</a></li>
+                                    <li><a href="#services" class="text-gray-400 hover:text-white transition-colors duration-300">Graphic Design</a></li>
+                                    <li><a href="#services" class="text-gray-400 hover:text-white transition-colors duration-300">Social Media</a></li>
+                                    <li><a href="#services" class="text-gray-400 hover:text-white transition-colors duration-300">Tech Solutions</a></li>
+                                    <li><a href="#services" class="text-gray-400 hover:text-white transition-colors duration-300">AI Solutions</a></li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-lg font-bold mb-4">Legal</h4>
+                                <ul class="space-y-2">
+                                    <li><a href="#privacy" class="text-gray-400 hover:text-white transition-colors duration-300">Privacy Policy</a></li>
+                                    <li><a href="#terms" class="text-gray-400 hover:text-white transition-colors duration-300">Terms of Service</a></li>
+                                    <li><a href="#cookies" class="text-gray-400 hover:text-white transition-colors duration-300">Cookie Policy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                        <p class="text-gray-400 mb-4 md:mb-0">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
+                        
+                        <a href="./downloads/ai-guide.pdf" class="px-6 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-medium rounded-full shadow hover:shadow-md transition-all duration-300 inline-flex items-center">
+                            <i class="fas fa-download mr-2"></i>
+                            Download Free AI Guide
+                        </a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        
         <!-- Live Chat -->
-        <div class="live-chat">
-            <button id="chat-toggle" aria-label="Open live chat">Chat with Us</button>
-            <div id="chat-window" style="display: none;">
-                <p>Live chat functionality (AI-powered) to be integrated.</p>
+        <div class="live-chat fixed bottom-8 right-8 z-40">
+            <button id="chat-toggle" class="w-14 h-14 bg-gradient-to-br from-primary-500 to-secondary-500 text-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all duration-300 transform hover:scale-110 focus:outline-none" aria-label="Open live chat">
+                <i class="fas fa-comment-dots text-xl"></i>
+            </button>
+            
+            <div id="chat-window" class="hidden absolute bottom-20 right-0 w-80 bg-white rounded-xl shadow-xl overflow-hidden">
+                <div class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white p-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold">Chat with Jonathan</h3>
+                        <button id="chat-close" class="text-white hover:text-gray-200">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="p-4 h-64 overflow-y-auto">
+                    <div class="chat-message mb-4">
+                        <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
+                            <p class="text-gray-800">Hi there! How can I help you today?</p>
+                            <p class="text-xs text-gray-500 mt-1">Jonathan, Just now</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-200 p-4">
+                    <div class="flex">
+                        <input type="text" placeholder="Type your message..." class="flex-grow px-4 py-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-transparent">
+                        <button class="px-4 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-r-lg">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-<script>
-    // Splash Screen
-    document.addEventListener('DOMContentLoaded', function() {
-        const splashScreen = document.getElementById('splashScreen');
-        const mainContent = document.getElementById('mainContent');
-        const progressBar = document.getElementById('progressBar');
-        
-        let width = 0;
-        const totalTime = 3000; // 3 seconds in milliseconds
-        const increment = 100 / (totalTime / 100);
-        const interval = setInterval(function() {
-            if (width >= 100) {
-                clearInterval(interval);
-                splashScreen.style.opacity = '0';
-                splashScreen.style.transition = 'opacity 0.5s ease-out';
-                setTimeout(function() {
-                    splashScreen.style.display = 'none';
-                    mainContent.style.display = 'block';
-                    document.body.style.overflow = 'auto';
-                }, 500);
-            } else {
-                width += increment;
-                progressBar.style.width = Math.min(width, 100) + '%';
+    <script>
+        // Splash Screen
+        document.addEventListener('DOMContentLoaded', function() {
+            const splashScreen = document.getElementById('splashScreen');
+            const mainContent = document.getElementById('mainContent');
+            const progressBar = document.getElementById('progressBar');
+            
+            // Create floating particles
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 2px and 6px
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.6 + 0.2;
+                
+                // Random animation
+                const duration = Math.random() * 20 + 10;
+                particle.style.animation = `float ${duration}s ease-in-out infinite`;
+                
+                particlesContainer.appendChild(particle);
             }
-        }, 100);
-        document.body.style.overflow = 'hidden';
-    });
-
-    // Hamburger Menu
-    const hamburger = document.getElementById('hamburger');
-    const menu = document.getElementById('menu');
-    hamburger.addEventListener('click', (event) => {
-        event.stopPropagation();
-        menu.classList.toggle('active');
-        hamburger.setAttribute('aria-expanded', menu.classList.contains('active'));
-    });
-    document.addEventListener('click', (event) => {
-        if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
-            menu.classList.remove('active');
-            hamburger.setAttribute('aria-expanded', 'false');
-        }
-    });
-    menu.addEventListener('click', (event) => {
-        event.stopPropagation();
-    });
-
-    // FAQ Accordion
-    const faqQuestions = document.querySelectorAll('.faq-question');
-    faqQuestions.forEach(question => {
-        question.addEventListener('click', () => {
-            const answer = question.nextElementSibling;
-            const isOpen = answer.style.display === 'block';
-            answer.style.display = isOpen ? 'none' : 'block';
-            question.setAttribute('aria-expanded', !isOpen);
-        });
-    });
-
-    // Portfolio Filter
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const portfolioItems = document.querySelectorAll('.portfolio-item');
-    const portfolioSwiper = document.querySelector('#portfolio .portfolio-grid');
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            const filter = button.getAttribute('data-filter');
-            portfolioItems.forEach(item => {
-                if (filter === 'all' || item.getAttribute('data-category') === filter) {
-                    item.style.visibility = 'visible';
-                    item.style.opacity = '1';
-                    item.style.height = 'auto';
+            
+            // Progress bar animation
+            let width = 0;
+            const totalTime = 3000; // 3 seconds in milliseconds
+            const increment = 100 / (totalTime / 100);
+            const interval = setInterval(function() {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    splashScreen.classList.add('opacity-0');
+                    setTimeout(function() {
+                        splashScreen.classList.add('hidden');
+                        mainContent.classList.remove('hidden');
+                        document.body.style.overflow = 'auto';
+                    }, 500);
                 } else {
-                    item.style.visibility = 'hidden';
-                    item.style.opacity = '0';
-                    item.style.height = '0';
+                    width += increment;
+                    progressBar.style.width = Math.min(width, 100) + '%';
+                }
+            }, 100);
+            document.body.style.overflow = 'hidden';
+        });
+        
+        // Mobile Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const menu = document.getElementById('menu');
+        
+        hamburger.addEventListener('click', (event) => {
+            event.stopPropagation();
+            menu.classList.toggle('translate-x-full');
+            menu.classList.toggle('translate-x-0');
+            
+            // Animate hamburger icon
+            const spans = hamburger.querySelectorAll('span');
+            if (menu.classList.contains('translate-x-0')) {
+                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                spans[1].style.opacity = '0';
+                spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+            } else {
+                spans[0].style.transform = '';
+                spans[1].style.opacity = '';
+                spans[2].style.transform = '';
+            }
+        });
+        
+        document.addEventListener('click', (event) => {
+            if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                menu.classList.add('translate-x-full');
+                menu.classList.remove('translate-x-0');
+                
+                // Reset hamburger icon
+                const spans = hamburger.querySelectorAll('span');
+                spans[0].style.transform = '';
+                spans[1].style.opacity = '';
+                spans[2].style.transform = '';
+            }
+        });
+        
+        // FAQ Accordion
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isOpen = question.getAttribute('aria-expanded') === 'true';
+                
+                // Toggle icon
+                const icon = question.querySelector('i');
+                if (isOpen) {
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    icon.style.transform = 'rotate(180deg)';
+                }
+                
+                // Toggle answer
+                question.setAttribute('aria-expanded', !isOpen);
+            });
+        });
+        
+        // Portfolio Filter
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active', 'bg-primary-100', 'border-primary-300', 'text-primary-600'));
+                button.classList.add('active', 'bg-primary-100', 'border-primary-300', 'text-primary-600');
+                
+                const filter = button.getAttribute('data-filter');
+                
+                // Filter items
+                portfolioItems.forEach(item => {
+                    if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+                
+                // Update swiper
+                if (portfolioSwiper) {
+                    setTimeout(() => portfolioSwiper.update(), 300);
                 }
             });
-            if (portfolioSwiper.swiper) {
-                setTimeout(() => portfolioSwiper.swiper.update(), 300);
+        });
+        
+        // Initialize Swipers
+        const testimonialSwiper = new Swiper('.testimonials-slider', {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            grabCursor: true,
+            breakpoints: {
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 30,
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                }
             }
         });
-    });
-
-    // Swiper for Portfolio and Portfolio Highlights
-    const portfolioSwipers = document.querySelectorAll('.portfolio-grid');
-    portfolioSwipers.forEach(swiper => {
-        new Swiper(swiper, {
-            slidesPerView: 1,
+        
+        const portfolioSwiper = new Swiper('.portfolio-grid', {
+            slidesPerView: 'auto',
             spaceBetween: 20,
             pagination: {
                 el: '.swiper-pagination',
@@ -564,153 +1590,167 @@
             },
             grabCursor: true,
             breakpoints: {
-                768: {
-                    slidesPerView: 'auto',
-                    spaceBetween: 30,
+                640: {
+                    slidesPerView: 2,
+                },
+                1024: {
+                    slidesPerView: 3,
+                },
+                1280: {
+                    slidesPerView: 4,
                 }
             }
         });
-    });
-
-    // Swiper for Testimonials
-    new Swiper('.testimonials-slider', {
-        slidesPerView: 1,
-        spaceBetween: 20,
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-        },
-        autoplay: {
-            delay: 5000,
-            disableOnInteraction: false,
-        },
-        grabCursor: true,
-    });
-
-    // Live Chat Toggle
-    const chatToggle = document.getElementById('chat-toggle');
-    const chatWindow = document.getElementById('chat-window');
-    chatToggle.addEventListener('click', () => {
-        const isOpen = chatWindow.style.display === 'block';
-        chatWindow.style.display = isOpen ? 'none' : 'block';
-        chatToggle.setAttribute('aria-expanded', !isOpen);
-    });
-
-    // Close popup function
-    function closePopup(popupId) {
-        document.getElementById(popupId).style.display = 'none';
-    }
-
-   // Handle subscription form submission
-document.getElementById('subscriptionForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const email = document.getElementById('subscriptionEmail').value;
-    const popup = document.getElementById('subscriptionPopup');
-    const popupMessage = document.getElementById('subscriptionPopupMessage');
-    const form = document.getElementById('subscriptionForm');
-    const submitButton = form.querySelector('button');
-
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        popupMessage.textContent = 'Please enter a valid email address';
-        popup.classList.add('error');
-        popup.style.display = 'flex';
-        return;
-    }
-
-    submitButton.disabled = true;
-
-    try {
-        const formData = new FormData(form);
-        const response = await fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
+        
+        // Live Chat Toggle
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatWindow = document.getElementById('chat-window');
+        const chatClose = document.getElementById('chat-close');
+        
+        chatToggle.addEventListener('click', () => {
+            chatWindow.classList.toggle('hidden');
+            chatWindow.classList.toggle('animate-slide-up');
         });
-
-        const result = await response.json();
-
-        if (result.result === 'success') {
-            popupMessage.textContent = 'Subscription successful!';
-            popup.classList.remove('error');
-            popup.style.display = 'flex';
-            form.reset();
-            setTimeout(() => closePopup('subscriptionPopup'), 3000);
-        } else {
-            popupMessage.textContent = `Error: ${result.message || 'Could not subscribe'}`;
-            popup.classList.add('error');
-            popup.style.display = 'flex';
-        }
-    } catch (error) {
-        popupMessage.textContent = 'Error: Could not subscribe. Please try again.';
-        popup.classList.add('error');
-        popup.style.display = 'flex';
-        console.error('Submission error:', error);
-    } finally {
-        submitButton.disabled = false;
-    }
-});
-
-// Handle contact form submission
-document.getElementById('contactForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const formData = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        service: document.getElementById('service').value,
-        message: document.getElementById('message').value
-    };
-    const popup = document.getElementById('contactPopup');
-    const popupMessage = document.getElementById('contactPopupMessage');
-    const form = document.getElementById('contactForm');
-    const submitButton = form.querySelector('button');
-
-    if (!formData.name || !formData.email || !formData.service || !formData.message) {
-        popupMessage.textContent = 'Please fill in all required fields';
-        popup.classList.add('error');
-        popup.style.display = 'flex';
-        return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        popupMessage.textContent = 'Please enter a valid email address';
-        popup.classList.add('error');
-        popup.style.display = 'flex';
-        return;
-    }
-
-    submitButton.disabled = true;
-
-    try {
-        const formDataObj = new FormData(form);
-        const response = await fetch(form.action, {
-            method: 'POST',
-            body: formDataObj,
-            headers: { 'Accept': 'application/json' }
+        
+        chatClose.addEventListener('click', () => {
+            chatWindow.classList.add('hidden');
         });
-
-        const result = await response.json();
-
-        if (result.result === 'success') {
-            popupMessage.textContent = 'Message sent!';
-            popup.classList.remove('error');
-            popup.style.display = 'flex';
-            form.reset();
-            setTimeout(() => closePopup('contactPopup'), 3000);
-        } else {
-            popupMessage.textContent = `Error: ${result.message || 'Could not send message'}`;
-            popup.classList.add('error');
-            popup.style.display = 'flex';
+        
+        // Close popup function
+        function closePopup(popupId) {
+            document.getElementById(popupId).classList.add('hidden');
         }
-    } catch (error) {
-        popupMessage.textContent = 'Error: Could not send message. Please try again.';
-        popup.classList.add('error');
-        popup.style.display = 'flex';
-        console.error('Submission error:', error);
-    } finally {
-        submitButton.disabled = false;
-    }
-});
-</script>
+        
+        // Handle subscription form submission
+        document.getElementById('subscriptionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('subscriptionEmail').value;
+            const popup = document.getElementById('subscriptionPopup');
+            const popupMessage = document.getElementById('subscriptionPopupMessage');
+            const form = document.getElementById('subscriptionForm');
+            const submitButton = form.querySelector('button');
+            
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                popupMessage.textContent = 'Please enter a valid email address';
+                popup.classList.remove('hidden');
+                return;
+            }
+            
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Sending...';
+            
+            try {
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                const result = await response.json();
+                
+                if (result.result === 'success') {
+                    popupMessage.textContent = 'Thank you for subscribing! You\'ll receive updates soon.';
+                    popup.classList.remove('hidden');
+                    form.reset();
+                    setTimeout(() => popup.classList.add('hidden'), 3000);
+                } else {
+                    popupMessage.textContent = `Error: ${result.message || 'Could not subscribe'}`;
+                    popup.classList.remove('hidden');
+                }
+            } catch (error) {
+                popupMessage.textContent = 'Error: Could not subscribe. Please try again.';
+                popup.classList.remove('hidden');
+                console.error('Submission error:', error);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Subscribe';
+            }
+        });
+        
+        // Handle contact form submission
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                service: document.getElementById('service').value,
+                message: document.getElementById('message').value
+            };
+            const popup = document.getElementById('contactPopup');
+            const popupMessage = document.getElementById('contactPopupMessage');
+            const form = document.getElementById('contactForm');
+            const submitButton = form.querySelector('button');
+            
+            if (!formData.name || !formData.email || !formData.service || !formData.message) {
+                popupMessage.textContent = 'Please fill in all required fields';
+                popup.classList.remove('hidden');
+                return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+                popupMessage.textContent = 'Please enter a valid email address';
+                popup.classList.remove('hidden');
+                return;
+            }
+            
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Sending...';
+            
+            try {
+                const formDataObj = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formDataObj,
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                const result = await response.json();
+                
+                if (result.result === 'success') {
+                    popupMessage.textContent = 'Thank you for your message! I\'ll get back to you soon.';
+                    popup.classList.remove('hidden');
+                    form.reset();
+                    setTimeout(() => popup.classList.add('hidden'), 3000);
+                } else {
+                    popupMessage.textContent = `Error: ${result.message || 'Could not send message'}`;
+                    popup.classList.remove('hidden');
+                }
+            } catch (error) {
+                popupMessage.textContent = 'Error: Could not send message. Please try again.';
+                popup.classList.remove('hidden');
+                console.error('Submission error:', error);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Submit Your Inquiry';
+            }
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    // Close mobile menu if open
+                    if (!menu.classList.contains('translate-x-full')) {
+                        menu.classList.add('translate-x-full');
+                        menu.classList.remove('translate-x-0');
+                        const spans = hamburger.querySelectorAll('span');
+                        spans[0].style.transform = '';
+                        spans[1].style.opacity = '';
+                        spans[2].style.transform = '';
+                    }
+                    
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
