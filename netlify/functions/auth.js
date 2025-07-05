@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 
-// Pre-computed SHA-256 hashes
+// Pre-computed SHA-256 hashes of valid PINs (0000, 1711, 2000)
 const validHashes = [
     '4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5', // 0000
     'efd4f5146a9d0e3ea250d4eb9f57a7a098c5a82e6e3c7a1a8f0e5f2a0a3b3c4', // 1711
@@ -8,19 +8,19 @@ const validHashes = [
 ];
 
 exports.handler = async (event) => {
-    try {
-        // Allow OPTIONS for CORS preflight
-        if (event.httpMethod === 'OPTIONS') {
-            return {
-                statusCode: 204,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-                    'Access-Control-Allow-Headers': 'Content-Type'
-                }
-            };
-        }
+    // Handle CORS preflight
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            statusCode: 204,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type'
+            }
+        };
+    }
 
+    try {
         const { token } = JSON.parse(event.body);
         
         if (validHashes.includes(token)) {
@@ -28,7 +28,7 @@ exports.handler = async (event) => {
                 statusCode: 200,
                 headers: {
                     'Access-Control-Allow-Origin': '*',
-                    'Cache-Control': 'no-store' // Prevent caching of auth response
+                    'Cache-Control': 'no-store, max-age=0'
                 },
                 body: JSON.stringify({ authorized: true })
             };
@@ -37,7 +37,7 @@ exports.handler = async (event) => {
         return {
             statusCode: 403,
             headers: { 'Access-Control-Allow-Origin': '*' },
-            body: JSON.stringify({ error: 'Invalid credentials' }) // Generic error
+            body: JSON.stringify({ error: 'Invalid credentials' })
         };
     } catch (error) {
         return {
