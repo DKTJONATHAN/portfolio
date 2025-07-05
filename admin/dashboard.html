@@ -12,6 +12,20 @@
         [data-loading] { display: none; }
         .fade-in { animation: fadeIn 0.3s ease-in; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Loading spinner animation */
+        .spinner {
+            animation: spin 1s linear infinite;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            display: inline-block;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -30,8 +44,20 @@
         <main class="container mx-auto px-4 py-8">
             <!-- Loading Indicator -->
             <div id="loadingIndicator" class="text-center py-8">
-                <i class="fas fa-spinner fa-spin text-3xl text-blue-500"></i>
+                <div class="spinner mx-auto"></div>
                 <p class="mt-4 text-gray-600">Loading dashboard...</p>
+                <button id="retryButton" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hidden">
+                    <i class="fas fa-sync-alt mr-2"></i>Retry
+                </button>
+            </div>
+
+            <!-- Error State (hidden by default) -->
+            <div id="errorState" class="text-center py-8 hidden">
+                <i class="fas fa-exclamation-triangle text-3xl text-red-500"></i>
+                <p class="mt-4 text-gray-600" id="errorMessage">Failed to load dashboard</p>
+                <button id="retryButton2" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+                    <i class="fas fa-sync-alt mr-2"></i>Retry
+                </button>
             </div>
 
             <!-- Content (initially hidden) -->
@@ -99,31 +125,41 @@
     <script>
         // Configuration
         const AUTH_CHECK_INTERVAL = 300000; // 5 minutes
+        const LOAD_TIMEOUT = 15000; // 15 seconds timeout
         let authCheckInterval;
 
         // DOM Elements
         const elements = {
             loadingIndicator: document.getElementById('loadingIndicator'),
+            errorState: document.getElementById('errorState'),
+            errorMessage: document.getElementById('errorMessage'),
             dashboardContent: document.getElementById('dashboardContent'),
             contactData: document.getElementById('contactData'),
             subscriberData: document.getElementById('subscriberData'),
-            logoutBtn: document.getElementById('logoutBtn')
+            logoutBtn: document.getElementById('logoutBtn'),
+            retryButton: document.getElementById('retryButton'),
+            retryButton2: document.getElementById('retryButton2')
         };
 
         // Session Management
         async function verifyAuth() {
             try {
-                if (localStorage.getItem('isAuthenticated') {
-                    const response = await fetch('/.netlify/functions/auth', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'verify_session' })
-                    });
-                    return response.ok;
+                if (!localStorage.getItem('isAuthenticated')) {
+                    throw new Error('No active session');
                 }
-                return false;
+
+                const response = await fetch('/.netlify/functions/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'verify_session' })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Session verification failed');
+                }
+                return true;
             } catch (error) {
-                console.error('Auth verification failed:', error);
+                console.error('Auth verification error:', error);
                 return false;
             }
         }
@@ -135,21 +171,39 @@
         }
 
         // Data Handling
-        async function fetchData(endpoint) {
+        async function fetchDataWithTimeout(endpoint, timeout = LOAD_TIMEOUT) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+
             try {
-                const response = await fetch(`/.netlify/functions/${endpoint}`);
-                if (!response.ok) throw new Error('Failed to fetch data');
+                const response = await fetch(`/.netlify/functions/${endpoint}`, {
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
                 return await response.json();
             } catch (error) {
-                console.error(`Error fetching ${endpoint}:`, error);
+                clearTimeout(timeoutId);
                 throw error;
             }
         }
 
         function renderData(containerId, data, columns) {
             const container = document.getElementById(containerId);
-            if (!data.length) {
-                container.innerHTML = `<tr><td colspan="${columns.length}" class="px-6 py-4 text-center text-gray-500">No data available</td></tr>`;
+            
+            if (!data || !Array.isArray(data) || data.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="${columns.length}" class="px-6 py-4 text-center text-gray-500">
+                            No data available
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
@@ -169,6 +223,8 @@
             if (!confirm(`Delete this ${type} entry?`)) return;
             
             try {
+                showLoadingState(true, `Deleting ${type} entry...`);
+                
                 const endpoint = type === 'contact' ? 'deleteForm' : 'deleteSubscriber';
                 const response = await fetch(`/.netlify/functions/${endpoint}`, {
                     method: 'POST',
@@ -176,15 +232,17 @@
                     body: JSON.stringify({ id })
                 });
 
-                if (response.ok) {
-                    await loadData();
-                    showToast('Item deleted successfully');
-                } else {
-                    throw new Error('Deletion failed');
+                if (!response.ok) {
+                    throw new Error('Delete failed');
                 }
+
+                await loadData();
+                showToast('Item deleted successfully');
             } catch (error) {
                 console.error('Delete error:', error);
                 showToast('Failed to delete item', 'error');
+            } finally {
+                showLoadingState(false);
             }
         }
 
@@ -193,28 +251,34 @@
             if (!confirm(`Delete ALL ${activeTab} entries? This cannot be undone!`)) return;
             
             try {
+                showLoadingState(true, `Deleting all ${activeTab}...`);
+                
                 const endpoint = activeTab === 'contact' ? 'deleteAllForms' : 'deleteAllSubscribers';
                 const response = await fetch(`/.netlify/functions/${endpoint}`, { 
                     method: 'POST' 
                 });
 
-                if (response.ok) {
-                    await loadData();
-                    showToast(`All ${activeTab} deleted successfully`);
-                } else {
-                    throw new Error('Bulk deletion failed');
+                if (!response.ok) {
+                    throw new Error('Bulk delete failed');
                 }
+
+                await loadData();
+                showToast(`All ${activeTab} deleted successfully`);
             } catch (error) {
                 console.error('Delete all error:', error);
                 showToast('Failed to delete items', 'error');
+            } finally {
+                showLoadingState(false);
             }
         }
 
         async function exportData(format) {
             try {
+                showLoadingState(true, `Preparing ${format.toUpperCase()} export...`);
+                
                 const activeTab = document.querySelector('.nav-item.active').dataset.tab;
                 const endpoint = activeTab === 'contact' ? 'getForms' : 'getSubscribers';
-                const data = await fetchData(endpoint);
+                const data = await fetchDataWithTimeout(endpoint, 20000);
                 
                 if (format === 'csv') {
                     const headers = Object.keys(data[0] || {});
@@ -234,6 +298,8 @@
             } catch (error) {
                 console.error('Export error:', error);
                 showToast('Export failed', 'error');
+            } finally {
+                showLoadingState(false);
             }
         }
 
@@ -244,7 +310,9 @@
             const a = document.createElement('a');
             a.href = url;
             a.download = filename;
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
 
@@ -252,8 +320,11 @@
             const toast = document.createElement('div');
             toast.className = `fixed bottom-4 right-4 px-4 py-2 rounded-md shadow-lg text-white ${
                 type === 'error' ? 'bg-red-500' : 'bg-green-500'
-            } animate-fade-in`;
-            toast.textContent = message;
+            } animate-fade-in flex items-center`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'} mr-2"></i>
+                ${message}
+            `;
             document.body.appendChild(toast);
             
             setTimeout(() => {
@@ -262,23 +333,32 @@
             }, 3000);
         }
 
-        // Initialize Dashboard
-        async function initDashboard() {
-            if (!await verifyAuth()) {
-                endSession();
-                return;
+        function showLoadingState(show, message = 'Loading...') {
+            if (show) {
+                elements.loadingIndicator.querySelector('p').textContent = message;
+                elements.loadingIndicator.classList.remove('hidden');
+                elements.dashboardContent.classList.add('hidden');
+                elements.errorState.classList.add('hidden');
+            } else {
+                elements.loadingIndicator.classList.add('hidden');
             }
+        }
 
-            // Start session monitoring
-            authCheckInterval = setInterval(async () => {
-                if (!await verifyAuth()) endSession();
-            }, AUTH_CHECK_INTERVAL);
+        function showErrorState(message) {
+            elements.errorMessage.textContent = message;
+            elements.loadingIndicator.classList.add('hidden');
+            elements.dashboardContent.classList.add('hidden');
+            elements.errorState.classList.remove('hidden');
+        }
 
-            // Load data
+        // Core Functions
+        async function loadData() {
             try {
+                showLoadingState(true, 'Loading data...');
+                
                 const [contacts, subscribers] = await Promise.all([
-                    fetchData('getForms'),
-                    fetchData('getSubscribers')
+                    fetchDataWithTimeout('getForms'),
+                    fetchDataWithTimeout('getSubscribers')
                 ]);
 
                 renderData('contactData', contacts, [
@@ -304,13 +384,37 @@
                     `}
                 ]);
 
-                // Show UI
+                // Show content
                 elements.loadingIndicator.classList.add('hidden');
+                elements.errorState.classList.add('hidden');
                 elements.dashboardContent.classList.remove('hidden');
+
             } catch (error) {
-                console.error('Initialization error:', error);
-                showToast('Failed to load data', 'error');
-                setTimeout(endSession, 2000);
+                console.error('Data load error:', error);
+                showErrorState(`Failed to load data: ${error.message}`);
+            }
+        }
+
+        // Initialize Dashboard
+        async function initDashboard() {
+            try {
+                // Verify authentication first
+                if (!await verifyAuth()) {
+                    endSession();
+                    return;
+                }
+
+                // Start session monitor
+                authCheckInterval = setInterval(async () => {
+                    if (!await verifyAuth()) endSession();
+                }, AUTH_CHECK_INTERVAL);
+
+                // Load initial data
+                await loadData();
+
+            } catch (error) {
+                console.error('Dashboard initialization failed:', error);
+                showErrorState('Dashboard initialization failed');
             }
         }
 
@@ -332,6 +436,10 @@
             document.getElementById('exportJSON').addEventListener('click', () => exportData('json'));
             document.getElementById('deleteAll').addEventListener('click', handleDeleteAll);
             elements.logoutBtn.addEventListener('click', endSession);
+            
+            // Retry buttons
+            elements.retryButton.addEventListener('click', loadData);
+            elements.retryButton2.addEventListener('click', loadData);
         }
 
         // Start the dashboard
@@ -361,4 +469,4 @@
         }
     </style>
 </body>
-</html>
+</html> 
