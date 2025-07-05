@@ -37,30 +37,48 @@
             </form>
         </div>
     </div>
-
-    <script>
-        const validPins = ['0000', '1711', '2000'];
+<!-- Update just the script portion -->
+<script>
+    const validPins = ['0000', '1711', '2000'];
+    
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const pinInput = document.getElementById('pin');
+        const errorMsg = document.getElementById('errorMsg');
+        const submitBtn = e.target.querySelector('button[type="submit"]');
         
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const enteredPin = document.getElementById('pin').value;
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+        
+        try {
+            const enteredPin = pinInput.value;
             
             if (validPins.includes(enteredPin)) {
-                // SHA-256 hash the PIN before sending (implementation in auth.js)
                 const hashedPin = await sha256(enteredPin);
                 localStorage.setItem('authToken', hashedPin);
                 window.location.href = '/admin/dashboard.html';
             } else {
-                document.getElementById('errorMsg').classList.remove('hidden');
+                errorMsg.textContent = 'Invalid PIN. Please try again.';
+                errorMsg.classList.remove('hidden');
+                pinInput.value = '';
+                pinInput.focus();
             }
-        });
-
-        async function sha256(message) {
-            const msgBuffer = new TextEncoder().encode(message);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        } catch (error) {
+            errorMsg.textContent = 'Login failed. Please try again.';
+            errorMsg.classList.remove('hidden');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
         }
-    </script>
+    });
+
+    async function sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+</script>
 </body>
 </html>
