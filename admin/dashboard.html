@@ -89,28 +89,76 @@
     </div>
 
     <script>
-        // Authentication check
+        // Session management - enhanced version
+        const AUTH_CHECK_INTERVAL = 300000; // 5 minutes
+        let authCheckInterval;
+
+        // Enhanced verifyAuth with session monitoring
         async function verifyAuth() {
-            const authToken = localStorage.getItem('authToken');
-            if (!authToken) {
-                window.location.href = '/admin/index.html';
-                return false;
-            }
+            try {
+                const authToken = localStorage.getItem('authToken');
+                if (!authToken) throw new Error('No token');
 
-            // Verify token with backend
-            const response = await fetch('/.netlify/functions/auth', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: authToken })
-            });
+                const response = await fetch('/.netlify/functions/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: authToken })
+                });
 
-            if (!response.ok) {
+                if (!response.ok) throw new Error('Invalid token');
+                return true;
+            } catch (error) {
                 localStorage.removeItem('authToken');
                 window.location.href = '/admin/index.html';
                 return false;
             }
+        }
 
-            return true;
+        // Initialize with session monitoring
+        async function initDashboard() {
+            if (!await verifyAuth()) return;
+            
+            // Start periodic auth checks
+            authCheckInterval = setInterval(verifyAuth, AUTH_CHECK_INTERVAL);
+            
+            // Load initial data
+            await loadData();
+            
+            // Setup event listeners
+            setupEventListeners();
+        }
+
+        // Setup all event listeners
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('[data-tab]').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-item').forEach(item => 
+                        item.classList.toggle('active', item === tab));
+                    
+                    document.querySelectorAll('.tab-content').forEach(content => 
+                        content.classList.toggle('hidden', content.id !== `${tab.dataset.tab}Tab`));
+                });
+            });
+
+            // Export buttons
+            document.getElementById('exportCSV').addEventListener('click', () => exportData('csv'));
+            document.getElementById('exportJSON').addEventListener('click', () => exportData('json'));
+
+            // Delete all button
+            document.getElementById('deleteAll').addEventListener('click', handleDeleteAll);
+
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                clearInterval(authCheckInterval);
+                localStorage.removeItem('authToken');
+                window.location.href = '/admin/index.html';
+            });
+
+            // Window beforeunload
+            window.addEventListener('beforeunload', () => {
+                clearInterval(authCheckInterval);
+            });
         }
 
         // Load data
@@ -151,34 +199,20 @@
                 : `<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No data available</td></tr>`;
         }
 
-        // Tab switching
-        document.querySelectorAll('[data-tab]').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.nav-item').forEach(item => 
-                    item.classList.toggle('active', item === tab));
-                
-                document.querySelectorAll('.tab-content').forEach(content => 
-                    content.classList.toggle('hidden', content.id !== `${tab.dataset.tab}Tab`));
-            });
-        });
-
         // Export functions
-        document.getElementById('exportCSV').addEventListener('click', exportData.bind(null, 'csv'));
-        document.getElementById('exportJSON').addEventListener('click', exportData.bind(null, 'json'));
-
         async function exportData(format) {
             const activeTab = document.querySelector('.nav-item.active').dataset.tab;
             const endpoint = activeTab === 'contact' ? 'getForms' : 'getSubscribers';
-            
+
             const data = await fetch(`/.netlify/functions/${endpoint}`).then(res => res.json());
-            
+
             if (format === 'csv') {
                 const headers = Object.keys(data[0] || {});
                 const csv = [
                     headers.join(','),
                     ...data.map(row => headers.map(header => `"${row[header]}"`).join(','))
                 ].join('\n');
-                
+
                 downloadFile(`${activeTab}-${new Date().toISOString()}.csv`, csv);
             } else {
                 downloadFile(`${activeTab}-${new Date().toISOString()}.json`, JSON.stringify(data, null, 2));
@@ -198,7 +232,7 @@
         // Delete functions
         async function deleteItem(type, id) {
             if (!confirm(`Delete this ${type} entry?`)) return;
-            
+
             const endpoint = type === 'contact' ? 'deleteForm' : 'deleteSubscriber';
             const response = await fetch(`/.netlify/functions/${endpoint}`, {
                 method: 'POST',
@@ -209,26 +243,18 @@
             if (response.ok) loadData();
         }
 
-        document.getElementById('deleteAll').addEventListener('click', async () => {
+        async function handleDeleteAll() {
             const activeTab = document.querySelector('.nav-item.active').dataset.tab;
             if (!confirm(`Delete ALL ${activeTab} entries? This cannot be undone!`)) return;
-            
+
             const endpoint = activeTab === 'contact' ? 'deleteAllForms' : 'deleteAllSubscribers';
             const response = await fetch(`/.netlify/functions/${endpoint}`, { method: 'POST' });
-            
+
             if (response.ok) loadData();
-        });
+        }
 
-        // Logout
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            localStorage.removeItem('authToken');
-            window.location.href = '/admin/index.html';
-        });
-
-        // Initialize
-        (async () => {
-            if (await verifyAuth()) loadData();
-        })();
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', initDashboard);
     </script>
 </body>
 </html>
