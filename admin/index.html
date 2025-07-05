@@ -56,18 +56,14 @@
             errorMsg.classList.add('hidden');
             
             try {
-                const enteredPin = pinInput.value;
-                const hashedPin = await sha256(enteredPin);
-                
-                // Verify PIN with backend
                 const response = await fetch('/.netlify/functions/auth', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: hashedPin })
+                    body: JSON.stringify({ pin: pinInput.value })
                 });
                 
                 if (response.ok) {
-                    localStorage.setItem('authToken', hashedPin);
+                    localStorage.setItem('isAuthenticated', 'true');
                     window.location.href = '/admin/dashboard.html';
                 } else {
                     throw new Error('Invalid PIN');
@@ -82,13 +78,6 @@
                 submitBtn.disabled = false;
             }
         });
-
-        async function sha256(message) {
-            const msgBuffer = new TextEncoder().encode(message);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
     </script>
 </body>
 </html>
