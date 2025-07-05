@@ -3,120 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Secure Admin Portal | Mwaniki</title>
+  <title>Admin Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
     body {
+      background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(-45deg, #f0f9ff, #e0f2fe, #f0fdf4, #ecfdf5);
-      background-size: 400% 400%;
-      animation: gradient 15s ease infinite;
-      height: 100vh;
     }
-    
-    @keyframes gradient {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-    
     .login-card {
-      backdrop-filter: blur(16px);
-      background: rgba(255, 255, 255, 0.85);
-      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
-    
-    .input-field {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
     .input-field:focus {
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
-    }
-    
-    .btn-primary {
-      background-image: linear-gradient(to right, #3b82f6, #2563eb);
-      transition: all 0.3s ease;
-    }
-    
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4);
-    }
-    
-    .float-animation {
-      animation: float 6s ease-in-out infinite;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
     }
   </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
-  <!-- Animated Background Elements -->
-  <div class="fixed top-0 left-0 w-full h-full overflow-hidden z-0">
-    <div class="absolute top-20 left-10 w-16 h-16 rounded-full bg-blue-200 opacity-20 float-animation"></div>
-    <div class="absolute top-1/3 right-20 w-24 h-24 rounded-full bg-blue-300 opacity-15 float-animation" style="animation-delay: 2s;"></div>
-    <div class="absolute bottom-20 left-1/3 w-20 h-20 rounded-full bg-blue-400 opacity-10 float-animation" style="animation-delay: 4s;"></div>
-  </div>
-
-  <!-- Main Login Card -->
-  <div class="login-card rounded-2xl w-full max-w-md z-10 overflow-hidden">
-    <!-- Card Header -->
-    <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-center">
-      <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
-        <i class="fas fa-lock-open text-white text-3xl"></i>
+  <div class="login-card bg-white rounded-xl p-8 w-full max-w-md">
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-lock text-blue-500 text-2xl"></i>
       </div>
-      <h1 class="text-2xl font-bold text-white">Admin Portal</h1>
-      <p class="text-white/90 mt-1">Secure Access Only</p>
+      <h1 class="text-2xl font-bold text-gray-800">Admin Portal</h1>
+      <p class="text-gray-600 mt-1">Enter your secure PIN</p>
     </div>
-    
-    <!-- Card Body -->
-    <div class="p-8 pt-6">
-      <form id="loginForm" class="space-y-6">
-        <div>
-          <label for="pin" class="block text-sm font-medium text-gray-700 mb-1">Enter Security PIN</label>
-          <div class="relative">
-            <input 
-              type="password" 
-              id="pin" 
-              placeholder="••••" 
-              class="input-field w-full px-5 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-0"
-              maxlength="4"
-              inputmode="numeric"
-              pattern="\d*"
-              required
-            >
-            <button type="button" id="togglePin" class="absolute right-3 top-3 text-gray-400 hover:text-blue-500 transition-colors">
-              <i class="fas fa-eye"></i>
-            </button>
-          </div>
-        </div>
 
-        <button type="submit" class="btn-primary w-full text-white py-3.5 rounded-lg font-medium">
-          <span id="btnText">Authenticate</span>
-          <i id="btnSpinner" class="fas fa-spinner fa-spin ml-2 hidden"></i>
-        </button>
-      </form>
-
-      <div id="errorMsg" class="mt-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg hidden">
-        <div class="flex items-center">
-          <i class="fas fa-exclamation-circle mr-2"></i>
-          <span id="errorText">Invalid security PIN</span>
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label for="pin" class="block text-sm font-medium text-gray-700 mb-1">4-Digit PIN</label>
+        <div class="relative">
+          <input 
+            type="password" 
+            id="pin" 
+            placeholder="••••" 
+            class="input-field w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-0"
+            maxlength="4"
+            inputmode="numeric"
+            pattern="\d*"
+            required
+          >
+          <button type="button" id="togglePin" class="absolute right-3 top-3 text-gray-400 hover:text-blue-500">
+            <i class="fas fa-eye"></i>
+          </button>
         </div>
       </div>
-    </div>
-    
-    <!-- Card Footer -->
-    <div class="px-6 py-4 bg-gray-50 text-center border-t border-gray-100">
-      <p class="text-xs text-gray-500">
-        <i class="fas fa-shield-alt mr-1"></i> All access attempts are logged
-      </p>
+
+      <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium transition-colors">
+        <i class="fas fa-sign-in-alt mr-2"></i> Login
+      </button>
+    </form>
+
+    <div id="errorMsg" class="mt-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg hidden">
+      <i class="fas fa-exclamation-circle mr-2"></i>
+      <span id="errorText"></span>
     </div>
   </div>
 
@@ -124,32 +64,28 @@
     // Toggle PIN visibility
     document.getElementById('togglePin').addEventListener('click', function() {
       const pinInput = document.getElementById('pin');
-      const isHidden = pinInput.type === 'password';
-      pinInput.type = isHidden ? 'text' : 'password';
-      this.innerHTML = isHidden ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+      pinInput.type = pinInput.type === 'password' ? 'text' : 'password';
+      this.innerHTML = pinInput.type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
     });
 
     // Handle form submission
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
-      const pin = document.getElementById('pin').value.trim();
+      const pin = document.getElementById('pin').value;
       const errorMsg = document.getElementById('errorMsg');
       const errorText = document.getElementById('errorText');
-      const btnText = document.getElementById('btnText');
-      const btnSpinner = document.getElementById('btnSpinner');
       const submitBtn = e.target.querySelector('button[type="submit"]');
 
-      // Validate PIN format
+      // Simple validation
       if (!/^\d{4}$/.test(pin)) {
-        showError("Please enter a 4-digit numeric PIN");
+        errorText.textContent = 'Please enter a 4-digit numeric PIN';
+        errorMsg.classList.remove('hidden');
         return;
       }
 
       // Show loading state
       submitBtn.disabled = true;
-      btnText.textContent = 'Authenticating...';
-      btnSpinner.classList.remove('hidden');
-      errorMsg.classList.add('hidden');
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Verifying...';
 
       try {
         const response = await fetch('/.netlify/functions/auth', {
@@ -160,45 +96,23 @@
 
         const data = await response.json();
 
-        if (!response.ok) {
-          throw new Error(data.error || "Authentication failed");
-        }
-
         if (data.success) {
-          // Success state
-          submitBtn.classList.remove('bg-gradient-to-r', 'from-blue-500', 'to-blue-600');
-          submitBtn.classList.add('bg-green-500');
-          btnText.textContent = 'Access Granted!';
-          
-          // Redirect after short delay
-          await new Promise(resolve => setTimeout(resolve, 800));
+          // Success - redirect to dashboard
           window.location.href = '/admin/dashboard.html';
         } else {
-          throw new Error(data.error || "Invalid PIN");
+          errorText.textContent = data.error || 'Invalid PIN';
+          errorMsg.classList.remove('hidden');
         }
       } catch (err) {
-        showError(err.message);
+        errorText.textContent = 'Network error. Please try again.';
+        errorMsg.classList.remove('hidden');
       } finally {
         submitBtn.disabled = false;
-        btnText.textContent = 'Authenticate';
-        btnSpinner.classList.add('hidden');
-        submitBtn.classList.remove('bg-green-500');
-        submitBtn.classList.add('bg-gradient-to-r', 'from-blue-500', 'to-blue-600');
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Login';
       }
     });
 
-    function showError(message) {
-      const errorMsg = document.getElementById('errorMsg');
-      document.getElementById('errorText').textContent = message;
-      errorMsg.classList.remove('hidden');
-      
-      // Clear PIN field and refocus
-      const pinInput = document.getElementById('pin');
-      pinInput.value = '';
-      pinInput.focus();
-    }
-
-    // Focus PIN field on page load
+    // Focus PIN field on load
     document.getElementById('pin').focus();
   </script>
 </body>
