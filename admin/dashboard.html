@@ -10,6 +10,8 @@
         .data-table { overflow-x: auto; }
         .nav-item.active { border-bottom: 2px solid #3b82f6; }
         [data-loading] { display: none; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -33,7 +35,7 @@
             </div>
 
             <!-- Content (initially hidden) -->
-            <div id="dashboardContent" class="hidden">
+            <div id="dashboardContent" class="hidden fade-in">
                 <!-- Tabs -->
                 <div class="flex border-b mb-6">
                     <button class="nav-item px-4 py-2 font-medium text-gray-600 active" data-tab="contact">
@@ -46,13 +48,13 @@
 
                 <!-- Action Buttons -->
                 <div class="flex flex-wrap gap-4 mb-6">
-                    <button id="exportCSV" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                    <button id="exportCSV" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center">
                         <i class="fas fa-file-csv mr-2"></i>Export CSV
                     </button>
-                    <button id="exportJSON" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                    <button id="exportJSON" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center">
                         <i class="fas fa-file-code mr-2"></i>Export JSON
                     </button>
-                    <button id="deleteAll" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                    <button id="deleteAll" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded flex items-center">
                         <i class="fas fa-trash-alt mr-2"></i>Delete All
                     </button>
                 </div>
@@ -71,9 +73,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="contactData" class="bg-white divide-y divide-gray-200">
-                                <!-- Filled by JavaScript -->
-                            </tbody>
+                            <tbody id="contactData" class="bg-white divide-y divide-gray-200"></tbody>
                         </table>
                     </div>
                 </div>
@@ -88,9 +88,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="subscriberData" class="bg-white divide-y divide-gray-200">
-                                <!-- Filled by JavaScript -->
-                            </tbody>
+                            <tbody id="subscriberData" class="bg-white divide-y divide-gray-200"></tbody>
                         </table>
                     </div>
                 </div>
@@ -99,133 +97,74 @@
     </div>
 
     <script>
-        // Session management
+        // Configuration
         const AUTH_CHECK_INTERVAL = 300000; // 5 minutes
         let authCheckInterval;
 
-        // Enhanced verifyAuth with session monitoring
+        // DOM Elements
+        const elements = {
+            loadingIndicator: document.getElementById('loadingIndicator'),
+            dashboardContent: document.getElementById('dashboardContent'),
+            contactData: document.getElementById('contactData'),
+            subscriberData: document.getElementById('subscriberData'),
+            logoutBtn: document.getElementById('logoutBtn')
+        };
+
+        // Session Management
         async function verifyAuth() {
             try {
-                const authToken = localStorage.getItem('authToken');
-                if (!authToken) throw new Error('No token');
-
-                const response = await fetch('/.netlify/functions/auth', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: authToken })
-                });
-
-                if (!response.ok) throw new Error('Invalid token');
-                return true;
+                if (localStorage.getItem('isAuthenticated') {
+                    const response = await fetch('/.netlify/functions/auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'verify_session' })
+                    });
+                    return response.ok;
+                }
+                return false;
             } catch (error) {
-                endSession();
+                console.error('Auth verification failed:', error);
                 return false;
             }
         }
 
         function endSession() {
             clearInterval(authCheckInterval);
-            localStorage.removeItem('authToken');
+            localStorage.removeItem('isAuthenticated');
             window.location.href = '/admin/index.html';
         }
 
-        // Load data from server
-        async function loadData() {
+        // Data Handling
+        async function fetchData(endpoint) {
             try {
-                const [contacts, subscribers] = await Promise.all([
-                    fetch('/.netlify/functions/getForms').then(res => res.json()),
-                    fetch('/.netlify/functions/getSubscribers').then(res => res.json())
-                ]);
-
-                renderData('contactData', contacts, (item) => `
-                    <td class="px-6 py-4 whitespace-nowrap">${item.name || 'N/A'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${item.email}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${item.service || 'N/A'}</td>
-                    <td class="px-6 py-4 max-w-xs truncate">${item.message || 'N/A'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${new Date(item.timestamp).toLocaleString()}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <button onclick="deleteItem('contact', '${item.id}')" class="text-red-500 hover:text-red-700">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </td>
-                `);
-
-                renderData('subscriberData', subscribers, (item) => `
-                    <td class="px-6 py-4 whitespace-nowrap">${item.email}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${new Date(item.timestamp).toLocaleString()}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <button onclick="deleteItem('subscriber', '${item.id}')" class="text-red-500 hover:text-red-700">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </td>
-                `);
-
-                // Show content after data loads
-                document.getElementById('loadingIndicator').classList.add('hidden');
-                document.getElementById('dashboardContent').classList.remove('hidden');
+                const response = await fetch(`/.netlify/functions/${endpoint}`);
+                if (!response.ok) throw new Error('Failed to fetch data');
+                return await response.json();
             } catch (error) {
-                console.error('Failed to load data:', error);
-                alert('Failed to load data. Please try again.');
-                endSession();
+                console.error(`Error fetching ${endpoint}:`, error);
+                throw error;
             }
         }
 
-        function renderData(elementId, data, rowTemplate) {
-            const container = document.getElementById(elementId);
-            container.innerHTML = data.length 
-                ? data.map(item => `<tr>${rowTemplate(item)}</tr>`).join('')
-                : `<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No data available</td></tr>`;
-        }
-
-        // Tab switching
-        function setupTabs() {
-            document.querySelectorAll('[data-tab]').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.nav-item').forEach(item => 
-                        item.classList.toggle('active', item === tab));
-                    
-                    document.querySelectorAll('.tab-content').forEach(content => 
-                        content.classList.toggle('hidden', content.id !== `${tab.dataset.tab}Tab`));
-                });
-            });
-        }
-
-        // Export functions
-        async function exportData(format) {
-            try {
-                const activeTab = document.querySelector('.nav-item.active').dataset.tab;
-                const endpoint = activeTab === 'contact' ? 'getForms' : 'getSubscribers';
-                
-                const data = await fetch(`/.netlify/functions/${endpoint}`).then(res => res.json());
-                
-                if (format === 'csv') {
-                    const headers = Object.keys(data[0] || {});
-                    const csv = [
-                        headers.join(','),
-                        ...data.map(row => headers.map(header => `"${row[header]}"`).join(','))
-                    ].join('\n');
-                    
-                    downloadFile(`${activeTab}-${new Date().toISOString()}.csv`, csv);
-                } else {
-                    downloadFile(`${activeTab}-${new Date().toISOString()}.json`, JSON.stringify(data, null, 2));
-                }
-            } catch (error) {
-                console.error('Export failed:', error);
-                alert('Export failed. Please try again.');
+        function renderData(containerId, data, columns) {
+            const container = document.getElementById(containerId);
+            if (!data.length) {
+                container.innerHTML = `<tr><td colspan="${columns.length}" class="px-6 py-4 text-center text-gray-500">No data available</td></tr>`;
+                return;
             }
+
+            container.innerHTML = data.map(item => `
+                <tr class="hover:bg-gray-50">
+                    ${columns.map(col => `
+                        <td class="px-6 py-4 ${col.class || ''}">
+                            ${col.transform ? col.transform(item[col.key]) : item[col.key] || 'N/A'}
+                        </td>
+                    `).join('')}
+                </tr>
+            `).join('');
         }
 
-        function downloadFile(filename, content) {
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // Delete functions
+        // Actions
         async function deleteItem(type, id) {
             if (!confirm(`Delete this ${type} entry?`)) return;
             
@@ -237,10 +176,15 @@
                     body: JSON.stringify({ id })
                 });
 
-                if (response.ok) loadData();
+                if (response.ok) {
+                    await loadData();
+                    showToast('Item deleted successfully');
+                } else {
+                    throw new Error('Deletion failed');
+                }
             } catch (error) {
-                console.error('Delete failed:', error);
-                alert('Failed to delete item. Please try again.');
+                console.error('Delete error:', error);
+                showToast('Failed to delete item', 'error');
             }
         }
 
@@ -250,37 +194,171 @@
             
             try {
                 const endpoint = activeTab === 'contact' ? 'deleteAllForms' : 'deleteAllSubscribers';
-                const response = await fetch(`/.netlify/functions/${endpoint}`, { method: 'POST' });
-                
-                if (response.ok) loadData();
+                const response = await fetch(`/.netlify/functions/${endpoint}`, { 
+                    method: 'POST' 
+                });
+
+                if (response.ok) {
+                    await loadData();
+                    showToast(`All ${activeTab} deleted successfully`);
+                } else {
+                    throw new Error('Bulk deletion failed');
+                }
             } catch (error) {
-                console.error('Delete all failed:', error);
-                alert('Failed to delete items. Please try again.');
+                console.error('Delete all error:', error);
+                showToast('Failed to delete items', 'error');
             }
         }
 
-        // Initialize the dashboard
+        async function exportData(format) {
+            try {
+                const activeTab = document.querySelector('.nav-item.active').dataset.tab;
+                const endpoint = activeTab === 'contact' ? 'getForms' : 'getSubscribers';
+                const data = await fetchData(endpoint);
+                
+                if (format === 'csv') {
+                    const headers = Object.keys(data[0] || {});
+                    const csvContent = [
+                        headers.join(','),
+                        ...data.map(row => headers.map(header => 
+                            `"${String(row[header] || '').replace(/"/g, '""')}"`
+                        ).join(','))
+                    ].join('\n');
+                    
+                    downloadFile(`${activeTab}-${new Date().toISOString()}.csv`, csvContent);
+                } else {
+                    downloadFile(`${activeTab}-${new Date().toISOString()}.json`, JSON.stringify(data, null, 2));
+                }
+                
+                showToast(`Exported ${activeTab} as ${format.toUpperCase()}`);
+            } catch (error) {
+                console.error('Export error:', error);
+                showToast('Export failed', 'error');
+            }
+        }
+
+        // Helper Functions
+        function downloadFile(filename, content) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-4 right-4 px-4 py-2 rounded-md shadow-lg text-white ${
+                type === 'error' ? 'bg-red-500' : 'bg-green-500'
+            } animate-fade-in`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.replace('animate-fade-in', 'animate-fade-out');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize Dashboard
         async function initDashboard() {
-            if (!await verifyAuth()) return;
-            
-            // Start periodic auth checks
+            if (!await verifyAuth()) {
+                endSession();
+                return;
+            }
+
+            // Start session monitoring
             authCheckInterval = setInterval(async () => {
-                await verifyAuth();
+                if (!await verifyAuth()) endSession();
             }, AUTH_CHECK_INTERVAL);
-            
-            // Setup event listeners
-            setupTabs();
+
+            // Load data
+            try {
+                const [contacts, subscribers] = await Promise.all([
+                    fetchData('getForms'),
+                    fetchData('getSubscribers')
+                ]);
+
+                renderData('contactData', contacts, [
+                    { key: 'name', class: 'whitespace-nowrap' },
+                    { key: 'email', class: 'whitespace-nowrap' },
+                    { key: 'service', class: 'whitespace-nowrap' },
+                    { key: 'message', class: 'max-w-xs truncate' },
+                    { key: 'timestamp', transform: (ts) => new Date(ts).toLocaleString() },
+                    { key: 'id', transform: (id) => `
+                        <button onclick="deleteItem('contact', '${id}')" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    `}
+                ]);
+
+                renderData('subscriberData', subscribers, [
+                    { key: 'email', class: 'whitespace-nowrap' },
+                    { key: 'timestamp', transform: (ts) => new Date(ts).toLocaleString() },
+                    { key: 'id', transform: (id) => `
+                        <button onclick="deleteItem('subscriber', '${id}')" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    `}
+                ]);
+
+                // Show UI
+                elements.loadingIndicator.classList.add('hidden');
+                elements.dashboardContent.classList.remove('hidden');
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showToast('Failed to load data', 'error');
+                setTimeout(endSession, 2000);
+            }
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('[data-tab]').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-item').forEach(item => 
+                        item.classList.toggle('active', item === tab));
+                    
+                    document.querySelectorAll('.tab-content').forEach(content => 
+                        content.classList.toggle('hidden', content.id !== `${tab.dataset.tab}Tab`));
+                });
+            });
+
+            // Action buttons
             document.getElementById('exportCSV').addEventListener('click', () => exportData('csv'));
             document.getElementById('exportJSON').addEventListener('click', () => exportData('json'));
             document.getElementById('deleteAll').addEventListener('click', handleDeleteAll);
-            document.getElementById('logoutBtn').addEventListener('click', endSession);
-            
-            // Load data
-            await loadData();
+            elements.logoutBtn.addEventListener('click', endSession);
         }
 
-        // Start when DOM is ready
-        document.addEventListener('DOMContentLoaded', initDashboard);
+        // Start the dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            initDashboard();
+        });
+
+        // Global access for inline handlers
+        window.deleteItem = deleteItem;
     </script>
+
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        .animate-fade-out {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(10px); }
+        }
+    </style>
 </body>
 </html>
