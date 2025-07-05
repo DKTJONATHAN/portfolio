@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login | Jonathan Mwaniki</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         body { background-color: #f3f4f6; }
         .login-box { max-width: 400px; margin-top: 10vh; }
@@ -23,62 +24,71 @@
                 <div>
                     <input type="password" id="pin" maxlength="4" 
                            class="pin-input w-full px-4 py-3 text-center text-2xl border rounded-lg focus:ring-2 focus:ring-blue-500" 
-                           placeholder="••••" autocomplete="off">
+                           placeholder="••••" autocomplete="off" required>
                 </div>
                 
                 <button type="submit" 
                         class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition">
-                    Unlock Dashboard
+                    <span id="submitText">Unlock Dashboard</span>
+                    <i id="submitSpinner" class="fas fa-spinner fa-spin hidden ml-2"></i>
                 </button>
                 
                 <div id="errorMsg" class="text-red-500 text-center hidden">
-                    Invalid PIN. Try 0000, 1711, or 2000.
+                    Invalid PIN. Please try again.
                 </div>
             </form>
         </div>
     </div>
-<!-- Update just the script portion -->
-<script>
-    const validPins = ['0000', '1711', '2000'];
-    
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const pinInput = document.getElementById('pin');
-        const errorMsg = document.getElementById('errorMsg');
-        const submitBtn = e.target.querySelector('button[type="submit"]');
-        
-        const originalBtnText = submitBtn.innerHTML;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
-        
-        try {
-            const enteredPin = pinInput.value;
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pinInput = document.getElementById('pin');
+            const errorMsg = document.getElementById('errorMsg');
+            const submitText = document.getElementById('submitText');
+            const submitSpinner = document.getElementById('submitSpinner');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
             
-            if (validPins.includes(enteredPin)) {
+            // Show loading state
+            submitText.textContent = 'Verifying...';
+            submitSpinner.classList.remove('hidden');
+            submitBtn.disabled = true;
+            errorMsg.classList.add('hidden');
+            
+            try {
+                const enteredPin = pinInput.value;
                 const hashedPin = await sha256(enteredPin);
-                localStorage.setItem('authToken', hashedPin);
-                window.location.href = '/admin/dashboard.html';
-            } else {
-                errorMsg.textContent = 'Invalid PIN. Please try again.';
+                
+                // Verify PIN with backend
+                const response = await fetch('/.netlify/functions/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: hashedPin })
+                });
+                
+                if (response.ok) {
+                    localStorage.setItem('authToken', hashedPin);
+                    window.location.href = '/admin/dashboard.html';
+                } else {
+                    throw new Error('Invalid PIN');
+                }
+            } catch (error) {
                 errorMsg.classList.remove('hidden');
                 pinInput.value = '';
                 pinInput.focus();
+            } finally {
+                submitText.textContent = 'Unlock Dashboard';
+                submitSpinner.classList.add('hidden');
+                submitBtn.disabled = false;
             }
-        } catch (error) {
-            errorMsg.textContent = 'Login failed. Please try again.';
-            errorMsg.classList.remove('hidden');
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnText;
-        }
-    });
+        });
 
-    async function sha256(message) {
-        const msgBuffer = new TextEncoder().encode(message);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-</script>
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+    </script>
 </body>
 </html>
