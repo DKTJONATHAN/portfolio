@@ -1,13 +1,9 @@
-[build]
-  command = "echo 'No build needed'"
-  publish = "."
-
 [[redirects]]
   from = "/admin"
-  to = "/admin.html"
+  to = "/admin/index.html"
   status = 200
 
 [[redirects]]
-  from = "/thank-you"
-  to = "/thank-you.html"
-  status = 200 
+  from = "/admin/dashboard"
+  to = "/admin/dashboard.html"
+  status = 200
