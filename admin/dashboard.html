@@ -1,199 +1,234 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-    }
-  </script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <style>
-    .sidebar {
-      transition: all 0.3s ease;
-    }
-    @media (max-width: 768px) {
-      .sidebar {
-        transform: translateX(-100%);
-        position: fixed;
-        z-index: 50;
-      }
-      .sidebar.open {
-        transform: translateX(0);
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Jonathan Mwaniki</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .data-table { overflow-x: auto; }
+        .nav-item.active { border-bottom: 2px solid #3b82f6; }
+    </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen">
-  <!-- Mobile Menu Button -->
-  <button id="mobileMenuBtn" class="md:hidden fixed top-4 left-4 z-40 bg-white dark:bg-gray-800 p-2 rounded-lg shadow-lg">
-    <i class="fas fa-bars text-xl"></i>
-  </button>
+<body class="bg-gray-100 font-sans">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <h1 class="text-xl font-bold text-gray-800">Admin Dashboard</h1>
+                <button id="logoutBtn" class="text-red-500 hover:text-red-700">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </header>
 
-  <!-- Sidebar -->
-  <div class="sidebar bg-white dark:bg-gray-800 shadow-lg w-64 min-h-screen fixed md:relative">
-    <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-      <div class="flex items-center">
-        <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center mr-3">
-          <i class="fas fa-user-shield text-white"></i>
-        </div>
-        <span class="font-bold">Admin Panel</span>
-      </div>
-      <button id="darkModeToggle" class="text-gray-500 dark:text-gray-400 hover:text-blue-500">
-        <i class="fas fa-moon dark:hidden"></i>
-        <i class="fas fa-sun hidden dark:inline"></i>
-      </button>
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-8">
+            <!-- Tabs -->
+            <div class="flex border-b mb-6">
+                <button class="nav-item px-4 py-2 font-medium text-gray-600 active" data-tab="contact">
+                    Contact Forms
+                </button>
+                <button class="nav-item px-4 py-2 font-medium text-gray-600" data-tab="subscribers">
+                    Subscribers
+                </button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap gap-4 mb-6">
+                <button id="exportCSV" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                    <i class="fas fa-file-csv mr-2"></i>Export CSV
+                </button>
+                <button id="exportJSON" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                    <i class="fas fa-file-code mr-2"></i>Export JSON
+                </button>
+                <button id="deleteAll" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                    <i class="fas fa-trash-alt mr-2"></i>Delete All
+                </button>
+            </div>
+
+            <!-- Data Tables -->
+            <div id="contactTab" class="tab-content bg-white rounded-lg shadow overflow-hidden">
+                <div class="data-table">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contactData" class="bg-white divide-y divide-gray-200">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="subscribersTab" class="tab-content bg-white rounded-lg shadow overflow-hidden hidden">
+                <div class="data-table">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subscriberData" class="bg-white divide-y divide-gray-200">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <nav class="p-4">
-      <ul>
-        <li class="mb-2">
-          <a href="#forms" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-            <i class="fas fa-envelope mr-3"></i>
-            <span>Contact Forms</span>
-          </a>
-        </li>
-        <li class="mb-2">
-          <a href="#subscribers" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-            <i class="fas fa-users mr-3"></i>
-            <span>Subscribers</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
+    <script>
+        // Authentication check
+        async function verifyAuth() {
+            const authToken = localStorage.getItem('authToken');
+            if (!authToken) {
+                window.location.href = '/admin/index.html';
+                return false;
+            }
 
-    <div class="p-4 border-t border-gray-200 dark:border-gray-700 absolute bottom-0 w-full">
-      <button id="logoutBtn" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 w-full">
-        <i class="fas fa-sign-out-alt mr-3"></i>
-        <span>Logout</span>
-      </button>
-    </div>
-  </div>
+            // Verify token with backend
+            const response = await fetch('/.netlify/functions/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: authToken })
+            });
 
-  <!-- Main Content -->
-  <div class="md:ml-64 p-6">
-    <!-- Forms Section -->
-    <section id="forms" class="mb-12">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h2 class="text-xl font-bold flex items-center">
-          <i class="fas fa-envelope mr-2"></i> Contact Forms
-        </h2>
-        <div class="flex gap-2">
-          <button id="exportFormsBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center">
-            <i class="fas fa-download mr-2"></i> Export
-          </button>
-          <button id="deleteAllFormsBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center">
-            <i class="fas fa-trash mr-2"></i> Delete All
-          </button>
-        </div>
-      </div>
+            if (!response.ok) {
+                localStorage.removeItem('authToken');
+                window.location.href = '/admin/index.html';
+                return false;
+            }
 
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-        <!-- Mobile Cards View -->
-        <div id="formsCardsView" class="md:hidden space-y-4 p-4">
-          <!-- Cards will be dynamically inserted here -->
-        </div>
+            return true;
+        }
 
-        <!-- Desktop Table View -->
-        <div class="hidden md:block overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
-              <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
-                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
-                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Service</th>
-                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Date</th>
-                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="formsTableBody" class="divide-y divide-gray-200 dark:divide-gray-700">
-              <!-- Forms will be loaded here -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+        // Load data
+        async function loadData() {
+            const [contacts, subscribers] = await Promise.all([
+                fetch('/.netlify/functions/getForms').then(res => res.json()),
+                fetch('/.netlify/functions/getSubscribers').then(res => res.json())
+            ]);
 
-    <!-- Subscribers Section -->
-    <section id="subscribers">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h2 class="text-xl font-bold flex items-center">
-          <i class="fas fa-users mr-2"></i> Subscribers
-        </h2>
-        <div class="flex gap-2">
-          <button id="exportSubscribersBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center">
-            <i class="fas fa-download mr-2"></i> Export
-          </button>
-          <button id="deleteAllSubscribersBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center">
-            <i class="fas fa-trash mr-2"></i> Delete All
-          </button>
-        </div>
-      </div>
+            renderData('contactData', contacts, (item) => `
+                <td class="px-6 py-4 whitespace-nowrap">${item.name || 'N/A'}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${item.email}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${item.service || 'N/A'}</td>
+                <td class="px-6 py-4 max-w-xs truncate">${item.message || 'N/A'}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${new Date(item.timestamp).toLocaleString()}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <button onclick="deleteItem('contact', '${item.id}')" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            `);
 
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-        <!-- Mobile Cards View -->
-        <div id="subscribersCardsView" class="md:hidden space-y-4 p-4">
-          <!-- Cards will be dynamically inserted here -->
-        </div>
+            renderData('subscriberData', subscribers, (item) => `
+                <td class="px-6 py-4 whitespace-nowrap">${item.email}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${new Date(item.timestamp).toLocaleString()}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <button onclick="deleteItem('subscriber', '${item.id}')" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            `);
+        }
 
-        <!-- Desktop Table View -->
-        <div class="hidden md:block overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
-              <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
-                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Date</th>
-                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="subscribersTableBody" class="divide-y divide-gray-200 dark:divide-gray-700">
-              <!-- Subscribers will be loaded here -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-  </div>
+        function renderData(elementId, data, rowTemplate) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = data.length 
+                ? data.map(item => `<tr>${rowTemplate(item)}</tr>`).join('')
+                : `<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No data available</td></tr>`;
+        }
 
-  <!-- Confirmation Modal -->
-  <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-      <h3 id="modalTitle" class="text-xl font-bold mb-4"></h3>
-      <p id="modalMessage" class="mb-6"></p>
-      <div class="flex justify-end space-x-4">
-        <button id="cancelModalBtn" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">Cancel</button>
-        <button id="confirmModalBtn" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Confirm</button>
-      </div>
-    </div>
-  </div>
+        // Tab switching
+        document.querySelectorAll('[data-tab]').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(item => 
+                    item.classList.toggle('active', item === tab));
+                
+                document.querySelectorAll('.tab-content').forEach(content => 
+                    content.classList.toggle('hidden', content.id !== `${tab.dataset.tab}Tab`));
+            });
+        });
 
-  <script>
-    // Mobile menu toggle
-    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-      document.querySelector('.sidebar').classList.toggle('open');
-    });
+        // Export functions
+        document.getElementById('exportCSV').addEventListener('click', exportData.bind(null, 'csv'));
+        document.getElementById('exportJSON').addEventListener('click', exportData.bind(null, 'json'));
 
-    // Dark mode toggle
-    document.getElementById('darkModeToggle').addEventListener('click', function() {
-      document.documentElement.classList.toggle('dark');
-      localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
-    });
+        async function exportData(format) {
+            const activeTab = document.querySelector('.nav-item.active').dataset.tab;
+            const endpoint = activeTab === 'contact' ? 'getForms' : 'getSubscribers';
+            
+            const data = await fetch(`/.netlify/functions/${endpoint}`).then(res => res.json());
+            
+            if (format === 'csv') {
+                const headers = Object.keys(data[0] || {});
+                const csv = [
+                    headers.join(','),
+                    ...data.map(row => headers.map(header => `"${row[header]}"`).join(','))
+                ].join('\n');
+                
+                downloadFile(`${activeTab}-${new Date().toISOString()}.csv`, csv);
+            } else {
+                downloadFile(`${activeTab}-${new Date().toISOString()}.json`, JSON.stringify(data, null, 2));
+            }
+        }
 
-    // Set initial dark mode preference
-    if (localStorage.getItem('darkMode') === 'true') {
-      document.documentElement.classList.add('dark');
-    }
+        function downloadFile(filename, content) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
 
-    // Logout
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-      window.location.href = '/admin';
-    });
+        // Delete functions
+        async function deleteItem(type, id) {
+            if (!confirm(`Delete this ${type} entry?`)) return;
+            
+            const endpoint = type === 'contact' ? 'deleteForm' : 'deleteSubscriber';
+            const response = await fetch(`/.netlify/functions/${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
 
-    // Rest of your existing admin panel JavaScript (loadData, render functions, etc.)
-    // ... (Same as previous implementation, but now mobile-friendly)
-  </script>
+            if (response.ok) loadData();
+        }
+
+        document.getElementById('deleteAll').addEventListener('click', async () => {
+            const activeTab = document.querySelector('.nav-item.active').dataset.tab;
+            if (!confirm(`Delete ALL ${activeTab} entries? This cannot be undone!`)) return;
+            
+            const endpoint = activeTab === 'contact' ? 'deleteAllForms' : 'deleteAllSubscribers';
+            const response = await fetch(`/.netlify/functions/${endpoint}`, { method: 'POST' });
+            
+            if (response.ok) loadData();
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('authToken');
+            window.location.href = '/admin/index.html';
+        });
+
+        // Initialize
+        (async () => {
+            if (await verifyAuth()) loadData();
+        })();
+    </script>
 </body>
-</html> 
+</html>
