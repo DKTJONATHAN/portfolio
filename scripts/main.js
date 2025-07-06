@@ -74,12 +74,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Validation
             if (!name || !email || !service || !message) {
-                showToast('Please fill in all required fields', 'error');
+                showPopup('Please fill in all required fields', 'error');
                 return;
             }
 
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showToast('Please enter a valid email address', 'error');
+                showPopup('Please enter a valid email address', 'error');
                 return;
             }
 
@@ -108,11 +108,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error(data.error || 'Submission failed');
                 }
 
-                showToast('Thank you for your message! I will get back to you soon.', 'success');
+                // Verify data was written
+                const verifyResponse = await fetch('/.netlify/functions/verifyData', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        formType: 'contact',
+                        email
+                    })
+                });
+
+                const verifyData = await verifyResponse.json();
+
+                if (!verifyResponse.ok || !verifyData.exists) {
+                    throw new Error('Failed to verify data was saved');
+                }
+
+                showPopup('Message sent successfully!', 'success');
                 form.reset();
             } catch (error) {
                 console.error('Form submission error:', error);
-                showToast(error.message || 'Failed to send message. Please try again.', 'error');
+                showPopup(error.message || 'Failed to send message. Please try again.', 'error');
             } finally {
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalButtonText;
@@ -134,12 +152,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Validation
             if (!email) {
-                showToast('Please enter your email address', 'error');
+                showPopup('Please enter your email address', 'error');
                 return;
             }
 
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showToast('Please enter a valid email address', 'error');
+                showPopup('Please enter a valid email address', 'error');
                 return;
             }
 
@@ -165,11 +183,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error(data.error || 'Subscription failed');
                 }
 
-                showToast('Thank you for subscribing!', 'success');
+                // Verify data was written
+                const verifyResponse = await fetch('/.netlify/functions/verifyData', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        formType: 'newsletter',
+                        email
+                    })
+                });
+
+                const verifyData = await verifyResponse.json();
+
+                if (!verifyResponse.ok || !verifyData.exists) {
+                    throw new Error('Failed to verify subscription was saved');
+                }
+
+                showPopup('Thank you for subscribing!', 'success');
                 form.reset();
             } catch (error) {
                 console.error('Subscription error:', error);
-                showToast(error.message || 'Failed to subscribe. Please try again.', 'error');
+                showPopup(error.message || 'Failed to subscribe. Please try again.', 'error');
             } finally {
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalButtonText;
@@ -203,46 +239,92 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Toast Notification Functions
-function showToast(message, type = 'success') {
-    const toast = document.getElementById('toast');
-    const toastMessage = document.getElementById('toastMessage');
+// Popup Notification Functions
+function showPopup(message, type = 'success') {
+    // Create popup container if it doesn't exist
+    let popupContainer = document.getElementById('customPopupContainer');
+    if (!popupContainer) {
+        popupContainer = document.createElement('div');
+        popupContainer.id = 'customPopupContainer';
+        popupContainer.className = 'fixed inset-0 flex items-center justify-center z-50 pointer-events-none';
+        document.body.appendChild(popupContainer);
+    }
 
-    if (!toast || !toastMessage) return;
+    // Create popup element
+    const popup = document.createElement('div');
+    popup.className = `bg-white rounded-lg shadow-xl p-6 max-w-sm w-full mx-4 transform transition-all duration-300 pointer-events-auto ${
+        type === 'error' ? 'border-l-4 border-red-500' : 
+        type === 'success' ? 'border-l-4 border-green-500' : 
+        'border-l-4 border-blue-500'
+    }`;
+    
+    // Add content
+    popup.innerHTML = `
+        <div class="flex items-start">
+            <div class="flex-shrink-0">
+                ${type === 'error' ? '<svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' : 
+                type === 'success' ? '<svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>' : 
+                '<svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'}
+            </div>
+            <div class="ml-3">
+                <h3 class="text-lg leading-6 font-medium ${
+                    type === 'error' ? 'text-red-800' : 
+                    type === 'success' ? 'text-green-800' : 
+                    'text-gray-800'
+                }">
+                    ${type === 'error' ? 'Error' : 
+                    type === 'success' ? 'Success' : 
+                    'Notice'}
+                </h3>
+                <div class="mt-2 text-sm ${
+                    type === 'error' ? 'text-red-600' : 
+                    type === 'success' ? 'text-green-600' : 
+                    'text-gray-600'
+                }">
+                    <p>${message}</p>
+                </div>
+            </div>
+        </div>
+    `;
 
-    // Clear previous toast state
-    toast.className = 'fixed bottom-4 right-4 shadow-xl rounded-lg px-6 py-3 transform translate-y-10 opacity-0 transition-all duration-300 z-50 hidden';
+    // Add close button
+    const closeButton = document.createElement('button');
+    closeButton.className = 'absolute top-2 right-2 text-gray-400 hover:text-gray-500';
+    closeButton.innerHTML = '<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>';
+    closeButton.addEventListener('click', () => {
+        popup.remove();
+    });
+    popup.appendChild(closeButton);
 
-    // Set message and style
-    toastMessage.textContent = message;
-    toast.classList.add(
-        type === 'error' ? 'bg-red-100 text-red-700' : 
-        type === 'success' ? 'bg-green-100 text-green-700' : 
-        'bg-white text-gray-800'
-    );
-
-    // Show toast
-    toast.classList.remove('hidden', 'opacity-0', 'translate-y-10');
-    toast.classList.add('opacity-100', 'translate-y-0');
+    // Add to container and animate in
+    popupContainer.appendChild(popup);
+    popup.style.opacity = '0';
+    popup.style.transform = 'translateY(20px)';
+    
+    // Force reflow to enable transition
+    void popup.offsetWidth;
+    
+    popup.style.opacity = '1';
+    popup.style.transform = 'translateY(0)';
 
     // Auto-hide after 5 seconds
-    const hideTimer = setTimeout(hideToast, 5000);
+    const hideTimer = setTimeout(() => {
+        popup.style.opacity = '0';
+        popup.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            popup.remove();
+        }, 300);
+    }, 5000);
 
     // Allow manual close
-    toast.onclick = function() {
-        clearTimeout(hideTimer);
-        hideToast();
-    };
-}
-
-function hideToast() {
-    const toast = document.getElementById('toast');
-    if (!toast) return;
-
-    toast.classList.remove('opacity-100', 'translate-y-0');
-    toast.classList.add('opacity-0', 'translate-y-10');
-
-    setTimeout(() => {
-        toast.classList.add('hidden');
-    }, 300);
+    popup.addEventListener('click', (e) => {
+        if (e.target === popup || e.target.closest('button')) {
+            clearTimeout(hideTimer);
+            popup.style.opacity = '0';
+            popup.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                popup.remove();
+            }, 300);
+        }
+    });
 }
