@@ -2,6 +2,10 @@
   publish = "."
   functions = "netlify/functions"
 
+[build.environment]
+  GITHUB_REPO = "DKTJONATHAN/portfolio"
+  # Don't put your access token here - set that in Netlify UI
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
