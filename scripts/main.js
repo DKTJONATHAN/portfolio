@@ -88,17 +88,17 @@ document.addEventListener('DOMContentLoaded', function() {
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
 
             try {
-                const response = await fetch('/.netlify/functions/saveContact', {
+                const response = await fetch('/.netlify/functions/saveForm', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        formType: 'contact',
                         name,
                         email,
                         service,
-                        message,
-                        timestamp: new Date().toISOString()
+                        message
                     })
                 });
 
@@ -148,15 +148,14 @@ document.addEventListener('DOMContentLoaded', function() {
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Subscribing...';
 
             try {
-                const response = await fetch('/.netlify/functions/saveSubscriber', {
+                const response = await fetch('/.netlify/functions/saveForm', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ 
-                        email,
-                        timestamp: new Date().toISOString(),
-                        source: 'website'
+                        formType: 'newsletter',
+                        email
                     })
                 });
 
