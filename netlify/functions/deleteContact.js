@@ -2,71 +2,55 @@ const fs = require('fs');
 const path = require('path');
 
 exports.handler = async (event) => {
+    // Only allow POST requests
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
-            body: JSON.stringify({ error: 'Method Not Allowed' }),
-            headers: { 
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type'
-            }
+            body: JSON.stringify({ error: 'Method not allowed' })
         };
     }
 
     try {
-        const formData = JSON.parse(event.body);
+        const { email } = JSON.parse(event.body);
+        const contactsPath = path.join(process.cwd(), 'contact.json');
         
-        // Validate required fields
-        if (!formData.name || !formData.email || !formData.message) {
+        // Read current contacts
+        let contacts = [];
+        if (fs.existsSync(contactsPath)) {
+            contacts = JSON.parse(fs.readFileSync(contactsPath, 'utf8'));
+        }
+
+        // Filter out the contact to delete
+        const initialLength = contacts.length;
+        contacts = contacts.filter(contact => contact.email !== email);
+
+        // If nothing was deleted
+        if (contacts.length === initialLength) {
             return {
-                statusCode: 400,
-                body: JSON.stringify({ error: 'Missing required fields' }),
-                headers: { 'Access-Control-Allow-Origin': '*' }
+                statusCode: 404,
+                body: JSON.stringify({ error: 'Contact not found' })
             };
         }
 
-        // Get the path to forms.json in the parent directory
-        const formsPath = path.resolve(__dirname, '..', 'forms.json');
-        
-        let forms = [];
-
-        // Check if file exists and read current forms
-        if (fs.existsSync(formsPath)) {
-            forms = JSON.parse(fs.readFileSync(formsPath, 'utf8'));
-        }
-
-        // Add new form submission with unique ID
-        const newForm = {
-            id: Date.now().toString(),
-            ...formData,
-            timestamp: new Date().toISOString(),
-            ip: event.headers['client-ip'] || null, // Capture IP address if available
-            userAgent: event.headers['user-agent'] || null // Capture user agent
-        };
-
-        forms.push(newForm);
-
-        // Write updated forms list to file
-        fs.writeFileSync(formsPath, JSON.stringify(forms, null, 2));
+        // Save updated contacts
+        fs.writeFileSync(contactsPath, JSON.stringify(contacts, null, 2));
 
         return {
             statusCode: 200,
             body: JSON.stringify({ 
-                success: true, 
-                formId: newForm.id,
-                message: 'Form submitted successfully'
-            }),
-            headers: { 'Access-Control-Allow-Origin': '*' }
+                success: true,
+                message: 'Contact deleted successfully',
+                remainingContacts: contacts.length
+            })
         };
+
     } catch (error) {
-        console.error('Error saving form:', error);
         return {
             statusCode: 500,
             body: JSON.stringify({ 
-                error: 'Internal Server Error',
+                error: 'Failed to delete contact',
                 details: error.message 
-            }),
-            headers: { 'Access-Control-Allow-Origin': '*' }
+            })
         };
     }
 };
