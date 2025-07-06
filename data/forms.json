@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "form_name": "contact",
+    "timestamp": "2025-07-06T23:52:17.730Z",
+    "form-name": "contactForm",
+    "name": "Joh",
+    "email": "joh@gji.com",
+    "service": "web",
+    "message": "Hi",
+    "_metadata": {
+      "submitted_at": "2025-07-06T23:52:31.415Z",
+      "ip": null,
+      "user_agent": "Mozilla/5.0 (Linux; Android 11; itel A509WM Build/RP1A.201005.001) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.85 Mobile Safari/537.36"
+    }
+  }
+]
