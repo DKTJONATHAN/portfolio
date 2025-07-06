@@ -4,79 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login | Jonathan Mwaniki</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #f3f4f6; }
-        .login-box { max-width: 400px; margin-top: 10vh; }
         .pin-input { letter-spacing: 0.5em; }
+        .spinner {
+            animation: spin 1s linear infinite;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="font-sans">
-    <div class="container mx-auto px-4">
-        <div class="login-box bg-white rounded-lg shadow-md p-8 mx-auto">
-            <div class="text-center mb-8">
-                <h1 class="text-2xl font-bold text-gray-800">Admin Portal</h1>
-                <p class="text-gray-600">Enter your PIN to continue</p>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full mx-4">
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-lock text-white text-2xl"></i>
             </div>
-            
-            <form id="loginForm" class="space-y-6">
-                <div>
-                    <input type="password" id="pin" maxlength="4" 
-                           class="pin-input w-full px-4 py-3 text-center text-2xl border rounded-lg focus:ring-2 focus:ring-blue-500" 
-                           placeholder="••••" autocomplete="off" required>
-                </div>
-                
-                <button type="submit" 
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition">
-                    <span id="submitText">Unlock Dashboard</span>
-                    <i id="submitSpinner" class="fas fa-spinner fa-spin hidden ml-2"></i>
-                </button>
-                
-                <div id="errorMsg" class="text-red-500 text-center hidden">
-                    Invalid PIN. Please try again.
-                </div>
-            </form>
+            <h1 class="text-2xl font-bold text-gray-800">Admin Login</h1>
+            <p class="text-gray-600 mt-2">Enter your 4-digit PIN</p>
+        </div>
+        
+        <div class="mb-6">
+            <div class="pin-input bg-gray-50 rounded-lg px-4 py-3 text-center text-2xl font-mono tracking-widest mb-2 h-12 flex items-center justify-center">
+                <span id="pinDisplay">____</span>
+            </div>
+            <p id="errorMessage" class="text-red-500 text-sm text-center h-5"></p>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-3">
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="1">1</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="2">2</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="3">3</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="4">4</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="5">5</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="6">6</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="7">7</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="8">8</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="9">9</button>
+            <button id="clearBtn" class="bg-gray-100 hover:bg-gray-200 rounded-lg py-4 text-xl">
+                <i class="fas fa-backspace"></i>
+            </button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="0">0</button>
+            <button id="submitBtn" class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-4 text-xl">
+                <i class="fas fa-arrow-right"></i>
+            </button>
         </div>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const pinInput = document.getElementById('pin');
-            const errorMsg = document.getElementById('errorMsg');
-            const submitText = document.getElementById('submitText');
-            const submitSpinner = document.getElementById('submitSpinner');
-            const submitBtn = e.target.querySelector('button[type="submit"]');
+        let currentPin = '';
+        const pinDisplay = document.getElementById('pinDisplay');
+        const errorMessage = document.getElementById('errorMessage');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Handle PIN input
+        document.querySelectorAll('.pin-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentPin.length < 4) {
+                    currentPin += btn.value;
+                    updatePinDisplay();
+                }
+            });
+        });
+        
+        // Clear PIN
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            currentPin = '';
+            updatePinDisplay();
+            errorMessage.textContent = '';
+        });
+        
+        // Submit PIN
+        submitBtn.addEventListener('click', login);
+        
+        function updatePinDisplay() {
+            let display = '';
+            for (let i = 0; i < 4; i++) {
+                display += i < currentPin.length ? '•' : '_';
+            }
+            pinDisplay.textContent = display;
+        }
+        
+        async function login() {
+            if (currentPin.length !== 4) {
+                errorMessage.textContent = 'Please enter 4 digits';
+                return;
+            }
             
-            // Show loading state
-            submitText.textContent = 'Verifying...';
-            submitSpinner.classList.remove('hidden');
-            submitBtn.disabled = true;
-            errorMsg.classList.add('hidden');
+            submitBtn.innerHTML = '<div class="spinner mx-auto"></div>';
             
             try {
                 const response = await fetch('/.netlify/functions/auth', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ pin: pinInput.value })
+                    body: JSON.stringify({ pin: currentPin })
                 });
                 
-                if (response.ok) {
-                    localStorage.setItem('isAuthenticated', 'true');
-                    window.location.href = '/admin/dashboard.html';
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('adminAuth', 'true');
+                    window.location.href = 'dashboard.html';
                 } else {
-                    throw new Error('Invalid PIN');
+                    errorMessage.textContent = data.error || 'Invalid PIN';
+                    currentPin = '';
+                    updatePinDisplay();
                 }
             } catch (error) {
-                errorMsg.classList.remove('hidden');
-                pinInput.value = '';
-                pinInput.focus();
+                errorMessage.textContent = 'Login failed. Try again.';
             } finally {
-                submitText.textContent = 'Unlock Dashboard';
-                submitSpinner.classList.add('hidden');
-                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-arrow-right"></i>';
             }
+        }
+        
+        // Allow Enter key to submit
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') login();
         });
     </script>
 </body>
