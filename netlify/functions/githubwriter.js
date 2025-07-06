@@ -1,104 +1,90 @@
 const { Octokit } = require("@octokit/rest");
 
-exports.handler = async function(event, context) {
-    // 1. Validate request method
-    if (event.httpMethod !== "POST") {
-        return {
-            statusCode: 405,
-            body: JSON.stringify({ error: "Method Not Allowed" })
-        };
-    }
+exports.handler = async (event) => {
+  // 1. Force JSON response headers
+  const headers = { 'Content-Type': 'application/json' };
 
-    // 2. Parse and validate request body
-    let payload;
+  // 2. Validate POST method
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({ error: 'Only POST requests allowed' })
+    };
+  }
+
+  // 3. Parse JSON body safely
+  let payload;
+  try {
+    payload = JSON.parse(event.body);
+    if (!payload.formType || !payload.data) {
+      throw new Error('Missing formType or data');
+    }
+  } catch (err) {
+    return {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ error: 'Invalid JSON data' })
+    };
+  }
+
+  try {
+    // 4. Initialize GitHub
+    const octokit = new Octokit({
+      auth: process.env.GITHUB_ACCESS_TOKEN
+    });
+
+    // 5. Define repo details (YOUR REPO)
+    const owner = "DKTJONATHAN";
+    const repo = "portfolio";
+    const path = "data/forms.json";
+    const branch = "main";
+
+    // 6. Get existing data (or create new)
+    let existingData = [];
+    let sha = null;
     try {
-        payload = JSON.parse(event.body);
-        if (!payload.formType || !payload.data) {
-            throw new Error("Missing required fields: formType or data");
-        }
-    } catch (error) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ 
-                error: "Invalid request format",
-                details: error.message 
-            })
-        };
+      const { data } = await octokit.repos.getContent({ owner, repo, path, ref: branch });
+      existingData = JSON.parse(Buffer.from(data.content, 'base64').toString('utf8'));
+      sha = data.sha;
+    } catch (err) {
+      if (err.status !== 404) throw err; // Ignore "file not found"
     }
 
-    try {
-        // 3. Initialize GitHub client
-        const octokit = new Octokit({
-            auth: process.env.GITHUB_ACCESS_TOKEN
-        });
+    // 7. Add new submission
+    existingData.push({
+      ...payload.data,
+      formType: payload.formType,
+      timestamp: new Date().toISOString()
+    });
 
-        const owner = "DKTJONATHAN";
-        const repo = "portfolio";
-        const path = "data/forms.json";
-        const branch = "main";
+    // 8. Save to GitHub
+    await octokit.repos.createOrUpdateFileContents({
+      owner,
+      repo,
+      path,
+      message: `New ${payload.formType} submission`,
+      content: Buffer.from(JSON.stringify(existingData, null, 2)).toString('base64'),
+      sha,
+      branch
+    });
 
-        // 4. Try to get existing file
-        let existingContent = [];
-        let sha = null;
-        
-        try {
-            const { data } = await octokit.repos.getContent({
-                owner,
-                repo,
-                path,
-                ref: branch
-            });
-            
-            const content = Buffer.from(data.content, "base64").toString("utf8");
-            existingContent = content ? JSON.parse(content) : [];
-            sha = data.sha;
-        } catch (error) {
-            // Only ignore 404 (not found) errors
-            if (error.status !== 404) throw error;
-        }
+    // 9. Return success
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({ success: true })
+    };
 
-        // 5. Prepare new submission
-        const newSubmission = {
-            ...payload.data,
-            formType: payload.formType,
-            timestamp: new Date().toISOString()
-        };
-
-        // 6. Validate data isn't empty
-        if (Object.keys(newSubmission).length === 0) {
-            throw new Error("No valid data to save");
-        }
-
-        existingContent.push(newSubmission);
-
-        // 7. Update file on GitHub
-        await octokit.repos.createOrUpdateFileContents({
-            owner,
-            repo,
-            path,
-            message: `New ${payload.formType} submission from website`,
-            content: Buffer.from(JSON.stringify(existingContent, null, 2)).toString("base64"),
-            sha, // Will be null for new files
-            branch
-        });
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ 
-                success: true,
-                message: "Data saved successfully"
-            })
-        };
-
-    } catch (error) {
-        console.error("GitHub API Error:", error);
-        return {
-            statusCode: error.status || 500,
-            body: JSON.stringify({ 
-                error: "Failed to save form data",
-                details: error.message,
-                ...(error.response && { githubError: error.response.data })
-            })
-        };
-    }
+  } catch (err) {
+    console.error('GitHub Error:', err);
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ 
+        error: 'Failed to save data',
+        details: err.message 
+      })
+    };
+  }
 };
