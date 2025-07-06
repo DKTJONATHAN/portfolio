@@ -127,6 +127,7 @@
         const AUTH_CHECK_INTERVAL = 300000; // 5 minutes
         const LOAD_TIMEOUT = 15000; // 15 seconds timeout
         let authCheckInterval;
+        let isVerifyingSession = false;
 
         // DOM Elements
         const elements = {
@@ -143,30 +144,45 @@
 
         // Session Management
         async function verifyAuth() {
+            if (isVerifyingSession) return true;
+            
+            isVerifyingSession = true;
             try {
-                if (!localStorage.getItem('isAuthenticated')) {
+                const sessionToken = localStorage.getItem('adminSessionToken');
+                if (!sessionToken) {
                     throw new Error('No active session');
                 }
 
                 const response = await fetch('/.netlify/functions/auth', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionToken}`
+                    },
                     body: JSON.stringify({ action: 'verify_session' })
                 });
 
                 if (!response.ok) {
                     throw new Error('Session verification failed');
                 }
+
+                const data = await response.json();
+                if (!data.valid) {
+                    throw new Error('Invalid session');
+                }
+
                 return true;
             } catch (error) {
                 console.error('Auth verification error:', error);
                 return false;
+            } finally {
+                isVerifyingSession = false;
             }
         }
 
         function endSession() {
             clearInterval(authCheckInterval);
-            localStorage.removeItem('isAuthenticated');
+            localStorage.removeItem('adminSessionToken');
             window.location.href = '/admin/index.html';
         }
 
@@ -174,13 +190,23 @@
         async function fetchDataWithTimeout(endpoint, timeout = LOAD_TIMEOUT) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeout);
+            const sessionToken = localStorage.getItem('adminSessionToken');
 
             try {
                 const response = await fetch(`/.netlify/functions/${endpoint}`, {
-                    signal: controller.signal
+                    signal: controller.signal,
+                    headers: {
+                        'Authorization': `Bearer ${sessionToken}`
+                    }
                 });
 
                 clearTimeout(timeoutId);
+
+                if (response.status === 401) {
+                    // Unauthorized - session expired
+                    endSession();
+                    throw new Error('Session expired');
+                }
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -228,7 +254,10 @@
                 const endpoint = type === 'contact' ? 'deleteForm' : 'deleteSubscriber';
                 const response = await fetch(`/.netlify/functions/${endpoint}`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('adminSessionToken')}`
+                    },
                     body: JSON.stringify({ id })
                 });
 
@@ -255,7 +284,10 @@
                 
                 const endpoint = activeTab === 'contact' ? 'deleteAllForms' : 'deleteAllSubscribers';
                 const response = await fetch(`/.netlify/functions/${endpoint}`, { 
-                    method: 'POST' 
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('adminSessionToken')}`
+                    }
                 });
 
                 if (!response.ok) {
@@ -356,6 +388,12 @@
             try {
                 showLoadingState(true, 'Loading data...');
                 
+                // Verify session before loading data
+                if (!await verifyAuth()) {
+                    endSession();
+                    return;
+                }
+
                 const [contacts, subscribers] = await Promise.all([
                     fetchDataWithTimeout('getForms'),
                     fetchDataWithTimeout('getSubscribers')
@@ -406,7 +444,13 @@
 
                 // Start session monitor
                 authCheckInterval = setInterval(async () => {
-                    if (!await verifyAuth()) endSession();
+                    try {
+                        if (!await verifyAuth()) {
+                            endSession();
+                        }
+                    } catch (error) {
+                        console.error('Session check error:', error);
+                    }
                 }, AUTH_CHECK_INTERVAL);
 
                 // Load initial data
@@ -469,4 +513,4 @@
         }
     </style>
 </body>
-</html> 
+</html>
