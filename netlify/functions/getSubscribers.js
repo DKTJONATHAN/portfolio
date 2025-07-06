@@ -2,53 +2,32 @@ const fs = require('fs');
 const path = require('path');
 
 exports.handler = async (event) => {
-    // Only allow POST requests
-    if (event.httpMethod !== 'POST') {
-        return {
-            statusCode: 405,
-            body: JSON.stringify({ error: 'Method not allowed' })
-        };
-    }
-
     try {
-        const { email } = JSON.parse(event.body);
         const subsPath = path.join(process.cwd(), 'subscribers.json');
         
-        // Read current subscribers
-        let subscribers = [];
-        if (fs.existsSync(subsPath)) {
-            subscribers = JSON.parse(fs.readFileSync(subsPath, 'utf8'));
-        }
-
-        // Filter out the subscriber to delete
-        const initialLength = subscribers.length;
-        subscribers = subscribers.filter(sub => sub.email !== email);
-
-        // If nothing was deleted
-        if (subscribers.length === initialLength) {
+        // Check if file exists first
+        if (!fs.existsSync(subsPath)) {
             return {
-                statusCode: 404,
-                body: JSON.stringify({ error: 'Subscriber not found' })
+                statusCode: 200,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify([])
             };
         }
 
-        // Save updated subscribers
-        fs.writeFileSync(subsPath, JSON.stringify(subscribers, null, 2));
+        const data = fs.readFileSync(subsPath, 'utf8');
+        const subscribers = JSON.parse(data);
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ 
-                success: true,
-                message: 'Subscriber deleted successfully',
-                remainingSubscribers: subscribers.length
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(subscribers)
         };
-
     } catch (error) {
         return {
             statusCode: 500,
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
-                error: 'Failed to delete subscriber',
+                error: 'Failed to load subscribers',
                 details: error.message 
             })
         };
