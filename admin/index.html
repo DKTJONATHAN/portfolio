@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | Jonathan Mwaniki</title>
+    <title>Admin Panel | Jonathan Mwaniki</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -17,51 +17,236 @@
             border-top-color: #fff;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .tab-active {
+            border-bottom: 3px solid #4f46e5;
+            color: #4f46e5;
+            font-weight: 600;
+        }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full mx-4">
-        <div class="text-center mb-8">
-            <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-lock text-white text-2xl"></i>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Login Screen (shown by default) -->
+    <div id="loginScreen" class="fixed inset-0 w-full h-full bg-white flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full mx-4">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-lock text-white text-2xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800">Admin Login</h1>
+                <p class="text-gray-600 mt-2">Enter your 4-digit PIN</p>
             </div>
-            <h1 class="text-2xl font-bold text-gray-800">Admin Login</h1>
-            <p class="text-gray-600 mt-2">Enter your 4-digit PIN</p>
-        </div>
-        
-        <div class="mb-6">
-            <div class="pin-input bg-gray-50 rounded-lg px-4 py-3 text-center text-2xl font-mono tracking-widest mb-2 h-12 flex items-center justify-center">
-                <span id="pinDisplay">____</span>
+
+            <div class="mb-6">
+                <div class="pin-input bg-gray-50 rounded-lg px-4 py-3 text-center text-2xl font-mono tracking-widest mb-2 h-12 flex items-center justify-center">
+                    <span id="pinDisplay">____</span>
+                </div>
+                <p id="errorMessage" class="text-red-500 text-sm text-center h-5"></p>
             </div>
-            <p id="errorMessage" class="text-red-500 text-sm text-center h-5"></p>
+
+            <div class="grid grid-cols-3 gap-3">
+                <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="1">1</button>
+                <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="2">2</button>
+                <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="3">3</button>
+                <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="4">4</button>
+                <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="5">5</button>
+                <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="6">6</button>
+                <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="7">7</button>
+                <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="8">8</button>
+                <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="9">9</button>
+                <button id="clearBtn" class="bg-gray-100 hover:bg-gray-200 rounded-lg py-4 text-xl">
+                    <i class="fas fa-backspace"></i>
+                </button>
+                <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="0">0</button>
+                <button id="submitBtn" class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-4 text-xl">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
         </div>
-        
-        <div class="grid grid-cols-3 gap-3">
-            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="1">1</button>
-            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="2">2</button>
-            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="3">3</button>
-            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="4">4</button>
-            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="5">5</button>
-            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="6">6</button>
-            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="7">7</button>
-            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="8">8</button>
-            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="9">9</button>
-            <button id="clearBtn" class="bg-gray-100 hover:bg-gray-200 rounded-lg py-4 text-xl">
-                <i class="fas fa-backspace"></i>
-            </button>
-            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="0">0</button>
-            <button id="submitBtn" class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-4 text-xl">
-                <i class="fas fa-arrow-right"></i>
-            </button>
+    </div>
+
+    <!-- Admin Panel (hidden by default) -->
+    <div id="adminPanel" class="hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mr-3">
+                        <i class="fas fa-user-shield text-white"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-800">Admin Panel</h1>
+                </div>
+                <button id="logoutBtn" class="text-gray-600 hover:text-blue-600 flex items-center">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+            <!-- Tabs -->
+            <div class="border-b border-gray-200 mb-6">
+                <nav class="-mb-px flex space-x-8">
+                    <button id="contactsTab" class="tab-active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                        Contact Forms
+                    </button>
+                    <button id="subscribersTab" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Subscribers
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mb-4 flex justify-between items-center">
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Search..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="flex space-x-2">
+                    <button id="exportBtn" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg flex items-center">
+                        <i class="fas fa-file-export mr-2"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contacts Table -->
+            <div id="contactsSection">
+                <div class="bg-white shadow rounded-lg overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Name
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Email
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Service
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Date
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="contactsTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- Contacts will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="contactsPagination" class="px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                        <!-- Pagination will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscribers Table -->
+            <div id="subscribersSection" class="hidden">
+                <div class="bg-white shadow rounded-lg overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Email
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Date
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Source
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="subscribersTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- Subscribers will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="subscribersPagination" class="px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                        <!-- Pagination will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- View Modal -->
+    <div id="viewModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modalTitle">
+                                Contact Details
+                            </h3>
+                            <div class="mt-4">
+                                <div id="modalContent" class="text-gray-700">
+                                    <!-- Content will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" id="closeModalBtn" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Close
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
+        // Admin Panel State
+        let currentTab = 'contacts';
         let currentPin = '';
+        let contactsData = [];
+        let subscribersData = [];
+        const itemsPerPage = 10;
+        let currentContactsPage = 1;
+        let currentSubscribersPage = 1;
+
+        // DOM Elements
+        const loginScreen = document.getElementById('loginScreen');
+        const adminPanel = document.getElementById('adminPanel');
         const pinDisplay = document.getElementById('pinDisplay');
         const errorMessage = document.getElementById('errorMessage');
         const submitBtn = document.getElementById('submitBtn');
-        
+        const logoutBtn = document.getElementById('logoutBtn');
+        const contactsTab = document.getElementById('contactsTab');
+        const subscribersTab = document.getElementById('subscribersTab');
+        const contactsSection = document.getElementById('contactsSection');
+        const subscribersSection = document.getElementById('subscribersSection');
+        const contactsTableBody = document.getElementById('contactsTableBody');
+        const subscribersTableBody = document.getElementById('subscribersTableBody');
+        const searchInput = document.getElementById('searchInput');
+        const exportBtn = document.getElementById('exportBtn');
+        const viewModal = document.getElementById('viewModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        // Check if already logged in
+        if (localStorage.getItem('adminAuth') {
+            loginScreen.classList.add('hidden');
+            adminPanel.classList.remove('hidden');
+            loadData();
+        }
+
         // Handle PIN input
         document.querySelectorAll('.pin-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -71,17 +256,47 @@
                 }
             });
         });
-        
+
         // Clear PIN
         document.getElementById('clearBtn').addEventListener('click', () => {
             currentPin = '';
             updatePinDisplay();
             errorMessage.textContent = '';
         });
-        
+
         // Submit PIN
         submitBtn.addEventListener('click', login);
-        
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('adminAuth');
+            loginScreen.classList.remove('hidden');
+            adminPanel.classList.add('hidden');
+            currentPin = '';
+            updatePinDisplay();
+        });
+
+        // Tab switching
+        contactsTab.addEventListener('click', () => switchTab('contacts'));
+        subscribersTab.addEventListener('click', () => switchTab('subscribers'));
+
+        // Search functionality
+        searchInput.addEventListener('input', () => {
+            if (currentTab === 'contacts') {
+                renderContactsTable();
+            } else {
+                renderSubscribersTable();
+            }
+        });
+
+        // Export button
+        exportBtn.addEventListener('click', exportData);
+
+        // Modal close
+        closeModalBtn.addEventListener('click', () => {
+            viewModal.classList.add('hidden');
+        });
+
         function updatePinDisplay() {
             let display = '';
             for (let i = 0; i < 4; i++) {
@@ -89,27 +304,29 @@
             }
             pinDisplay.textContent = display;
         }
-        
+
         async function login() {
             if (currentPin.length !== 4) {
                 errorMessage.textContent = 'Please enter 4 digits';
                 return;
             }
-            
+
             submitBtn.innerHTML = '<div class="spinner mx-auto"></div>';
-            
+
             try {
                 const response = await fetch('/.netlify/functions/auth', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ pin: currentPin })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     localStorage.setItem('adminAuth', 'true');
-                    window.location.href = 'dashboard.html';
+                    loginScreen.classList.add('hidden');
+                    adminPanel.classList.remove('hidden');
+                    loadData();
                 } else {
                     errorMessage.textContent = data.error || 'Invalid PIN';
                     currentPin = '';
@@ -121,10 +338,354 @@
                 submitBtn.innerHTML = '<i class="fas fa-arrow-right"></i>';
             }
         }
-        
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            if (tab === 'contacts') {
+                contactsTab.classList.add('tab-active');
+                contactsTab.classList.remove('text-gray-500', 'border-transparent');
+                contactsTab.classList.add('text-blue-600', 'border-blue-500');
+                subscribersTab.classList.remove('tab-active');
+                subscribersTab.classList.add('text-gray-500', 'border-transparent');
+                subscribersTab.classList.remove('text-blue-600', 'border-blue-500');
+                contactsSection.classList.remove('hidden');
+                subscribersSection.classList.add('hidden');
+            } else {
+                subscribersTab.classList.add('tab-active');
+                subscribersTab.classList.remove('text-gray-500', 'border-transparent');
+                subscribersTab.classList.add('text-blue-600', 'border-blue-500');
+                contactsTab.classList.remove('tab-active');
+                contactsTab.classList.add('text-gray-500', 'border-transparent');
+                contactsTab.classList.remove('text-blue-600', 'border-blue-500');
+                subscribersSection.classList.remove('hidden');
+                contactsSection.classList.add('hidden');
+            }
+        }
+
+        async function loadData() {
+            try {
+                // Load contacts
+                const contactsResponse = await fetch('/contact.json');
+                contactsData = await contactsResponse.json();
+                renderContactsTable();
+                
+                // Load subscribers
+                const subscribersResponse = await fetch('/subscribers.json');
+                subscribersData = await subscribersResponse.json();
+                renderSubscribersTable();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Failed to load data. Please try again.');
+            }
+        }
+
+        function renderContactsTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredData = contactsData.filter(item => 
+                item.name.toLowerCase().includes(searchTerm) || 
+                item.email.toLowerCase().includes(searchTerm) ||
+                item.service.toLowerCase().includes(searchTerm)
+            );
+            
+            const paginatedData = paginateData(filteredData, currentContactsPage);
+            contactsTableBody.innerHTML = '';
+
+            if (paginatedData.data.length === 0) {
+                contactsTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">No contacts found</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            paginatedData.data.forEach(item => {
+                const date = new Date(item.timestamp);
+                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${item.name}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">${item.email}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">${item.service}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">${formattedDate}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button onclick="viewContact('${item.email}')" class="text-blue-600 hover:text-blue-900 mr-3">View</button>
+                        <button onclick="deleteItem('contact', '${item.email}')" class="text-red-600 hover:text-red-900">Delete</button>
+                    </td>
+                `;
+                contactsTableBody.appendChild(row);
+            });
+
+            renderPagination('contacts', paginatedData.totalPages, currentContactsPage);
+        }
+
+        function renderSubscribersTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredData = subscribersData.filter(item => 
+                item.email.toLowerCase().includes(searchTerm)
+            );
+            
+            const paginatedData = paginateData(filteredData, currentSubscribersPage);
+            subscribersTableBody.innerHTML = '';
+
+            if (paginatedData.data.length === 0) {
+                subscribersTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">No subscribers found</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            paginatedData.data.forEach(item => {
+                const date = new Date(item.timestamp);
+                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${item.email}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">${formattedDate}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">${item.source || 'website'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button onclick="deleteItem('subscriber', '${item.email}')" class="text-red-600 hover:text-red-900">Delete</button>
+                    </td>
+                `;
+                subscribersTableBody.appendChild(row);
+            });
+
+            renderPagination('subscribers', paginatedData.totalPages, currentSubscribersPage);
+        }
+
+        function paginateData(data, currentPage) {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedData = data.slice(startIndex, endIndex);
+            const totalPages = Math.ceil(data.length / itemsPerPage);
+            
+            return {
+                data: paginatedData,
+                totalPages: totalPages
+            };
+        }
+
+        function renderPagination(type, totalPages, currentPage) {
+            const paginationContainer = type === 'contacts' 
+                ? document.getElementById('contactsPagination')
+                : document.getElementById('subscribersPagination');
+            
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+
+            let paginationHTML = `
+                <div class="flex-1 flex justify-between sm:hidden">
+                    <button onclick="changePage('${type}', ${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}">
+                        Previous
+                    </button>
+                    <button onclick="changePage('${type}', ${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}">
+                        Next
+                    </button>
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Showing <span class="font-medium">${(currentPage - 1) * itemsPerPage + 1}</span> to <span class="font-medium">${Math.min(currentPage * itemsPerPage, type === 'contacts' ? contactsData.length : subscribersData.length)}</span> of <span class="font-medium">${type === 'contacts' ? contactsData.length : subscribersData.length}</span> results
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            `;
+
+            // Previous button
+            paginationHTML += `
+                <button onclick="changePage('${type}', ${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-50'}">
+                    <span class="sr-only">Previous</span>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    paginationHTML += `
+                        <button aria-current="page" class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                            ${i}
+                        </button>
+                    `;
+                } else {
+                    paginationHTML += `
+                        <button onclick="changePage('${type}', ${i})" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                            ${i}
+                        </button>
+                    `;
+                }
+            }
+
+            // Next button
+            paginationHTML += `
+                <button onclick="changePage('${type}', ${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-50'}">
+                    <span class="sr-only">Next</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+
+            paginationHTML += `
+                        </nav>
+                    </div>
+                </div>
+            `;
+
+            paginationContainer.innerHTML = paginationHTML;
+        }
+
+        function changePage(type, newPage) {
+            if (type === 'contacts') {
+                if (newPage >= 1 && newPage <= Math.ceil(contactsData.length / itemsPerPage)) {
+                    currentContactsPage = newPage;
+                    renderContactsTable();
+                }
+            } else {
+                if (newPage >= 1 && newPage <= Math.ceil(subscribersData.length / itemsPerPage)) {
+                    currentSubscribersPage = newPage;
+                    renderSubscribersTable();
+                }
+            }
+        }
+
+        function viewContact(email) {
+            const contact = contactsData.find(item => item.email === email);
+            if (!contact) return;
+
+            const date = new Date(contact.timestamp);
+            const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+
+            modalTitle.textContent = 'Contact Details';
+            modalContent.innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-medium text-gray-900">Name</h4>
+                        <p class="mt-1 text-gray-600">${contact.name}</p>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-900">Email</h4>
+                        <p class="mt-1 text-gray-600">${contact.email}</p>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-900">Service</h4>
+                        <p class="mt-1 text-gray-600">${contact.service}</p>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-900">Date</h4>
+                        <p class="mt-1 text-gray-600">${formattedDate}</p>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-900">Message</h4>
+                        <p class="mt-1 text-gray-600 whitespace-pre-line">${contact.message}</p>
+                    </div>
+                </div>
+            `;
+
+            viewModal.classList.remove('hidden');
+        }
+
+        async function deleteItem(type, email) {
+            if (!confirm(`Are you sure you want to delete this ${type}?`)) return;
+
+            try {
+                const response = await fetch(`/.netlify/functions/delete${type.charAt(0).toUpperCase() + type.slice(1)}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    if (type === 'contact') {
+                        contactsData = contactsData.filter(item => item.email !== email);
+                        renderContactsTable();
+                    } else {
+                        subscribersData = subscribersData.filter(item => item.email !== email);
+                        renderSubscribersTable();
+                    }
+                    showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully`, 'success');
+                } else {
+                    throw new Error(data.error || 'Failed to delete');
+                }
+            } catch (error) {
+                console.error(`Error deleting ${type}:`, error);
+                showToast(`Failed to delete ${type}: ${error.message}`, 'error');
+            }
+        }
+
+        function exportData() {
+            let dataToExport;
+            let fileName;
+            
+            if (currentTab === 'contacts') {
+                dataToExport = contactsData;
+                fileName = 'contacts_export_' + new Date().toISOString().slice(0, 10) + '.json';
+            } else {
+                dataToExport = subscribersData;
+                fileName = 'subscribers_export_' + new Date().toISOString().slice(0, 10) + '.json';
+            }
+            
+            const dataStr = JSON.stringify(dataToExport, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Export completed successfully', 'success');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white ${
+                type === 'error' ? 'bg-red-500' : 'bg-green-500'
+            }`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Make functions available globally
+        window.viewContact = viewContact;
+        window.deleteItem = deleteItem;
+        window.changePage = changePage;
+
         // Allow Enter key to submit
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') login();
+            if (e.key === 'Enter' && loginScreen.classList.contains('flex')) {
+                login();
+            }
         });
     </script>
 </body>
