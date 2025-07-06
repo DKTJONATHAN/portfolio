@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Jonathan Mwaniki</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .pin-input { 
+            letter-spacing: 0.5em;
+            font-family: monospace;
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            margin: 0 auto;
+        }
+        @keyframes spin { 
+            to { transform: rotate(360deg); } 
+        }
+        #pinDisplay {
+            letter-spacing: 5px;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full mx-4">
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-lock text-white text-2xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800">Admin Login</h1>
+            <p class="text-gray-600 mt-2">Enter your 4-digit PIN</p>
+        </div>
+
+        <div class="mb-6">
+            <div class="pin-input bg-gray-50 rounded-lg px-4 py-3 text-center font-mono tracking-widest mb-2 h-12 flex items-center justify-center">
+                <span id="pinDisplay">____</span>
+            </div>
+            <p id="errorMessage" class="text-red-500 text-sm text-center h-5"></p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="1">1</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="2">2</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="3">3</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="4">4</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="5">5</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="6">6</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="7">7</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="8">8</button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="9">9</button>
+            <button id="clearBtn" class="bg-gray-100 hover:bg-gray-200 rounded-lg py-4 text-xl">
+                <i class="fas fa-backspace"></i>
+            </button>
+            <button class="pin-btn bg-white hover:bg-gray-50 border border-gray-200 rounded-lg py-4 text-xl font-medium" value="0">0</button>
+            <button id="submitBtn" class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-4 text-xl">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentPin = '';
+            const pinDisplay = document.getElementById('pinDisplay');
+            const errorMessage = document.getElementById('errorMessage');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Handle PIN input
+            document.querySelectorAll('.pin-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (currentPin.length < 4) {
+                        currentPin += this.value;
+                        updatePinDisplay();
+                        errorMessage.textContent = '';
+                    }
+                });
+            });
+
+            // Clear PIN
+            document.getElementById('clearBtn').addEventListener('click', function() {
+                currentPin = '';
+                updatePinDisplay();
+                errorMessage.textContent = '';
+            });
+
+            // Submit PIN
+            submitBtn.addEventListener('click', login);
+
+            // Handle keyboard input
+            document.addEventListener('keydown', function(e) {
+                if (e.key >= '0' && e.key <= '9' && currentPin.length < 4) {
+                    currentPin += e.key;
+                    updatePinDisplay();
+                } else if (e.key === 'Backspace') {
+                    currentPin = currentPin.slice(0, -1);
+                    updatePinDisplay();
+                } else if (e.key === 'Enter') {
+                    login();
+                }
+            });
+
+            function updatePinDisplay() {
+                let display = '';
+                for (let i = 0; i < 4; i++) {
+                    display += i < currentPin.length ? '•' : '_';
+                }
+                pinDisplay.textContent = display;
+            }
+
+            async function login() {
+                if (currentPin.length !== 4) {
+                    errorMessage.textContent = 'Please enter 4 digits';
+                    return;
+                }
+
+                const originalHtml = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<div class="spinner"></div>';
+                submitBtn.disabled = true;
+
+                try {
+                    const response = await fetch('/.netlify/functions/auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ pin: currentPin })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Store authentication token
+                        localStorage.setItem('adminAuthToken', 'authenticated');
+                        
+                        // Redirect to admin panel or show content
+                        window.location.href = 'admin.html';
+                    } else {
+                        errorMessage.textContent = data.error || 'Invalid PIN';
+                        currentPin = '';
+                        updatePinDisplay();
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    errorMessage.textContent = 'Login failed. Please try again.';
+                } finally {
+                    submitBtn.innerHTML = originalHtml;
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
