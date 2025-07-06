@@ -57,6 +57,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (contactForm) {
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            if (!validateForm(contactForm)) return;
+            
             const form = e.target;
             const submitButton = form.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
@@ -69,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const formData = new FormData(form);
                 const response = await saveFormData('contact', formData);
 
-                if (response.success) {
+                if (response.ok) {
                     showSuccessPopup('Message sent successfully!');
                     form.reset();
                 } else {
@@ -90,6 +92,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            if (!validateForm(newsletterForm)) return;
+            
             const form = e.target;
             const submitButton = form.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
@@ -102,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const formData = new FormData(form);
                 const response = await saveFormData('newsletter', formData);
 
-                if (response.success) {
+                if (response.ok) {
                     showSuccessPopup('Thank you for subscribing!');
                     form.reset();
                 } else {
@@ -140,12 +144,42 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Basic form validation
+    function validateForm(form) {
+        let isValid = true;
+        const requiredFields = form.querySelectorAll('[required]');
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('border-red-500');
+                isValid = false;
+            } else {
+                field.classList.remove('border-red-500');
+            }
+            
+            // Email validation
+            if (field.type === 'email' && field.value.trim()) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(field.value)) {
+                    field.classList.add('border-red-500');
+                    isValid = false;
+                }
+            }
+        });
+
+        if (!isValid) {
+            showErrorPopup('Please fill all required fields correctly');
+        }
+
+        return isValid;
+    }
 });
 
 // Form Data Handler for GitHub
-async function saveFormData(formType, formData) {
+async function saveFormData(formName, formData) {
     const data = {
-        formType,
+        form_name: formName, // Netlify expects this field
         timestamp: new Date().toISOString()
     };
 
@@ -156,16 +190,13 @@ async function saveFormData(formType, formData) {
 
     try {
         // Call Netlify function which will handle GitHub write
-        const response = await fetch('/.netlify/functions/githubWriter', {
+        const response = await fetch('/.netlify/functions/github-update', {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({
-                formType,
-                data
-            })
+            body: JSON.stringify(data)
         });
 
         if (!response.ok) {
@@ -176,14 +207,11 @@ async function saveFormData(formType, formData) {
         return await response.json();
     } catch (error) {
         console.error('Error saving form data:', error);
-        return { 
-            success: false, 
-            error: error.message || 'Network error occurred' 
-        };
+        throw error; // Re-throw to be caught by the form handler
     }
 }
 
-// Popup Notifications
+// Popup Notifications (unchanged)
 function showSuccessPopup(message) {
     showPopup(message, {
         bgColor: 'bg-green-50',
