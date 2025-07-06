@@ -1,6 +1,6 @@
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Splash Screen Animation (unchanged)
+    // Splash Screen Animation
     const splashScreen = document.getElementById('splashScreen');
     const mainContent = document.getElementById('mainContent');
     const progressBar = document.getElementById('progressBar');
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, totalTime / 50);
     }
 
-    // Active Navigation Link (unchanged)
+    // Active Navigation Link
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('.nav-link');
 
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updateActiveNav();
 
-    // Contact Form Handler (updated for GitHub)
+    // Contact Form Handler
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', async function(e) {
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Newsletter Form Handler (updated for GitHub)
+    // Newsletter Form Handler
     const newsletterForm = document.getElementById('newsletterForm');
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', async function(e) {
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Smooth scrolling (unchanged)
+    // Smooth scrolling
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Updated Form Data Handler for GitHub
+// Form Data Handler for GitHub
 async function saveFormData(formType, formData) {
     const data = {
         formType,
@@ -158,27 +158,32 @@ async function saveFormData(formType, formData) {
         // Call Netlify function which will handle GitHub write
         const response = await fetch('/.netlify/functions/githubWriter', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
             body: JSON.stringify({
                 formType,
                 data
             })
         });
 
-        const result = await response.json();
-        
         if (!response.ok) {
-            return { success: false, error: result.error || 'Submission failed' };
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to save data');
         }
 
-        return { success: true };
-
+        return await response.json();
     } catch (error) {
-        return { success: false, error: error.message };
+        console.error('Error saving form data:', error);
+        return { 
+            success: false, 
+            error: error.message || 'Network error occurred' 
+        };
     }
 }
 
-// Popup Notifications (unchanged)
+// Popup Notifications
 function showSuccessPopup(message) {
     showPopup(message, {
         bgColor: 'bg-green-50',
