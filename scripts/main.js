@@ -1,6 +1,6 @@
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Splash Screen Animation
+    // Splash Screen Animation (UNCHANGED)
     const splashScreen = document.getElementById('splashScreen');
     const mainContent = document.getElementById('mainContent');
     const progressBar = document.getElementById('progressBar');
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, totalTime / 50);
     }
 
-    // Active Navigation Link
+    // Active Navigation Link (UNCHANGED)
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('.nav-link');
 
@@ -52,13 +52,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updateActiveNav();
 
-    // Contact Form Handler
+    // Contact Form Handler (UPDATED FOR GITHUB)
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             if (!validateForm(contactForm)) return;
-            
+
             const form = e.target;
             const submitButton = form.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
@@ -69,13 +69,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 const formData = new FormData(form);
-                const response = await saveFormData('contact', formData);
+                // Add Netlify's required form_name field
+                formData.append('form_name', 'contact');
+                
+                // Submit to both Netlify and GitHub
+                const netlifyResponse = await fetch('/', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const githubResponse = await saveFormDataToGitHub('contact', formData);
 
-                if (response.ok) {
+                if (githubResponse.ok) {
                     showSuccessPopup('Message sent successfully!');
                     form.reset();
                 } else {
-                    throw new Error(response.error || 'Submission failed');
+                    throw new Error('Submission saved but GitHub backup failed');
                 }
             } catch (error) {
                 showErrorPopup(error.message || 'Failed to send message. Please try again.');
@@ -87,13 +96,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Newsletter Form Handler
+    // Newsletter Form Handler (UPDATED FOR GITHUB)
     const newsletterForm = document.getElementById('newsletterForm');
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             if (!validateForm(newsletterForm)) return;
-            
+
             const form = e.target;
             const submitButton = form.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
@@ -104,13 +113,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 const formData = new FormData(form);
-                const response = await saveFormData('newsletter', formData);
+                // Add Netlify's required form_name field
+                formData.append('form_name', 'newsletter');
+                
+                // Submit to both Netlify and GitHub
+                const netlifyResponse = await fetch('/', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const githubResponse = await saveFormDataToGitHub('newsletter', formData);
 
-                if (response.ok) {
+                if (githubResponse.ok) {
                     showSuccessPopup('Thank you for subscribing!');
                     form.reset();
                 } else {
-                    throw new Error(response.error || 'Subscription failed');
+                    throw new Error('Subscription saved but GitHub backup failed');
                 }
             } catch (error) {
                 showErrorPopup(error.message || 'Failed to subscribe. Please try again.');
@@ -122,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Smooth scrolling
+    // Smooth scrolling (UNCHANGED)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -145,11 +163,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Basic form validation
+    // Basic form validation (UNCHANGED)
     function validateForm(form) {
         let isValid = true;
         const requiredFields = form.querySelectorAll('[required]');
-        
+
         requiredFields.forEach(field => {
             if (!field.value.trim()) {
                 field.classList.add('border-red-500');
@@ -157,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 field.classList.remove('border-red-500');
             }
-            
+
             // Email validation
             if (field.type === 'email' && field.value.trim()) {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -176,16 +194,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Form Data Handler for GitHub
-async function saveFormData(formName, formData) {
+// Updated Form Data Handler for GitHub
+async function saveFormDataToGitHub(formName, formData) {
     const data = {
-        form_name: formName, // Netlify expects this field
+        form_name: formName,
         timestamp: new Date().toISOString()
     };
 
     // Convert FormData to object
     for (let [key, value] of formData.entries()) {
-        data[key] = value.trim();
+        // Skip the form_name field if it's already in FormData
+        if (key !== 'form_name') {
+            data[key] = value.trim();
+        }
     }
 
     try {
@@ -201,17 +222,17 @@ async function saveFormData(formName, formData) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to save data');
+            throw new Error(errorData.error || 'Failed to save data to GitHub');
         }
 
         return await response.json();
     } catch (error) {
-        console.error('Error saving form data:', error);
-        throw error; // Re-throw to be caught by the form handler
+        console.error('Error saving form data to GitHub:', error);
+        throw error;
     }
 }
 
-// Popup Notifications (unchanged)
+// Popup Notifications (UNCHANGED)
 function showSuccessPopup(message) {
     showPopup(message, {
         bgColor: 'bg-green-50',
