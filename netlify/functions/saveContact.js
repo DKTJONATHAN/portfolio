@@ -2,55 +2,33 @@ const fs = require('fs');
 const path = require('path');
 
 exports.handler = async (event) => {
-    // Only allow POST requests
-    if (event.httpMethod !== 'POST') {
-        return {
-            statusCode: 405,
-            body: JSON.stringify({ error: 'Method not allowed' })
-        };
-    }
-
     try {
-        const { email } = JSON.parse(event.body);
-        const contactsPath = path.join(process.cwd(), 'contact.json');
+        // Parse the incoming data
+        const data = JSON.parse(event.body);
         
-        // Read current contacts
+        // Define the path to the contact.json file
+        const filePath = path.join(process.cwd(), '..', 'contact.json');
+        
+        // Read existing data or initialize empty array
         let contacts = [];
-        if (fs.existsSync(contactsPath)) {
-            contacts = JSON.parse(fs.readFileSync(contactsPath, 'utf8'));
+        if (fs.existsSync(filePath)) {
+            contacts = JSON.parse(fs.readFileSync(filePath, 'utf8'));
         }
-
-        // Filter out the contact to delete
-        const initialLength = contacts.length;
-        contacts = contacts.filter(contact => contact.email !== email);
-
-        // If nothing was deleted
-        if (contacts.length === initialLength) {
-            return {
-                statusCode: 404,
-                body: JSON.stringify({ error: 'Contact not found' })
-            };
-        }
-
-        // Save updated contacts
-        fs.writeFileSync(contactsPath, JSON.stringify(contacts, null, 2));
-
+        
+        // Add new contact
+        contacts.push(data);
+        
+        // Write back to file
+        fs.writeFileSync(filePath, JSON.stringify(contacts, null, 2));
+        
         return {
             statusCode: 200,
-            body: JSON.stringify({ 
-                success: true,
-                message: 'Contact deleted successfully',
-                remainingContacts: contacts.length
-            })
+            body: JSON.stringify({ message: 'Contact saved successfully' })
         };
-
     } catch (error) {
         return {
             statusCode: 500,
-            body: JSON.stringify({ 
-                error: 'Failed to delete contact',
-                details: error.message 
-            })
+            body: JSON.stringify({ error: error.message })
         };
     }
 };
