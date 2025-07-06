@@ -496,7 +496,7 @@
                 const interval = setInterval(function() {
                     width += 2;
                     progressBar.style.width = width + '%';
-                    
+
                     if (width >= 100) {
                         clearInterval(interval);
                         splashScreen.style.opacity = '0';
@@ -519,7 +519,7 @@
                 sections.forEach(section => {
                     const sectionTop = section.offsetTop;
                     const sectionHeight = section.clientHeight;
-                    
+
                     if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
                         current = section.getAttribute('id');
                     }
@@ -573,7 +573,7 @@
                     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
 
                     try {
-                        const response = await fetch('/.netlify/functions/saveForm', {
+                        const response = await fetch('/.netlify/functions/saveContact', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -638,7 +638,11 @@
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify({ email })
+                            body: JSON.stringify({ 
+                                email,
+                                timestamp: new Date().toISOString(),
+                                source: 'website'
+                            })
                         });
 
                         const data = await response.json();
@@ -664,16 +668,16 @@
                 anchor.addEventListener('click', function(e) {
                     e.preventDefault();
                     const targetId = this.getAttribute('href');
-                    
+
                     if (targetId === '#') return;
-                    
+
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
                         targetElement.scrollIntoView({
                             behavior: 'smooth',
                             block: 'start'
                         });
-                        
+
                         // Update URL without page jump
                         if (history.pushState) {
                             history.pushState(null, null, targetId);
@@ -689,12 +693,12 @@
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
-            
+
             if (!toast || !toastMessage) return;
 
             // Clear previous toast state
             toast.className = 'fixed bottom-4 right-4 shadow-xl rounded-lg px-6 py-3 transform translate-y-10 opacity-0 transition-all duration-300 z-50 hidden';
-            
+
             // Set message and style
             toastMessage.textContent = message;
             toast.classList.add(
@@ -709,7 +713,7 @@
 
             // Auto-hide after 5 seconds
             const hideTimer = setTimeout(hideToast, 5000);
-            
+
             // Allow manual close
             toast.onclick = function() {
                 clearTimeout(hideTimer);
@@ -720,10 +724,10 @@
         function hideToast() {
             const toast = document.getElementById('toast');
             if (!toast) return;
-            
+
             toast.classList.remove('opacity-100', 'translate-y-0');
             toast.classList.add('opacity-0', 'translate-y-10');
-            
+
             setTimeout(() => {
                 toast.classList.add('hidden');
             }, 300);
