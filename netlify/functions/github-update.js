@@ -2,7 +2,7 @@
 const { Octokit } = require("@octokit/rest");
 
 exports.handler = async (event, context) => {
-  // Only process POST requests
+  // 1. Verify the request method
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
@@ -10,17 +10,37 @@ exports.handler = async (event, context) => {
     };
   }
 
+  // 2. Safely parse the incoming data
+  let submission;
   try {
-    // Parse the form submission data
-    const submission = JSON.parse(event.body);
+    if (!event.body) {
+      throw new Error("Empty request body");
+    }
+    submission = JSON.parse(event.body);
     
-    // Initialize GitHub client
-    const octokit = new Octokit({
-      auth: process.env.GITHUB_TOKEN,
-      userAgent: "Netlify Forms to GitHub v1.0"
-    });
+    // Validate required fields
+    if (!submission.form_name) {
+      throw new Error("Missing form_name in submission");
+    }
+  } catch (parseError) {
+    console.error("JSON parse error:", parseError);
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        error: "Invalid form data",
+        details: parseError.message
+      })
+    };
+  }
 
-    // 1. Get current file content
+  // 3. Initialize GitHub client
+  const octokit = new Octokit({
+    auth: process.env.GITHUB_TOKEN,
+    userAgent: "Netlify-GitHub-Forms/1.0"
+  });
+
+  try {
+    // 4. Get existing file or initialize new
     let currentContent = [];
     let fileSha = null;
     
@@ -33,46 +53,48 @@ exports.handler = async (event, context) => {
       
       currentContent = JSON.parse(Buffer.from(data.content, "base64").toString());
       fileSha = data.sha;
-    } catch (error) {
-      // If file doesn't exist yet, we'll create it
-      if (error.status !== 404) throw error;
+    } catch (repoError) {
+      if (repoError.status !== 404) throw repoError;
+      console.log("forms.json not found, will create new file");
     }
 
-    // 2. Add new submission
-    const updatedContent = [
-      ...currentContent,
-      {
-        ...submission,
-        ip_address: event.headers["client-ip"] || null,
+    // 5. Prepare new content
+    const newEntry = {
+      ...submission,
+      _metadata: {
+        submitted_at: new Date().toISOString(),
+        ip: event.headers["client-ip"] || null,
         user_agent: event.headers["user-agent"] || null
       }
-    ];
+    };
 
-    // 3. Commit to GitHub
+    const updatedContent = [...currentContent, newEntry];
+
+    // 6. Commit to GitHub
     const { data } = await octokit.repos.createOrUpdateFileContents({
       owner: process.env.GITHUB_OWNER,
       repo: process.env.GITHUB_REPO,
       path: "data/forms.json",
-      message: `New ${submission.form_name} submission from ${submission.email || "anonymous"}`,
+      message: `New ${submission.form_name} submission`,
       content: Buffer.from(JSON.stringify(updatedContent, null, 2)).toString("base64"),
-      sha: fileSha, // Required for updates, null for new files
+      sha: fileSha
     });
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
-        message: "Saved to GitHub",
+        message: "Form submission saved",
         commit_url: data.commit.html_url
       })
     };
 
   } catch (error) {
-    console.error("GitHub save error:", error);
+    console.error("GitHub API error:", error);
     return {
       statusCode: error.status || 500,
       body: JSON.stringify({
-        error: "Failed to save to GitHub",
+        error: "Failed to save submission",
         details: error.message
       })
     };
