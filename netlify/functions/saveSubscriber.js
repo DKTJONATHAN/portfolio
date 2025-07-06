@@ -1,43 +1,59 @@
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 
 exports.handler = async (event) => {
+    if (event.httpMethod !== 'POST') {
+        return {
+            statusCode: 405,
+            body: JSON.stringify({ error: 'Method Not Allowed' }),
+            headers: { 'Access-Control-Allow-Origin': '*' }
+        };
+    }
+
     try {
         const { email } = JSON.parse(event.body);
-        const filePath = path.join(process.cwd(), 'subscribers.json');
+        
+        // Get the path to subscribers.json in the parent directory
+        const subsPath = path.resolve(__dirname, '..', 'subscribers.json');
         
         let subscribers = [];
-        try {
-            const data = await fs.readFile(filePath, 'utf8');
-            subscribers = JSON.parse(data);
-        } catch (error) {
-            // File doesn't exist or is empty
+
+        // Check if file exists and read current subscribers
+        if (fs.existsSync(subsPath)) {
+            subscribers = JSON.parse(fs.readFileSync(subsPath, 'utf8'));
         }
-        
+
         // Check if email already exists
         if (subscribers.some(sub => sub.email === email)) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ error: 'Email already subscribed' })
+                body: JSON.stringify({ error: 'Email already subscribed' }),
+                headers: { 'Access-Control-Allow-Origin': '*' }
             };
         }
-        
-        subscribers.push({
-            email,
+
+        // Add new subscriber with unique ID
+        const newSubscriber = {
             id: Date.now().toString(),
+            email,
             timestamp: new Date().toISOString()
-        });
-        
-        await fs.writeFile(filePath, JSON.stringify(subscribers, null, 2));
-        
+        };
+        subscribers.push(newSubscriber);
+
+        // Write updated subscribers list to file
+        fs.writeFileSync(subsPath, JSON.stringify(subscribers, null, 2));
+
         return {
             statusCode: 200,
-            body: JSON.stringify({ success: true })
+            body: JSON.stringify({ success: true, subscriber: newSubscriber }),
+            headers: { 'Access-Control-Allow-Origin': '*' }
         };
     } catch (error) {
+        console.error('Error saving subscriber:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Failed to save subscriber' })
+            body: JSON.stringify({ error: 'Internal Server Error' }),
+            headers: { 'Access-Control-Allow-Origin': '*' }
         };
     }
 };
