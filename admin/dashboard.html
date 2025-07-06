@@ -7,471 +7,265 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .data-table { overflow-x: auto; }
         .nav-item.active { border-bottom: 2px solid #3b82f6; }
-        [data-loading] { display: none; }
-        .fade-in { animation: fadeIn 0.3s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        /* Loading spinner animation */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
         .spinner {
             animation: spin 1s linear infinite;
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(255,255,255,0.3);
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,0.3);
             border-radius: 50%;
-            border-top-color: #fff;
-            display: inline-block;
+            border-top-color: #000;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
-    <div class="min-h-screen">
-        <!-- Header -->
-        <header class="bg-white shadow-sm">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <h1 class="text-xl font-bold text-gray-800">Admin Dashboard</h1>
-                <button id="logoutBtn" class="text-red-500 hover:text-red-700">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                </button>
-            </div>
-        </header>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-gray-800">Admin Dashboard</h1>
+            <button id="logoutBtn" class="text-red-500 hover:text-red-700 flex items-center">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </button>
+        </div>
+    </header>
 
-        <!-- Main Content -->
-        <main class="container mx-auto px-4 py-8">
-            <!-- Loading Indicator -->
-            <div id="loadingIndicator" class="text-center py-8">
-                <div class="spinner mx-auto"></div>
-                <p class="mt-4 text-gray-600">Loading dashboard...</p>
-                <button id="retryButton" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hidden">
-                    <i class="fas fa-sync-alt mr-2"></i>Retry
-                </button>
-            </div>
-
-            <!-- Error State (hidden by default) -->
-            <div id="errorState" class="text-center py-8 hidden">
-                <i class="fas fa-exclamation-triangle text-3xl text-red-500"></i>
-                <p class="mt-4 text-gray-600" id="errorMessage">Failed to load dashboard</p>
-                <button id="retryButton2" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
-                    <i class="fas fa-sync-alt mr-2"></i>Retry
-                </button>
-            </div>
-
-            <!-- Content (initially hidden) -->
-            <div id="dashboardContent" class="hidden fade-in">
-                <!-- Tabs -->
-                <div class="flex border-b mb-6">
-                    <button class="nav-item px-4 py-2 font-medium text-gray-600 active" data-tab="contact">
-                        Contact Forms
-                    </button>
-                    <button class="nav-item px-4 py-2 font-medium text-gray-600" data-tab="subscribers">
-                        Subscribers
-                    </button>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex flex-wrap gap-4 mb-6">
-                    <button id="exportCSV" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center">
-                        <i class="fas fa-file-csv mr-2"></i>Export CSV
-                    </button>
-                    <button id="exportJSON" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center">
-                        <i class="fas fa-file-code mr-2"></i>Export JSON
-                    </button>
-                    <button id="deleteAll" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded flex items-center">
-                        <i class="fas fa-trash-alt mr-2"></i>Delete All
-                    </button>
-                </div>
-
-                <!-- Data Tables -->
-                <div id="contactTab" class="tab-content bg-white rounded-lg shadow overflow-hidden">
-                    <div class="data-table">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="contactData" class="bg-white divide-y divide-gray-200"></tbody>
-                        </table>
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Contact Forms</p>
+                        <h3 class="text-2xl font-bold" id="contactsCount">0</h3>
                     </div>
-                </div>
-
-                <div id="subscribersTab" class="tab-content bg-white rounded-lg shadow overflow-hidden hidden">
-                    <div class="data-table">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="subscriberData" class="bg-white divide-y divide-gray-200"></tbody>
-                        </table>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="fas fa-envelope text-blue-500 text-xl"></i>
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
+            
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Subscribers</p>
+                        <h3 class="text-2xl font-bold" id="subscribersCount">0</h3>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="fas fa-users text-green-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex border-b mb-6">
+            <button class="nav-item px-4 py-2 font-medium text-gray-600 active" data-tab="contacts">
+                Contact Forms
+            </button>
+            <button class="nav-item px-4 py-2 font-medium text-gray-600" data-tab="subscribers">
+                Subscribers
+            </button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-4 mb-6">
+            <button id="refreshBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded flex items-center">
+                <i class="fas fa-sync-alt mr-2"></i> Refresh
+            </button>
+        </div>
+
+        <!-- Contact Forms Table -->
+        <div id="contactsTab" class="tab-content active bg-white rounded-lg shadow overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contactsTable" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">Loading data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Subscribers Table -->
+        <div id="subscribersTab" class="tab-content bg-white rounded-lg shadow overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subscribersTable" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 text-center text-gray-500">Loading data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 
     <script>
-        // Configuration
-        const LOAD_TIMEOUT = 15000; // 15 seconds timeout
+        // Check authentication
+        if (localStorage.getItem('adminAuth') !== 'true') {
+            window.location.href = 'index.html';
+        }
 
         // DOM Elements
-        const elements = {
-            loadingIndicator: document.getElementById('loadingIndicator'),
-            errorState: document.getElementById('errorState'),
-            errorMessage: document.getElementById('errorMessage'),
-            dashboardContent: document.getElementById('dashboardContent'),
-            contactData: document.getElementById('contactData'),
-            subscriberData: document.getElementById('subscriberData'),
-            logoutBtn: document.getElementById('logoutBtn'),
-            retryButton: document.getElementById('retryButton'),
-            retryButton2: document.getElementById('retryButton2')
-        };
+        const logoutBtn = document.getElementById('logoutBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const contactsCount = document.getElementById('contactsCount');
+        const subscribersCount = document.getElementById('subscribersCount');
+        const contactsTable = document.getElementById('contactsTable');
+        const subscribersTable = document.getElementById('subscribersTable');
+        const tabButtons = document.querySelectorAll('.nav-item');
 
-        // Session Management
-        async function verifyAuth() {
-            try {
-                const sessionToken = localStorage.getItem('adminSessionToken');
-                if (!sessionToken) {
-                    throw new Error('No active session');
-                }
-                return true; // Assume session is valid if token exists
-            } catch (error) {
-                console.error('Auth verification error:', error);
-                return false;
-            }
-        }
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('adminAuth');
+            window.location.href = 'index.html';
+        });
 
-        function endSession() {
-            localStorage.removeItem('adminSessionToken');
-            window.location.href = '/admin/index.html';
-        }
-
-        // Data Handling
-        async function fetchDataWithTimeout(endpoint, timeout = LOAD_TIMEOUT) {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), timeout);
-            const sessionToken = localStorage.getItem('adminSessionToken');
-
-            try {
-                const response = await fetch(`/.netlify/functions/${endpoint}`, {
-                    signal: controller.signal,
-                    headers: {
-                        'Authorization': `Bearer ${sessionToken}`
-                    }
+        // Tab switching
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active tab button
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Show corresponding tab content
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.remove('active');
                 });
+                document.getElementById(`${button.dataset.tab}Tab`).classList.add('active');
+            });
+        });
 
-                clearTimeout(timeoutId);
-
-                if (response.status === 401) {
-                    // Unauthorized - session expired
-                    endSession();
-                    throw new Error('Session expired');
-                }
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                return await response.json();
+        // Load data
+        async function loadData() {
+            try {
+                refreshBtn.innerHTML = '<div class="spinner mr-2"></div> Refreshing';
+                
+                // Load contacts
+                const contactsRes = await fetch('/.netlify/functions/getForms');
+                const contacts = await contactsRes.json();
+                renderContacts(contacts);
+                contactsCount.textContent = contacts.length;
+                
+                // Load subscribers
+                const subsRes = await fetch('/.netlify/functions/getSubscribers');
+                const subscribers = await subsRes.json();
+                renderSubscribers(subscribers);
+                subscribersCount.textContent = subscribers.length;
+                
             } catch (error) {
-                clearTimeout(timeoutId);
-                throw error;
+                console.error('Error loading data:', error);
+                alert('Failed to load data. Please try again.');
+            } finally {
+                refreshBtn.innerHTML = '<i class="fas fa-sync-alt mr-2"></i> Refresh';
             }
         }
 
-        function renderData(containerId, data, columns) {
-            const container = document.getElementById(containerId);
-            
-            if (!data || !Array.isArray(data) || data.length === 0) {
-                container.innerHTML = `
+        // Render contacts table
+        function renderContacts(contacts) {
+            if (!contacts || contacts.length === 0) {
+                contactsTable.innerHTML = `
                     <tr>
-                        <td colspan="${columns.length}" class="px-6 py-4 text-center text-gray-500">
-                            No data available
+                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                            No contact forms submitted yet
                         </td>
                     </tr>
                 `;
                 return;
             }
 
-            container.innerHTML = data.map(item => `
+            contactsTable.innerHTML = contacts.map(contact => `
                 <tr class="hover:bg-gray-50">
-                    ${columns.map(col => `
-                        <td class="px-6 py-4 ${col.class || ''}">
-                            ${col.transform ? col.transform(item[col.key]) : item[col.key] || 'N/A'}
-                        </td>
-                    `).join('')}
+                    <td class="px-6 py-4 whitespace-nowrap">${contact.name || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${contact.email || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${contact.service || 'N/A'}</td>
+                    <td class="px-6 py-4 max-w-xs truncate">${contact.message || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${new Date(contact.timestamp || Date.now()).toLocaleDateString()}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <button class="text-red-500 hover:text-red-700" onclick="deleteItem('contact', '${contact.id}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
                 </tr>
             `).join('');
         }
 
-        // Actions
-        async function deleteItem(type, id) {
-            if (!confirm(`Delete this ${type} entry?`)) return;
+        // Render subscribers table
+        function renderSubscribers(subscribers) {
+            if (!subscribers || subscribers.length === 0) {
+                subscribersTable.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="px-6 py-4 text-center text-gray-500">
+                            No subscribers yet
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            subscribersTable.innerHTML = subscribers.map(sub => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">${sub.email || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${new Date(sub.timestamp || Date.now()).toLocaleDateString()}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <button class="text-red-500 hover:text-red-700" onclick="deleteItem('subscriber', '${sub.id}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Delete item function (global for inline handlers)
+        window.deleteItem = async (type, id) => {
+            if (!confirm(`Are you sure you want to delete this ${type}?`)) return;
             
             try {
-                showLoadingState(true, `Deleting ${type} entry...`);
-                
                 const endpoint = type === 'contact' ? 'deleteForm' : 'deleteSubscriber';
                 const response = await fetch(`/.netlify/functions/${endpoint}`, {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('adminSessionToken')}`
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id })
                 });
-
-                if (!response.ok) {
+                
+                if (response.ok) {
+                    loadData(); // Refresh data
+                } else {
                     throw new Error('Delete failed');
                 }
-
-                await loadData();
-                showToast('Item deleted successfully');
             } catch (error) {
                 console.error('Delete error:', error);
-                showToast('Failed to delete item', 'error');
-            } finally {
-                showLoadingState(false);
+                alert('Failed to delete. Please try again.');
             }
         }
 
-        async function handleDeleteAll() {
-            const activeTab = document.querySelector('.nav-item.active').dataset.tab;
-            if (!confirm(`Delete ALL ${activeTab} entries? This cannot be undone!`)) return;
-            
-            try {
-                showLoadingState(true, `Deleting all ${activeTab}...`);
-                
-                const endpoint = activeTab === 'contact' ? 'deleteAllForms' : 'deleteAllSubscribers';
-                const response = await fetch(`/.netlify/functions/${endpoint}`, { 
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('adminSessionToken')}`
-                    }
-                });
+        // Refresh button
+        refreshBtn.addEventListener('click', loadData);
 
-                if (!response.ok) {
-                    throw new Error('Bulk delete failed');
-                }
-
-                await loadData();
-                showToast(`All ${activeTab} deleted successfully`);
-            } catch (error) {
-                console.error('Delete all error:', error);
-                showToast('Failed to delete items', 'error');
-            } finally {
-                showLoadingState(false);
-            }
-        }
-
-        async function exportData(format) {
-            try {
-                showLoadingState(true, `Preparing ${format.toUpperCase()} export...`);
-                
-                const activeTab = document.querySelector('.nav-item.active').dataset.tab;
-                const endpoint = activeTab === 'contact' ? 'getForms' : 'getSubscribers';
-                const data = await fetchDataWithTimeout(endpoint, 20000);
-                
-                if (format === 'csv') {
-                    const headers = Object.keys(data[0] || {});
-                    const csvContent = [
-                        headers.join(','),
-                        ...data.map(row => headers.map(header => 
-                            `"${String(row[header] || '').replace(/"/g, '""')}"`
-                        ).join(','))
-                    ].join('\n');
-                    
-                    downloadFile(`${activeTab}-${new Date().toISOString()}.csv`, csvContent);
-                } else {
-                    downloadFile(`${activeTab}-${new Date().toISOString()}.json`, JSON.stringify(data, null, 2));
-                }
-                
-                showToast(`Exported ${activeTab} as ${format.toUpperCase()}`);
-            } catch (error) {
-                console.error('Export error:', error);
-                showToast('Export failed', 'error');
-            } finally {
-                showLoadingState(false);
-            }
-        }
-
-        // Helper Functions
-        function downloadFile(filename, content) {
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = `fixed bottom-4 right-4 px-4 py-2 rounded-md shadow-lg text-white ${
-                type === 'error' ? 'bg-red-500' : 'bg-green-500'
-            } animate-fade-in flex items-center`;
-            toast.innerHTML = `
-                <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'} mr-2"></i>
-                ${message}
-            `;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.classList.replace('animate-fade-in', 'animate-fade-out');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        function showLoadingState(show, message = 'Loading...') {
-            if (show) {
-                elements.loadingIndicator.querySelector('p').textContent = message;
-                elements.loadingIndicator.classList.remove('hidden');
-                elements.dashboardContent.classList.add('hidden');
-                elements.errorState.classList.add('hidden');
-            } else {
-                elements.loadingIndicator.classList.add('hidden');
-            }
-        }
-
-        function showErrorState(message) {
-            elements.errorMessage.textContent = message;
-            elements.loadingIndicator.classList.add('hidden');
-            elements.dashboardContent.classList.add('hidden');
-            elements.errorState.classList.remove('hidden');
-        }
-
-        // Core Functions
-        async function loadData() {
-            try {
-                showLoadingState(true, 'Loading data...');
-                
-                // Verify session before loading data
-                if (!await verifyAuth()) {
-                    endSession();
-                    return;
-                }
-
-                const [contacts, subscribers] = await Promise.all([
-                    fetchDataWithTimeout('getForms'),
-                    fetchDataWithTimeout('getSubscribers')
-                ]);
-
-                renderData('contactData', contacts, [
-                    { key: 'name', class: 'whitespace-nowrap' },
-                    { key: 'email', class: 'whitespace-nowrap' },
-                    { key: 'service', class: 'whitespace-nowrap' },
-                    { key: 'message', class: 'max-w-xs truncate' },
-                    { key: 'timestamp', transform: (ts) => new Date(ts).toLocaleString() },
-                    { key: 'id', transform: (id) => `
-                        <button onclick="deleteItem('contact', '${id}')" class="text-red-500 hover:text-red-700">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    `}
-                ]);
-
-                renderData('subscriberData', subscribers, [
-                    { key: 'email', class: 'whitespace-nowrap' },
-                    { key: 'timestamp', transform: (ts) => new Date(ts).toLocaleString() },
-                    { key: 'id', transform: (id) => `
-                        <button onclick="deleteItem('subscriber', '${id}')" class="text-red-500 hover:text-red-700">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    `}
-                ]);
-
-                // Show content
-                elements.loadingIndicator.classList.add('hidden');
-                elements.errorState.classList.add('hidden');
-                elements.dashboardContent.classList.remove('hidden');
-
-            } catch (error) {
-                console.error('Data load error:', error);
-                showErrorState(`Failed to load data: ${error.message}`);
-            }
-        }
-
-        // Initialize Dashboard
-        async function initDashboard() {
-            try {
-                // Verify authentication first
-                if (!await verifyAuth()) {
-                    endSession();
-                    return;
-                }
-
-                // Load initial data
-                await loadData();
-
-            } catch (error) {
-                console.error('Dashboard initialization failed:', error);
-                showErrorState('Dashboard initialization failed');
-            }
-        }
-
-        // Event Listeners
-        function setupEventListeners() {
-            // Tab switching
-            document.querySelectorAll('[data-tab]').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.nav-item').forEach(item => 
-                        item.classList.toggle('active', item === tab));
-                    
-                    document.querySelectorAll('.tab-content').forEach(content => 
-                        content.classList.toggle('hidden', content.id !== `${tab.dataset.tab}Tab`));
-                });
-            });
-
-            // Action buttons
-            document.getElementById('exportCSV').addEventListener('click', () => exportData('csv'));
-            document.getElementById('exportJSON').addEventListener('click', () => exportData('json'));
-            document.getElementById('deleteAll').addEventListener('click', handleDeleteAll);
-            elements.logoutBtn.addEventListener('click', endSession);
-            
-            // Retry buttons
-            elements.retryButton.addEventListener('click', loadData);
-            elements.retryButton2.addEventListener('click', loadData);
-        }
-
-        // Start the dashboard
-        document.addEventListener('DOMContentLoaded', () => {
-            setupEventListeners();
-            initDashboard();
-        });
-
-        // Global access for inline handlers
-        window.deleteItem = deleteItem;
+        // Initial load
+        document.addEventListener('DOMContentLoaded', loadData);
     </script>
-
-    <style>
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-        .animate-fade-out {
-            animation: fadeOut 0.3s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeOut {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(10px); }
-        }
-    </style>
 </body>
 </html>
