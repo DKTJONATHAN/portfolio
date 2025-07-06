@@ -1,59 +1,68 @@
+// netlify/functions/saveSubscriber.js
 const fs = require('fs');
 const path = require('path');
 
-exports.handler = async (event) => {
+exports.handler = async function(event, context) {
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
-            body: JSON.stringify({ error: 'Method Not Allowed' }),
-            headers: { 'Access-Control-Allow-Origin': '*' }
+            body: 'Method Not Allowed'
         };
     }
 
     try {
-        const { email } = JSON.parse(event.body);
-        
-        // Get the path to subscribers.json in the parent directory
-        const subsPath = path.resolve(__dirname, '..', 'subscribers.json');
-        
-        let subscribers = [];
+        const data = JSON.parse(event.body);
+        const { email, source } = data;
 
-        // Check if file exists and read current subscribers
-        if (fs.existsSync(subsPath)) {
-            subscribers = JSON.parse(fs.readFileSync(subsPath, 'utf8'));
-        }
-
-        // Check if email already exists
-        if (subscribers.some(sub => sub.email === email)) {
+        // Validate email
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ error: 'Email already subscribed' }),
-                headers: { 'Access-Control-Allow-Origin': '*' }
+                body: JSON.stringify({ error: 'Valid email is required' })
             };
         }
 
-        // Add new subscriber with unique ID
-        const newSubscriber = {
-            id: Date.now().toString(),
+        // Path to the subscribers.json file in the parent directory
+        const filePath = path.join(process.cwd(), '..', 'subscribers.json');
+        const newEntry = {
             email,
-            timestamp: new Date().toISOString()
+            source: source || 'website',
+            timestamp: new Date().toISOString(),
+            active: true
         };
-        subscribers.push(newSubscriber);
 
-        // Write updated subscribers list to file
-        fs.writeFileSync(subsPath, JSON.stringify(subscribers, null, 2));
+        // Read existing data or create new array if file doesn't exist
+        let subscribers = [];
+        if (fs.existsSync(filePath)) {
+            const fileContent = fs.readFileSync(filePath, 'utf8');
+            subscribers = JSON.parse(fileContent);
+        }
+
+        // Check if email already exists
+        const exists = subscribers.some(sub => sub.email === email);
+        if (exists) {
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ message: 'Email already subscribed' })
+            };
+        }
+
+        // Add new subscriber
+        subscribers.push(newEntry);
+
+        // Write back to file
+        fs.writeFileSync(filePath, JSON.stringify(subscribers, null, 2));
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ success: true, subscriber: newSubscriber }),
-            headers: { 'Access-Control-Allow-Origin': '*' }
+            body: JSON.stringify({ message: 'Subscription successful' })
         };
+
     } catch (error) {
-        console.error('Error saving subscriber:', error);
+        console.error('Error:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Internal Server Error' }),
-            headers: { 'Access-Control-Allow-Origin': '*' }
+            body: JSON.stringify({ error: 'Failed to process subscription' })
         };
     }
 };
