@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updateActiveNav();
 
-    // Contact Form Handler (updated)
+    // Contact Form Handler (updated for GitHub)
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', async function(e) {
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const form = e.target;
             const submitButton = form.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
-            
+
             // Disable button during submission
             submitButton.disabled = true;
             submitButton.innerHTML = '<span class="inline-block animate-spin mr-2">↻</span> Sending...';
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const formData = new FormData(form);
                 const response = await saveFormData('contact', formData);
-                
+
                 if (response.success) {
                     showSuccessPopup('Message sent successfully!');
                     form.reset();
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Newsletter Form Handler (updated)
+    // Newsletter Form Handler (updated for GitHub)
     const newsletterForm = document.getElementById('newsletterForm');
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', async function(e) {
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const form = e.target;
             const submitButton = form.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
-            
+
             // Disable button during submission
             submitButton.disabled = true;
             submitButton.innerHTML = '<span class="inline-block animate-spin mr-2">↻</span> Subscribing...';
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const formData = new FormData(form);
                 const response = await saveFormData('newsletter', formData);
-                
+
                 if (response.success) {
                     showSuccessPopup('Thank you for subscribing!');
                     form.reset();
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Form Data Handler (new)
+// Updated Form Data Handler for GitHub
 async function saveFormData(formType, formData) {
     const data = {
         formType,
@@ -155,41 +155,30 @@ async function saveFormData(formType, formData) {
     }
 
     try {
-        const saveResponse = await fetch('/.netlify/functions/saveForm', {
+        // Call Netlify function which will handle GitHub write
+        const response = await fetch('/.netlify/functions/githubWriter', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-
-        const saveResult = await saveResponse.json();
-        
-        if (!saveResponse.ok) {
-            return { success: false, error: saveResult.error };
-        }
-
-        // Verify data was saved
-        const verifyResponse = await fetch('/.netlify/functions/verifyData', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 formType,
-                email: data.email,
-                ...(formType === 'contact' && { name: data.name })
+                data
             })
         });
 
-        const verifyResult = await verifyResponse.json();
+        const result = await response.json();
         
-        return verifyResult.exists ? 
-            { success: true } : 
-            { success: false, error: 'Data verification failed' };
+        if (!response.ok) {
+            return { success: false, error: result.error || 'Submission failed' };
+        }
+
+        return { success: true };
 
     } catch (error) {
         return { success: false, error: error.message };
     }
 }
 
-// Popup Notifications (new, using Tailwind)
+// Popup Notifications (unchanged)
 function showSuccessPopup(message) {
     showPopup(message, {
         bgColor: 'bg-green-50',
@@ -213,7 +202,6 @@ function showErrorPopup(message) {
 }
 
 function showPopup(message, { bgColor, textColor, borderColor, icon }) {
-    // Create popup if it doesn't exist
     let popupContainer = document.getElementById('popupContainer');
     if (!popupContainer) {
         popupContainer = document.createElement('div');
@@ -222,11 +210,10 @@ function showPopup(message, { bgColor, textColor, borderColor, icon }) {
         document.body.appendChild(popupContainer);
     }
 
-    // Create popup element
     const popup = document.createElement('div');
     popup.className = `max-w-sm w-full ${bgColor} shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden transition-all transform translate-y-4 opacity-0`;
     popup.style.transition = 'all 0.3s ease-out';
-    
+
     popup.innerHTML = `
         <div class="p-4">
             <div class="flex items-start">
@@ -250,21 +237,17 @@ function showPopup(message, { bgColor, textColor, borderColor, icon }) {
         </div>
     `;
 
-    // Add to container
     popupContainer.appendChild(popup);
 
-    // Animate in
     setTimeout(() => {
         popup.classList.remove('translate-y-4', 'opacity-0');
         popup.classList.add('translate-y-0', 'opacity-100');
     }, 10);
 
-    // Auto-hide after 5 seconds
     const hideTimer = setTimeout(() => {
         hidePopup(popup);
     }, 5000);
 
-    // Close button
     const closeButton = popup.querySelector('button');
     closeButton.addEventListener('click', () => {
         clearTimeout(hideTimer);
