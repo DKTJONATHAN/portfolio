@@ -1,66 +1,62 @@
 const { Octokit } = require("@octokit/rest");
 
-exports.handler = async (event, context) => {
-  // 1. Verify the request is POST
+exports.handler = async (event) => {
+  // 1. Only allow POST requests
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
-      body: JSON.stringify({ error: "Only POST requests allowed" })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Method Not Allowed" })
     };
   }
 
-  // 2. Parse the body safely
+  // 2. Parse and validate input
   let payload;
   try {
     payload = JSON.parse(event.body);
-    if (!payload.formType || !payload.data) {
-      throw new Error("Missing formType or data in payload");
+    if (!payload?.formType || !payload?.data) {
+      throw new Error("Missing formType or data");
     }
   } catch (err) {
     return {
       statusCode: 400,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Invalid JSON input", details: err.message })
     };
   }
 
-  // 3. Initialize GitHub client
+  // 3. Initialize GitHub with your token (from Netlify env vars)
   const octokit = new Octokit({
     auth: process.env.GITHUB_ACCESS_TOKEN
   });
 
-  // 4. Set repository details - using your actual repo
+  // 4. Your repository details
   const owner = "DKTJONATHAN";
   const repo = "portfolio";
-  const path = "data/forms.json";
+  const path = "data/forms.json"; 
   const branch = "main";
 
   try {
-    // 5. Check for existing file
+    // 5. Get existing file or initialize new array
     let existingContent = [];
     let sha = null;
     
     try {
-      const { data } = await octokit.repos.getContent({
-        owner,
-        repo,
-        path,
-        ref: branch
-      });
-      const content = Buffer.from(data.content, "base64").toString("utf8");
-      existingContent = content ? JSON.parse(content) : [];
+      const { data } = await octokit.repos.getContent({ owner, repo, path, ref: branch });
+      existingContent = JSON.parse(Buffer.from(data.content, "base64").toString());
       sha = data.sha;
     } catch (error) {
-      if (error.status !== 404) throw error;
+      if (error.status !== 404) throw error; // Ignore "file not found"
     }
 
-    // 6. Add new submission
+    // 6. Add new submission with timestamp
     existingContent.push({
       ...payload.data,
       formType: payload.formType,
       timestamp: new Date().toISOString()
     });
 
-    // 7. Update file
+    // 7. Write to GitHub
     await octokit.repos.createOrUpdateFileContents({
       owner,
       repo,
@@ -73,6 +69,7 @@ exports.handler = async (event, context) => {
 
     return {
       statusCode: 200,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ success: true })
     };
 
@@ -80,8 +77,9 @@ exports.handler = async (event, context) => {
     console.error("GitHub Error:", error);
     return {
       statusCode: 500,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        error: "Failed to save to GitHub",
+        error: "Failed to save data",
         details: error.message
       })
     };
