@@ -124,10 +124,7 @@
 
     <script>
         // Configuration
-        const AUTH_CHECK_INTERVAL = 300000; // 5 minutes
         const LOAD_TIMEOUT = 15000; // 15 seconds timeout
-        let authCheckInterval;
-        let isVerifyingSession = false;
 
         // DOM Elements
         const elements = {
@@ -144,44 +141,19 @@
 
         // Session Management
         async function verifyAuth() {
-            if (isVerifyingSession) return true;
-            
-            isVerifyingSession = true;
             try {
                 const sessionToken = localStorage.getItem('adminSessionToken');
                 if (!sessionToken) {
                     throw new Error('No active session');
                 }
-
-                const response = await fetch('/.netlify/functions/auth', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionToken}`
-                    },
-                    body: JSON.stringify({ action: 'verify_session' })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Session verification failed');
-                }
-
-                const data = await response.json();
-                if (!data.valid) {
-                    throw new Error('Invalid session');
-                }
-
-                return true;
+                return true; // Assume session is valid if token exists
             } catch (error) {
                 console.error('Auth verification error:', error);
                 return false;
-            } finally {
-                isVerifyingSession = false;
             }
         }
 
         function endSession() {
-            clearInterval(authCheckInterval);
             localStorage.removeItem('adminSessionToken');
             window.location.href = '/admin/index.html';
         }
@@ -441,17 +413,6 @@
                     endSession();
                     return;
                 }
-
-                // Start session monitor
-                authCheckInterval = setInterval(async () => {
-                    try {
-                        if (!await verifyAuth()) {
-                            endSession();
-                        }
-                    } catch (error) {
-                        console.error('Session check error:', error);
-                    }
-                }, AUTH_CHECK_INTERVAL);
 
                 // Load initial data
                 await loadData();
