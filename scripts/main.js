@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updateActiveNav();
 
-    // Contact Form Handler (UPDATED FOR GITHUB)
+    // Contact Form Handler (FIXED)
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', async function(e) {
@@ -69,23 +69,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 const formData = new FormData(form);
-                // Add Netlify's required form_name field
-                formData.append('form_name', 'contact');
+                const data = {
+                    form_name: 'contact',
+                    timestamp: new Date().toISOString()
+                };
                 
-                // Submit to both Netlify and GitHub
-                const netlifyResponse = await fetch('/', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const githubResponse = await saveFormDataToGitHub('contact', formData);
-
-                if (githubResponse.ok) {
-                    showSuccessPopup('Message sent successfully!');
-                    form.reset();
-                } else {
-                    throw new Error('Submission saved but GitHub backup failed');
+                // Convert FormData to object
+                for (let [key, value] of formData.entries()) {
+                    data[key] = value;
                 }
+
+                // Send to GitHub function with proper headers
+                const response = await fetch('/.netlify/functions/github-update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || 'Submission failed');
+                }
+
+                showSuccessPopup('Message sent successfully!');
+                form.reset();
             } catch (error) {
                 showErrorPopup(error.message || 'Failed to send message. Please try again.');
                 console.error('Contact form error:', error);
@@ -96,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Newsletter Form Handler (UPDATED FOR GITHUB)
+    // Newsletter Form Handler (FIXED)
     const newsletterForm = document.getElementById('newsletterForm');
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', async function(e) {
@@ -113,23 +122,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 const formData = new FormData(form);
-                // Add Netlify's required form_name field
-                formData.append('form_name', 'newsletter');
+                const data = {
+                    form_name: 'newsletter',
+                    timestamp: new Date().toISOString()
+                };
                 
-                // Submit to both Netlify and GitHub
-                const netlifyResponse = await fetch('/', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const githubResponse = await saveFormDataToGitHub('newsletter', formData);
-
-                if (githubResponse.ok) {
-                    showSuccessPopup('Thank you for subscribing!');
-                    form.reset();
-                } else {
-                    throw new Error('Subscription saved but GitHub backup failed');
+                // Convert FormData to object
+                for (let [key, value] of formData.entries()) {
+                    data[key] = value;
                 }
+
+                // Send to GitHub function with proper headers
+                const response = await fetch('/.netlify/functions/github-update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || 'Subscription failed');
+                }
+
+                showSuccessPopup('Thank you for subscribing!');
+                form.reset();
             } catch (error) {
                 showErrorPopup(error.message || 'Failed to subscribe. Please try again.');
                 console.error('Newsletter error:', error);
@@ -193,44 +211,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return isValid;
     }
 });
-
-// Updated Form Data Handler for GitHub
-async function saveFormDataToGitHub(formName, formData) {
-    const data = {
-        form_name: formName,
-        timestamp: new Date().toISOString()
-    };
-
-    // Convert FormData to object
-    for (let [key, value] of formData.entries()) {
-        // Skip the form_name field if it's already in FormData
-        if (key !== 'form_name') {
-            data[key] = value.trim();
-        }
-    }
-
-    try {
-        // Call Netlify function which will handle GitHub write
-        const response = await fetch('/.netlify/functions/github-update', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to save data to GitHub');
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Error saving form data to GitHub:', error);
-        throw error;
-    }
-}
 
 // Popup Notifications (UNCHANGED)
 function showSuccessPopup(message) {
