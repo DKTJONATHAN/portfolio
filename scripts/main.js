@@ -1,17 +1,16 @@
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Splash Screen Animation
+    // Splash Screen Animation (unchanged)
     const splashScreen = document.getElementById('splashScreen');
     const mainContent = document.getElementById('mainContent');
     const progressBar = document.getElementById('progressBar');
 
     if (splashScreen && mainContent && progressBar) {
         let width = 0;
-        const totalTime = 2000; // 2 seconds
+        const totalTime = 2000;
         const interval = setInterval(function() {
             width += 2;
             progressBar.style.width = width + '%';
-
             if (width >= 100) {
                 clearInterval(interval);
                 splashScreen.style.opacity = '0';
@@ -23,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, totalTime / 50);
     }
 
-    // Active Navigation Link
+    // Active Navigation Link (unchanged)
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('.nav-link');
 
@@ -45,92 +44,40 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Throttle scroll events for better performance
     let isScrolling;
     window.addEventListener('scroll', function() {
         window.clearTimeout(isScrolling);
         isScrolling = setTimeout(updateActiveNav, 100);
     }, { passive: true });
 
-    // Initial check
     updateActiveNav();
 
-    // Contact Form Handler
+    // Contact Form Handler (updated)
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-
             const form = e.target;
-            const formData = new FormData(form);
             const submitButton = form.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
-
-            // Get form values
-            const name = formData.get('name').trim();
-            const email = formData.get('email').trim();
-            const service = formData.get('service');
-            const message = formData.get('message').trim();
-
-            // Validation
-            if (!name || !email || !service || !message) {
-                showPopup('Please fill in all required fields', 'error');
-                return;
-            }
-
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showPopup('Please enter a valid email address', 'error');
-                return;
-            }
-
+            
             // Disable button during submission
             submitButton.disabled = true;
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
+            submitButton.innerHTML = '<span class="inline-block animate-spin mr-2">↻</span> Sending...';
 
             try {
-                const response = await fetch('/.netlify/functions/saveForm', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        formType: 'contact',
-                        name,
-                        email,
-                        service,
-                        message
-                    })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || 'Submission failed');
+                const formData = new FormData(form);
+                const response = await saveFormData('contact', formData);
+                
+                if (response.success) {
+                    showSuccessPopup('Message sent successfully!');
+                    form.reset();
+                } else {
+                    throw new Error(response.error || 'Submission failed');
                 }
-
-                // Verify data was written
-                const verifyResponse = await fetch('/.netlify/functions/verifyData', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        formType: 'contact',
-                        email
-                    })
-                });
-
-                const verifyData = await verifyResponse.json();
-
-                if (!verifyResponse.ok || !verifyData.exists) {
-                    throw new Error('Failed to verify data was saved');
-                }
-
-                showPopup('Message sent successfully!', 'success');
-                form.reset();
             } catch (error) {
-                console.error('Form submission error:', error);
-                showPopup(error.message || 'Failed to send message. Please try again.', 'error');
+                showErrorPopup(error.message || 'Failed to send message. Please try again.');
+                console.error('Contact form error:', error);
             } finally {
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalButtonText;
@@ -138,74 +85,32 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Newsletter Form Handler
+    // Newsletter Form Handler (updated)
     const newsletterForm = document.getElementById('newsletterForm');
     if (newsletterForm) {
         newsletterForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-
             const form = e.target;
-            const formData = new FormData(form);
             const submitButton = form.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
-            const email = formData.get('email').trim();
-
-            // Validation
-            if (!email) {
-                showPopup('Please enter your email address', 'error');
-                return;
-            }
-
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showPopup('Please enter a valid email address', 'error');
-                return;
-            }
-
+            
             // Disable button during submission
             submitButton.disabled = true;
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Subscribing...';
+            submitButton.innerHTML = '<span class="inline-block animate-spin mr-2">↻</span> Subscribing...';
 
             try {
-                const response = await fetch('/.netlify/functions/saveForm', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ 
-                        formType: 'newsletter',
-                        email
-                    })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || 'Subscription failed');
+                const formData = new FormData(form);
+                const response = await saveFormData('newsletter', formData);
+                
+                if (response.success) {
+                    showSuccessPopup('Thank you for subscribing!');
+                    form.reset();
+                } else {
+                    throw new Error(response.error || 'Subscription failed');
                 }
-
-                // Verify data was written
-                const verifyResponse = await fetch('/.netlify/functions/verifyData', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        formType: 'newsletter',
-                        email
-                    })
-                });
-
-                const verifyData = await verifyResponse.json();
-
-                if (!verifyResponse.ok || !verifyData.exists) {
-                    throw new Error('Failed to verify subscription was saved');
-                }
-
-                showPopup('Thank you for subscribing!', 'success');
-                form.reset();
             } catch (error) {
-                console.error('Subscription error:', error);
-                showPopup(error.message || 'Failed to subscribe. Please try again.', 'error');
+                showErrorPopup(error.message || 'Failed to subscribe. Please try again.');
+                console.error('Newsletter error:', error);
             } finally {
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalButtonText;
@@ -213,12 +118,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Smooth scrolling for anchor links
+    // Smooth scrolling (unchanged)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
-
             if (targetId === '#') return;
 
             const targetElement = document.querySelector(targetId);
@@ -228,7 +132,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     block: 'start'
                 });
 
-                // Update URL without page jump
                 if (history.pushState) {
                     history.pushState(null, null, targetId);
                 } else {
@@ -239,92 +142,139 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Popup Notification Functions
-function showPopup(message, type = 'success') {
-    // Create popup container if it doesn't exist
-    let popupContainer = document.getElementById('customPopupContainer');
+// Form Data Handler (new)
+async function saveFormData(formType, formData) {
+    const data = {
+        formType,
+        timestamp: new Date().toISOString()
+    };
+
+    // Convert FormData to object
+    for (let [key, value] of formData.entries()) {
+        data[key] = value.trim();
+    }
+
+    try {
+        const saveResponse = await fetch('/.netlify/functions/saveForm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const saveResult = await saveResponse.json();
+        
+        if (!saveResponse.ok) {
+            return { success: false, error: saveResult.error };
+        }
+
+        // Verify data was saved
+        const verifyResponse = await fetch('/.netlify/functions/verifyData', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                formType,
+                email: data.email,
+                ...(formType === 'contact' && { name: data.name })
+            })
+        });
+
+        const verifyResult = await verifyResponse.json();
+        
+        return verifyResult.exists ? 
+            { success: true } : 
+            { success: false, error: 'Data verification failed' };
+
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+}
+
+// Popup Notifications (new, using Tailwind)
+function showSuccessPopup(message) {
+    showPopup(message, {
+        bgColor: 'bg-green-50',
+        textColor: 'text-green-800',
+        borderColor: 'border-green-500',
+        icon: `<svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>`
+    });
+}
+
+function showErrorPopup(message) {
+    showPopup(message, {
+        bgColor: 'bg-red-50',
+        textColor: 'text-red-800',
+        borderColor: 'border-red-500',
+        icon: `<svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>`
+    });
+}
+
+function showPopup(message, { bgColor, textColor, borderColor, icon }) {
+    // Create popup if it doesn't exist
+    let popupContainer = document.getElementById('popupContainer');
     if (!popupContainer) {
         popupContainer = document.createElement('div');
-        popupContainer.id = 'customPopupContainer';
-        popupContainer.className = 'fixed inset-0 flex items-center justify-center z-50 pointer-events-none';
+        popupContainer.id = 'popupContainer';
+        popupContainer.className = 'fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end z-50';
         document.body.appendChild(popupContainer);
     }
 
     // Create popup element
     const popup = document.createElement('div');
-    popup.className = `bg-white rounded-lg shadow-xl p-6 max-w-sm w-full mx-4 transform transition-all duration-300 pointer-events-auto ${
-        type === 'error' ? 'border-l-4 border-red-500' : 
-        type === 'success' ? 'border-l-4 border-green-500' : 
-        'border-l-4 border-blue-500'
-    }`;
+    popup.className = `max-w-sm w-full ${bgColor} shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden transition-all transform translate-y-4 opacity-0`;
+    popup.style.transition = 'all 0.3s ease-out';
     
-    // Add content
     popup.innerHTML = `
-        <div class="flex items-start">
-            <div class="flex-shrink-0">
-                ${type === 'error' ? '<svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' : 
-                type === 'success' ? '<svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>' : 
-                '<svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'}
-            </div>
-            <div class="ml-3">
-                <h3 class="text-lg leading-6 font-medium ${
-                    type === 'error' ? 'text-red-800' : 
-                    type === 'success' ? 'text-green-800' : 
-                    'text-gray-800'
-                }">
-                    ${type === 'error' ? 'Error' : 
-                    type === 'success' ? 'Success' : 
-                    'Notice'}
-                </h3>
-                <div class="mt-2 text-sm ${
-                    type === 'error' ? 'text-red-600' : 
-                    type === 'success' ? 'text-green-600' : 
-                    'text-gray-600'
-                }">
-                    <p>${message}</p>
+        <div class="p-4">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                    ${icon}
+                </div>
+                <div class="ml-3 w-0 flex-1 pt-0.5">
+                    <p class="text-sm font-medium ${textColor}">
+                        ${message}
+                    </p>
+                </div>
+                <div class="ml-4 flex-shrink-0 flex">
+                    <button class="${bgColor} rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none">
+                        <span class="sr-only">Close</span>
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
     `;
 
-    // Add close button
-    const closeButton = document.createElement('button');
-    closeButton.className = 'absolute top-2 right-2 text-gray-400 hover:text-gray-500';
-    closeButton.innerHTML = '<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>';
-    closeButton.addEventListener('click', () => {
-        popup.remove();
-    });
-    popup.appendChild(closeButton);
-
-    // Add to container and animate in
+    // Add to container
     popupContainer.appendChild(popup);
-    popup.style.opacity = '0';
-    popup.style.transform = 'translateY(20px)';
-    
-    // Force reflow to enable transition
-    void popup.offsetWidth;
-    
-    popup.style.opacity = '1';
-    popup.style.transform = 'translateY(0)';
+
+    // Animate in
+    setTimeout(() => {
+        popup.classList.remove('translate-y-4', 'opacity-0');
+        popup.classList.add('translate-y-0', 'opacity-100');
+    }, 10);
 
     // Auto-hide after 5 seconds
     const hideTimer = setTimeout(() => {
-        popup.style.opacity = '0';
-        popup.style.transform = 'translateY(20px)';
-        setTimeout(() => {
-            popup.remove();
-        }, 300);
+        hidePopup(popup);
     }, 5000);
 
-    // Allow manual close
-    popup.addEventListener('click', (e) => {
-        if (e.target === popup || e.target.closest('button')) {
-            clearTimeout(hideTimer);
-            popup.style.opacity = '0';
-            popup.style.transform = 'translateY(20px)';
-            setTimeout(() => {
-                popup.remove();
-            }, 300);
-        }
+    // Close button
+    const closeButton = popup.querySelector('button');
+    closeButton.addEventListener('click', () => {
+        clearTimeout(hideTimer);
+        hidePopup(popup);
     });
+}
+
+function hidePopup(popup) {
+    popup.classList.add('translate-y-4', 'opacity-0');
+    setTimeout(() => {
+        popup.remove();
+    }, 300);
 }
