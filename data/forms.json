@@ -65,5 +65,16 @@
       "ip": null,
       "user_agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
     }
+  },
+  {
+    "form_name": "newsletter",
+    "timestamp": "2025-07-07T11:03:35.156Z",
+    "form-name": "newsletterForm",
+    "email": "carolkash4@gmail.com",
+    "_metadata": {
+      "submitted_at": "2025-07-07T11:03:36.972Z",
+      "ip": null,
+      "user_agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36"
+    }
   }
 ]
