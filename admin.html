@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .submission-card {
+            transition: all 0.3s ease;
+        }
+        .submission-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- PIN Protection Screen -->
+    <div id="pinScreen" class="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Admin Login</h2>
+            <input type="password" id="pinInput" placeholder="Enter PIN" 
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button onclick="checkPin()" 
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                Unlock
+            </button>
+            <p id="pinError" class="text-red-500 mt-2 text-sm hidden">Invalid PIN. Try again.</p>
+        </div>
+    </div>
+
+    <!-- Admin Panel Content (hidden until PIN is entered) -->
+    <div id="adminPanel" class="hidden container mx-auto px-4 py-8">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Form Submissions</h1>
+            <button onclick="logout()" class="text-red-600 hover:text-red-800 flex items-center">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </button>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="submissionsContainer">
+            <!-- Submissions will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // PIN Configuration
+        const ADMIN_PIN = "1711"; // Change this to your preferred PIN
+        const PIN_STORAGE_KEY = "form_admin_auth";
+
+        // Check PIN and grant access
+        function checkPin() {
+            const pinInput = document.getElementById('pinInput');
+            const pinError = document.getElementById('pinError');
+            
+            if (pinInput.value === ADMIN_PIN) {
+                // Store authentication for 1 hour
+                const authToken = {
+                    timestamp: new Date().getTime(),
+                    expires: 3600000 // 1 hour in milliseconds
+                };
+                localStorage.setItem(PIN_STORAGE_KEY, JSON.stringify(authToken));
+                
+                document.getElementById('pinScreen').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loadSubmissions();
+            } else {
+                pinError.classList.remove('hidden');
+                pinInput.value = '';
+                pinInput.focus();
+            }
+        }
+
+        // Load submissions from GitHub
+        async function loadSubmissions() {
+            const container = document.getElementById('submissionsContainer');
+            container.innerHTML = '<p class="col-span-full text-center py-8">Loading submissions...</p>';
+
+            try {
+                const response = await fetch('https://api.github.com/repos/DKTJONATHAN/portfolio/contents/data/forms.json', {
+                    headers: {
+                        'Accept': 'application/vnd.github.v3.raw'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch data');
+                
+                const submissions = await response.json();
+                displaySubmissions(submissions);
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="col-span-full bg-red-50 border-l-4 border-red-500 p-4">
+                        <p class="text-red-700">Error loading submissions: ${error.message}</p>
+                    </div>
+                `;
+                console.error('Admin panel error:', error);
+            }
+        }
+
+        // Display submissions in the UI
+        function displaySubmissions(submissions) {
+            const container = document.getElementById('submissionsContainer');
+            
+            if (!submissions || submissions.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-center py-8">No submissions yet.</p>';
+                return;
+            }
+
+            container.innerHTML = submissions.reverse().map(sub => `
+                <div class="submission-card bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">
+                            ${sub.form_name === 'contact' ? '📧 Contact Form' : '📰 Newsletter'}
+                        </h3>
+                        <p class="text-sm text-gray-500 mb-4">
+                            ${new Date(sub.timestamp).toLocaleString()}
+                        </p>
+                        
+                        <div class="space-y-2">
+                            ${Object.entries(sub)
+                                .filter(([key]) => !['form_name', 'timestamp', '_metadata'].includes(key))
+                                .map(([key, value]) => `
+                                    <div>
+                                        <span class="text-xs font-semibold text-gray-500">${key}:</span>
+                                        <p class="text-gray-800">${value || '-'}</p>
+                                    </div>
+                                `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Logout functionality
+        function logout() {
+            localStorage.removeItem(PIN_STORAGE_KEY);
+            window.location.reload();
+        }
+
+        // Check for existing valid session on page load
+        function checkAuth() {
+            const authData = localStorage.getItem(PIN_STORAGE_KEY);
+            if (!authData) return;
+
+            const { timestamp, expires } = JSON.parse(authData);
+            const now = new Date().getTime();
+
+            if (now - timestamp < expires) {
+                document.getElementById('pinScreen').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loadSubmissions();
+            } else {
+                localStorage.removeItem(PIN_STORAGE_KEY);
+            }
+        }
+
+        // Initialize admin panel
+        checkAuth();
+    </script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
