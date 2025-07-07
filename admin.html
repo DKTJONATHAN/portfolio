@@ -5,55 +5,143 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .submission-card {
-            transition: all 0.3s ease;
+        .card-hover {
+            transition: all 0.2s ease-in-out;
         }
-        .submission-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .tab-active {
+            border-bottom: 3px solid #3b82f6;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
     <!-- PIN Protection Screen -->
     <div id="pinScreen" class="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Admin Login</h2>
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full">
+            <div class="text-center mb-6">
+                <i class="fas fa-lock text-blue-500 text-5xl mb-4"></i>
+                <h2 class="text-2xl font-bold text-gray-800">Admin Authentication</h2>
+                <p class="text-gray-500 mt-1">Enter your PIN to access the dashboard</p>
+            </div>
             <input type="password" id="pinInput" placeholder="Enter PIN" 
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
             <button onclick="checkPin()" 
-                    class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">
-                Unlock
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center">
+                <i class="fas fa-unlock-alt mr-2"></i> Unlock Dashboard
             </button>
-            <p id="pinError" class="text-red-500 mt-2 text-sm hidden">Invalid PIN. Try again.</p>
+            <p id="pinError" class="text-red-500 mt-2 text-sm hidden text-center">
+                <i class="fas fa-exclamation-circle mr-1"></i> Invalid PIN. Please try again.
+            </p>
         </div>
     </div>
 
     <!-- Admin Panel Content (hidden until PIN is entered) -->
-    <div id="adminPanel" class="hidden container mx-auto px-4 py-8">
-        <header class="flex justify-between items-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">Form Submissions</h1>
-            <button onclick="logout()" class="text-red-600 hover:text-red-800 flex items-center">
-                <i class="fas fa-sign-out-alt mr-2"></i> Logout
-            </button>
+    <div id="adminPanel" class="hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                <div class="flex items-center">
+                    <i class="fas fa-tachometer-alt text-blue-500 text-xl mr-3"></i>
+                    <h1 class="text-xl font-semibold text-gray-800">Form Submissions Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="exportData()" class="flex items-center text-sm bg-green-100 text-green-700 px-4 py-2 rounded-lg hover:bg-green-200 transition-colors">
+                        <i class="fas fa-file-export mr-2"></i> Export Data
+                    </button>
+                    <button onclick="logout()" class="flex items-center text-sm text-red-600 hover:text-red-800 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    </button>
+                </div>
+            </div>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="submissionsContainer">
-            <!-- Submissions will be loaded here -->
-        </div>
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Tabs Navigation -->
+            <div class="border-b border-gray-200 mb-6">
+                <nav class="-mb-px flex space-x-8">
+                    <button id="contactsTab" onclick="switchTab('contacts')" class="tab-active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                        <i class="fas fa-envelope mr-2"></i> Contact Forms
+                    </button>
+                    <button id="subscribersTab" onclick="switchTab('subscribers')" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        <i class="fas fa-newspaper mr-2"></i> Newsletter Subscribers
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Total Submissions</p>
+                            <p id="totalSubmissions" class="text-2xl font-semibold text-gray-800 mt-1">-</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-inbox text-blue-500 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Contact Forms</p>
+                            <p id="contactForms" class="text-2xl font-semibold text-gray-800 mt-1">-</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-envelope text-green-500 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Subscribers</p>
+                            <p id="subscribers" class="text-2xl font-semibold text-gray-800 mt-1">-</p>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <i class="fas fa-users text-purple-500 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submissions Container -->
+            <div id="submissionsContainer" class="space-y-4">
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 text-center">
+                    <i class="fas fa-spinner fa-spin text-blue-500 text-2xl mb-3"></i>
+                    <p class="text-gray-700">Loading submissions...</p>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
         // PIN Configuration
         const ADMIN_PIN = "1711"; // Change this to your preferred PIN
         const PIN_STORAGE_KEY = "form_admin_auth";
+        let allSubmissions = [];
+        let currentTab = 'contacts';
 
         // Check PIN and grant access
         function checkPin() {
             const pinInput = document.getElementById('pinInput');
             const pinError = document.getElementById('pinError');
-            
+
             if (pinInput.value === ADMIN_PIN) {
                 // Store authentication for 1 hour
                 const authToken = {
@@ -61,7 +149,7 @@
                     expires: 3600000 // 1 hour in milliseconds
                 };
                 localStorage.setItem(PIN_STORAGE_KEY, JSON.stringify(authToken));
-                
+
                 document.getElementById('pinScreen').classList.add('hidden');
                 document.getElementById('adminPanel').classList.remove('hidden');
                 loadSubmissions();
@@ -72,10 +160,29 @@
             }
         }
 
+        // Switch between tabs
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('contactsTab').classList.remove('tab-active');
+            document.getElementById('contactsTab').classList.add('text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+            document.getElementById('subscribersTab').classList.remove('tab-active');
+            document.getElementById('subscribersTab').classList.add('text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+            
+            document.getElementById(`${tab}Tab`).classList.add('tab-active');
+            document.getElementById(`${tab}Tab`).classList.remove('text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+            
+            displaySubmissions(allSubmissions);
+        }
+
         // Load submissions from GitHub
         async function loadSubmissions() {
             const container = document.getElementById('submissionsContainer');
-            container.innerHTML = '<p class="col-span-full text-center py-8">Loading submissions...</p>';
+            container.innerHTML = `
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 text-center">
+                    <i class="fas fa-spinner fa-spin text-blue-500 text-2xl mb-3"></i>
+                    <p class="text-gray-700">Loading submissions...</p>
+                </div>
+            `;
 
             try {
                 const response = await fetch('https://api.github.com/repos/DKTJONATHAN/portfolio/contents/data/forms.json', {
@@ -85,51 +192,132 @@
                 });
 
                 if (!response.ok) throw new Error('Failed to fetch data');
-                
+
                 const submissions = await response.json();
+                allSubmissions = submissions;
+                updateStats(submissions);
                 displaySubmissions(submissions);
             } catch (error) {
                 container.innerHTML = `
-                    <div class="col-span-full bg-red-50 border-l-4 border-red-500 p-4">
-                        <p class="text-red-700">Error loading submissions: ${error.message}</p>
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-circle text-red-500 mr-3"></i>
+                            <div>
+                                <p class="font-medium text-red-700">Error loading submissions</p>
+                                <p class="text-red-600 text-sm">${error.message}</p>
+                            </div>
+                        </div>
                     </div>
                 `;
                 console.error('Admin panel error:', error);
             }
         }
 
-        // Display submissions in the UI
-        function displaySubmissions(submissions) {
-            const container = document.getElementById('submissionsContainer');
-            
+        // Update statistics cards
+        function updateStats(submissions) {
             if (!submissions || submissions.length === 0) {
-                container.innerHTML = '<p class="col-span-full text-center py-8">No submissions yet.</p>';
+                document.getElementById('totalSubmissions').textContent = '0';
+                document.getElementById('contactForms').textContent = '0';
+                document.getElementById('subscribers').textContent = '0';
                 return;
             }
 
-            container.innerHTML = submissions.reverse().map(sub => `
-                <div class="submission-card bg-white rounded-lg shadow-md overflow-hidden">
+            const contacts = submissions.filter(sub => sub.form_name === 'contact').length;
+            const subscribers = submissions.filter(sub => sub.form_name === 'newsletter').length;
+            
+            document.getElementById('totalSubmissions').textContent = submissions.length;
+            document.getElementById('contactForms').textContent = contacts;
+            document.getElementById('subscribers').textContent = subscribers;
+        }
+
+        // Display submissions in the UI
+        function displaySubmissions(submissions) {
+            const container = document.getElementById('submissionsContainer');
+
+            if (!submissions || submissions.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 text-center">
+                        <i class="fas fa-inbox text-gray-400 text-3xl mb-3"></i>
+                        <h3 class="text-lg font-medium text-gray-700">No submissions yet</h3>
+                        <p class="text-gray-500 mt-1">Your ${currentTab === 'contacts' ? 'contact forms' : 'newsletter subscribers'} will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Filter submissions based on current tab
+            const filteredSubmissions = submissions.filter(sub => 
+                currentTab === 'contacts' ? sub.form_name === 'contact' : sub.form_name === 'newsletter'
+            ).reverse();
+
+            container.innerHTML = filteredSubmissions.map(sub => `
+                <div class="card-hover bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden fade-in">
                     <div class="p-6">
-                        <h3 class="font-bold text-lg text-gray-800 mb-2">
-                            ${sub.form_name === 'contact' ? '📧 Contact Form' : '📰 Newsletter'}
-                        </h3>
-                        <p class="text-sm text-gray-500 mb-4">
-                            ${new Date(sub.timestamp).toLocaleString()}
-                        </p>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-800 flex items-center">
+                                    ${sub.form_name === 'contact' ? 
+                                        '<i class="fas fa-envelope text-blue-500 mr-2"></i> Contact Form' : 
+                                        '<i class="fas fa-newspaper text-purple-500 mr-2"></i> Newsletter Subscription'}
+                                </h3>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    <i class="far fa-clock mr-1"></i> ${new Date(sub.timestamp).toLocaleString()}
+                                </p>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                sub.form_name === 'contact' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
+                            }">
+                                ${sub.form_name === 'contact' ? 'Contact' : 'Subscriber'}
+                            </span>
+                        </div>
                         
-                        <div class="space-y-2">
+                        <div class="space-y-3">
                             ${Object.entries(sub)
                                 .filter(([key]) => !['form_name', 'timestamp', '_metadata'].includes(key))
                                 .map(([key, value]) => `
-                                    <div>
-                                        <span class="text-xs font-semibold text-gray-500">${key}:</span>
-                                        <p class="text-gray-800">${value || '-'}</p>
+                                    <div class="border-b border-gray-100 pb-2 last:border-0 last:pb-0">
+                                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">${key.replace('_', ' ')}:</span>
+                                        <p class="text-gray-800 mt-1 break-words">${value || '-'}</p>
                                     </div>
                                 `).join('')}
                         </div>
                     </div>
                 </div>
             `).join('');
+
+            if (filteredSubmissions.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 text-center">
+                        <i class="fas fa-inbox text-gray-400 text-3xl mb-3"></i>
+                        <h3 class="text-lg font-medium text-gray-700">No ${currentTab === 'contacts' ? 'contact forms' : 'subscribers'} found</h3>
+                        <p class="text-gray-500 mt-1">Try adjusting your filters or check back later</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Export data as JSON file
+        function exportData() {
+            if (!allSubmissions || allSubmissions.length === 0) {
+                alert('No data to export');
+                return;
+            }
+
+            const filteredData = allSubmissions.filter(sub => 
+                currentTab === 'contacts' ? sub.form_name === 'contact' : sub.form_name === 'newsletter'
+            );
+            
+            const dataStr = JSON.stringify(filteredData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentTab === 'contacts' ? 'contact_forms' : 'newsletter_subscribers'}_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         // Logout functionality
@@ -158,6 +346,5 @@
         // Initialize admin panel
         checkAuth();
     </script>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
