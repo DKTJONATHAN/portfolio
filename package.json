@@ -8,3 +8,14 @@
     "node": ">=16.0.0"
   }
 }
+{
+  "name": "jonathan-mwaniki-site",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tailwindcss -i tailwind.css -o styles.css --minify",
+    "dev": "tailwindcss -i tailwind.css -o styles.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}
