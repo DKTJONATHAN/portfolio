@@ -36,30 +36,486 @@
     }
     </script>
 
-    <!-- Replaced Tailwind CSS with local stylesheet -->
-    <link href="styles.css" rel="stylesheet">
-    
-    <!-- Keep all other stylesheets -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="scripts/config.js"></script>
+    <!-- Custom CSS -->
     <style>
+        /* Base Styles */
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            color: #1f2937;
+            background-color: #f9fafb;
+            line-height: 1.5;
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 0.5em;
+        }
+
+        h1 {
+            font-size: 3rem;
+        }
+
+        h2 {
+            font-size: 2.25rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+        }
+
+        p {
+            margin-bottom: 1em;
+            color: #4b5563;
+        }
+
+        /* Utility Classes */
+        .flex {
+            display: flex;
+        }
+
+        .flex-col {
+            flex-direction: column;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .justify-around {
+            justify-content: space-around;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fixed {
+            position: fixed;
+        }
+
+        .relative {
+            position: relative;
+        }
+
+        .absolute {
+            position: absolute;
+        }
+
+        .inset-0 {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .h-full {
+            height: 100%;
+        }
+
+        .max-w-md {
+            max-width: 28rem;
+        }
+
+        .max-w-lg {
+            max-width: 32rem;
+        }
+
+        .max-w-xl {
+            max-width: 36rem;
+        }
+
+        .max-w-2xl {
+            max-width: 42rem;
+        }
+
+        .max-w-xs {
+            max-width: 20rem;
+        }
+
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mb-1 {
+            margin-bottom: 0.25rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 0.75rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
+        .mb-12 {
+            margin-bottom: 3rem;
+        }
+
+        .mb-16 {
+            margin-bottom: 4rem;
+        }
+
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
+
+        .mr-3 {
+            margin-right: 0.75rem;
+        }
+
+        .mr-4 {
+            margin-right: 1rem;
+        }
+
+        .ml-2 {
+            margin-left: 0.5rem;
+        }
+
+        .ml-3 {
+            margin-left: 0.75rem;
+        }
+
+        .ml-4 {
+            margin-left: 1rem;
+        }
+
+        .mt-1 {
+            margin-top: 0.25rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .mt-6 {
+            margin-top: 1.5rem;
+        }
+
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .px-6 {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        .px-8 {
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        .py-3 {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+
+        .py-4 {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .py-6 {
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+
+        .py-8 {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        .py-12 {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        .py-20 {
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+        }
+
+        .p-2 {
+            padding: 0.5rem;
+        }
+
+        .p-3 {
+            padding: 0.75rem;
+        }
+
+        .p-6 {
+            padding: 1.5rem;
+        }
+
+        .p-8 {
+            padding: 2rem;
+        }
+
+        .rounded-full {
+            border-radius: 9999px;
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .rounded-xl {
+            border-radius: 0.75rem;
+        }
+
+        .rounded-2xl {
+            border-radius: 1rem;
+        }
+
+        .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .shadow-xl {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-xs {
+            font-size: 0.75rem;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .text-lg {
+            font-size: 1.125rem;
+        }
+
+        .text-xl {
+            font-size: 1.25rem;
+        }
+
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+
+        .text-3xl {
+            font-size: 1.875rem;
+        }
+
+        .text-4xl {
+            font-size: 2.25rem;
+        }
+
+        .text-5xl {
+            font-size: 3rem;
+        }
+
+        .text-6xl {
+            font-size: 3.75rem;
+        }
+
+        .font-medium {
+            font-weight: 500;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .text-white {
+            color: #ffffff;
+        }
+
+        .text-gray-400 {
+            color: #9ca3af;
+        }
+
+        .text-gray-500 {
+            color: #6b7280;
+        }
+
+        .text-gray-600 {
+            color: #4b5563;
+        }
+
+        .text-gray-700 {
+            color: #374151;
+        }
+
+        .text-gray-800 {
+            color: #1f2937;
+        }
+
+        .text-gray-900 {
+            color: #111827;
+        }
+
+        .bg-white {
+            background-color: #ffffff;
+        }
+
+        .bg-gray-50 {
+            background-color: #f9fafb;
+        }
+
+        .bg-gray-100 {
+            background-color: #f3f4f6;
+        }
+
+        .bg-gray-200 {
+            background-color: #e5e7eb;
+        }
+
+        .bg-gray-900 {
+            background-color: #111827;
+        }
+
+        .bg-dark-900 {
+            background-color: #0f172a;
+        }
+
+        .border {
+            border-width: 1px;
+        }
+
+        .border-gray-200 {
+            border-color: #e5e7eb;
+        }
+
+        .border-gray-300 {
+            border-color: #d1d5db;
+        }
+
+        .overflow-hidden {
+            overflow: hidden;
+        }
+
+        .object-cover {
+            object-fit: cover;
+        }
+
+        .z-40 {
+            z-index: 40;
+        }
+
+        .z-50 {
+            z-index: 50;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+        }
+
+        .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .grid-cols-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .gap-3 {
+            gap: 0.75rem;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .gap-6 {
+            gap: 1.5rem;
+        }
+
+        .gap-8 {
+            gap: 2rem;
+        }
+
+        /* Custom Components */
         .gradient-text {
             background: linear-gradient(90deg, #4f46e5, #10b981);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
+
         .card-hover {
             transition: all 0.3s ease;
         }
+
         .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
+
         .nav-link {
             position: relative;
         }
+
         .nav-link::after {
             content: '';
             position: absolute;
@@ -70,15 +526,216 @@
             background-color: #4f46e5;
             transition: width 0.3s ease;
         }
+
         .nav-link:hover::after {
             width: 100%;
         }
+
         .active-nav::after {
             width: 100%;
         }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 9999px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #4f46e5, #4f46e6);
+            color: white;
+        }
+
+        .btn-outline {
+            background-color: white;
+            color: #1f2937;
+            border-color: #e5e7eb;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 5rem 0;
+        }
+
+        .min-h-screen {
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .desktop-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 40;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 40;
+        }
+
+        /* Form Styles */
+        .form-input {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #1f2937;
+            background-color: white;
+            background-clip: padding-box;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+
+        .form-textarea {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #1f2937;
+            background-color: white;
+            background-clip: padding-box;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            min-height: 120px;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+
+        .form-select {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #1f2937;
+            background-color: white;
+            background-clip: padding-box;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+
+        /* Responsive Classes */
+        @media (min-width: 768px) {
+            .md\:flex-row {
+                flex-direction: row;
+            }
+            
+            .md\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            
+            .md\:grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+            
+            .md\:mb-0 {
+                margin-bottom: 0;
+            }
+            
+            .md\:text-right {
+                text-align: right;
+            }
+            
+            .md\:justify-end {
+                justify-content: flex-end;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .lg\:block {
+                display: block;
+            }
+            
+            .lg\:hidden {
+                display: none;
+            }
+            
+            .lg\:flex-row {
+                flex-direction: row;
+            }
+            
+            .lg\:w-1\/2 {
+                width: 50%;
+            }
+            
+            .lg\:w-1\/3 {
+                width: 33.333333%;
+            }
+            
+            .lg\:w-2\/3 {
+                width: 66.666667%;
+            }
+            
+            .lg\:pt-0 {
+                padding-top: 0;
+            }
+            
+            .lg\:pl-12 {
+                padding-left: 3rem;
+            }
+            
+            .lg\:pr-12 {
+                padding-right: 3rem;
+            }
+            
+            .lg\:mb-0 {
+                margin-bottom: 0;
+            }
+        }
     </style>
+
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="scripts/config.js"></script>
 </head>
-<body class="font-sans antialiased text-gray-800 bg-gray-50">
+<body>
     <!-- Splash Screen -->
     <div id="splashScreen" class="fixed inset-0 w-full h-full bg-white z-50 flex flex-col items-center justify-center">
         <div class="text-center px-4 max-w-md">
@@ -98,7 +755,7 @@
     <!-- Main Layout -->
     <div id="mainContent" class="hidden">
         <!-- Mobile Navigation -->
-        <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-40">
+        <nav class="mobile-nav lg-hidden">
             <div class="flex justify-around items-center p-2">
                 <a href="#home" class="nav-link p-3 text-gray-700 flex flex-col items-center" aria-label="Home">
                     <i class="fas fa-home"></i>
@@ -120,7 +777,7 @@
         </nav>
 
         <!-- Desktop Navigation -->
-        <nav class="hidden lg:block fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-40 shadow-sm">
+        <nav class="desktop-nav hidden lg-block">
             <div class="container mx-auto px-6 py-4 flex justify-between items-center">
                 <div class="flex items-center">
                     <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center mr-3">
@@ -139,26 +796,26 @@
         </nav>
 
         <!-- Hero Section -->
-        <section id="home" class="min-h-screen flex items-center pt-16 lg:pt-0">
+        <section id="home" class="min-h-screen flex items-center pt-16 lg-pt-0">
             <div class="container mx-auto px-6 py-20">
-                <div class="flex flex-col lg:flex-row items-center">
-                    <div class="lg:w-1/2 mb-12 lg:mb-0">
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+                <div class="flex flex-col lg-flex-row items-center">
+                    <div class="lg-w-1/2 mb-12 lg-mb-0">
+                        <h1 class="text-4xl md-text-5xl lg-text-6xl font-bold text-gray-900 leading-tight mb-6">
                             Professional <span class="gradient-text">Web Developer</span> in Nairobi, Kenya
                         </h1>
                         <p class="text-lg text-gray-600 mb-8 max-w-lg">
                             I specialize in creating high-performance websites, e-commerce solutions, and digital marketing strategies to help Kenyan businesses grow online.
                         </p>
                         <div class="flex flex-wrap gap-4">
-                            <a href="#contact" class="px-8 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300" aria-label="Get Started">
+                            <a href="#contact" class="btn btn-primary" aria-label="Get Started">
                                 Get Started
                             </a>
-                            <a href="#portfolio" class="px-8 py-3 bg-white text-gray-800 font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200" aria-label="View My Work">
+                            <a href="#portfolio" class="btn btn-outline" aria-label="View My Work">
                                 View My Work
                             </a>
                         </div>
                     </div>
-                    <div class="lg:w-1/2 lg:pl-12">
+                    <div class="lg-w-1/2 lg-pl-12">
                         <img src="./images/file.enc" alt="Jonathan Mwaniki - Professional Web Developer in Nairobi" class="rounded-2xl shadow-xl w-full">
                     </div>
                 </div>
@@ -173,7 +830,7 @@
                     <p class="max-w-2xl mx-auto text-gray-600">Comprehensive digital solutions tailored for Kenyan businesses and entrepreneurs</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md-grid-cols-2 lg-grid-cols-3 gap-8">
                     <div class="card-hover bg-white rounded-xl shadow-md overflow-hidden p-6" itemscope itemtype="https://schema.org/Service">
                         <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mb-4">
                             <i class="fas fa-code text-2xl"></i>
@@ -251,13 +908,13 @@
                     <p class="max-w-2xl mx-auto text-gray-600">A selection of projects showcasing my expertise in web development for Kenyan businesses</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md-grid-cols-2 lg-grid-cols-3 gap-8">
                     <div class="card-hover bg-white rounded-xl shadow-md overflow-hidden" itemscope itemtype="https://schema.org/CreativeWork">
                         <img src="./images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani - Kenyan Rental Platform by Jonathan Mwaniki" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <h3 class="text-xl font-bold text-gray-900 mb-2" itemprop="name">Nooki Mtaani</h3>
                             <p class="text-gray-600 mb-4" itemprop="description">A Kenyan rental platform website with secure payment integration and property management system.</p>
-                            <a href="https://nookimtaani.netlify.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300" itemprop="url">
+                            <a href="https://nookimtaani.netlify.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-600 font-medium hover-text-primary-700 transition-colors duration-300" itemprop="url">
                                 View Project
                                 <i class="fas fa-arrow-right ml-2"></i>
                             </a>
@@ -269,7 +926,7 @@
                         <div class="p-6">
                             <h3 class="text-xl font-bold text-gray-900 mb-2" itemprop="name">Jamtech Electronics</h3>
                             <p class="text-gray-600 mb-4" itemprop="description">Kenyan e-commerce platform with product catalog, search functionality, and mobile optimization.</p>
-                            <a href="https://jamtech.pages.dev" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300" itemprop="url">
+                            <a href="https://jamtech.pages.dev" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-600 font-medium hover-text-primary-700 transition-colors duration-300" itemprop="url">
                                 View Project
                                 <i class="fas fa-arrow-right ml-2"></i>
                             </a>
@@ -281,7 +938,7 @@
                         <div class="p-6">
                             <h3 class="text-xl font-bold text-gray-900 mb-2" itemprop="name">AfriChain WEB3</h3>
                             <p class="text-gray-600 mb-4" itemprop="description">Kenyan blockchain-based platform with secure payment gateways and cryptocurrency integration.</p>
-                            <a href="https://africhainke.netlify.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors duration-300" itemprop="url">
+                            <a href="https://africhainke.netlify.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-600 font-medium hover-text-primary-700 transition-colors duration-300" itemprop="url">
                                 View Project
                                 <i class="fas fa-arrow-right ml-2"></i>
                             </a>
@@ -294,11 +951,11 @@
         <!-- About Section -->
         <section id="about" class="py-20 bg-gray-100">
             <div class="container mx-auto px-6">
-                <div class="flex flex-col lg:flex-row items-center">
-                    <div class="lg:w-1/3 mb-12 lg:mb-0 lg:pr-12">
+                <div class="flex flex-col lg-flex-row items-center">
+                    <div class="lg-w-1/3 mb-12 lg-mb-0 lg-pr-12">
                         <img src="./images/file.enc" alt="About Jonathan Mwaniki - Web Developer in Nairobi" class="rounded-2xl shadow-xl w-full">
                     </div>
-                    <div class="lg:w-2/3">
+                    <div class="lg-w-2/3">
                         <h2 class="text-3xl font-bold text-gray-900 mb-6">About <span class="gradient-text">Jonathan Mwaniki</span></h2>
                         <div class="text-gray-600 mb-8">
                             <p class="mb-4">I'm Jonathan Mwaniki, a passionate web developer and digital solutions expert based in Nairobi, Kenya. With over 5 years of experience in web development, design, and digital marketing, I help Kenyan businesses establish and grow their online presence.</p>
@@ -308,7 +965,7 @@
 
                         <div class="mb-8">
                             <h3 class="text-xl font-bold text-gray-900 mb-4">Technical Skills & Expertise</h3>
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="grid grid-cols-2 md-grid-cols-3 gap-4">
                                 <div class="flex items-center">
                                     <i class="fab fa-html5 text-primary-600 mr-2"></i>
                                     <span>HTML5</span>
@@ -348,26 +1005,26 @@
                     <p class="max-w-2xl mx-auto text-gray-600">Ready to start your web development project? Reach out and let's create something amazing for your Kenyan business.</p>
                 </div>
 
-                <div class="flex flex-col lg:flex-row gap-12">
-                    <div class="lg:w-1/2">
+                <div class="flex flex-col lg-flex-row gap-12">
+                    <div class="lg-w-1/2">
                         <form id="contactForm" class="bg-white rounded-xl shadow-md p-8" netlify>
                             <div class="grid grid-cols-1 gap-6">
                                 <div>
                                     <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
                                     <input type="text" id="name" name="name" required 
-                                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                        class="form-input">
                                 </div>
 
                                 <div>
                                     <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                                     <input type="email" id="email" name="email" required 
-                                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                        class="form-input">
                                 </div>
 
                                 <div>
                                     <label for="service" class="block text-sm font-medium text-gray-700 mb-1">Service Needed</label>
                                     <select id="service" name="service" required
-                                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                        class="form-select">
                                         <option value="">Select a Service</option>
                                         <option value="web">Web Development</option>
                                         <option value="design">Graphic Design</option>
@@ -379,17 +1036,17 @@
                                 <div>
                                     <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
                                     <textarea id="message" name="message" required rows="5"
-                                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"></textarea>
+                                        class="form-textarea"></textarea>
                                 </div>
 
-                                <button type="submit" class="w-full px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+                                <button type="submit" class="btn btn-primary">
                                     Send Message
                                 </button>
                             </div>
                         </form>
                     </div>
 
-                    <div class="lg:w-1/2">
+                    <div class="lg-w-1/2">
                         <div class="bg-white rounded-xl shadow-md p-8 h-full">
                             <h3 class="text-xl font-bold text-gray-900 mb-6">Contact Information</h3>
 
@@ -400,7 +1057,7 @@
                                     </div>
                                     <div>
                                         <h4 class="font-medium text-gray-900 mb-1">Email</h4>
-                                        <a href="mailto:info@jonathanmwaniki.co.ke" class="text-gray-600 hover:text-primary-600 transition-colors duration-300">info@jonathanmwaniki.co.ke</a>
+                                        <a href="mailto:info@jonathanmwaniki.co.ke" class="text-gray-600 hover-text-primary-600 transition-colors duration-300">info@jonathanmwaniki.co.ke</a>
                                     </div>
                                 </div>
 
@@ -410,20 +1067,20 @@
                                     </div>
                                     <div>
                                         <h4 class="font-medium text-gray-900 mb-1">Phone</h4>
-                                        <a href="tel:+254706396305" class="text-gray-600 hover:text-primary-600 transition-colors duration-300">+254 706 396 305</a>
+                                        <a href="tel:+254706396305" class="text-gray-600 hover-text-primary-600 transition-colors duration-300">+254 706 396 305</a>
                                     </div>
                                 </div>
 
                                 <div class="pt-6 border-t border-gray-200">
                                     <h4 class="font-medium text-gray-900 mb-4">Connect With Me</h4>
                                     <div class="flex space-x-4">
-                                        <a href="https://twitter.com/maestropuns" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-100 hover:bg-primary-100 rounded-full flex items-center justify-center text-gray-600 hover:text-primary-600 transition-colors duration-300" aria-label="Twitter">
+                                        <a href="https://twitter.com/maestropuns" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-100 hover-bg-primary-100 rounded-full flex items-center justify-center text-gray-600 hover-text-primary-600 transition-colors duration-300" aria-label="Twitter">
                                             <i class="fab fa-twitter"></i>
                                         </a>
-                                        <a href="https://www.instagram.com/jonaahrojo" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-100 hover:bg-primary-100 rounded-full flex items-center justify-center text-gray-600 hover:text-primary-600 transition-colors duration-300" aria-label="Instagram">
+                                        <a href="https://www.instagram.com/jonaahrojo" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-100 hover-bg-primary-100 rounded-full flex items-center justify-center text-gray-600 hover-text-primary-600 transition-colors duration-300" aria-label="Instagram">
                                             <i class="fab fa-instagram"></i>
                                         </a>
-                                        <a href="https://wa.me/+254706396305" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-100 hover:bg-primary-100 rounded-full flex items-center justify-center text-gray-600 hover:text-primary-600 transition-colors duration-300" aria-label="WhatsApp">
+                                        <a href="https://wa.me/+254706396305" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-100 hover-bg-primary-100 rounded-full flex items-center justify-center text-gray-600 hover-text-primary-600 transition-colors duration-300" aria-label="WhatsApp">
                                             <i class="fab fa-whatsapp"></i>
                                         </a>
                                     </div>
@@ -438,8 +1095,8 @@
         <!-- Footer -->
         <footer class="bg-dark-900 text-white py-12">
             <div class="container mx-auto px-6">
-                <div class="flex flex-col md:flex-row justify-between items-center">
-                    <div class="mb-8 md:mb-0">
+                <div class="flex flex-col md-flex-row justify-between items-center">
+                    <div class="mb-8 md-mb-0">
                         <div class="flex items-center">
                             <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center mr-3">
                                 <span class="text-white font-bold">JM</span>
@@ -449,11 +1106,11 @@
                         <p class="mt-4 text-gray-400 max-w-md">Professional web developer and digital solutions expert helping Kenyan businesses thrive through technology, design, and innovation.</p>
                     </div>
 
-                    <div class="text-center md:text-right">
+                    <div class="text-center md-text-right">
                         <p class="text-gray-400 mb-4">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
-                        <div class="flex justify-center md:justify-end space-x-4">
-                            <a href="/privacy-policy" class="text-gray-400 hover:text-white transition-colors duration-300">Privacy Policy</a>
-                            <a href="/terms-of-service" class="text-gray-400 hover:text-white transition-colors duration-300">Terms of Service</a>
+                        <div class="flex justify-center md-justify-end space-x-4">
+                            <a href="/privacy-policy" class="text-gray-400 hover-text-white transition-colors duration-300">Privacy Policy</a>
+                            <a href="/terms-of-service" class="text-gray-400 hover-text-white transition-colors duration-300">Terms of Service</a>
                         </div>
                     </div>
                 </div>
@@ -465,7 +1122,7 @@
     <div id="toast" class="fixed bottom-4 right-4 bg-white shadow-xl rounded-lg px-6 py-3 transform translate-y-10 opacity-0 transition-all duration-300 z-50 hidden">
         <div class="flex items-center">
             <span id="toastMessage"></span>
-            <button onclick="hideToast()" class="ml-4 text-gray-500 hover:text-gray-700" aria-label="Close notification">
+            <button onclick="hideToast()" class="ml-4 text-gray-500 hover-text-gray-700" aria-label="Close notification">
                 <i class="fas fa-times"></i>
             </button>
         </div>
