@@ -1,21 +1,12 @@
 {
-  "name": "portfolio",
-  "private": true,
-  "dependencies": {
-    "@octokit/rest": "^19.0.5"
-  },
-  "engines": {
-    "node": ">=16.0.0"
-  }
-}
-{
   "name": "jonathan-mwaniki-site",
   "version": "1.0.0",
-  "scripts": {
-    "build": "tailwindcss -i tailwind.css -o styles.css --minify",
-    "dev": "tailwindcss -i tailwind.css -o styles.css --watch"
+  "private": true,
+  "dependencies": {
+    "@octokit/core": "^5.0.0"  // More modern than @octokit/rest
   },
-  "devDependencies": {
-    "tailwindcss": "^3.4.1"
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }
