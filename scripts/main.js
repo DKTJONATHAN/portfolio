@@ -1,30 +1,35 @@
-// Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Splash Screen Animation (UNCHANGED)
-    const splashScreen = document.getElementById('splashScreen');
-    const mainContent = document.getElementById('mainContent');
-    const progressBar = document.getElementById('progressBar');
+// Cache DOM elements and reusable variables at the top
+const splashScreen = document.getElementById('splashScreen');
+const mainContent = document.getElementById('mainContent');
+const progressBar = document.getElementById('progressBar');
+const spinnerHtml = '<span class="inline-block animate-spin mr-2">↻</span>';
+let isScrolling;
 
-    if (splashScreen && mainContent && progressBar) {
-        let width = 0;
-        const totalTime = 2000;
-        const interval = setInterval(function() {
-            width += 2;
-            progressBar.style.width = width + '%';
-            if (width >= 100) {
-                clearInterval(interval);
-                splashScreen.style.opacity = '0';
-                setTimeout(function() {
-                    splashScreen.style.display = 'none';
-                    mainContent.style.display = 'block';
-                }, 300);
-            }
-        }, totalTime / 50);
-    }
+// Optimized splash screen animation
+function initSplashScreen() {
+    if (!splashScreen || !mainContent || !progressBar) return;
 
-    // Active Navigation Link (UNCHANGED)
+    let width = 0;
+    const totalTime = 1000; // Reduced from 2000ms
+    const interval = setInterval(() => {
+        width += 5; // Increased increment
+        progressBar.style.width = `${width}%`;
+        
+        if (width >= 100) {
+            clearInterval(interval);
+            splashScreen.style.opacity = '0';
+            // Remove setTimeout for immediate content display
+            splashScreen.style.display = 'none';
+            mainContent.style.display = 'block';
+        }
+    }, totalTime / 20); // Fewer intervals
+}
+
+// Optimized active nav link tracking
+function initActiveNav() {
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('.nav-link');
+    const windowHeight = window.innerHeight;
 
     function updateActiveNav() {
         let current = '';
@@ -32,137 +37,99 @@ document.addEventListener('DOMContentLoaded', function() {
 
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-
-            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            // Only check sections near viewport
+            if (scrollPosition >= sectionTop - windowHeight && 
+                scrollPosition < sectionTop + section.clientHeight) {
                 current = section.getAttribute('id');
             }
         });
 
         navLinks.forEach(link => {
-            link.classList.toggle('active-nav', link.getAttribute('href') === `#${current}`);
+            const isActive = link.getAttribute('href') === `#${current}`;
+            // Only update if state changed
+            if (isActive !== link.classList.contains('active-nav')) {
+                link.classList.toggle('active-nav', isActive);
+            }
         });
     }
 
-    let isScrolling;
-    window.addEventListener('scroll', function() {
+    // More aggressive throttling
+    window.addEventListener('scroll', () => {
         window.clearTimeout(isScrolling);
-        isScrolling = setTimeout(updateActiveNav, 100);
+        isScrolling = setTimeout(updateActiveNav, 200); // Increased from 100ms
     }, { passive: true });
 
     updateActiveNav();
+}
 
-    // Contact Form Handler (FIXED)
+// Optimized form handling with shared functionality
+function initForms() {
     const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-        contactForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            if (!validateForm(contactForm)) return;
-
-            const form = e.target;
-            const submitButton = form.querySelector('button[type="submit"]');
-            const originalButtonText = submitButton.innerHTML;
-
-            // Disable button during submission
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<span class="inline-block animate-spin mr-2">↻</span> Sending...';
-
-            try {
-                const formData = new FormData(form);
-                const data = {
-                    form_name: 'contact',
-                    timestamp: new Date().toISOString()
-                };
-
-                // Convert FormData to object
-                for (let [key, value] of formData.entries()) {
-                    data[key] = value;
-                }
-
-                // Send to GitHub function with proper headers
-                const response = await fetch('/.netlify/functions/github-update', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error || 'Submission failed');
-                }
-
-                showSuccessPopup('Message sent successfully!');
-                form.reset();
-            } catch (error) {
-                showErrorPopup(error.message || 'Failed to send message. Please try again.');
-                console.error('Contact form error:', error);
-            } finally {
-                submitButton.disabled = false;
-                submitButton.innerHTML = originalButtonText;
-            }
-        });
-    }
-
-    // Newsletter Form Handler (FIXED)
     const newsletterForm = document.getElementById('newsletterForm');
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            if (!validateForm(newsletterForm)) return;
 
-            const form = e.target;
-            const submitButton = form.querySelector('button[type="submit"]');
-            const originalButtonText = submitButton.innerHTML;
+    async function handleFormSubmit(e, formType) {
+        e.preventDefault();
+        const form = e.target;
+        
+        if (!validateForm(form)) return;
 
-            // Disable button during submission
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<span class="inline-block animate-spin mr-2">↻</span> Subscribing...';
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.innerHTML;
 
-            try {
-                const formData = new FormData(form);
-                const data = {
-                    form_name: 'newsletter',
-                    timestamp: new Date().toISOString()
-                };
+        submitButton.disabled = true;
+        submitButton.innerHTML = `${spinnerHtml}${formType === 'contact' ? 'Sending...' : 'Subscribing...'}`;
 
-                // Convert FormData to object
-                for (let [key, value] of formData.entries()) {
-                    data[key] = value;
-                }
+        try {
+            const formData = new FormData(form);
+            const data = {
+                form_name: formType,
+                timestamp: new Date().toISOString()
+            };
 
-                // Send to GitHub function with proper headers
-                const response = await fetch('/.netlify/functions/github-update', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error || 'Subscription failed');
-                }
-
-                showSuccessPopup('Thank you for subscribing!');
-                form.reset();
-            } catch (error) {
-                showErrorPopup(error.message || 'Failed to subscribe. Please try again.');
-                console.error('Newsletter error:', error);
-            } finally {
-                submitButton.disabled = false;
-                submitButton.innerHTML = originalButtonText;
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
             }
-        });
+
+            const response = await fetch('/.netlify/functions/github-update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `${formType === 'contact' ? 'Submission' : 'Subscription'} failed`);
+            }
+
+            showSuccessPopup(formType === 'contact' 
+                ? 'Message sent successfully!' 
+                : 'Thank you for subscribing!');
+            form.reset();
+        } catch (error) {
+            showErrorPopup(error.message || 
+                `Failed to ${formType === 'contact' ? 'send message' : 'subscribe'}. Please try again.`);
+            console.error(`${formType} error:`, error);
+        } finally {
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalButtonText;
+        }
     }
 
-    // Smooth scrolling (UNCHANGED)
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => handleFormSubmit(e, 'contact'));
+    }
+
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', (e) => handleFormSubmit(e, 'newsletter'));
+    }
+}
+
+// Optimized smooth scrolling with event delegation
+function initSmoothScrolling() {
+    document.body.addEventListener('click', (e) => {
+        if (e.target.matches('a[href^="#"]')) {
             e.preventDefault();
-            const targetId = this.getAttribute('href');
+            const targetId = e.target.getAttribute('href');
             if (targetId === '#') return;
 
             const targetElement = document.querySelector(targetId);
@@ -178,65 +145,43 @@ document.addEventListener('DOMContentLoaded', function() {
                     location.hash = targetId;
                 }
             }
-        });
+        }
     });
+}
 
-    // Basic form validation (UNCHANGED)
-    function validateForm(form) {
-        let isValid = true;
-        const requiredFields = form.querySelectorAll('[required]');
+// Optimized form validation
+function validateForm(form) {
+    let isValid = true;
+    const requiredFields = form.querySelectorAll('[required]');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
+    requiredFields.forEach(field => {
+        const hasValue = field.value.trim();
+        
+        if (!hasValue) {
+            field.classList.add('border-red-500');
+            isValid = false;
+        } else {
+            field.classList.remove('border-red-500');
+            
+            if (field.type === 'email' && !emailRegex.test(field.value)) {
                 field.classList.add('border-red-500');
                 isValid = false;
-            } else {
-                field.classList.remove('border-red-500');
             }
-
-            // Email validation
-            if (field.type === 'email' && field.value.trim()) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(field.value)) {
-                    field.classList.add('border-red-500');
-                    isValid = false;
-                }
-            }
-        });
-
-        if (!isValid) {
-            showErrorPopup('Please fill all required fields correctly');
         }
+    });
 
-        return isValid;
+    if (!isValid) {
+        showErrorPopup('Please fill all required fields correctly');
     }
-});
 
-// Popup Notifications (UNCHANGED)
-function showSuccessPopup(message) {
-    showPopup(message, {
-        bgColor: 'bg-green-50',
-        textColor: 'text-green-800',
-        borderColor: 'border-green-500',
-        icon: `<svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>`
-    });
+    return isValid;
 }
 
-function showErrorPopup(message) {
-    showPopup(message, {
-        bgColor: 'bg-red-50',
-        textColor: 'text-red-800',
-        borderColor: 'border-red-500',
-        icon: `<svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>`
-    });
-}
-
+// Optimized popup notifications
 function showPopup(message, { bgColor, textColor, borderColor, icon }) {
     let popupContainer = document.getElementById('popupContainer');
+    
     if (!popupContainer) {
         popupContainer = document.createElement('div');
         popupContainer.id = 'popupContainer';
@@ -251,13 +196,9 @@ function showPopup(message, { bgColor, textColor, borderColor, icon }) {
     popup.innerHTML = `
         <div class="p-4">
             <div class="flex items-start">
-                <div class="flex-shrink-0">
-                    ${icon}
-                </div>
+                <div class="flex-shrink-0">${icon}</div>
                 <div class="ml-3 w-0 flex-1 pt-0.5">
-                    <p class="text-sm font-medium ${textColor}">
-                        ${message}
-                    </p>
+                    <p class="text-sm font-medium ${textColor}">${message}</p>
                 </div>
                 <div class="ml-4 flex-shrink-0 flex">
                     <button class="${bgColor} rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none">
@@ -273,25 +214,37 @@ function showPopup(message, { bgColor, textColor, borderColor, icon }) {
 
     popupContainer.appendChild(popup);
 
-    setTimeout(() => {
+    // Use requestAnimationFrame for smoother animation
+    requestAnimationFrame(() => {
         popup.classList.remove('translate-y-4', 'opacity-0');
         popup.classList.add('translate-y-0', 'opacity-100');
-    }, 10);
+    });
 
-    const hideTimer = setTimeout(() => {
-        hidePopup(popup);
-    }, 5000);
-
-    const closeButton = popup.querySelector('button');
-    closeButton.addEventListener('click', () => {
+    const hideTimer = setTimeout(() => hidePopup(popup), 5000);
+    popup.querySelector('button').addEventListener('click', () => {
         clearTimeout(hideTimer);
         hidePopup(popup);
-    });
+    }, { once: true });
 }
 
 function hidePopup(popup) {
     popup.classList.add('translate-y-4', 'opacity-0');
-    setTimeout(() => {
-        popup.remove();
-    }, 300);
-                                     }
+    setTimeout(() => popup.remove(), 300);
+}
+
+// Initialize everything when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    initSplashScreen();
+    initActiveNav();
+    initForms();
+    initSmoothScrolling();
+});
+
+// Export functions for testing if needed
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        validateForm,
+        showPopup,
+        hidePopup
+    };
+                }
