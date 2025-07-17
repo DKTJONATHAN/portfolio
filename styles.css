@@ -19,19 +19,19 @@
     --font-main: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-alt: 'Inter', sans-serif;
     --line-height: 1.6;
-    
+
     /* Spacing */
     --space-xs: 0.25rem;
     --space-sm: 0.5rem;
     --space-md: 1rem;
     --space-lg: 1.5rem;
     --space-xl: 2rem;
-    
+
     /* Shadows */
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
     --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
     --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
-    
+
     /* Transitions */
     --transition-fast: 0.15s ease;
     --transition-normal: 0.3s ease;
@@ -61,7 +61,7 @@ body {
 
 /* 3. Utility Classes */
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .fixed {
@@ -112,20 +112,18 @@ body {
 }
 
 /* 4. Splash Screen */
-.splash-screen {
+#splashScreen {
     position: fixed;
     top: 0;
-    right: 0;
-    bottom: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: white;
-    z-index: 50;
+    z-index: 9999;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    transition: opacity 0.3s ease;
 }
 
 .splash-content {
@@ -152,14 +150,14 @@ body {
     font-weight: 700;
 }
 
-.splash-screen h1 {
+#splashScreen h1 {
     font-size: 1.875rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
     color: #111827;
 }
 
-.splash-screen p {
+#splashScreen p {
     color: var(--gray);
     margin-bottom: 2rem;
 }
@@ -177,15 +175,16 @@ body {
     overflow: hidden;
 }
 
-.progress-fill {
+#progressBar {
     height: 100%;
     background: linear-gradient(to right, var(--primary), var(--success));
     border-radius: 9999px;
     width: 0%;
+    transition: width 0.1s linear;
 }
 
 /* 5. Main Content */
-.main-content {
+#mainContent {
     display: none;
 }
 
@@ -253,6 +252,11 @@ body {
 .nav-link.active {
     color: var(--primary);
     font-weight: 600;
+}
+
+.active-nav {
+    color: var(--primary) !important;
+    font-weight: 600 !important;
 }
 
 /* 7. Hero Section */
@@ -661,6 +665,10 @@ body {
     resize: vertical;
 }
 
+.border-red-500 {
+    border-color: var(--error) !important;
+}
+
 .contact-info-container {
     width: 100%;
 }
@@ -842,11 +850,22 @@ body {
     opacity: 0;
     transition: all var(--transition-normal);
     z-index: 50;
+    max-width: 90%;
 }
 
 .toast-notification.show {
     transform: translateY(0);
     opacity: 1;
+}
+
+.toast-notification.success {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.toast-notification.error {
+    background: #fee2e2;
+    color: #b91c1c;
 }
 
 .toast-content {
@@ -867,7 +886,23 @@ body {
     color: var(--dark);
 }
 
-/* 15. Responsive Styles */
+/* 15. Spinner */
+.spinner {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: currentColor;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 0.5em;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 16. Responsive Styles */
 @media (min-width: 640px) {
     .skills-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -1007,7 +1042,7 @@ body {
     }
 }
 
-/* 16. Animations */
+/* 17. Animations */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -1017,7 +1052,7 @@ body {
     animation: fadeIn 0.3s ease-in-out;
 }
 
-/* 17. Font Face for Poppins Fallback */
+/* 18. Font Face for Poppins Fallback */
 @font-face {
     font-family: 'Poppins-fallback';
     src: local('Arial');
@@ -1025,51 +1060,4 @@ body {
     ascent-override: 95%;
     descent-override: 22%;
     line-gap-override: 0;
-}
-.toast-notification {
-  position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  padding: 1rem 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  z-index: 1000;
-  transform: translateY(1rem);
-  opacity: 0;
-  transition: all 0.3s ease;
-  max-width: 90%;
-}
-
-.toast-notification.success {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.toast-notification.error {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.toast-notification.show {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-.toast-notification.hidden {
-  display: none;
-}
-
-.spinner {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-radius: 50%;
-  border-top-color: currentColor;
-  animation: spin 1s ease-in-out infinite;
-  margin-right: 0.5em;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
