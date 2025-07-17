@@ -1,16 +1,46 @@
 [build]
   command = "echo 'No build needed'"
   publish = "."
-  functions = "functions"  # Only if using Netlify Functions
+  functions = "netlify/functions"  # Updated to standard Netlify Functions directory
 
 [build.environment]
   GITHUB_REPO = "DKTJONATHAN/Portfolio"
-  NODE_VERSION = "16"  # Or your preferred version
+  NODE_VERSION = "18"  # Updated to current LTS version
+  AWS_LAMBDA_JS_RUNTIME = "nodejs18.x"  # Match to Node version
 
 [context.production.environment]
   NODE_ENV = "production"
+  SUBMISSIONS_FILE = "data/submissions.json"  # Custom environment variable
 
+# Required for file system access in Netlify Functions
+[[plugins]]
+  package = "@netlify/plugin-functions-core"
+
+# SPA redirect rules
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# CORS headers for functions
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "POST, GET, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization, X-Requested-With"
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://*.netlify.app"
+
+# Function-specific settings (optional)
+[functions]
+  node_bundler = "esbuild"  # Faster bundling
+  external_node_modules = ["uuid"]  # List of excluded modules
+  included_files = ["data/**"]  # Include data directory in function
