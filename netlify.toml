@@ -1,0 +1,16 @@
+[build]
+  command = "echo 'No build needed'"
+  publish = "."
+  functions = "functions"  # Only if using Netlify Functions
+
+[build.environment]
+  GITHUB_REPO = "DKTJONATHAN/Portfolio"
+  NODE_VERSION = "16"  # Or your preferred version
+
+[context.production.environment]
+  NODE_ENV = "production"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
