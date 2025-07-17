@@ -1,7 +1,0 @@
-{
-  "name": "github-update-function",
-  "version": "1.0.0",
-  "dependencies": {
-    "@octokit/core": "^5.0.0"
-  }
-}
