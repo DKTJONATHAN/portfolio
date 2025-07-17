@@ -16,8 +16,8 @@ exports.handler = async function(event) {
     
     // GitHub configuration
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-    const owner = 'your-github-username'; // CHANGE THIS
-    const repo = 'your-repo-name'; // CHANGE THIS
+    const owner = 'DKTJONATHAN'; // CHANGE THIS
+    const repo = 'portfolio'; // CHANGE THIS
     const branch = 'main'; // CHANGE IF USING DIFFERENT BRANCH
     const filePath = 'data/submissions.json'; // File path in your repo
     
