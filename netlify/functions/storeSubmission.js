@@ -1,108 +1,101 @@
-const fs = require('fs').promises;
-const path = require('path');
-const { v4: uuidv4 } = require('uuid');
+const { Octokit } = require('@octokit/rest');
 
-exports.handler = async (event) => {
-  // Only accept POST requests
-  if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      body: JSON.stringify({ error: 'Method Not Allowed' }),
-      headers: {
-        'Content-Type': 'application/json',
-        'Allow': 'POST'
-      }
-    };
-  }
-
-  try {
-    // Parse incoming submission
-    const submission = JSON.parse(event.body);
-    
-    // Validate required fields
-    if (!submission.name || !submission.email || !submission.message) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Missing required fields' })
-      };
+exports.handler = async function(event, context) {
+    // Only allow POST requests
+    if (event.httpMethod !== 'POST') {
+        return {
+            statusCode: 405,
+            body: JSON.stringify({ 
+                success: false,
+                message: 'Method Not Allowed' 
+            })
+        };
     }
 
-    // Sanitize and enhance data
-    const enhancedSubmission = {
-      id: uuidv4(),
-      name: sanitizeInput(submission.name),
-      email: sanitizeInput(submission.email),
-      service: submission.service || 'general',
-      message: sanitizeInput(submission.message),
-      timestamp: new Date().toISOString(),
-      pageUrl: submission.pageUrl || 'direct',
-      userAgent: submission.userAgent || 'unknown',
-      referrer: submission.referrer || 'none',
-      status: 'new',
-      ip: event.headers['x-nf-client-connection-ip'] || 'unknown'
-    };
-
-    // Define paths
-    const dataDir = path.join(process.cwd(), 'data');
-    const submissionsFile = path.join(dataDir, 'submissions.json');
-    const backupFile = path.join(dataDir, `submissions_${new Date().toISOString().split('T')[0]}.json`);
-
-    // Create data directory if it doesn't exist
-    await fs.mkdir(dataDir, { recursive: true });
-
-    // Read existing submissions or initialize
-    let submissions = [];
     try {
-      const fileData = await fs.readFile(submissionsFile, 'utf8');
-      submissions = JSON.parse(fileData);
-      
-      // Create daily backup
-      await fs.copyFile(submissionsFile, backupFile);
-    } catch (err) {
-      if (err.code !== 'ENOENT') throw err;
+        // Parse incoming data
+        const data = JSON.parse(event.body);
+        
+        // Validate required fields
+        if (!data.name || !data.email || !data.message) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({
+                    success: false,
+                    message: 'Name, email, and message are required fields'
+                })
+            };
+        }
+
+        // Initialize GitHub client
+        const octokit = new Octokit({
+            auth: process.env.GITHUB_TOKEN
+        });
+
+        const [owner, repo] = process.env.GITHUB_REPO.split('/');
+        const filePath = 'data/forms.json';
+        const branch = 'main';
+        const commitMessage = `New form submission from ${data.name}`;
+        
+        // Try to get existing content
+        let currentContent = [];
+        try {
+            const { data: fileData } = await octokit.repos.getContent({
+                owner,
+                repo,
+                path: filePath,
+                ref: branch
+            });
+            
+            const content = Buffer.from(fileData.content, 'base64').toString('utf8');
+            currentContent = JSON.parse(content);
+        } catch (error) {
+            // If file doesn't exist, we'll create it
+            if (error.status !== 404) throw error;
+        }
+
+        // Add new submission
+        currentContent.push(data);
+        
+        // Convert to pretty-printed JSON
+        const newContent = JSON.stringify(currentContent, null, 2);
+        
+        // Create or update file
+        await octokit.repos.createOrUpdateFileContents({
+            owner,
+            repo,
+            path: filePath,
+            message: commitMessage,
+            content: Buffer.from(newContent).toString('base64'),
+            branch,
+            committer: {
+                name: 'Website Form Bot',
+                email: 'bot@jonathanmwaniki.co.ke'
+            },
+            author: {
+                name: data.name,
+                email: data.email
+            }
+        });
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ 
+                success: true,
+                message: 'Submission stored successfully' 
+            })
+        };
+        
+    } catch (error) {
+        console.error('Error storing submission:', error);
+        
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ 
+                success: false,
+                message: 'Failed to store submission',
+                error: error.message
+            })
+        };
     }
-
-    // Add new submission
-    submissions.push(enhancedSubmission);
-
-    // Write to file with pretty formatting
-    await fs.writeFile(
-      submissionsFile,
-      JSON.stringify(submissions, null, 2),
-      'utf8'
-    );
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        message: 'Submission stored successfully',
-        submissionId: enhancedSubmission.id
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-  } catch (error) {
-    console.error('Error processing submission:', error);
-    
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: 'Internal Server Error',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-  }
 };
-
-// Helper function to sanitize inputs
-function sanitizeInput(input) {
-  return String(input)
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .substring(0, 2000);
-}
