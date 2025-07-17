@@ -1,185 +1,131 @@
-/**
- * Jonathan Mwaniki - Portfolio Main JS
- * Simple and Reliable Implementation
- */
-
-// DOM Elements
-const splashScreen = document.getElementById('splashScreen');
-const mainContent = document.getElementById('mainContent');
-const progressBar = document.getElementById('progressBar');
-const contactForm = document.getElementById('contactForm');
-const toast = document.getElementById('toast');
-const toastMessage = document.getElementById('toastMessage');
-
-// Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    // Simple Splash Screen Loader
-    if (splashScreen && mainContent && progressBar) {
-        let width = 0;
-        const interval = setInterval(function() {
-            width += 2;
-            progressBar.style.width = width + '%';
-            
-            if (width >= 100) {
-                clearInterval(interval);
-                splashScreen.style.opacity = '0';
-                
-                setTimeout(function() {
-                    splashScreen.style.display = 'none';
-                    mainContent.style.display = 'block';
-                    setTimeout(() => mainContent.style.opacity = '1', 10);
-                }, 300);
-            }
-        }, 20);
-    } else if (mainContent) {
-        // If splash elements don't exist, show main content immediately
-        mainContent.style.display = 'block';
-        mainContent.style.opacity = '1';
-    }
+    // Simplified splash screen (1 second only)
+    setTimeout(() => {
+        const splashScreen = document.getElementById('splashScreen');
+        splashScreen.classList.add('fade-out');
+        
+        setTimeout(() => {
+            splashScreen.style.display = 'none';
+            document.getElementById('mainContent').classList.add('visible');
+        }, 300);
+    }, 1000);
 
-    // Initialize other functionality
-    initActiveNav();
-    if (contactForm) initFormHandler();
-    initSmoothScrolling();
+    // Enhanced form submission handler
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(contactForm);
+            const formValues = Object.fromEntries(formData.entries());
+            const timestamp = new Date().toISOString();
+            
+            // Prepare submission data
+            const submission = {
+                ...formValues,
+                timestamp,
+                status: 'new',
+                ip: await getClientIP() // Optional: Get client IP
+            };
+
+            // Get form elements
+            const submitButton = contactForm.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            const originalHTML = submitButton.innerHTML;
+            
+            // Set loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            
+            try {
+                // Show loading toast
+                showToast('Submitting your message...', 'info');
+                
+                // Send to Netlify function
+                const response = await fetch('/.netlify/functions/storeSubmission', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(submission),
+                });
+
+                const responseData = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(responseData.message || 'Failed to send message');
+                }
+                
+                // Success handling
+                showToast('Message sent successfully! We will get back to you soon.', 'success');
+                contactForm.reset();
+                
+                // Optional: Track conversion
+                trackConversion('form_submission');
+                
+            } catch (error) {
+                console.error('Submission error:', error);
+                showToast(error.message || 'Failed to send message. Please try again or contact us directly.', 'error');
+                
+                // Optional: Track error
+                trackError('form_submission_error', error);
+                
+            } finally {
+                // Reset button state
+                submitButton.disabled = false;
+                submitButton.textContent = originalText;
+                submitButton.innerHTML = originalHTML;
+            }
+        });
+    }
 });
 
-// Active navigation tracking
-function initActiveNav() {
-    const sections = document.querySelectorAll('section');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    function updateActiveNav() {
-        const scrollPosition = window.scrollY + 200;
-        let currentActive = null;
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            
-            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                currentActive = section.getAttribute('id');
-            }
-        });
-        
-        navLinks.forEach(link => {
-            link.classList.toggle('active-nav', link.getAttribute('href') === `#${currentActive}`);
-        });
+// Get client IP (optional)
+async function getClientIP() {
+    try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+    } catch {
+        return 'unknown';
     }
-    
-    window.addEventListener('scroll', updateActiveNav);
-    updateActiveNav();
-}
-
-// Form submission handler
-function initFormHandler() {
-    contactForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        if (!validateForm(contactForm)) return;
-
-        const submitBtn = contactForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-
-        try {
-            // Show loading state
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span> Sending...';
-
-            const formData = new FormData(contactForm);
-            const response = await fetch('/.netlify/functions/storeSubmission', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({
-                    name: formData.get('name'),
-                    email: formData.get('email'),
-                    service: formData.get('service'),
-                    message: formData.get('message'),
-                    timestamp: new Date().toISOString()
-                })
-            });
-
-            if (!response.ok) throw new Error('Failed to send message');
-            
-            showToast('Message sent successfully!');
-            contactForm.reset();
-        } catch (error) {
-            showToast(error.message || 'Failed to send message. Please try again.', 'error');
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-        }
-    });
-}
-
-// Form validation
-function validateForm(form) {
-    let isValid = true;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const requiredFields = form.querySelectorAll('[required]');
-
-    requiredFields.forEach(field => {
-        field.classList.remove('border-red-500');
-        
-        if (!field.value.trim()) {
-            field.classList.add('border-red-500');
-            isValid = false;
-        } else if (field.type === 'email' && !emailRegex.test(field.value)) {
-            field.classList.add('border-red-500');
-            isValid = false;
-        }
-    });
-
-    if (!isValid) {
-        showToast('Please fill all required fields correctly', 'error');
-    }
-
-    return isValid;
 }
 
 // Toast notification system
-function showToast(message, type = 'success') {
-    if (!toast || !toastMessage) return;
-
-    toastMessage.textContent = message;
-    toast.className = `toast-notification ${type}`;
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
     
-    // Show toast
-    toast.classList.remove('hidden');
-    toast.classList.add('show');
+    if (!toast || !toastMessage) return;
+    
+    // Clear any existing toasts
+    toast.className = 'toast-notification hidden';
+    
+    // Set new toast content
+    toastMessage.textContent = message;
+    toast.className = `toast-notification ${type} visible`;
     
     // Auto-hide after 5 seconds
     setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.classList.add('hidden'), 300);
+        toast.classList.remove('visible');
     }, 5000);
 }
 
-// Smooth scrolling for anchor links
-function initSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-                
-                // Update URL without reload
-                if (history.pushState) {
-                    history.pushState(null, null, targetId);
-                } else {
-                    location.hash = targetId;
-                }
-            }
+// Analytics functions (optional)
+function trackConversion(eventName) {
+    if (typeof gtag !== 'undefined') {
+        gtag('event', eventName);
+    }
+    // Add other analytics providers as needed
+}
+
+function trackError(errorType, error) {
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'exception', {
+            description: errorType,
+            fatal: false
         });
-    });
+    }
+    // Consider sending error to your error tracking service
 }
