@@ -111,7 +111,7 @@ body {
     text-align: center;
 }
 
-/* 4. Splash Screen */
+/* 4. Splash Screen - Fixed Implementation */
 #splashScreen {
     position: fixed;
     top: 0;
@@ -121,9 +121,16 @@ body {
     background-color: white;
     z-index: 9999;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    opacity: 1;
     transition: opacity 0.3s ease;
+}
+
+#splashScreen.hidden {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .splash-content {
@@ -162,7 +169,7 @@ body {
     margin-bottom: 2rem;
 }
 
-.progress-bar {
+.progress-container {
     width: 100%;
     max-width: 20rem;
     margin: 0 auto 1.5rem;
@@ -177,15 +184,22 @@ body {
 
 #progressBar {
     height: 100%;
+    width: 0%;
     background: linear-gradient(to right, var(--primary), var(--success));
     border-radius: 9999px;
-    width: 0%;
-    transition: width 0.1s linear;
+    transition: width 0.3s linear;
 }
 
 /* 5. Main Content */
 #mainContent {
     display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#mainContent.show {
+    display: block;
+    opacity: 1;
 }
 
 /* 6. Navigation */
