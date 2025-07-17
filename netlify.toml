@@ -3,10 +3,22 @@
   functions = "netlify/functions"
 
 [build.environment]
-  GITHUB_REPO = "DKTJONATHAN/portfolio"
-  # Don't put your access token here - set that in Netlify UI
+  NODE_VERSION = "18"  # Explicit version prevents mismatches
+  GITHUB_REPO = "DKTJONATHAN/portfolio"  # Only repo name needed
+  GITHUB_BRANCH = "main"  # Explicit branch reference
+
+[functions]
+  node_bundler = "esbuild"  # Faster function builds
+  included_files = ["netlify/functions/*.json"]  # Include any data files
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Security headers (recommended addition)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    Content-Security-Policy = "default-src 'self'"
