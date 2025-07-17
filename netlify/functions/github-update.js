@@ -1,102 +1,107 @@
 // netlify/functions/github-update.js
-const { Octokit } = require("@octokit/rest");
+const { Octokit } = require("@octokit/core");
 
-exports.handler = async (event, context) => {
-  // 1. Verify the request method
+// Initialize Octokit outside handler for better performance
+const octokit = new Octokit({
+  auth: process.env.GITHUB_TOKEN,
+  userAgent: "Netlify-GitHub-Forms/2.0"
+});
+
+// Constants for GitHub API
+const REPO_CONFIG = {
+  owner: process.env.GITHUB_OWNER,
+  repo: process.env.GITHUB_REPO,
+  path: "data/forms.json",
+  branch: process.env.GITHUB_BRANCH || "main"
+};
+
+exports.handler = async (event) => {
+  // 1. Validate request
   if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      body: JSON.stringify({ error: "Method Not Allowed" })
-    };
+    return { statusCode: 405, body: "Method Not Allowed" };
   }
 
-  // 2. Safely parse the incoming data
+  // 2. Parse and validate payload
   let submission;
   try {
-    if (!event.body) {
-      throw new Error("Empty request body");
-    }
     submission = JSON.parse(event.body);
-    
-    // Validate required fields
-    if (!submission.form_name) {
-      throw new Error("Missing form_name in submission");
+    if (!submission?.form_name) {
+      throw new Error("Missing required field: form_name");
     }
-  } catch (parseError) {
-    console.error("JSON parse error:", parseError);
-    return {
-      statusCode: 400,
-      body: JSON.stringify({
-        error: "Invalid form data",
-        details: parseError.message
-      })
-    };
+  } catch (error) {
+    return { statusCode: 400, body: JSON.stringify({
+      error: "Invalid submission",
+      details: error.message
+    })};
   }
 
-  // 3. Initialize GitHub client
-  const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN,
-    userAgent: "Netlify-GitHub-Forms/1.0"
-  });
-
+  // 3. Process submission
   try {
-    // 4. Get existing file or initialize new
-    let currentContent = [];
-    let fileSha = null;
+    // Get existing content
+    const { data: currentFile, sha } = await getCurrentFile();
+    const currentContent = currentFile ? JSON.parse(currentFile) : [];
     
-    try {
-      const { data } = await octokit.repos.getContent({
-        owner: process.env.GITHUB_OWNER,
-        repo: process.env.GITHUB_REPO,
-        path: "data/forms.json",
-      });
-      
-      currentContent = JSON.parse(Buffer.from(data.content, "base64").toString());
-      fileSha = data.sha;
-    } catch (repoError) {
-      if (repoError.status !== 404) throw repoError;
-      console.log("forms.json not found, will create new file");
-    }
-
-    // 5. Prepare new content
+    // Prepare new entry
     const newEntry = {
       ...submission,
       _metadata: {
         submitted_at: new Date().toISOString(),
-        ip: event.headers["client-ip"] || null,
-        user_agent: event.headers["user-agent"] || null
+        ip: event.headers["x-nf-client-connection-ip"] || null,
+        netlify_id: event.headers["x-nf-request-id"] || null
       }
     };
 
-    const updatedContent = [...currentContent, newEntry];
-
-    // 6. Commit to GitHub
-    const { data } = await octokit.repos.createOrUpdateFileContents({
-      owner: process.env.GITHUB_OWNER,
-      repo: process.env.GITHUB_REPO,
-      path: "data/forms.json",
-      message: `New ${submission.form_name} submission`,
-      content: Buffer.from(JSON.stringify(updatedContent, null, 2)).toString("base64"),
-      sha: fileSha
-    });
+    // Update and commit
+    const commit = await updateFile(
+      [...currentContent, newEntry],
+      sha
+    );
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
-        message: "Form submission saved",
-        commit_url: data.commit.html_url
+        commit_url: commit.data.commit.html_url
       })
     };
 
   } catch (error) {
-    console.error("GitHub API error:", error);
+    console.error("Submission failed:", error);
     return {
       statusCode: error.status || 500,
       body: JSON.stringify({
-        error: "Failed to save submission",
-        details: error.message
+        error: "Failed to process submission",
+        details: error.response?.data?.message || error.message
       })
     };
   }
 };
+
+// Helper functions
+async function getCurrentFile() {
+  try {
+    const { data } = await octokit.request(
+      "GET /repos/{owner}/{repo}/contents/{path}",
+      REPO_CONFIG
+    );
+    return {
+      data: Buffer.from(data.content, "base64").toString(),
+      sha: data.sha
+    };
+  } catch (error) {
+    if (error.status === 404) return {}; // File doesn't exist yet
+    throw error;
+  }
+}
+
+async function updateFile(content, sha) {
+  return octokit.request(
+    "PUT /repos/{owner}/{repo}/contents/{path}",
+    {
+      ...REPO_CONFIG,
+      message: `Form submission: ${new Date().toISOString()}`,
+      content: Buffer.from(JSON.stringify(content, null, 2)).toString("base64"),
+      sha: sha
+    }
+  );
+      }
