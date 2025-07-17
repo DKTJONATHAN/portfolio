@@ -1,6 +1,6 @@
 /**
  * Jonathan Mwaniki - Portfolio Main JS
- * Optimized for performance and GitHub form storage
+ * Netlify Function-powered form handling
  */
 
 // DOM Elements Cache
@@ -29,7 +29,7 @@ function initSplashScreen() {
   const interval = setInterval(() => {
     width += 5;
     elements.progressBar.style.width = `${width}%`;
-    
+
     if (width >= 100) {
       clearInterval(interval);
       elements.splashScreen.style.opacity = '0';
@@ -41,7 +41,7 @@ function initSplashScreen() {
   }, 30);
 }
 
-// Form submission handler for GitHub storage
+// Form submission handler for Netlify Functions
 function initFormHandler() {
   elements.contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -57,35 +57,67 @@ function initFormHandler() {
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<span class="spinner"></span> Sending...';
 
-      // Prepare data for GitHub
+      // Prepare submission data
       const submission = {
         name: formData.get('name'),
         email: formData.get('email'),
         service: formData.get('service'),
         message: formData.get('message'),
         timestamp: new Date().toISOString(),
-        pageUrl: window.location.href
+        pageUrl: window.location.href,
+        userAgent: navigator.userAgent,
+        referrer: document.referrer
       };
 
       // Send to Netlify function
-      const response = await fetch('/.netlify/functions/github-form-store', {
+      const response = await fetch('/.netlify/functions/storeSubmission', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
         body: JSON.stringify(submission)
       });
 
-      if (!response.ok) throw new Error(await response.text());
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseData.error || 'Failed to store submission');
+      }
 
       showToast('Message sent successfully!');
       elements.contactForm.reset();
+
+      // Optional: Track conversion
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'contact_form_submit', {
+          event_category: 'engagement',
+          event_label: 'Contact Form Submission'
+        });
+      }
     } catch (error) {
-      showToast(error.message || 'Failed to send message', 'error');
       console.error('Submission error:', error);
+      showToast(error.message || 'Failed to send message. Please try again.', 'error');
+      
+      // Fallback: Store in localStorage if Netlify function fails
+      storeSubmissionLocally(submission);
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalText;
     }
   });
+}
+
+// Local storage fallback
+function storeSubmissionLocally(submission) {
+  try {
+    const submissions = JSON.parse(localStorage.getItem('pendingSubmissions') || [];
+    submissions.push(submission);
+    localStorage.setItem('pendingSubmissions', JSON.stringify(submissions));
+    console.warn('Submission stored locally. Will retry later.');
+  } catch (e) {
+    console.error('Local storage error:', e);
+  }
 }
 
 // Form validation
@@ -118,15 +150,16 @@ function showToast(message, type = 'success') {
   if (!elements.toast || !elements.toastMessage) return;
 
   elements.toastMessage.textContent = message;
-  elements.toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 ${
-    type === 'error' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
-  }`;
+  elements.toast.className = `toast-notification ${type === 'error' ? 'error' : 'success'}`;
   
-  elements.toast.classList.remove('hidden', 'opacity-0', 'translate-y-10');
-  elements.toast.classList.add('opacity-100', 'translate-y-0');
-
+  // Show toast
+  elements.toast.classList.remove('hidden');
+  elements.toast.classList.add('show');
+  
+  // Auto-hide after 5 seconds
   setTimeout(() => {
-    elements.toast.classList.add('opacity-0', 'translate-y-10');
+    elements.toast.classList.remove('show');
+    setTimeout(() => elements.toast.classList.add('hidden'), 300);
   }, 5000);
 }
 
@@ -145,7 +178,13 @@ function initSmoothScrolling() {
           behavior: 'smooth',
           block: 'start'
         });
-        history.pushState(null, null, targetId);
+        
+        // Update URL without reload
+        if (history.pushState) {
+          history.pushState(null, null, targetId);
+        } else {
+          location.hash = targetId;
+        }
       }
     });
   });
@@ -158,25 +197,59 @@ function initActiveNav() {
   
   function updateActiveNav() {
     const scrollPosition = window.scrollY + 200;
+    let currentActive = null;
     
     sections.forEach(section => {
       const sectionTop = section.offsetTop;
       const sectionHeight = section.clientHeight;
       
       if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-        const id = section.getAttribute('id');
-        navLinks.forEach(link => {
-          link.classList.toggle('active-nav', link.getAttribute('href') === `#${id}`);
-        });
+        currentActive = section.getAttribute('id');
       }
+    });
+    
+    navLinks.forEach(link => {
+      link.classList.toggle('active-nav', link.getAttribute('href') === `#${currentActive}`);
     });
   }
   
+  // Debounced scroll event
   let isScrolling;
   window.addEventListener('scroll', () => {
     window.clearTimeout(isScrolling);
     isScrolling = setTimeout(updateActiveNav, 100);
   }, { passive: true });
   
+  // Initial update
   updateActiveNav();
 }
+
+// Retry failed submissions when back online
+function initSubmissionRetry() {
+  if (navigator.onLine) {
+    const pendingSubmissions = JSON.parse(localStorage.getItem('pendingSubmissions') || [];
+    if (pendingSubmissions.length > 0) {
+      pendingSubmissions.forEach(async (submission) => {
+        try {
+          const response = await fetch('/.netlify/functions/storeSubmission', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(submission)
+          });
+          
+          if (response.ok) {
+            // Remove successfully sent submission
+            const updatedSubmissions = pendingSubmissions.filter(s => s.timestamp !== submission.timestamp);
+            localStorage.setItem('pendingSubmissions', JSON.stringify(updatedSubmissions));
+          }
+        } catch (error) {
+          console.error('Retry failed:', error);
+        }
+      });
+    }
+  }
+}
+
+// Initialize network recovery handler
+window.addEventListener('online', initSubmissionRetry);
+initSubmissionRetry();
