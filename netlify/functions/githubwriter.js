@@ -1,87 +1,117 @@
-const { Octokit } = require("@octokit/rest");
+// netlify/functions/github-update.js
+const { Octokit } = require("@octokit/core");
+
+// Reusable Octokit instance (better performance)
+const octokit = new Octokit({ 
+  auth: process.env.GITHUB_ACCESS_TOKEN,
+  userAgent: "Netlify-Portfolio/1.0"
+});
+
+// Repository configuration
+const REPO_CONFIG = {
+  owner: "DKTJONATHAN",
+  repo: "portfolio",
+  path: "data/forms.json",
+  branch: "main"
+};
 
 exports.handler = async (event) => {
-  // 1. Only allow POST requests
+  // 1. Request Validation
   if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Method Not Allowed" })
-    };
+    return formatResponse(405, { error: "Method Not Allowed" });
   }
 
-  // 2. Parse and validate input
+  // 2. Payload Processing
   let payload;
   try {
-    payload = JSON.parse(event.body);
-    if (!payload?.formType || !payload?.data) {
-      throw new Error("Missing formType or data");
-    }
+    payload = parsePayload(event.body);
+    validatePayload(payload);
   } catch (err) {
-    return {
-      statusCode: 400,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Invalid JSON input", details: err.message })
-    };
+    return formatResponse(400, { 
+      error: "Invalid request", 
+      details: err.message 
+    });
   }
 
-  // 3. Initialize GitHub with your token (from Netlify env vars)
-  const octokit = new Octokit({
-    auth: process.env.GITHUB_ACCESS_TOKEN
-  });
-
-  // 4. Your repository details
-  const owner = "DKTJONATHAN";
-  const repo = "portfolio";
-  const path = "data/forms.json"; 
-  const branch = "main";
-
+  // 3. Data Processing
   try {
-    // 5. Get existing file or initialize new array
-    let existingContent = [];
-    let sha = null;
+    const { content, sha } = await getCurrentContent();
+    const updatedContent = prepareUpdatedContent(content, payload, sha);
     
-    try {
-      const { data } = await octokit.repos.getContent({ owner, repo, path, ref: branch });
-      existingContent = JSON.parse(Buffer.from(data.content, "base64").toString());
-      sha = data.sha;
-    } catch (error) {
-      if (error.status !== 404) throw error; // Ignore "file not found"
-    }
+    await commitChanges(updatedContent, payload.formType);
 
-    // 6. Add new submission with timestamp
-    existingContent.push({
-      ...payload.data,
-      formType: payload.formType,
-      timestamp: new Date().toISOString()
-    });
-
-    // 7. Write to GitHub
-    await octokit.repos.createOrUpdateFileContents({
-      owner,
-      repo,
-      path,
-      message: `New ${payload.formType} submission`,
-      content: Buffer.from(JSON.stringify(existingContent, null, 2)).toString("base64"),
-      sha,
-      branch
-    });
-
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ success: true })
-    };
+    return formatResponse(200, { success: true });
 
   } catch (error) {
-    console.error("GitHub Error:", error);
-    return {
-      statusCode: 500,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        error: "Failed to save data",
-        details: error.message
-      })
-    };
+    console.error("Processing Error:", error);
+    return formatResponse(error.status || 500, {
+      error: "Failed to process request",
+      details: error.response?.data?.message || error.message
+    });
   }
 };
+
+// Helper Functions
+function formatResponse(statusCode, body) {
+  return {
+    statusCode,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  };
+}
+
+function parsePayload(body) {
+  if (!body) throw new Error("Empty request body");
+  return JSON.parse(body);
+}
+
+function validatePayload(payload) {
+  if (!payload?.formType) throw new Error("Missing formType");
+  if (!payload?.data) throw new Error("Missing data");
+}
+
+async function getCurrentContent() {
+  try {
+    const { data } = await octokit.request(
+      "GET /repos/{owner}/{repo}/contents/{path}",
+      { ...REPO_CONFIG, ref: REPO_CONFIG.branch }
+    );
+    return {
+      content: JSON.parse(Buffer.from(data.content, "base64").toString()),
+      sha: data.sha
+    };
+  } catch (error) {
+    if (error.status === 404) return { content: [], sha: null };
+    throw error;
+  }
+}
+
+function prepareUpdatedContent(currentContent, payload, sha) {
+  return {
+    content: [
+      ...currentContent,
+      {
+        ...payload.data,
+        formType: payload.formType,
+        _metadata: {
+          submitted_at: new Date().toISOString(),
+          ip: event.headers["x-nf-client-connection-ip"],
+          request_id: event.headers["x-nf-request-id"]
+        }
+      }
+    ],
+    sha
+  };
+}
+
+async function commitChanges(content, formType) {
+  await octokit.request(
+    "PUT /repos/{owner}/{repo}/contents/{path}",
+    {
+      ...REPO_CONFIG,
+      message: `New ${formType} submission via Netlify`,
+      content: Buffer.from(JSON.stringify(content.content, null, 2)).toString("base64"),
+      sha: content.sha
+    }
+  );
+}
