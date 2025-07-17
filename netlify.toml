@@ -1,24 +1,34 @@
 [build]
   publish = "."
   functions = "netlify/functions"
-
+  
 [build.environment]
-  NODE_VERSION = "18"  # Explicit version prevents mismatches
-  GITHUB_REPO = "DKTJONATHAN/portfolio"  # Only repo name needed
-  GITHUB_BRANCH = "main"  # Explicit branch reference
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"  # Explicit npm version
+  GITHUB_REPO = "DKTJONATHAN/portfolio"
+  GITHUB_BRANCH = "main"
+  # Never put tokens here - set in Netlify UI:
+  # GITHUB_TOKEN, GITHUB_OWNER, GITHUB_PATH
 
 [functions]
-  node_bundler = "esbuild"  # Faster function builds
-  included_files = ["netlify/functions/*.json"]  # Include any data files
+  node_bundler = "esbuild"
+  included_files = []  # Remove if not using JSON data files
+  # Add if using large modules:
+  external_node_modules = ["@octokit/core"]
 
+# Improved redirects for SPAs
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  force = true  # Ensures rewrite even if file exists
 
-# Security headers (recommended addition)
+# Enhanced security headers
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
-    Content-Security-Policy = "default-src 'self'"
+    X-Content-Type-Options = "nosniff"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
