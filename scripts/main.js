@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Create toast element dynamically if it doesn't exist
+    // Create toast element dynamically
     if (!document.getElementById('toast')) {
         const toastElement = document.createElement('div');
         toastElement.id = 'toast';
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Form submission
+    // Form submission handler
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', async function(e) {
@@ -55,10 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: document.getElementById('name').value.trim(),
                 email: document.getElementById('email').value.trim(),
                 service: document.getElementById('service').value,
-                message: document.getElementById('message').value.trim(),
-                timestamp: new Date().toISOString(),
-                userAgent: navigator.userAgent,
-                referrer: document.referrer || 'Direct'
+                message: document.getElementById('message').value.trim()
             };
 
             // Validation
@@ -76,30 +73,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
-                // Force writing the message to the function
                 const response = await fetch('/.netlify/functions/storeSubmission', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 });
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to send message');
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Failed to send message');
                 }
 
-                const result = await response.json();
-                
-                // Only show success message if we get a successful response
-                if (result.success) {
-                    showToast('✅ Message sent successfully!', 'success');
-                    contactForm.reset();
-                } else {
-                    throw new Error(result.message || 'Message submission failed');
-                }
+                // Use the message from backend or fallback
+                showToast(result.message || 'Thank you! Your message has been sent successfully.', 'success');
+                contactForm.reset();
+
             } catch (error) {
                 console.error('Submission error:', error);
-                showToast(`❌ Error: ${error.message || 'Failed to send message'}`, 'error');
+                showToast(error.message || 'Failed to send message. Please try again later.', 'error');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
@@ -107,12 +99,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Toast functions
+    // Toast notification system
     window.showToast = function(message, type = 'success') {
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toastMessage');
         const toastClose = toast.querySelector('.toast-close');
-        
+
         // Set message and type
         toastMessage.textContent = message;
         toast.className = `toast-notification toast-${type}`;
@@ -124,18 +116,17 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Auto-hide after 5 seconds
-        const timeoutId = setTimeout(() => {
+        let timeoutId = setTimeout(() => {
             toast.classList.add('hidden');
         }, 5000);
 
-        // Clear timeout if user hovers over toast
+        // Reset timeout on interaction
         toast.addEventListener('mouseenter', () => {
             clearTimeout(timeoutId);
         });
 
-        // Reset timeout when mouse leaves
         toast.addEventListener('mouseleave', () => {
-            setTimeout(() => {
+            timeoutId = setTimeout(() => {
                 toast.classList.add('hidden');
             }, 3000);
         });
@@ -146,25 +137,23 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 
-// Add toast styles dynamically
+// Toast styles
 const toastStyles = document.createElement('style');
 toastStyles.textContent = `
 .toast-notification {
     position: fixed;
-    top: 50%;
+    bottom: 20px;
     left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 1rem 1.5rem;
-    border-radius: 0.5rem;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    border-radius: 4px;
     color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    z-index: 9999;
+    gap: 12px;
     max-width: 90%;
-    width: auto;
-    min-width: 300px;
     animation: fadeIn 0.3s ease-out;
 }
 
@@ -179,7 +168,6 @@ toastStyles.textContent = `
 .toast-content {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
 }
 
 .toast-close {
@@ -187,21 +175,14 @@ toastStyles.textContent = `
     border: none;
     color: white;
     cursor: pointer;
-    margin-left: 1rem;
-    padding: 0.25rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.toast-close:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    font-size: 1.2em;
+    margin-left: 12px;
+    padding: 0;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translate(-50%, -40%); }
-    to { opacity: 1; transform: translate(-50%, -50%); }
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
 .hidden {
