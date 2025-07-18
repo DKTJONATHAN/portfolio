@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
                 // Send to Netlify function
+                console.log('Sending form data:', formData);
                 const response = await fetch('/.netlify/functions/storeSubmission', {
                     method: 'POST',
                     headers: {
@@ -76,16 +77,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify(formData)
                 });
 
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+
                 const result = await response.json();
+                console.log('Response body:', result);
 
                 if (response.ok) {
                     showToast('✅ Message sent successfully! I\'ll get back to you soon.', 'success');
                     contactForm.reset();
                     
-                    // Optional: Send confirmation email or trigger other actions
                     console.log('Form submitted with ID:', result.id);
+                    console.log('Commit SHA:', result.commitSha);
                 } else {
-                    throw new Error(result.message || 'Failed to send message');
+                    throw new Error(result.message || `HTTP ${response.status}: ${result.error || 'Failed to send message'}`);
                 }
             } catch (error) {
                 console.error('Error:', error);
