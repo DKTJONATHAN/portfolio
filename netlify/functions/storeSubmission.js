@@ -1,58 +1,71 @@
-const axios = require('axios');
+const { Octokit } = require('@octokit/rest');
 
-exports.handler = async (event, context) => {
-  try {
-    // Parse form data
-    const formData = JSON.parse(event.body);
-    const newSubmission = {
-      ...formData,
-      timestamp: new Date().toISOString(),
-    };
+exports.handler = async function(event, context) {
+    if (event.httpMethod !== 'POST') {
+        return {
+            statusCode: 405,
+            body: JSON.stringify({ message: 'Method Not Allowed' })
+        };
+    }
 
-    // GitHub API setup
-    const GITHUB_REPO = process.env.GITHUB_REPO; // "DKTJONATHAN/Portfolio"
-    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-    const FILE_PATH = "data/forms.json"; // Path in your repo
-    const API_URL = `https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}`;
+    try {
+        const data = JSON.parse(event.body);
+        
+        // Initialize Octokit with GitHub token
+        const octokit = new Octokit({
+            auth: process.env.GITHUB_TOKEN
+        });
 
-    // 1. Fetch current file content from GitHub
-    const { data: fileData } = await axios.get(API_URL, {
-      headers: {
-        Authorization: `Bearer ${GITHUB_TOKEN}`,
-        Accept: "application/vnd.github.v3+json",
-      },
-    });
+        // Get the current content of forms.json
+        const repoInfo = process.env.GITHUB_REPO.split('/');
+        const owner = repoInfo[0];
+        const repo = repoInfo[1];
+        const path = 'data/forms.json';
 
-    // 2. Decode and update the file
-    const currentContent = Buffer.from(fileData.content, 'base64').toString('utf8');
-    const submissions = currentContent ? JSON.parse(currentContent) : [];
-    submissions.push(newSubmission);
+        let currentContent = [];
+        let sha = null;
 
-    // 3. Push updated file back to GitHub
-    await axios.put(
-      API_URL,
-      {
-        message: "Update forms.json with new submission",
-        content: Buffer.from(JSON.stringify(submissions, null, 2)).toString('base64'),
-        sha: fileData.sha, // Required to update existing file
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${GITHUB_TOKEN}`,
-          Accept: "application/vnd.github.v3+json",
-        },
-      }
-    );
+        try {
+            const { data: fileData } = await octokit.repos.getContent({
+                owner,
+                repo,
+                path,
+                ref: 'main'
+            });
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: "Submission saved to GitHub!" }),
-    };
-  } catch (error) {
-    console.error("Error:", error.response?.data || error.message);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: "Failed to save submission." }),
-    };
-  }
+            currentContent = JSON.parse(Buffer.from(fileData.content, 'base64').toString());
+            sha = fileData.sha;
+        } catch (error) {
+            if (error.status !== 404) throw error;
+            // File doesn't exist yet, we'll create it
+        }
+
+        // Add new submission
+        currentContent.push(data);
+
+        // Update the file on GitHub
+        await octokit.repos.createOrUpdateFileContents({
+            owner,
+            repo,
+            path,
+            message: `Add new contact form submission from ${data.email}`,
+            content: Buffer.from(JSON.stringify(currentContent, null, 2)).toString('base64'),
+            sha,
+            branch: 'main'
+        });
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: 'Submission stored successfully' })
+        };
+    } catch (error) {
+        console.error('Error:', error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ 
+                message: 'Failed to store submission',
+                error: error.message 
+            })
+        };
+    }
 };
