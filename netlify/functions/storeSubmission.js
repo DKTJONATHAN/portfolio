@@ -1,4 +1,6 @@
-// netlify/functions/storeSubmission.js
+// functions/storeSubmission.js
+const { Octokit } = require("@octokit/rest");
+
 exports.handler = async (event, context) => {
     // Only allow POST requests
     if (event.httpMethod !== 'POST') {
@@ -19,8 +21,6 @@ exports.handler = async (event, context) => {
             };
         }
 
-        const { Octokit } = require("@octokit/rest");
-        
         // Initialize Octokit with the GitHub token
         const octokit = new Octokit({
             auth: process.env.GITHUB_TOKEN
