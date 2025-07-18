@@ -19,10 +19,14 @@
     <link rel="canonical" href="https://www.jonathanmwaniki.co.ke">
     <title>Jonathan Mwaniki | Web Developer & Graphic Designer in Nairobi, Kenya</title>
 
-    <!-- Preload critical resources -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style">
-    <link rel="preload" href="styles.css" as="style">
+    <!-- Load critical CSS first -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Preload resources -->
     <link rel="preload" href="scripts/main.js" as="script">
+    <link rel="preload" href="./images/file.enc" as="image">
 
     <!-- Inline critical CSS -->
     <style>
@@ -37,7 +41,7 @@
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         .fixed {
@@ -90,6 +94,15 @@
         /* Splash screen specific styles */
         #splashScreen {
             background-color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
         }
 
         #splashScreen h1 {
@@ -122,6 +135,7 @@
             background: linear-gradient(to right, #4f46e5, #10b981);
             border-radius: 9999px;
             width: 0%;
+            transition: width 0.3s ease;
         }
 
         /* Font face for fallback while Poppins loads */
@@ -233,31 +247,12 @@
     }
     </script>
 
-    <!-- Load non-critical CSS asynchronously -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
-    <noscript>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-    </noscript>
-
-    <link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'">
-    <noscript>
-        <link rel="stylesheet" href="styles.css">
-    </noscript>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
-    <noscript>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    </noscript>
-
-    <!-- Preload hero image -->
-    <link rel="preload" href="./images/file.enc" as="image">
-
     <!-- Load config.js with low priority -->
     <script src="scripts/config.js" defer></script>
 </head>
 <body>
     <!-- Splash Screen -->
-    <div id="splashScreen" class="splash-screen">
+    <div id="splashScreen" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center text-center">
         <div class="splash-content">
             <div class="splash-logo">
                 <span class="logo-text">JM</span>
@@ -265,15 +260,15 @@
             <h1>Jonathan Mwaniki</h1>
             <p>Professional Web Developer & Graphic Designer</p>
             <div class="progress-bar">
-                <div class="progress-track">
-                    <div id="progressBar" class="progress-fill"></div>
+                <div class="progress-bar-track">
+                    <div id="progressBar" class="progress-bar-fill"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Main Layout -->
-    <div id="mainContent" class="main-content hidden">
+    <div id="mainContent" class="hidden">
         <!-- Mobile Navigation -->
         <nav class="mobile-nav">
             <div class="mobile-nav-container">
