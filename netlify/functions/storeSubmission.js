@@ -1,101 +1,58 @@
-const { Octokit } = require('@octokit/rest');
+const axios = require('axios');
 
-exports.handler = async function(event, context) {
-    // Only allow POST requests
-    if (event.httpMethod !== 'POST') {
-        return {
-            statusCode: 405,
-            body: JSON.stringify({ 
-                success: false,
-                message: 'Method Not Allowed' 
-            })
-        };
-    }
+exports.handler = async (event, context) => {
+  try {
+    // Parse form data
+    const formData = JSON.parse(event.body);
+    const newSubmission = {
+      ...formData,
+      timestamp: new Date().toISOString(),
+    };
 
-    try {
-        // Parse incoming data
-        const data = JSON.parse(event.body);
-        
-        // Validate required fields
-        if (!data.name || !data.email || !data.message) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({
-                    success: false,
-                    message: 'Name, email, and message are required fields'
-                })
-            };
-        }
+    // GitHub API setup
+    const GITHUB_REPO = process.env.GITHUB_REPO; // "DKTJONATHAN/Portfolio"
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+    const FILE_PATH = "data/forms.json"; // Path in your repo
+    const API_URL = `https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}`;
 
-        // Initialize GitHub client
-        const octokit = new Octokit({
-            auth: process.env.GITHUB_TOKEN
-        });
+    // 1. Fetch current file content from GitHub
+    const { data: fileData } = await axios.get(API_URL, {
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        Accept: "application/vnd.github.v3+json",
+      },
+    });
 
-        const [owner, repo] = process.env.GITHUB_REPO.split('/');
-        const filePath = 'data/forms.json';
-        const branch = 'main';
-        const commitMessage = `New form submission from ${data.name}`;
-        
-        // Try to get existing content
-        let currentContent = [];
-        try {
-            const { data: fileData } = await octokit.repos.getContent({
-                owner,
-                repo,
-                path: filePath,
-                ref: branch
-            });
-            
-            const content = Buffer.from(fileData.content, 'base64').toString('utf8');
-            currentContent = JSON.parse(content);
-        } catch (error) {
-            // If file doesn't exist, we'll create it
-            if (error.status !== 404) throw error;
-        }
+    // 2. Decode and update the file
+    const currentContent = Buffer.from(fileData.content, 'base64').toString('utf8');
+    const submissions = currentContent ? JSON.parse(currentContent) : [];
+    submissions.push(newSubmission);
 
-        // Add new submission
-        currentContent.push(data);
-        
-        // Convert to pretty-printed JSON
-        const newContent = JSON.stringify(currentContent, null, 2);
-        
-        // Create or update file
-        await octokit.repos.createOrUpdateFileContents({
-            owner,
-            repo,
-            path: filePath,
-            message: commitMessage,
-            content: Buffer.from(newContent).toString('base64'),
-            branch,
-            committer: {
-                name: 'Website Form Bot',
-                email: 'bot@jonathanmwaniki.co.ke'
-            },
-            author: {
-                name: data.name,
-                email: data.email
-            }
-        });
+    // 3. Push updated file back to GitHub
+    await axios.put(
+      API_URL,
+      {
+        message: "Update forms.json with new submission",
+        content: Buffer.from(JSON.stringify(submissions, null, 2)).toString('base64'),
+        sha: fileData.sha, // Required to update existing file
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${GITHUB_TOKEN}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+      }
+    );
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ 
-                success: true,
-                message: 'Submission stored successfully' 
-            })
-        };
-        
-    } catch (error) {
-        console.error('Error storing submission:', error);
-        
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ 
-                success: false,
-                message: 'Failed to store submission',
-                error: error.message
-            })
-        };
-    }
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: "Submission saved to GitHub!" }),
+    };
+  } catch (error) {
+    console.error("Error:", error.response?.data || error.message);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Failed to save submission." }),
+    };
+  }
 };
