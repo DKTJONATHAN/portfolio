@@ -2,10 +2,9 @@
   "name": "netlify-functions",
   "version": "1.0.0",
   "private": true,
-  "description": "Handles form submissions via GitHub API",
   "type": "module",
   "scripts": {
-    "postinstall": "echo 'Dependencies are pre-bundled; skipping install.'"
+    "postinstall": "echo 'Skipping dependency installation'"
   },
   "engines": {
     "node": ">=18.x"
