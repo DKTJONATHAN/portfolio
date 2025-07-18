@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle splash screen with progress bar animation
+    // Splash screen animation
     const progressBar = document.getElementById('progressBar');
     let progress = 0;
     
@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('mainContent').classList.remove('hidden');
     }, 3000);
 
-    // Smooth scrolling for navigation links
+    // Smooth scrolling
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
+        anchor.addEventListener('click', function(e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
@@ -34,114 +34,94 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form submission handler
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
+        const originalSubmitText = contactForm.querySelector('button[type="submit"]').innerHTML;
+
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-
-            const formData = {
-                name: document.getElementById('name').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                service: document.getElementById('service').value,
-                message: document.getElementById('message').value.trim(),
-                timestamp: new Date().toISOString(),
-                userAgent: navigator.userAgent,
-                referrer: document.referrer || 'Direct'
-            };
-
-            // Basic validation
-            if (!formData.name || !formData.email || !formData.message) {
-                showToast('Please fill in all required fields', 'error');
-                return;
-            }
-
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(formData.email)) {
-                showToast('Please enter a valid email address', 'error');
-                return;
-            }
-
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            
             try {
-                // Show loading state
-                const submitBtn = contactForm.querySelector('button[type="submit"]');
-                const originalText = submitBtn.innerHTML;
+                // Prepare form data
+                const formData = {
+                    name: document.getElementById('name').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    service: document.getElementById('service').value,
+                    message: document.getElementById('message').value.trim()
+                };
+
+                // Validation
+                if (!formData.name || !formData.email || !formData.message) {
+                    throw new Error('Please fill in all required fields');
+                }
+
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+                    throw new Error('Please enter a valid email address');
+                }
+
+                // UI feedback
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
                 // Send to Netlify function
-                console.log('Sending form data:', formData);
                 const response = await fetch('/.netlify/functions/storeSubmission', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 });
 
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers);
-
                 const result = await response.json();
-                console.log('Response body:', result);
 
-                if (response.ok) {
-                    showToast('✅ Message sent successfully! I\'ll get back to you soon.', 'success');
-                    contactForm.reset();
-                    
-                    console.log('Form submitted with ID:', result.id);
-                    console.log('Commit SHA:', result.commitSha);
-                } else {
-                    throw new Error(result.message || `HTTP ${response.status}: ${result.error || 'Failed to send message'}`);
+                if (!response.ok) {
+                    throw new Error(result.message || 'Failed to send message');
                 }
+
+                // Success
+                showToast('✅ Message sent successfully!', 'success');
+                contactForm.reset();
+                console.log('Submission stored:', result.id);
+                
+                // Optional: Show commit link
+                if (result.commitUrl) {
+                    console.log('GitHub commit:', result.commitUrl);
+                }
+
             } catch (error) {
-                console.error('Error:', error);
-                showToast(`❌ Error: ${error.message}. Please try again or contact me directly.`, 'error');
+                console.error('Submission error:', error);
+                showToast(`❌ Error: ${error.message}`, 'error');
             } finally {
-                const submitBtn = contactForm.querySelector('button[type="submit"]');
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+                submitBtn.innerHTML = originalSubmitText;
             }
         });
     }
 
-    // Toast notification functions
+    // Toast notification system
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+
     window.hideToast = function() {
-        const toast = document.getElementById('toast');
         toast.classList.add('hidden');
     };
 
     window.showToast = function(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toastMessage');
-
         toastMessage.textContent = message;
         toast.className = `toast-notification ${type}`;
         toast.classList.remove('hidden');
-
-        // Auto-hide after 5 seconds
         setTimeout(hideToast, 5000);
     };
 
-    // Active navigation link highlighting
-    const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+    // Active nav link highlighting
     const sections = document.querySelectorAll('section[id]');
-
     window.addEventListener('scroll', () => {
         let currentSection = '';
-        
         sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            
-            if (window.scrollY >= sectionTop - 200) {
+            if (window.scrollY >= section.offsetTop - 200) {
                 currentSection = section.getAttribute('id');
             }
         });
 
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${currentSection}`) {
-                link.classList.add('active');
-            }
+        document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === `#${currentSection}`);
         });
     });
 });
