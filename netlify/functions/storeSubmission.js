@@ -1,69 +1,113 @@
-const { Octokit } = require('@octokit/rest');
-
-exports.handler = async function(event, context) {
+// netlify/functions/storeSubmission.js
+exports.handler = async (event, context) => {
+    // Only allow POST requests
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
-            body: JSON.stringify({ message: 'Method Not Allowed' })
+            body: JSON.stringify({ message: 'Method not allowed' })
         };
     }
 
     try {
-        const data = JSON.parse(event.body);
+        const formData = JSON.parse(event.body);
         
-        // Initialize Octokit with GitHub token
+        // Validate required fields
+        if (!formData.name || !formData.email || !formData.message) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: 'Missing required fields' })
+            };
+        }
+
+        const { Octokit } = require("@octokit/rest");
+        
+        // Initialize Octokit with the GitHub token
         const octokit = new Octokit({
             auth: process.env.GITHUB_TOKEN
         });
 
-        // Get the current content of forms.json
-        const repoInfo = process.env.GITHUB_REPO.split('/');
-        const owner = repoInfo[0];
-        const repo = repoInfo[1];
+        const owner = 'DKTJONATHAN';
+        const repo = 'Portfolio';
         const path = 'data/forms.json';
 
-        let currentContent = [];
+        let existingData = [];
         let sha = null;
 
         try {
-            const { data: fileData } = await octokit.repos.getContent({
+            // Try to get existing file
+            const { data: fileData } = await octokit.rest.repos.getContent({
                 owner,
                 repo,
-                path,
-                ref: 'main'
+                path
             });
 
-            currentContent = JSON.parse(Buffer.from(fileData.content, 'base64').toString());
+            // Decode the existing content
+            const content = Buffer.from(fileData.content, 'base64').toString();
+            existingData = JSON.parse(content);
             sha = fileData.sha;
         } catch (error) {
-            if (error.status !== 404) throw error;
-            // File doesn't exist yet, we'll create it
+            // File doesn't exist yet, that's okay
+            console.log('File does not exist yet, creating new one');
         }
 
-        // Add new submission
-        currentContent.push(data);
+        // Add new submission to existing data
+        existingData.push({
+            id: Date.now().toString(),
+            ...formData,
+            timestamp: new Date().toISOString()
+        });
 
-        // Update the file on GitHub
-        await octokit.repos.createOrUpdateFileContents({
+        // Convert to JSON string with proper formatting
+        const newContent = JSON.stringify(existingData, null, 2);
+
+        // Update or create the file
+        const updateParams = {
             owner,
             repo,
             path,
-            message: `Add new contact form submission from ${data.email}`,
-            content: Buffer.from(JSON.stringify(currentContent, null, 2)).toString('base64'),
-            sha,
-            branch: 'main'
-        });
+            message: `Add new form submission from ${formData.name}`,
+            content: Buffer.from(newContent).toString('base64'),
+            committer: {
+                name: 'Netlify Bot',
+                email: 'netlify@bot.com'
+            },
+            author: {
+                name: 'Netlify Bot',
+                email: 'netlify@bot.com'
+            }
+        };
+
+        // Add SHA if file exists (for updates)
+        if (sha) {
+            updateParams.sha = sha;
+        }
+
+        await octokit.rest.repos.createOrUpdateFileContents(updateParams);
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ message: 'Submission stored successfully' })
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'POST'
+            },
+            body: JSON.stringify({ 
+                message: 'Form submission stored successfully',
+                id: Date.now().toString()
+            })
         };
+
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error storing form submission:', error);
         return {
             statusCode: 500,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
             body: JSON.stringify({ 
-                message: 'Failed to store submission',
+                message: 'Internal server error',
                 error: error.message 
             })
         };
