@@ -5,7 +5,7 @@
 
 [build.environment]
   GITHUB_REPO = "DKTJONATHAN/Portfolio"
-  NODE_VERSION = "16"  # Or your preferred version
+  NODE_VERSION = "18"  # Updated to 18 for compatibility
 
 [context.production.environment]
   NODE_ENV = "production"
@@ -14,3 +14,11 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[functions]
+  node_bundler = "nft"
