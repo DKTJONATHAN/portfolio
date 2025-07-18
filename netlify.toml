@@ -1,15 +1,18 @@
 [build]
   command = "echo 'No build needed'"
   publish = "."
-  functions = "functions"  # Only if using Netlify Functions
+  functions = "functions"
 
+# Environment variables (non-sensitive)
 [build.environment]
-  GITHUB_REPO = "DKTJONATHAN/Portfolio"
-  NODE_VERSION = "18"  # Updated to 18 for compatibility
+  GITHUB_OWNER = "DKTJONATHAN"  # Split from combined repo format
+  GITHUB_REPO = "Portfolio"
+  NODE_VERSION = "18"  # Minimum required for Octokit v19
 
 [context.production.environment]
   NODE_ENV = "production"
 
+# Required redirects
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -20,5 +23,8 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+# Critical function settings
 [functions]
-  node_bundler = "nft"
+  node_bundler = "esbuild"  # Must change from "nft" to support Octokit
+  external_node_modules = ["@octokit/rest"]  # Prevents bundling issues
+  included_files = ["data/**"]  # If your function needs local files
