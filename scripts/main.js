@@ -190,3 +190,49 @@ toastStyles.textContent = `
 }
 `;
 document.head.appendChild(toastStyles);
+// Show More Button Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const showMoreBtn = document.getElementById('showMoreBtn');
+    const morePosts = document.getElementById('morePosts');
+    
+    if (showMoreBtn && morePosts) {
+        showMoreBtn.addEventListener('click', function() {
+            if (morePosts.style.display === 'none') {
+                morePosts.style.display = 'grid';
+                showMoreBtn.innerHTML = 'Show Less Articles <i class="fas fa-chevron-up"></i>';
+            } else {
+                morePosts.style.display = 'none';
+                showMoreBtn.innerHTML = 'Show More Articles <i class="fas fa-chevron-down"></i>';
+            }
+        });
+    }
+    
+    // Splash screen functionality
+    const splashScreen = document.getElementById('splashScreen');
+    const mainContent = document.getElementById('mainContent');
+    const progressBar = document.getElementById('progressBar');
+    
+    if (splashScreen && mainContent && progressBar) {
+        // Simulate loading progress
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 10;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                
+                // Hide splash screen and show main content
+                setTimeout(() => {
+                    splashScreen.style.opacity = '0';
+                    splashScreen.style.transition = 'opacity 0.5s ease';
+                    
+                    setTimeout(() => {
+                        splashScreen.style.display = 'none';
+                        mainContent.classList.remove('hidden');
+                    }, 500);
+                }, 300);
+            }
+            progressBar.style.width = `${progress}%`;
+        }, 100);
+    }
+});
