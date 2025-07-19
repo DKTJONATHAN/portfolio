@@ -7,42 +7,49 @@
     <meta name="keywords" content="web developer, web designer, graphic designer, professional web designer, ecommerce developer, responsive web design, UI/UX designer, logo design, digital solutions expert">
     <meta name="author" content="Jonathan Mwaniki">
     <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Social Media -->
     <meta property="og:title" content="Jonathan Mwaniki | Web Developer & Graphic Designer">
     <meta property="og:description" content="Professional web development and graphic design services. Custom websites, UI/UX design, and branding solutions.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.jonathanmwaniki.co.ke">
-    <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/file.enc">
+    <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/social-preview.jpg">
     <meta property="og:locale" content="en_KE">
+    
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Jonathan Mwaniki | Web Developer & Graphic Designer">
     <meta name="twitter:description" content="Professional web development and graphic design services">
+    <meta name="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/social-preview.jpg">
+    
+    <!-- Canonical URL -->
     <link rel="canonical" href="https://www.jonathanmwaniki.co.ke">
 
-<!-- Favicon Section (Replace your current favicon links with this) --><link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="any">
-<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
-<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
-<meta name="msapplication-TileImage" content="/images/web-app-manifest-144x144.png">
-<meta name="msapplication-TileColor" content="#ffffff">
-<meta name="theme-color" content="#ffffff">
-<link rel="icon" type="image/png" sizes="192x192" href="/images/web-app-manifest-192x192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/images/web-app-manifest-512x512.png">
+    <!-- Favicon Section -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="any">
+    <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="msapplication-TileImage" content="/images/web-app-manifest-144x144.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
 
     <title>Jonathan Mwaniki | Web Developer & Graphic Designer</title>
 
-    <!-- Load critical CSS first -->
+    <!-- Preload Resources -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="scripts/main.js" as="script">
+    <link rel="preload" href="./images/Jonathan-Mwaniki-logo.png" as="image">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Preload resources -->
-    <link rel="preload" href="scripts/main.js" as="script">
-    <link rel="preload" href="./images/Jonathan-Mwaniki-logo.png" as="image">
-
-    <!-- Inline critical CSS -->
+    <!-- Inline Critical CSS -->
     <style>
         /* Critical CSS - Minimal styles needed for above-the-fold content */
         body {
@@ -53,59 +60,20 @@
             background-color: #f9fafb;
             line-height: 1.5;
         }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .fixed {
-            position: fixed;
-        }
-
-        .inset-0 {
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-        }
-
-        .w-full {
-            width: 100%;
-        }
-
-        .h-full {
-            height: 100%;
-        }
-
-        .z-50 {
-            z-index: 50;
-        }
-
-        .bg-white {
-            background-color: #ffffff;
-        }
-
-        .flex {
-            display: flex;
-        }
-
-        .flex-col {
-            flex-direction: column;
-        }
-
-        .items-center {
-            align-items: center;
-        }
-
-        .justify-center {
-            justify-content: center;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        /* Splash screen specific styles */
+        .hidden { display: none !important; }
+        .fixed { position: fixed; }
+        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .z-50 { z-index: 50; }
+        .bg-white { background-color: #ffffff; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .text-center { text-align: center; }
+        
+        /* Splash screen styles */
         #splashScreen {
             background-color: white;
             position: fixed;
@@ -118,32 +86,27 @@
             align-items: center;
             z-index: 9999;
         }
-
         #splashScreen h1 {
             font-size: 1.875rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
             color: #111827;
         }
-
         #splashScreen p {
             color: #4b5563;
             margin-bottom: 2rem;
         }
-
         .progress-bar {
             width: 100%;
             max-width: 20rem;
             margin: 0 auto 1.5rem;
         }
-
         .progress-bar-track {
             height: 0.5rem;
             background-color: #e5e7eb;
             border-radius: 9999px;
             overflow: hidden;
         }
-
         .progress-bar-fill {
             height: 100%;
             background: linear-gradient(to right, #4f46e5, #10b981);
@@ -151,8 +114,8 @@
             width: 0%;
             transition: width 0.3s ease;
         }
-
-        /* Font face for fallback while Poppins loads */
+        
+        /* Font face for fallback */
         @font-face {
             font-family: 'Poppins-fallback';
             src: local('Arial');
@@ -161,38 +124,34 @@
             descent-override: 22%;
             line-gap-override: 0;
         }
-
         body {
             font-family: 'Poppins', 'Poppins-fallback', sans-serif;
         }
     </style>
 
-    <!-- Enhanced Schema.org markup -->
+    <!-- Schema.org Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Jonathan Mwaniki",
-      "image": "https://www.jonathanmwaniki.co.ke/images/file.enc",
+      "image": "https://www.jonathanmwaniki.co.ke/images/profile.jpg",
       "@id": "https://www.jonathanmwaniki.co.ke",
       "url": "https://www.jonathanmwaniki.co.ke",
       "sameAs": [
         "https://twitter.com/maestropuns",
-        "https://www.instagram.com/jonaahrojo"
+        "https://www.instagram.com/jonaahrojo",
+        "https://www.linkedin.com/in/jonathan-mwaniki-324208374",
+        "https://github.com/DKTJONATHAN"
       ],
       "jobTitle": "Web Developer & Graphic Designer",
       "worksFor": {
         "@type": "Organization",
         "name": "Jonathan Mwaniki Digital Solutions"
-      }
+      },
+      "description": "Professional web developer and graphic designer with expertise in creating responsive websites and brand identities."
     }
     </script>
-
-    <!-- Load config.js with low priority -->
-    <script src="scripts/config.js" defer></script>
-<!-- CSS_ADSBLOCK_START -->
-<link rel="stylesheet" href="https://adblockers.opera-mini.net/css_block/default-domainless.css" type="text/css" />
-<!-- CSS_ADSBLOCK_END -->
 </head>
 <body>
     <!-- Splash Screen -->
@@ -409,7 +368,7 @@
         <section id="about" class="about-section">
             <div class="about-container">
                 <div class="about-image">
-                    <img src="./images/file.enc" alt="About Jonathan Mwaniki - Web Developer & Designer" loading="lazy" width="400" height="500">
+                    <img src="./images/profile.jpg" alt="About Jonathan Mwaniki - Web Developer & Designer" loading="lazy" width="400" height="500">
                 </div>
                 <div class="about-content">
                     <h2 class="section-title">About <span class="gradient-text">Jonathan Mwaniki</span></h2>
@@ -419,10 +378,10 @@
                         <p><strong>When I'm not working:</strong> You'll find me exploring new technologies, contributing to open-source projects, or enjoying the vibrant coffee shop scene while working on my latest web development project.</p>
                     </div>
 
-                    <!-- New Education Section -->
+                    <!-- Education Section -->
                     <div class="education-section">
                         <h3>Education & Training</h3>
-                        
+
                         <div class="education-item">
                             <div class="edu-icon">
                                 <img src="images/FreeCodeCamo.webp" alt="freeCodeCamp Logo" width="40" height="40">
@@ -445,62 +404,64 @@
                             </div>
                         </div>
                     </div>
-<!-- New Tech Stack Section -->
-<div class="tech-stack-section">
-    <h3>My Tech Stack</h3>
-    <div class="stack-categories">
-        <div class="stack-category">
-            <h4>Core Technologies</h4>
-            <div class="stack-items">
-                <div class="stack-item">
-                    <i class="fab fa-html5"></i>
-                    <span>HTML5</span>
-                </div>
-                <div class="stack-item">
-                    <i class="fab fa-css3-alt"></i>
-                    <span>CSS3</span>
-                </div>
-                <div class="stack-item">
-                    <i class="fab fa-js"></i>
-                    <span>JavaScript</span>
-                </div>
-            </div>
-        </div>
 
-        <div class="stack-category">
-            <h4>Frameworks & Libraries</h4>
-            <div class="stack-items">
-                <div class="stack-item">
-                    <i class="fab fa-react"></i>
-                    <span>React</span>
-                </div>
-                <div class="stack-item">
-                    <i class="fab fa-node-js"></i>
-                    <span>Node.js</span>
-                </div>
-                <div class="stack-item">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" alt="Tailwind CSS" width="24">
-                    <span>Tailwind CSS</span>
-                </div>
-            </div>
-        </div>
+                    <!-- Tech Stack Section -->
+                    <div class="tech-stack-section">
+                        <h3>My Tech Stack</h3>
+                        <div class="stack-categories">
+                            <div class="stack-category">
+                                <h4>Core Technologies</h4>
+                                <div class="stack-items">
+                                    <div class="stack-item">
+                                        <i class="fab fa-html5"></i>
+                                        <span>HTML5</span>
+                                    </div>
+                                    <div class="stack-item">
+                                        <i class="fab fa-css3-alt"></i>
+                                        <span>CSS3</span>
+                                    </div>
+                                    <div class="stack-item">
+                                        <i class="fab fa-js"></i>
+                                        <span>JavaScript</span>
+                                    </div>
+                                </div>
+                            </div>
 
-        <div class="stack-category">
-            <h4>Currently Learning</h4>
-            <div class="stack-items">
-                <div class="stack-item learning">
-                    <i class="fas fa-mobile-alt"></i>
-                    <span>App Development</span>
-                </div>
-                <div class="stack-item learning">
-                    <i class="fas fa-laptop-code"></i>
-                    <span>Software Engineering</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-                    <!-- New Hackathon Section -->
+                            <div class="stack-category">
+                                <h4>Frameworks & Libraries</h4>
+                                <div class="stack-items">
+                                    <div class="stack-item">
+                                        <i class="fab fa-react"></i>
+                                        <span>React</span>
+                                    </div>
+                                    <div class="stack-item">
+                                        <i class="fab fa-node-js"></i>
+                                        <span>Node.js</span>
+                                    </div>
+                                    <div class="stack-item">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" alt="Tailwind CSS" width="24">
+                                        <span>Tailwind CSS</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stack-category">
+                                <h4>Currently Learning</h4>
+                                <div class="stack-items">
+                                    <div class="stack-item learning">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <span>App Development</span>
+                                    </div>
+                                    <div class="stack-item learning">
+                                        <i class="fas fa-laptop-code"></i>
+                                        <span>Software Engineering</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hackathon Section -->
                     <div class="hackathon-section">
                         <h3>Hackathon & Tech Expo Experience</h3>
                         <div class="event-timeline">
@@ -515,7 +476,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="event-item">
                                 <div class="event-date">2022</div>
                                 <div class="event-content">
@@ -607,20 +568,19 @@
                                     <h4 class="social-title">Connect With Me</h4>
                                     <div class="social-links">
                                         <a href="https://twitter.com/maestropuns" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Twitter">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
-        <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
-    </svg>
-</a>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
+                                                <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
+                                            </svg>
+                                        </a>
                                         <a href="https://www.instagram.com/jonaahrojo" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
                                             <i class="fab fa-instagram"></i>
                                         </a>
-<a href="https://www.linkedin.com/in/jonathan-mwaniki-324208374" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn">
-    <i class="fab fa-linkedin-in"></i>
-</a>
-
-<a href="https://github.com/DKTJONATHAN" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub">
-    <i class="fab fa-github"></i>
-</a>
+                                        <a href="https://www.linkedin.com/in/jonathan-mwaniki-324208374" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn">
+                                            <i class="fab fa-linkedin-in"></i>
+                                        </a>
+                                        <a href="https://github.com/DKTJONATHAN" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub">
+                                            <i class="fab fa-github"></i>
+                                        </a>
                                         <a href="https://wa.me/+254706396305" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="WhatsApp">
                                             <i class="fab fa-whatsapp"></i>
                                         </a>
@@ -657,7 +617,7 @@
         </footer>
     </div>
 
-    <!-- Load main.js asynchronously -->
+    <!-- JavaScript -->
     <script src="scripts/main.js" defer></script>
 </body>
 </html>
