@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Jonathan Mwaniki - Professional Web Developer & Graphic Designer in Kenya. Custom web development, responsive design, UI/UX, and graphic design services for businesses.">
-    <meta name="keywords" content="web developer Kenya, web designer Nairobi, graphic designer Kenya, professional web developer, ecommerce developer, responsive web design, UI/UX designer Kenya, logo design Nairobi">
+    <meta name="keywords" content="Jonathan Mwaniki, web developer Kenya, web designer Nairobi, graphic designer Kenya, professional web developer, ecommerce developer, responsive web design, UI/UX designer Kenya, logo design Nairobi">
     <meta name="author" content="Jonathan Mwaniki">
     <meta name="robots" content="index, follow">
     <meta name="geo.region" content="KE">
@@ -37,29 +37,42 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
 
-    <title>Jonathan Mwaniki | Web Developer & Graphic Designer in Kenya</title>
+    <title>Jonathan Mwaniki | Professional Web Developer & Graphic Designer in Kenya</title>
 
     <!-- Preload Critical Resources -->
     <link rel="preload" href="styles.css" as="style">
     <link rel="preload" href="scripts/main.js" as="script">
     <link rel="preload" href="./images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style" crossorigin>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
 
     <!-- Inline Critical CSS -->
     <style>
         /* Critical CSS - Minimal styles needed for above-the-fold content */
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #10b981;
+            --text-color: #1f2937;
+            --light-bg: #f9fafb;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             margin: 0;
             padding: 0;
-            color: #1f2937;
-            background-color: #f9fafb;
+            color: var(--text-color);
+            background-color: var(--light-bg);
             line-height: 1.5;
+            overflow-x: hidden;
         }
         .hidden { display: none !important; }
         .fixed { position: fixed; }
@@ -67,7 +80,7 @@
         .w-full { width: 100%; }
         .h-full { height: 100%; }
         .z-50 { z-index: 50; }
-        .bg-white { background-color: #ffffff; }
+        .bg-white { background-color: var(--white); }
         .flex { display: flex; }
         .flex-col { flex-direction: column; }
         .items-center { align-items: center; }
@@ -76,7 +89,7 @@
 
         /* Splash screen styles */
         #splashScreen {
-            background-color: white;
+            background-color: var(--white);
             position: fixed;
             top: 0;
             left: 0;
@@ -110,7 +123,7 @@
         }
         .progress-bar-fill {
             height: 100%;
-            background: linear-gradient(to right, #4f46e5, #10b981);
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
             border-radius: 9999px;
             width: 0%;
             transition: width 0.3s ease;
@@ -127,6 +140,140 @@
         }
         body {
             font-family: 'Poppins', 'Poppins-fallback', sans-serif;
+        }
+
+        /* Hero section critical styles */
+        .hero-section {
+            padding: 2rem 1rem;
+            background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
+        }
+        .hero-title {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        .hero-description {
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+            color: #4b5563;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .btn-primary {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 0.375rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Navigation critical styles */
+        .desktop-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+            padding: 1rem 2rem;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .brand-logo img {
+            width: 40px;
+            height: 40px;
+        }
+        .brand-name {
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+        .nav-link.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Mobile navigation */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--white);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 90;
+            display: none;
+        }
+        .mobile-nav-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem 0;
+        }
+        .mobile-nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 0.75rem;
+            gap: 0.25rem;
+        }
+        .mobile-nav-link i {
+            font-size: 1.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .desktop-nav {
+                display: none;
+            }
+            .mobile-nav {
+                display: block;
+            }
+            .hero-title {
+                font-size: 2rem;
+            }
+            .hero-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
         }
     </style>
 
@@ -150,7 +297,50 @@
         "@type": "Organization",
         "name": "Jonathan Mwaniki Digital Solutions"
       },
-      "description": "Professional web developer and graphic designer based in Kenya with expertise in creating responsive websites and brand identities."
+      "description": "Professional web developer and graphic designer based in Kenya with expertise in creating responsive websites and brand identities.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "Kenya",
+        "addressRegion": "Nairobi"
+      }
+    }
+    </script>
+    
+    <!-- Local Business Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Jonathan Mwaniki Digital Solutions",
+      "image": "https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png",
+      "@id": "https://www.jonathanmwaniki.co.ke",
+      "url": "https://www.jonathanmwaniki.co.ke",
+      "telephone": "+254706396305",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "",
+        "addressLocality": "Nairobi",
+        "addressRegion": "Nairobi",
+        "postalCode": "",
+        "addressCountry": "Kenya"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -1.286389,
+        "longitude": 36.817223
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "08:00",
+        "closes": "17:00"
+      }
     }
     </script>
 </head>
@@ -224,7 +414,7 @@
             <div class="hero-container">
                 <div class="hero-content">
                     <h1 class="hero-title">
-                        Professional <span class="gradient-text">Web Developer & Designer</span>
+                        Professional <span class="gradient-text">Web Developer & Designer</span> in Kenya
                     </h1>
                     <p class="hero-description">
                         I create stunning, responsive websites and eye-catching graphic designs to help businesses establish a powerful online presence and attract more customers.
@@ -239,7 +429,7 @@
                     </div>
                 </div>
                 <div class="hero-image">
-                    <img src="./images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki - Professional Web Developer & Designer" loading="eager" width="600" height="400">
+                    <img src="./images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki - Professional Web Developer & Designer in Kenya" loading="eager" width="600" height="400">
                 </div>
             </div>
         </section>
@@ -471,7 +661,7 @@
         <section id="about" class="about-section">
             <div class="about-container">
                 <div class="about-image">
-                    <img src="./images/file.enc" alt="About Jonathan Mwaniki - Web Developer & Designer" loading="lazy" width="400" height="500">
+                    <img src="./images/file.enc" alt="About Jonathan Mwaniki - Web Developer & Designer in Kenya" loading="lazy" width="400" height="500">
                 </div>
                 <div class="about-content">
                     <h2 class="section-title">About <span class="gradient-text">Jonathan Mwaniki</span></h2>
@@ -723,5 +913,76 @@
 
     <!-- JavaScript -->
     <script src="scripts/main.js" defer></script>
+    
+    <!-- Performance Optimization Script -->
+    <script>
+        // Load non-critical CSS
+        function loadCSS(href) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = href;
+            document.head.appendChild(link);
+        }
+        
+        // Load non-critical JS
+        function loadJS(src, cb) {
+            const script = document.createElement('script');
+            script.src = src;
+            script.defer = true;
+            if (cb) script.onload = cb;
+            document.body.appendChild(script);
+        }
+        
+        // Load Font Awesome after page load
+        window.addEventListener('load', function() {
+            loadCSS('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+        });
+        
+        // Splash screen animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBar = document.getElementById('progressBar');
+            const splashScreen = document.getElementById('splashScreen');
+            const mainContent = document.getElementById('mainContent');
+            
+            let progress = 0;
+            const interval = setInterval(function() {
+                progress += 5;
+                progressBar.style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    splashScreen.style.opacity = '0';
+                    splashScreen.style.transition = 'opacity 0.5s ease';
+                    
+                    setTimeout(function() {
+                        splashScreen.style.display = 'none';
+                        mainContent.classList.remove('hidden');
+                        
+                        // Load remaining CSS and JS
+                        loadCSS('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+                    }, 500);
+                }
+            }, 50);
+            
+            // Lazy load images
+            if ('IntersectionObserver' in window) {
+                const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src || img.src;
+                            img.removeAttribute('loading');
+                            observer.unobserve(img);
+                        }
+                    });
+                });
+                
+                lazyImages.forEach(img => {
+                    imageObserver.observe(img);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
