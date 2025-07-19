@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Jonathan Mwaniki's Blog - Latest articles on web development, design, and digital marketing">
+    <title>Blog | Jonathan Mwaniki - Web Developer & Designer</title>
+    <link rel="canonical" href="https://www.jonathanmwaniki.co.ke/blog.html" />
+    
+    <!-- Use the same CSS as other pages -->
+    <link rel="stylesheet" href="blog/blogstyle.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="blog-page">
+    <!-- Splash Screen (same as other pages) -->
+    <div id="splashScreen" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center text-center">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <img src="images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="80" height="80" loading="eager">
+            </div>
+            <h1>Jonathan Mwaniki</h1>
+            <p>Professional Web Developer & Graphic Designer</p>
+            <div class="progress-bar">
+                <div class="progress-bar-track">
+                    <div id="progressBar" class="progress-bar-fill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div id="mainContent" class="hidden">
+        <!-- Mobile Navigation (same as other pages) -->
+        <nav class="mobile-nav">
+            <div class="mobile-nav-container">
+                <a href="/" class="mobile-nav-link" aria-label="Home">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#services" class="mobile-nav-link" aria-label="Services">
+                    <i class="fas fa-cogs"></i>
+                    <span>Services</span>
+                </a>
+                <a href="#portfolio" class="mobile-nav-link" aria-label="Portfolio">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Portfolio</span>
+                </a>
+                <a href="/blog.html" class="mobile-nav-link active" aria-label="Blog">
+                    <i class="fas fa-blog"></i>
+                    <span>Blog</span>
+                </a>
+                <a href="#contact" class="mobile-nav-link" aria-label="Contact">
+                    <i class="fas fa-envelope"></i>
+                    <span>Contact</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Desktop Navigation (same as other pages) -->
+        <nav class="desktop-nav">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <div class="brand-logo">
+                        <img src="images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="eager">
+                    </div>
+                    <span class="brand-name">Jonathan Mwaniki</span>
+                </div>
+                <div class="nav-links">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="#services" class="nav-link">Services</a>
+                    <a href="#portfolio" class="nav-link">Portfolio</a>
+                    <a href="/blog.html" class="nav-link active">Blog</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Blog Content -->
+        <main class="blog-container">
+            <div class="section-header">
+                <h2 class="section-title">Latest <span class="gradient-text">Blog Posts</span></h2>
+                <p class="section-description">Insights and tutorials on web development, design, and digital marketing</p>
+            </div>
+
+            <div class="blog-posts">
+                <!-- Blog Post 1 -->
+                <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
+                    <meta itemprop="mainEntityOfPage" content="https://www.jonathanmwaniki.co.ke/blogs/web-development-trends-2025.html">
+                    <div class="post-image">
+                        <img src="./images/trends.jpeg" alt="Web Development Trends 2025 - Jonathan Mwaniki Blog" itemprop="image" loading="lazy" width="800" height="450">
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <time datetime="2025-06-15" itemprop="datePublished">June 15, 2025</time>
+                            <span class="post-category" itemprop="articleSection">Web Development</span>
+                        </div>
+                        <h3 class="post-title" itemprop="headline">Top Web Development Trends in 2025 Every Developer Should Know</h3>
+                        <div class="post-excerpt" itemprop="description">
+                            <p>The web development landscape is constantly evolving. In this post, I explore the most significant trends shaping web development in 2025, from AI-powered development tools to advanced Web3 integrations...</p>
+                        </div>
+                        <div class="post-actions">
+                            <a href="/blogs/web-development-trends-2025.html" class="btn-primary" itemprop="url" aria-label="Read full article about Web Development Trends 2025">Read Full Article</a>
+                        </div>
+                    </div>
+                    <meta itemprop="author" content="Jonathan Mwaniki">
+                    <meta itemprop="dateModified" content="2025-06-15">
+                    <meta itemprop="publisher" content="Jonathan Mwaniki">
+                </article>
+
+                <!-- Blog Post 2 -->
+                <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
+                    <meta itemprop="mainEntityOfPage" content="https://www.jonathanmwaniki.co.ke/blogs/seo-strategies-2025.html">
+                    <div class="post-image">
+                        <img src="./images/seo-strategies.jpg" alt="SEO Strategies for 2025 - Jonathan Mwaniki Blog" itemprop="image" loading="lazy" width="800" height="450">
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <time datetime="2025-05-28" itemprop="datePublished">May 28, 2025</time>
+                            <span class="post-category" itemprop="articleSection">SEO</span>
+                        </div>
+                        <h3 class="post-title" itemprop="headline">SEO Strategies That Will Dominate in 2025</h3>
+                        <div class="post-excerpt" itemprop="description">
+                            <p>Search engine optimization continues to evolve. Discover the most effective SEO strategies that will help your website rank higher in 2025 and beyond...</p>
+                        </div>
+                        <div class="post-actions">
+                            <a href="/blogs/seo-strategies-2025.html" class="btn-primary" itemprop="url" aria-label="Read more about SEO Strategies 2025">Read Full Article</a>
+                        </div>
+                    </div>
+                    <meta itemprop="author" content="Jonathan Mwaniki">
+                </article>
+
+                <!-- Blog Post 3 -->
+                <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
+                    <meta itemprop="mainEntityOfPage" content="https://www.jonathanmwaniki.co.ke/blogs/ui-ux-design-principles.html">
+                    <div class="post-image">
+                        <img src="./images/ui-ux-tips.jpg" alt="UI/UX Design Principles - Jonathan Mwaniki Blog" itemprop="image" loading="lazy" width="800" height="450">
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <time datetime="2025-04-10" itemprop="datePublished">April 10, 2025</time>
+                            <span class="post-category" itemprop="articleSection">Design</span>
+                        </div>
+                        <h3 class="post-title" itemprop="headline">10 UI/UX Design Principles That Never Go Out of Style</h3>
+                        <div class="post-excerpt" itemprop="description">
+                            <p>While design trends come and go, these fundamental UI/UX principles remain timeless. Learn how to apply them to create better user experiences...</p>
+                        </div>
+                        <div class="post-actions">
+                            <a href="/blogs/ui-ux-design-principles.html" class="btn-primary" itemprop="url" aria-label="Read more about UI/UX Design Principles">Read Full Article</a>
+                        </div>
+                    </div>
+                    <meta itemprop="author" content="Jonathan Mwaniki">
+                </article>
+            </div>
+
+            <section class="blog-categories">
+                <h3 class="section-subtitle">Browse by Category</h3>
+                <div class="category-list">
+                    <a href="/blogs/category/web-development" class="category-tag">Web Development</a>
+                    <a href="/blogs/category/design" class="category-tag">Design</a>
+                    <a href="/blogs/category/seo" class="category-tag">SEO</a>
+                    <a href="/blogs/category/digital-marketing" class="category-tag">Digital Marketing</a>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer (same as other pages) -->
+        <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="lazy">
+                    </div>
+                    <div class="footer-info">
+                        <span class="footer-name">Jonathan Mwaniki</span>
+                        <p class="footer-description">Professional web developer and graphic designer helping businesses thrive through technology, design, and innovation.</p>
+                    </div>
+                </div>
+
+                <div class="footer-legal">
+                    <p class="copyright">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
+                    <div class="legal-links">
+                        <a href="/privacy-policy" class="legal-link">Privacy Policy</a>
+                        <a href="/terms-of-service" class="legal-link">Terms of Service</a>
+                        <a href="/sitemap.xml" class="legal-link">Sitemap</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Same JavaScript as other pages -->
+    <script src="scripts/main.js" defer></script>
+</body>
+</html>
