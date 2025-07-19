@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Jonathan Mwaniki - Professional Web Developer & Graphic Designer. Expert in custom web development, responsive web design, UI/UX, and creative graphic design services.">
-    <meta name="keywords" content="web developer, web designer, graphic designer, professional web designer, ecommerce developer, responsive web design, UI/UX designer, logo design, digital solutions expert">
+    <meta name="keywords" content="web developer, web designer, graphic designer, professional web designer, ecommerce developer, responsive web design, UI/UX designer, logo design, digital solutions expert, Jonathan Mwaniki blog, web development tips, Kenya web developer">
     <meta name="author" content="Jonathan Mwaniki">
     <meta name="robots" content="index, follow">
-    
+
     <!-- Open Graph / Social Media -->
     <meta property="og:title" content="Jonathan Mwaniki | Web Developer & Graphic Designer">
     <meta property="og:description" content="Professional web development and graphic design services. Custom websites, UI/UX design, and branding solutions.">
@@ -15,13 +15,13 @@
     <meta property="og:url" content="https://www.jonathanmwaniki.co.ke">
     <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/social-preview.jpg">
     <meta property="og:locale" content="en_KE">
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Jonathan Mwaniki | Web Developer & Graphic Designer">
     <meta name="twitter:description" content="Professional web development and graphic design services">
     <meta name="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/social-preview.jpg">
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href="https://www.jonathanmwaniki.co.ke">
 
@@ -72,7 +72,7 @@
         .items-center { align-items: center; }
         .justify-center { justify-content: center; }
         .text-center { text-align: center; }
-        
+
         /* Splash screen styles */
         #splashScreen {
             background-color: white;
@@ -114,7 +114,7 @@
             width: 0%;
             transition: width 0.3s ease;
         }
-        
+
         /* Font face for fallback */
         @font-face {
             font-family: 'Poppins-fallback';
@@ -187,6 +187,10 @@
                     <i class="fas fa-briefcase"></i>
                     <span>Portfolio</span>
                 </a>
+                <a href="#blog" class="mobile-nav-link" aria-label="Blog">
+                    <i class="fas fa-blog"></i>
+                    <span>Blog</span>
+                </a>
                 <a href="#contact" class="mobile-nav-link" aria-label="Contact">
                     <i class="fas fa-envelope"></i>
                     <span>Contact</span>
@@ -207,6 +211,7 @@
                     <a href="#home" class="nav-link active" aria-label="Home">Home</a>
                     <a href="#services" class="nav-link" aria-label="Services">Services</a>
                     <a href="#portfolio" class="nav-link" aria-label="Portfolio">Portfolio</a>
+                    <a href="#blog" class="nav-link" aria-label="Blog">Blog</a>
                     <a href="#about" class="nav-link" aria-label="About">About</a>
                     <a href="#contact" class="nav-link" aria-label="Contact">Contact</a>
                 </div>
@@ -360,6 +365,95 @@
                             </a>
                         </div>
                     </div>
+
+                    <!-- Added RutoMustGo project -->
+                    <div class="portfolio-card" itemscope itemtype="https://schema.org/CreativeWork">
+                        <img src="./images/cap1.JPG" alt="RutoMustGo Website - Developed by Jonathan Mwaniki" loading="lazy" width="400" height="200">
+                        <div class="card-content">
+                            <h3 class="card-title" itemprop="name">RutoMustGo Website</h3>
+                            <p class="card-description" itemprop="description">A political campaign website with responsive design and interactive elements.</p>
+                            <a href="https://rutomustgo.pages.dev" target="_blank" rel="noopener noreferrer" class="card-link" itemprop="url">
+                                View Project
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog" class="blog-section">
+            <div class="blog-container">
+                <div class="section-header">
+                    <h2 class="section-title">Latest <span class="gradient-text">Blog Posts</span></h2>
+                    <p class="section-description">Insights and tutorials on web development, design, and digital marketing</p>
+                </div>
+
+                <div class="blog-posts">
+                    <!-- Featured Blog Post -->
+                    <article class="featured-post" itemscope itemtype="https://schema.org/BlogPosting">
+                        <div class="post-image">
+                            <img src="./images/web-dev-trends.jpg" alt="Web Development Trends 2025" itemprop="image" loading="lazy">
+                        </div>
+                        <div class="post-content">
+                            <div class="post-meta">
+                                <span class="post-date" itemprop="datePublished">June 15, 2025</span>
+                                <span class="post-category" itemprop="articleSection">Web Development</span>
+                            </div>
+                            <h3 class="post-title" itemprop="headline">Top Web Development Trends in 2025 Every Developer Should Know</h3>
+                            <div class="post-excerpt" itemprop="description">
+                                <p>The web development landscape is constantly evolving. In this post, I explore the most significant trends shaping web development in 2025, from AI-powered development tools to advanced Web3 integrations...</p>
+                            </div>
+                            <div class="post-actions">
+                                <a href="blogs/web-development-trends-2025.html" class="btn-primary" itemprop="url">Read Full Article</a>
+                                <a href="blogs.html" class="btn-outline">View All Posts</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Additional blog posts (hidden by default) -->
+                    <div class="more-posts" id="morePosts" style="display: none;">
+                        <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
+                            <div class="post-image">
+                                <img src="./images/seo-strategies.jpg" alt="SEO Strategies for 2025" itemprop="image" loading="lazy">
+                            </div>
+                            <div class="post-content">
+                                <div class="post-meta">
+                                    <span class="post-date" itemprop="datePublished">May 28, 2025</span>
+                                    <span class="post-category" itemprop="articleSection">SEO</span>
+                                </div>
+                                <h3 class="post-title" itemprop="headline">SEO Strategies That Will Dominate in 2025</h3>
+                                <div class="post-excerpt" itemprop="description">
+                                    <p>Search engine optimization continues to evolve. Discover the most effective SEO strategies that will help your website rank higher in 2025 and beyond...</p>
+                                </div>
+                                <a href="blogs/seo-strategies-2025.html" class="post-link" itemprop="url">Read More</a>
+                            </div>
+                        </article>
+
+                        <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
+                            <div class="post-image">
+                                <img src="./images/ui-ux-tips.jpg" alt="UI/UX Design Tips" itemprop="image" loading="lazy">
+                            </div>
+                            <div class="post-content">
+                                <div class="post-meta">
+                                    <span class="post-date" itemprop="datePublished">April 10, 2025</span>
+                                    <span class="post-category" itemprop="articleSection">Design</span>
+                                </div>
+                                <h3 class="post-title" itemprop="headline">10 UI/UX Design Principles That Never Go Out of Style</h3>
+                                <div class="post-excerpt" itemprop="description">
+                                    <p>While design trends come and go, these fundamental UI/UX principles remain timeless. Learn how to apply them to create better user experiences...</p>
+                                </div>
+                                <a href="blogs/ui-ux-design-principles.html" class="post-link" itemprop="url">Read More</a>
+                            </div>
+                        </article>
+                    </div>
+
+                    <!-- Show More Button -->
+                    <button id="showMoreBtn" class="btn-outline">
+                        Show More Articles
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                 </div>
             </div>
         </section>
@@ -611,13 +705,12 @@
                     <div class="legal-links">
                         <a href="/privacy-policy" class="legal-link">Privacy Policy</a>
                         <a href="/terms-of-service" class="legal-link">Terms of Service</a>
+                        <a href="/sitemap.xml" class="legal-link">Sitemap</a>
                     </div>
                 </div>
             </div>
         </footer>
     </div>
 
-    <!-- JavaScript -->
-    <script src="scripts/main.js" defer></script>
 </body>
 </html>
