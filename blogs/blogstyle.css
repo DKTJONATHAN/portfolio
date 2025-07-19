@@ -450,7 +450,8 @@ blockquote::before {
     h2 {
         font-size: 1.6rem;
     }
-    }
+}
+
 /* ================================
    BLOG LISTING PAGE STYLES
    ================================ */
