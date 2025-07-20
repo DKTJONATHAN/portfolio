@@ -3,15 +3,9 @@
   publish = "."
   functions = "functions"
 
-# Environment variables
 [build.environment]
-  GITHUB_OWNER = "DKTJONATHAN"
-  GITHUB_REPO = "Portfolio"
+  NETLIFY_CMS = "true"
   NODE_VERSION = "18"
-  NETLIFY_CMS_BACKEND = "git-gateway"
-
-[context.production.environment]
-  NODE_ENV = "production"
 
 # Required redirects
 [[redirects]]
@@ -19,24 +13,17 @@
   to = "/index.html"
   status = 200
 
-[[redirects]]
-  from = "/.netlify/functions/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-# CMS-specific redirects
+# CMS redirect - MUST COME BEFORE CATCH-ALL
 [[redirects]]
   from = "/admin/*"
-  to = "/blog-admin/:splat"
+  to = "/admin/index.html"
   status = 200
 
+# Blog redirects
 [[redirects]]
   from = "/blogs/posts/*"
   to = "/blogs/:slug"
   status = 200
 
-# Function settings
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["@octokit/rest"]
-  included_files = ["blogs/posts/**"]
