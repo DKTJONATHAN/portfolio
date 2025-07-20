@@ -1,15 +1,9 @@
+Path: netlify.toml
+Content:
 [build]
-  publish = "."
-  functions = "functions"
+publish = "."
 
-# REQUIRED - Handles CMS routing
 [[redirects]]
   from = "/admin/*"
   to = "/admin/index.html"
-  status = 200
-
-# Optional - For single-page apps
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
   status = 200
