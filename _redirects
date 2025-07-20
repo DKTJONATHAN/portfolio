@@ -1,1 +1,3 @@
-/.netlify/identity/* /blog-admin/:splat 200
+# Netlify Identity Redirects
+/.netlify/identity/* /blog-admin/ 200
+/complete-invitation /blog-admin/ 200
