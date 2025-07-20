@@ -1,13 +1,18 @@
-Path: admin/index.html
-Content:
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>CMS</title>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Manager</title>
+  <!-- Load from jsDelivr instead -->
+  <script src="https://cdn.jsdelivr.net/npm/decap-cms@3.0.0/dist/decap-cms.js"></script>
 </head>
 <body>
-  <script>CMS.init();</script>
+  <!-- Empty body prevents DOM conflicts -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      CMS.init();
+    });
+  </script>
 </body>
 </html>
