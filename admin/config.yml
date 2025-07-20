@@ -1,17 +1,16 @@
-Path: admin/config.yml
-Content:
 backend:
   name: git-gateway
   branch: main
 
-media_folder: "uploads"
+media_folder: "static/uploads"
 public_folder: "/uploads"
 
 collections:
   - name: "pages"
     label: "Pages"
     files:
-      - file: "content/home.md"
+      - name: "home"  # ← REQUIRED field added
+        file: "content/home.md"
         label: "Home Page"
         fields:
           - { name: "title", label: "Title", widget: "string" }
