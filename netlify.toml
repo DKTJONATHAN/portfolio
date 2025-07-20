@@ -1,9 +1,14 @@
-Path: netlify.toml
-Content:
 [build]
-publish = "."
+  publish = "."
 
+# Required for CMS
 [[redirects]]
   from = "/admin/*"
   to = "/admin/index.html"
+  status = 200
+
+# Optional catch-all for SPAs
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
