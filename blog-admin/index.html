@@ -6,54 +6,82 @@
   <title>Blog CMS</title>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <style>
-    #loading {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    #auth-container {
+      max-width: 400px;
+      margin: 2rem auto;
+      padding: 2rem;
       font-family: sans-serif;
+    }
+    #manual-auth {
+      margin-top: 2rem;
+      padding: 1rem;
+      border: 1px solid #ddd;
     }
   </style>
 </head>
 <body>
-  <div id="loading">Loading CMS...</div>
-  
-  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
-  
+  <div id="auth-container">
+    <h2>Blog CMS Access</h2>
+    <div id="netlify-identity-widget"></div>
+    
+    <div id="manual-auth">
+      <h3>Having trouble with the invite link?</h3>
+      <p>Try these steps:</p>
+      <ol>
+        <li>Click the invitation link from your email</li>
+        <li>When redirected to homepage, copy the URL from your address bar</li>
+        <li>Paste it here and click "Complete Setup":</li>
+      </ol>
+      <input type="text" id="invite-url" placeholder="Paste invite URL here">
+      <button onclick="processInvite()">Complete Setup</button>
+    </div>
+  </div>
+
   <script>
-    // 1. First handle invitation tokens
-    if (window.location.hash.includes('invite_token')) {
-      // Store the token and redirect to clean URL
-      const inviteToken = window.location.hash.split('=')[1];
-      localStorage.setItem('netlify-invite-token', inviteToken);
-      window.location.href = '/blog-admin/';
+    function processInvite() {
+      const url = document.getElementById('invite-url').value;
+      const token = new URL(url).hash.split('=')[1];
+      
+      if (token) {
+        localStorage.setItem('netlify-invite-token', token);
+        window.location.href = '/blog-admin/';
+      } else {
+        alert('Invalid URL. Please check and try again.');
+      }
     }
 
-    // 2. Initialize Netlify Identity
     document.addEventListener('DOMContentLoaded', function() {
+      // Handle direct access with token
+      if (window.location.hash.includes('invite_token')) {
+        const token = window.location.hash.split('=')[1];
+        localStorage.setItem('netlify-invite-token', token);
+        window.location.href = '/blog-admin/';
+        return;
+      }
+
+      // Initialize Netlify Identity
       if (window.netlifyIdentity) {
         netlifyIdentity.on('init', user => {
-          // Check for stored invite token
-          const storedToken = localStorage.getItem('netlify-invite-token');
-          if (storedToken) {
-            netlifyIdentity.acceptInvite(storedToken);
+          const token = localStorage.getItem('netlify-invite-token');
+          
+          if (token) {
+            netlifyIdentity.acceptInvite(token);
             localStorage.removeItem('netlify-invite-token');
             return;
           }
           
-          // Regular login flow
           if (!user) {
-            netlifyIdentity.on('login', () => {
-              window.location.href = '/blog-admin/';
-            });
+            netlifyIdentity.open('login');
+          } else {
+            // Load CMS after successful auth
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js';
+            document.body.appendChild(script);
+            document.getElementById('auth-container').style.display = 'none';
           }
         });
         
-        // Initialize
         netlifyIdentity.init();
-      } else {
-        document.getElementById('loading').innerHTML = 
-          'Error loading CMS. Please refresh or check your connection.';
       }
     });
   </script>
