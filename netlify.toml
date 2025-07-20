@@ -4,22 +4,30 @@
   functions = "functions"
 
 [build.environment]
-  NETLIFY_CMS = "true"
+  GITHUB_OWNER = "DKTJONATHAN"
+  GITHUB_REPO = "Portfolio"
   NODE_VERSION = "18"
+  NETLIFY_CMS_BACKEND = "git-gateway"
 
-# Required redirects
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+[context.production.environment]
+  NODE_ENV = "production"
 
-# CMS redirect - MUST COME BEFORE CATCH-ALL
+# Redirect rules - SIMPLIFIED FORMAT
 [[redirects]]
   from = "/admin/*"
   to = "/admin/index.html"
   status = 200
 
-# Blog redirects
+[[redirects]]
+  from = "/.netlify/identity/*"
+  to = "/.netlify/identity/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
 [[redirects]]
   from = "/blogs/posts/*"
   to = "/blogs/:slug"
@@ -27,3 +35,5 @@
 
 [functions]
   node_bundler = "esbuild"
+  external_node_modules = ["@octokit/rest"]
+  included_files = ["blogs/posts/**"]
