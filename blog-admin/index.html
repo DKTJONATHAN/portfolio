@@ -2,161 +2,163 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog CMS Access</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Blog Admin</title>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       padding: 20px;
-      max-width: 600px;
+      line-height: 1.5;
+      background: #f7fafc;
+    }
+    .container {
+      max-width: 100%;
       margin: 0 auto;
-      background: #f5f5f5;
-    }
-    #auth-container {
       background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
     }
-    h2 {
-      color: #2c3e50;
+    h1 {
+      color: #2d3748;
+      font-size: 24px;
       margin-top: 0;
     }
-    #manual-auth {
+    .manual-auth {
       margin-top: 25px;
       padding: 20px;
-      background: #f8f9fa;
-      border-radius: 6px;
-      border: 1px solid #e1e4e8;
+      background: #edf2f7;
+      border-radius: 8px;
     }
     #invite-url {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+      padding: 12px;
       font-size: 16px;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      margin: 10px 0;
+      box-sizing: border-box;
     }
-    #submit-invite {
-      background: #4a89dc;
+    button {
+      width: 100%;
+      background: #4299e1;
       color: white;
       border: none;
-      padding: 12px 20px;
-      border-radius: 4px;
-      cursor: pointer;
+      padding: 14px;
       font-size: 16px;
-      width: 100%;
-      transition: background 0.3s;
+      border-radius: 6px;
+      font-weight: 500;
     }
-    #submit-invite:hover {
-      background: #3b7dd8;
+    button:active {
+      background: #3182ce;
     }
-    #status-message {
+    .status {
       margin-top: 15px;
-      padding: 10px;
-      border-radius: 4px;
+      padding: 12px;
+      border-radius: 6px;
       display: none;
     }
     .success {
-      background: #d4edda;
-      color: #155724;
+      background: #c6f6d5;
+      color: #22543d;
     }
     .error {
-      background: #f8d7da;
-      color: #721c24;
+      background: #fed7d7;
+      color: #742a2a;
+    }
+    .steps {
+      padding-left: 20px;
+    }
+    .steps li {
+      margin-bottom: 8px;
     }
   </style>
 </head>
 <body>
-  <div id="auth-container">
-    <h2>Blog CMS Access</h2>
+  <div class="container">
+    <h1>Blog Admin Panel</h1>
     <div id="netlify-identity-widget"></div>
     
-    <div id="manual-auth">
-      <h3>Manual Invitation Setup</h3>
-      <p>If your invitation link didn't work automatically:</p>
-      <ol>
-        <li>Click the invitation link in your email</li>
-        <li>Copy the <strong>entire URL</strong> from your address bar</li>
-        <li>Paste it below and click "Submit"</li>
+    <div class="manual-auth">
+      <h2>Mobile Invitation Fix</h2>
+      <ol class="steps">
+        <li>Tap the invitation link in your email</li>
+        <li>Long-press the URL in your address bar</li>
+        <li>Select "Copy"</li>
+        <li>Paste it below:</li>
       </ol>
-      <input type="text" id="invite-url" placeholder="Paste the complete invitation URL here">
-      <button id="submit-invite">Submit Invitation</button>
-      <div id="status-message"></div>
+      
+      <input type="text" id="invite-url" placeholder="Paste invitation URL here">
+      <button id="submit-btn">Activate Invitation</button>
+      <div id="status" class="status"></div>
     </div>
   </div>
 
   <script>
+    // Mobile-friendly invitation handler
     document.addEventListener('DOMContentLoaded', function() {
-      // Set up button click handler
-      document.getElementById('submit-invite').addEventListener('click', processInvite);
+      const submitBtn = document.getElementById('submit-btn');
+      const inviteInput = document.getElementById('invite-url');
+      const statusEl = document.getElementById('status');
       
-      // Also allow pressing Enter in the input field
-      document.getElementById('invite-url').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          processInvite();
-        }
+      // Handle both button click and Enter key
+      submitBtn.addEventListener('click', processInvite);
+      inviteInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') processInvite();
       });
-
-      function showStatus(message, isError) {
-        const statusEl = document.getElementById('status-message');
-        statusEl.textContent = message;
-        statusEl.className = isError ? 'error' : 'success';
+      
+      // Auto-focus the input field on mobile
+      inviteInput.focus();
+      
+      function showStatus(msg, isSuccess) {
+        statusEl.textContent = msg;
+        statusEl.className = isSuccess ? 'status success' : 'status error';
         statusEl.style.display = 'block';
       }
-
+      
       function processInvite() {
-        const urlInput = document.getElementById('invite-url').value.trim();
+        const url = inviteInput.value.trim();
         
-        if (!urlInput) {
-          showStatus('Please paste the invitation URL first', true);
+        if (!url) {
+          showStatus('Please paste your invitation URL', false);
           return;
         }
-
+        
         try {
-          // Create URL object (handles both absolute and relative URLs)
-          const urlObj = new URL(urlInput.startsWith('http') ? urlInput : `https://example.com${urlInput}`);
-          
-          // Extract token from either hash or search parameters
-          const token = urlObj.hash.includes('invite_token') 
-            ? urlObj.hash.split('invite_token=')[1].split('&')[0]
-            : urlObj.searchParams.get('invite_token');
+          // Extract token from URL (works with both # and ? formats)
+          const token = url.includes('invite_token=') 
+            ? url.split('invite_token=')[1].split('&')[0]
+            : null;
           
           if (token) {
             localStorage.setItem('netlify-invite-token', token);
-            showStatus('Invitation accepted! Redirecting...', false);
+            showStatus('Success! Redirecting...', true);
+            
+            // Mobile-friendly redirect
             setTimeout(() => {
               window.location.href = '/blog-admin/';
             }, 1500);
           } else {
-            showStatus('No invitation token found in the URL. Please check and try again.', true);
+            showStatus('No token found. Please check the URL.', false);
           }
         } catch (e) {
-          showStatus('Invalid URL format. Please paste the complete invitation URL exactly as shown in your address bar.', true);
-          console.error('URL processing error:', e);
+          showStatus('Invalid URL. Paste the complete link.', false);
         }
       }
-
-      // Check for token in current URL
-      function checkCurrentUrlForToken() {
-        const currentUrl = new URL(window.location.href);
-        const hashParams = new URLSearchParams(currentUrl.hash.slice(1));
-        const token = currentUrl.searchParams.get('invite_token') || hashParams.get('invite_token');
-        
-        if (token) {
-          localStorage.setItem('netlify-invite-token', token);
-          window.location.href = '/blog-admin/';
-        }
+      
+      // Check for token in current URL (mobile redirects often lose the hash)
+      if (window.location.search.includes('invite_token=')) {
+        const token = new URLSearchParams(window.location.search).get('invite_token');
+        localStorage.setItem('netlify-invite-token', token);
+        window.location.href = '/blog-admin/';
       }
-
+      
       // Initialize Netlify Identity
       if (window.netlifyIdentity) {
         netlifyIdentity.on('init', user => {
-          checkCurrentUrlForToken();
-          
           const token = localStorage.getItem('netlify-invite-token');
+          
           if (token) {
             netlifyIdentity.acceptInvite(token);
             localStorage.removeItem('netlify-invite-token');
@@ -166,11 +168,11 @@
           if (!user) {
             netlifyIdentity.open('login');
           } else {
-            // Load CMS after successful auth
+            // Load CMS after auth
             const script = document.createElement('script');
             script.src = 'https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js';
             document.body.appendChild(script);
-            document.getElementById('auth-container').style.display = 'none';
+            document.querySelector('.container').style.display = 'none';
           }
         });
         
