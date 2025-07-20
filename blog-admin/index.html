@@ -2,32 +2,60 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Blog Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog CMS</title>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    #loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: sans-serif;
+    }
+  </style>
 </head>
 <body>
+  <div id="loading">Loading CMS...</div>
+  
   <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
   
   <script>
-    // First fix the invitation link if we came from one
+    // 1. First handle invitation tokens
     if (window.location.hash.includes('invite_token')) {
-      window.netlifyIdentity.on('init', () => {
-        window.netlifyIdentity.on('login', () => {
-          window.location.href = '/blog-admin/';
-        });
-      });
+      // Store the token and redirect to clean URL
+      const inviteToken = window.location.hash.split('=')[1];
+      localStorage.setItem('netlify-invite-token', inviteToken);
+      window.location.href = '/blog-admin/';
     }
 
-    // Then handle regular access
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/blog-admin/";
-          });
-        }
-      });
-    }
+    // 2. Initialize Netlify Identity
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.netlifyIdentity) {
+        netlifyIdentity.on('init', user => {
+          // Check for stored invite token
+          const storedToken = localStorage.getItem('netlify-invite-token');
+          if (storedToken) {
+            netlifyIdentity.acceptInvite(storedToken);
+            localStorage.removeItem('netlify-invite-token');
+            return;
+          }
+          
+          // Regular login flow
+          if (!user) {
+            netlifyIdentity.on('login', () => {
+              window.location.href = '/blog-admin/';
+            });
+          }
+        });
+        
+        // Initialize
+        netlifyIdentity.init();
+      } else {
+        document.getElementById('loading').innerHTML = 
+          'Error loading CMS. Please refresh or check your connection.';
+      }
+    });
   </script>
 </body>
 </html>
