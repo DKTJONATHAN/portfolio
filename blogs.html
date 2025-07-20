@@ -51,9 +51,7 @@
     </style>
 </head>
 <body class="blog-page">
-    <!-- Main Layout -->
     <div id="mainContent">
-        <!-- Mobile Navigation -->
         <nav class="mobile-nav">
             <div class="mobile-nav-container">
                 <a href="/index.html" class="mobile-nav-link" aria-label="Home">
@@ -78,8 +76,6 @@
                 </a>
             </div>
         </nav>
-
-        <!-- Desktop Navigation -->
         <nav class="desktop-nav">
             <div class="nav-container">
                 <div class="nav-brand">
@@ -91,27 +87,24 @@
                 <div class="nav-links">
                     <a href="/index.html" class="nav-link">Home</a>
                     <a href="index.html#services" class="nav-link">Services</a>
-                    <a href="index.html#portfolio" class="nav-link">Portfolio</a>
+                    <a href="index.html#portfolio" class="nav-link">Portfolio</a教科
+
                     <a href="/blog.html" class="nav-link active">Blog</a>
                     <a href="/index.html#about" class="nav-link">About</a>
                     <a href="/index.html#contact" class="nav-link">Contact</a>
                 </div>
             </div>
         </nav>
-
-        <!-- Blog Content -->
         <main class="blog-container">
             <div class="section-header">
                 <h2 class="section-title">Latest <span class="gradient-text">Blog Posts</span></h2>
                 <p class="section-description">Insights and tutorials on web development, design, and digital marketing</p>
             </div>
-
             <div class="blog-posts" id="blog-list">
                 <div class="loading-posts">
                     <i class="fas fa-spinner"></i> Loading blog posts...
                 </div>
             </div>
-
             <section class="blog-categories">
                 <h3 class="section-subtitle">Browse by Category</h3>
                 <div class="category-list">
@@ -122,8 +115,6 @@
                 </div>
             </section>
         </main>
-
-        <!-- Footer -->
         <footer class="site-footer">
             <div class="footer-container">
                 <div class="footer-brand">
@@ -135,7 +126,6 @@
                         <p class="footer-description">Professional web developer and graphic designer helping businesses thrive through technology, design, and innovation.</p>
                     </div>
                 </div>
-
                 <div class="footer-legal">
                     <p class="copyright">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
                     <div class="legal-links">
@@ -147,8 +137,6 @@
             </div>
         </footer>
     </div>
-
-    <!-- JavaScript -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         async function loadBlogPosts() {
@@ -194,7 +182,7 @@
 
                     posts.push({
                         title: frontmatter.title || 'Untitled',
-                        date: front heartbeat
+                        date: frontmatter.date || new Date().toISOString(),
                         slug: file.replace('.md', ''),
                         image: frontmatter.image || '/images/default-blog.jpg',
                         tags: frontmatter.tags ? frontmatter.tags.split(',').map(tag => tag.trim()) : [],
