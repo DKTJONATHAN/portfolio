@@ -3,11 +3,12 @@
   publish = "."
   functions = "functions"
 
-# Environment variables (non-sensitive)
+# Environment variables
 [build.environment]
-  GITHUB_OWNER = "DKTJONATHAN"  # Split from combined repo format
+  GITHUB_OWNER = "DKTJONATHAN"
   GITHUB_REPO = "Portfolio"
-  NODE_VERSION = "18"  # Minimum required for Octokit v19
+  NODE_VERSION = "18"
+  NETLIFY_CMS_BACKEND = "git-gateway"
 
 [context.production.environment]
   NODE_ENV = "production"
@@ -23,8 +24,19 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
-# Critical function settings
+# CMS-specific redirects
+[[redirects]]
+  from = "/admin/*"
+  to = "/blog-admin/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/blogs/posts/*"
+  to = "/blogs/:slug"
+  status = 200
+
+# Function settings
 [functions]
-  node_bundler = "esbuild"  # Must change from "nft" to support Octokit
-  external_node_modules = ["@octokit/rest"]  # Prevents bundling issues
-  included_files = ["data/**"]  # If your function needs local files
+  node_bundler = "esbuild"
+  external_node_modules = ["@octokit/rest"]
+  included_files = ["blogs/posts/**"]
