@@ -1,14 +1,14 @@
 [build]
-  publish = "."
+  command = "" # No build command for plain HTML
+  publish = "/" # Root directory
+  functions = "netlify/functions" # Functions directory
 
-# Required for CMS
 [[redirects]]
-  from = "/admin/*"
-  to = "/admin/index.html"
+  from = "/api/list-posts"
+  to = "/.netlify/functions/list-posts"
   status = 200
 
-# Optional catch-all for SPAs
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/api/storesubmission"
+  to = "/.netlify/functions/storesubmission"
   status = 200
