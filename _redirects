@@ -1,2 +1,21 @@
-# Handle all identity routes
-/.netlify/identity/* /blog-admin/ 200
+# Required redirects (order matters!)
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/.netlify/identity/*"
+  to = "/.netlify/identity/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Blog redirects (keep these if needed)
+[[redirects]]
+  from = "/blogs/posts/*"
+  to = "/blogs/:slug"
+  status = 200
