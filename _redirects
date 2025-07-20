@@ -1,3 +1,2 @@
-# Netlify Identity Redirects
+# Handle all identity routes
 /.netlify/identity/* /blog-admin/ 200
-/complete-invitation /blog-admin/ 200
