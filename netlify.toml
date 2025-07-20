@@ -1,39 +1,15 @@
 [build]
-  command = "echo 'No build needed'"
   publish = "."
   functions = "functions"
 
-[build.environment]
-  GITHUB_OWNER = "DKTJONATHAN"
-  GITHUB_REPO = "Portfolio"
-  NODE_VERSION = "18"
-  NETLIFY_CMS_BACKEND = "git-gateway"
-
-[context.production.environment]
-  NODE_ENV = "production"
-
-# Redirect rules - SIMPLIFIED FORMAT
+# REQUIRED - Handles CMS routing
 [[redirects]]
   from = "/admin/*"
   to = "/admin/index.html"
   status = 200
 
-[[redirects]]
-  from = "/.netlify/identity/*"
-  to = "/.netlify/identity/:splat"
-  status = 200
-
+# Optional - For single-page apps
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[[redirects]]
-  from = "/blogs/posts/*"
-  to = "/blogs/:slug"
-  status = 200
-
-[functions]
-  node_bundler = "esbuild"
-  external_node_modules = ["@octokit/rest"]
-  included_files = ["blogs/posts/**"]
