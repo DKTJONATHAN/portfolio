@@ -1,13 +1,156 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Content Manager</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Manager | Jonathan Mwaniki</title>
+  
+  <!-- Netlify Identity Widget -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  
+  <style>
+    body {
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f8fafc;
+      color: #1f2937;
+    }
+    
+    #cms-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    
+    .cms-header {
+      margin-bottom: 40px;
+    }
+    
+    .cms-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border: 3px solid #667eea;
+    }
+    
+    h1 {
+      color: #1f2937;
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    
+    .cms-description {
+      color: #6b7280;
+      margin-bottom: 30px;
+    }
+    
+    #cms-loading {
+      font-size: 1.1rem;
+      color: #6b7280;
+    }
+    
+    .cms-error {
+      color: #dc2626;
+      background: #fee2e2;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .cms-login-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2);
+      transition: all 0.3s ease;
+      margin-top: 20px;
+    }
+    
+    .cms-login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    .cms-help {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+    
+    .cms-help a {
+      color: #667eea;
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
-  <!-- Include the script that builds the page and powers Netlify CMS -->
+  <div id="cms-container">
+    <div class="cms-header">
+      <img src="/images/Jonathan-Mwaniki-logo.png" alt="CMS Logo" class="cms-logo">
+      <h1>Content Manager</h1>
+      <p class="cms-description">Manage your blog posts and website content</p>
+    </div>
+    
+    <div id="cms-loading">
+      <i class="fas fa-spinner fa-spin"></i> Loading CMS...
+    </div>
+    
+    <!-- This div will contain the CMS interface -->
+    <div id="netlify-cms-root"></div>
+    
+    <div class="cms-help">
+      <p>Need help? <a href="mailto:your-email@example.com">Contact support</a></p>
+    </div>
+  </div>
+
+  <!-- Font Awesome for icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  
+  <!-- Netlify CMS Script -->
   <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize Netlify Identity
+      if (window.netlifyIdentity) {
+        netlifyIdentity.on('init', user => {
+          if (!user) {
+            netlifyIdentity.on('login', () => {
+              document.location.href = '/cms/';
+            });
+          } else {
+            // Hide loading message when CMS is ready
+            document.getElementById('cms-loading').style.display = 'none';
+          }
+        });
+        
+        // Initialize Netlify Identity
+        netlifyIdentity.init();
+      }
+      
+      // Handle invitation tokens
+      const urlParams = new URLSearchParams(window.location.search);
+      const inviteToken = urlParams.get('invite_token');
+      
+      if (inviteToken) {
+        localStorage.setItem('netlify-cms-invite-token', inviteToken);
+        window.netlifyIdentity.acceptInvite(inviteToken);
+      }
+      
+      // Auto-close the widget after login
+      netlifyIdentity.on('login', user => {
+        netlifyIdentity.close();
+      });
+    });
+  </script>
 </body>
 </html>
