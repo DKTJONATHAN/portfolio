@@ -7,18 +7,51 @@
     <title>Blog | Jonathan Mwaniki - Web Developer & Designer</title>
     <link rel="canonical" href="https://www.jonathanmwaniki.co.ke/blog.html" />
     
-    <!-- Use the same CSS as other pages -->
     <link rel="stylesheet" href="blogstyles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <!-- CSS_ADSBLOCK_START -->
 <link rel="stylesheet" href="https://adblockers.opera-mini.net/css_block/default-domainless.css" type="text/css" />
 <!-- CSS_ADSBLOCK_END -->
+    <style>
+        /* Dynamic content loading states */
+        .loading-posts {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--light-text);
+            font-size: 1.2rem;
+        }
+        .loading-posts i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+        .no-posts {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--light-text);
+            font-size: 1.1rem;
+        }
+        .error-message {
+            text-align: center;
+            padding: 60px 0;
+            color: #d9534f;
+            font-size: 1.1rem;
+        }
+        .error-message a {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body class="blog-page">
     <!-- Main Layout -->
-    <div id="mainContent" class="hidden">
-        <!-- Mobile Navigation (same as other pages) -->
+    <div id="mainContent">
+        <!-- Mobile Navigation -->
         <nav class="mobile-nav">
             <div class="mobile-nav-container">
                 <a href="/index.html" class="mobile-nav-link" aria-label="Home">
@@ -44,7 +77,7 @@
             </div>
         </nav>
 
-        <!-- Desktop Navigation (same as other pages) -->
+        <!-- Desktop Navigation -->
         <nav class="desktop-nav">
             <div class="nav-container">
                 <div class="nav-brand">
@@ -71,74 +104,10 @@
                 <p class="section-description">Insights and tutorials on web development, design, and digital marketing</p>
             </div>
 
-            <div class="blog-posts">
-                <!-- Blog Post 1 -->
-                <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
-                    <meta itemprop="mainEntityOfPage" content="https://www.jonathanmwaniki.co.ke/blogs/web-development-trends-2025.html">
-                    <div class="post-image">
-                        <img src="./images/trends.jpeg" alt="Web Development Trends 2025 - Jonathan Mwaniki Blog" itemprop="image" loading="lazy" width="800" height="450">
-                    </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <time datetime="2025-06-15" itemprop="datePublished">June 15, 2025</time>
-                            <span class="post-category" itemprop="articleSection">Web Development</span>
-                        </div>
-                        <h3 class="post-title" itemprop="headline">Top Web Development Trends in 2025 Every Developer Should Know</h3>
-                        <div class="post-excerpt" itemprop="description">
-                            <p>The web development landscape is constantly evolving. In this post, I explore the most significant trends shaping web development in 2025, from AI-powered development tools to advanced Web3 integrations...</p>
-                        </div>
-                        <div class="post-actions">
-                            <a href="/blogs/web-development-trends-2025.html" class="btn-primary" itemprop="url" aria-label="Read full article about Web Development Trends 2025">Read Full Article</a>
-                        </div>
-                    </div>
-                    <meta itemprop="author" content="Jonathan Mwaniki">
-                    <meta itemprop="dateModified" content="2025-06-15">
-                    <meta itemprop="publisher" content="Jonathan Mwaniki">
-                </article>
-
-                <!-- Blog Post 2 -->
-                <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
-                    <meta itemprop="mainEntityOfPage" content="https://www.jonathanmwaniki.co.ke/blogs/seo-strategies-2025.html">
-                    <div class="post-image">
-                        <img src="./images/seo-strategies.jpg" alt="SEO Strategies for 2025 - Jonathan Mwaniki Blog" itemprop="image" loading="lazy" width="800" height="450">
-                    </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <time datetime="2025-05-28" itemprop="datePublished">May 28, 2025</time>
-                            <span class="post-category" itemprop="articleSection">SEO</span>
-                        </div>
-                        <h3 class="post-title" itemprop="headline">SEO Strategies That Will Dominate in 2025</h3>
-                        <div class="post-excerpt" itemprop="description">
-                            <p>Search engine optimization continues to evolve. Discover the most effective SEO strategies that will help your website rank higher in 2025 and beyond...</p>
-                        </div>
-                        <div class="post-actions">
-                            <a href="/blogs/seo-strategies-2025.html" class="btn-primary" itemprop="url" aria-label="Read more about SEO Strategies 2025">Read Full Article</a>
-                        </div>
-                    </div>
-                    <meta itemprop="author" content="Jonathan Mwaniki">
-                </article>
-
-                <!-- Blog Post 3 -->
-                <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
-                    <meta itemprop="mainEntityOfPage" content="https://www.jonathanmwaniki.co.ke/blogs/ui-ux-design-principles.html">
-                    <div class="post-image">
-                        <img src="./images/ui-ux-tips.jpg" alt="UI/UX Design Principles - Jonathan Mwaniki Blog" itemprop="image" loading="lazy" width="800" height="450">
-                    </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <time datetime="2025-04-10" itemprop="datePublished">April 10, 2025</time>
-                            <span class="post-category" itemprop="articleSection">Design</span>
-                        </div>
-                        <h3 class="post-title" itemprop="headline">10 UI/UX Design Principles That Never Go Out of Style</h3>
-                        <div class="post-excerpt" itemprop="description">
-                            <p>While design trends come and go, these fundamental UI/UX principles remain timeless. Learn how to apply them to create better user experiences...</p>
-                        </div>
-                        <div class="post-actions">
-                            <a href="/blogs/ui-ux-design-principles.html" class="btn-primary" itemprop="url" aria-label="Read more about UI/UX Design Principles">Read Full Article</a>
-                        </div>
-                    </div>
-                    <meta itemprop="author" content="Jonathan Mwaniki">
-                </article>
+            <div class="blog-posts" id="blog-list">
+                <div class="loading-posts">
+                    <i class="fas fa-spinner"></i> Loading blog posts...
+                </div>
             </div>
 
             <section class="blog-categories">
@@ -152,7 +121,7 @@
             </section>
         </main>
 
-        <!-- Footer (same as other pages) -->
+        <!-- Footer -->
         <footer class="site-footer">
             <div class="footer-container">
                 <div class="footer-brand">
@@ -177,7 +146,81 @@
         </footer>
     </div>
 
-    <!-- Same JavaScript as other pages -->
-    <script src="scripts/blogs.js" defer></script>
+    <!-- JavaScript -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load blog posts from CMS
+        function loadBlogPosts() {
+            fetch('/blogs/posts/index.json')
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(posts => {
+                    const blogList = document.getElementById('blog-list');
+                    blogList.innerHTML = '';
+                    
+                    if(!posts || posts.length === 0) {
+                        blogList.innerHTML = '<div class="no-posts">No blog posts yet. Check back soon!</div>';
+                        return;
+                    }
+
+                    // Sort by date (newest first)
+                    posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                    // Create post elements
+                    posts.forEach(post => {
+                        const postDate = new Date(post.date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+
+                        const postElement = document.createElement('article');
+                        postElement.className = 'blog-post';
+                        postElement.setAttribute('itemscope', '');
+                        postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
+                        
+                        postElement.innerHTML = `
+                            <div class="post-image">
+                                <img src="${post.image || '/images/default-blog.jpg'}" alt="${post.title}" loading="lazy" itemprop="image">
+                            </div>
+                            <div class="post-content">
+                                <div class="post-meta">
+                                    <time datetime="${post.date}" itemprop="datePublished">${postDate}</time>
+                                    ${post.tags && post.tags.length ? `
+                                    <span class="post-category" itemprop="articleSection">${post.tags[0]}</span>
+                                    ` : ''}
+                                </div>
+                                <h3 class="post-title" itemprop="headline">${post.title}</h3>
+                                <div class="post-excerpt" itemprop="description">
+                                    <p>${post.excerpt || post.body.substring(0, 200) + '...'}</p>
+                                </div>
+                                <div class="post-actions">
+                                    <a href="/blogs/${post.slug}" class="btn-primary" itemprop="url">
+                                        Read Full Article <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <meta itemprop="author" content="Jonathan Mwaniki">
+                        `;
+                        blogList.appendChild(postElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading blog posts:', error);
+                    document.getElementById('blog-list').innerHTML = `
+                        <div class="error-message">
+                            Couldn't load blog posts. <a href="javascript:location.reload()">Try again</a>
+                            <p><small>${error.message}</small></p>
+                        </div>
+                    `;
+                });
+        }
+
+        // Initialize
+        loadBlogPosts();
+    });
+    </script>
 </body>
     </html>
