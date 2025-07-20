@@ -7,57 +7,51 @@
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      padding: 20px;
-      line-height: 1.5;
-      background: #f7fafc;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 15px;
+      background: #f5f7fa;
+      -webkit-tap-highlight-color: transparent;
     }
     .container {
-      max-width: 100%;
-      margin: 0 auto;
       background: white;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
     h1 {
-      color: #2d3748;
-      font-size: 24px;
+      color: #1a365d;
+      font-size: 22px;
       margin-top: 0;
     }
-    .manual-auth {
-      margin-top: 25px;
-      padding: 20px;
-      background: #edf2f7;
-      border-radius: 8px;
+    #invite-box {
+      margin-top: 20px;
     }
     #invite-url {
       width: 100%;
-      padding: 12px;
+      padding: 15px;
       font-size: 16px;
-      border: 1px solid #cbd5e0;
-      border-radius: 6px;
-      margin: 10px 0;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      margin-bottom: 15px;
       box-sizing: border-box;
     }
-    button {
+    #submit-btn {
       width: 100%;
       background: #4299e1;
       color: white;
       border: none;
-      padding: 14px;
-      font-size: 16px;
-      border-radius: 6px;
-      font-weight: 500;
+      padding: 16px;
+      font-size: 17px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
     }
-    button:active {
-      background: #3182ce;
-    }
-    .status {
+    #status {
       margin-top: 15px;
       padding: 12px;
-      border-radius: 6px;
+      border-radius: 8px;
       display: none;
+      font-size: 15px;
     }
     .success {
       background: #c6f6d5;
@@ -67,116 +61,68 @@
       background: #fed7d7;
       color: #742a2a;
     }
-    .steps {
-      padding-left: 20px;
-    }
-    .steps li {
-      margin-bottom: 8px;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Blog Admin Panel</h1>
-    <div id="netlify-identity-widget"></div>
-    
-    <div class="manual-auth">
-      <h2>Mobile Invitation Fix</h2>
-      <ol class="steps">
-        <li>Tap the invitation link in your email</li>
-        <li>Long-press the URL in your address bar</li>
-        <li>Select "Copy"</li>
-        <li>Paste it below:</li>
-      </ol>
-      
-      <input type="text" id="invite-url" placeholder="Paste invitation URL here">
-      <button id="submit-btn">Activate Invitation</button>
-      <div id="status" class="status"></div>
+    <h1>Activate Your Invitation</h1>
+    <div id="invite-box">
+      <input type="text" id="invite-url" placeholder="Paste invitation link here" autofocus>
+      <button id="submit-btn">ACTIVATE NOW</button>
+      <div id="status"></div>
     </div>
   </div>
 
   <script>
-    // Mobile-friendly invitation handler
+    // Simple, foolproof implementation
     document.addEventListener('DOMContentLoaded', function() {
-      const submitBtn = document.getElementById('submit-btn');
       const inviteInput = document.getElementById('invite-url');
+      const submitBtn = document.getElementById('submit-btn');
       const statusEl = document.getElementById('status');
       
-      // Handle both button click and Enter key
-      submitBtn.addEventListener('click', processInvite);
+      // Make absolutely sure the button works
+      submitBtn.addEventListener('click', handleInvite);
+      submitBtn.addEventListener('touchend', handleInvite);
       inviteInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') processInvite();
+        if (e.key === 'Enter') handleInvite();
       });
       
-      // Auto-focus the input field on mobile
+      // Focus the input field immediately
       inviteInput.focus();
       
-      function showStatus(msg, isSuccess) {
-        statusEl.textContent = msg;
-        statusEl.className = isSuccess ? 'status success' : 'status error';
+      function showStatus(message, isSuccess) {
+        statusEl.textContent = message;
+        statusEl.className = isSuccess ? 'success' : 'error';
         statusEl.style.display = 'block';
       }
       
-      function processInvite() {
+      function handleInvite() {
         const url = inviteInput.value.trim();
         
         if (!url) {
-          showStatus('Please paste your invitation URL', false);
+          showStatus('Please paste your invitation link', false);
           return;
         }
         
-        try {
-          // Extract token from URL (works with both # and ? formats)
-          const token = url.includes('invite_token=') 
-            ? url.split('invite_token=')[1].split('&')[0]
-            : null;
+        // Extract token (works with any URL format)
+        const tokenMatch = url.match(/invite_token=([^&]+)/);
+        if (tokenMatch) {
+          const token = tokenMatch[1];
+          localStorage.setItem('netlify-invite-token', token);
+          showStatus('Success! Loading admin panel...', true);
           
-          if (token) {
-            localStorage.setItem('netlify-invite-token', token);
-            showStatus('Success! Redirecting...', true);
-            
-            // Mobile-friendly redirect
-            setTimeout(() => {
-              window.location.href = '/blog-admin/';
-            }, 1500);
-          } else {
-            showStatus('No token found. Please check the URL.', false);
-          }
-        } catch (e) {
-          showStatus('Invalid URL. Paste the complete link.', false);
+          // Force redirect
+          setTimeout(function() {
+            window.location.href = '/blog-admin/#invite_token=' + token;
+          }, 1000);
+        } else {
+          showStatus('Invalid link. Please check and try again.', false);
         }
       }
       
-      // Check for token in current URL (mobile redirects often lose the hash)
-      if (window.location.search.includes('invite_token=')) {
-        const token = new URLSearchParams(window.location.search).get('invite_token');
-        localStorage.setItem('netlify-invite-token', token);
+      // Check if we already have a token
+      if (localStorage.getItem('netlify-invite-token')) {
         window.location.href = '/blog-admin/';
-      }
-      
-      // Initialize Netlify Identity
-      if (window.netlifyIdentity) {
-        netlifyIdentity.on('init', user => {
-          const token = localStorage.getItem('netlify-invite-token');
-          
-          if (token) {
-            netlifyIdentity.acceptInvite(token);
-            localStorage.removeItem('netlify-invite-token');
-            return;
-          }
-          
-          if (!user) {
-            netlifyIdentity.open('login');
-          } else {
-            // Load CMS after auth
-            const script = document.createElement('script');
-            script.src = 'https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js';
-            document.body.appendChild(script);
-            document.querySelector('.container').style.display = 'none';
-          }
-        });
-        
-        netlifyIdentity.init();
       }
     });
   </script>
