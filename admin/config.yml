@@ -9,7 +9,7 @@ collections:
   - name: "pages"
     label: "Pages"
     files:
-      - name: "home"  # ← REQUIRED field added
+      - name: "home"  # Required field
         file: "content/home.md"
         label: "Home Page"
         fields:
