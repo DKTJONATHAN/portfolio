@@ -1,9 +1,11 @@
+Path: admin/config.yml
+Content:
 backend:
   name: git-gateway
   branch: main
 
-media_folder: "static/uploads"  # Where uploaded images are stored
-public_folder: "/uploads"      # Public URL path
+media_folder: "uploads"
+public_folder: "/uploads"
 
 collections:
   - name: "pages"
