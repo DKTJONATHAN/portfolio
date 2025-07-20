@@ -3,14 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Content Manager</title>
-  <!-- Load from jsDelivr instead -->
-  <script src="https://cdn.jsdelivr.net/npm/decap-cms@3.0.0/dist/decap-cms.js"></script>
+  <title>CMS</title>
+  <!-- Load from alternative CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: white; /* Force white background */
+    }
+  </style>
 </head>
 <body>
-  <!-- Empty body prevents DOM conflicts -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    // Initialize only after full load
+    window.addEventListener('load', function() {
       CMS.init();
     });
   </script>
