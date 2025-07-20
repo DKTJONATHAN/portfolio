@@ -6,16 +6,45 @@
   <title>Blog CMS</title>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <style>
-    #auth-container {
-      max-width: 400px;
-      margin: 2rem auto;
-      padding: 2rem;
+    body {
       font-family: sans-serif;
+      line-height: 1.6;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    #auth-container {
+      background: #f8f9fa;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     #manual-auth {
       margin-top: 2rem;
-      padding: 1rem;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 6px;
       border: 1px solid #ddd;
+    }
+    button, input {
+      padding: 8px 12px;
+      margin-top: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      background: #3a7bd5;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #3068b7;
+    }
+    h2, h3 {
+      color: #333;
     }
   </style>
 </head>
@@ -25,35 +54,52 @@
     <div id="netlify-identity-widget"></div>
     
     <div id="manual-auth">
-      <h3>Having trouble with the invite link?</h3>
-      <p>Try these steps:</p>
+      <h3>Invitation Troubleshooting</h3>
+      <p><strong>If the invite link doesn't work:</strong></p>
       <ol>
-        <li>Click the invitation link from your email</li>
-        <li>When redirected to homepage, copy the URL from your address bar</li>
-        <li>Paste it here and click "Complete Setup":</li>
+        <li>Click the invitation link in your email</li>
+        <li>When redirected, copy the ENTIRE URL from your address bar</li>
+        <li>Paste it below and click "Complete Setup"</li>
       </ol>
-      <input type="text" id="invite-url" placeholder="Paste invite URL here">
+      <input type="text" id="invite-url" placeholder="Paste the entire invite URL here">
       <button onclick="processInvite()">Complete Setup</button>
     </div>
   </div>
 
   <script>
     function processInvite() {
-      const url = document.getElementById('invite-url').value;
-      const token = new URL(url).hash.split('=')[1];
-      
-      if (token) {
-        localStorage.setItem('netlify-invite-token', token);
-        window.location.href = '/blog-admin/';
-      } else {
-        alert('Invalid URL. Please check and try again.');
+      try {
+        const url = document.getElementById('invite-url').value.trim();
+        if (!url) {
+          alert('Please paste the invite URL first');
+          return;
+        }
+        
+        // Extract token from either hash or query parameters
+        const urlObj = new URL(url);
+        const token = urlObj.hash.includes('invite_token') 
+          ? urlObj.hash.split('invite_token=')[1].split('&')[0]
+          : urlObj.searchParams.get('invite_token');
+        
+        if (token) {
+          localStorage.setItem('netlify-invite-token', token);
+          window.location.href = '/blog-admin/';
+        } else {
+          alert('No invitation token found. Please check the URL and try again.');
+        }
+      } catch (e) {
+        alert('Invalid URL format. Please paste the complete invitation URL.');
+        console.error(e);
       }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
       // Handle direct access with token
-      if (window.location.hash.includes('invite_token')) {
-        const token = window.location.hash.split('=')[1];
+      const urlParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      
+      const token = urlParams.get('invite_token') || hashParams.get('invite_token');
+      if (token) {
         localStorage.setItem('netlify-invite-token', token);
         window.location.href = '/blog-admin/';
         return;
