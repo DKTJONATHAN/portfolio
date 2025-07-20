@@ -6,11 +6,19 @@
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <!-- This will load the CMS interface -->
   <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
   
-  <!-- Optional: Add this to prevent unauthorized access -->
   <script>
+    // First fix the invitation link if we came from one
+    if (window.location.hash.includes('invite_token')) {
+      window.netlifyIdentity.on('init', () => {
+        window.netlifyIdentity.on('login', () => {
+          window.location.href = '/blog-admin/';
+        });
+      });
+    }
+
+    // Then handle regular access
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
         if (!user) {
