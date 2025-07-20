@@ -3,7 +3,7 @@ const path = require('path');
 
 exports.handler = async function () {
   try {
-    const blogDir = path.join(__dirname, '../content/blog');
+    const blogDir = path.join(__dirname, '../../content/blog'); // Adjusted for netlify/functions
     const files = await fs.readdir(blogDir);
     const mdFiles = files.filter(file => file.endsWith('.md'));
     return {
