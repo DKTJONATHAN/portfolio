@@ -6,13 +6,15 @@
     <meta name="description" content="Jonathan Mwaniki's Blog - Latest articles on web development, design, and digital marketing">
     <title>Blog | Jonathan Mwaniki - Web Developer & Designer</title>
     <link rel="canonical" href="https://www.jonathanmwaniki.co.ke/blog.html" />
-    
+
     <link rel="stylesheet" href="blogstyles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<!-- CSS_ADSBLOCK_START -->
-<link rel="stylesheet" href="https://adblockers.opera-mini.net/css_block/default-domainless.css" type="text/css" />
-<!-- CSS_ADSBLOCK_END -->
+    <!-- CSS_ADSBLOCK_START -->
+    <link rel="stylesheet" href="https://adblockers.opera-mini.net/css_block/default-domainless.css" type="text/css" />
+    <!-- CSS_ADSBLOCK_END -->
+    <!-- Add marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         /* Dynamic content loading states */
         .loading-posts {
@@ -149,73 +151,113 @@
     <!-- JavaScript -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Load blog posts from CMS
-        function loadBlogPosts() {
-            fetch('/blogs/posts/index.json')
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(posts => {
-                    const blogList = document.getElementById('blog-list');
-                    blogList.innerHTML = '';
-                    
-                    if(!posts || posts.length === 0) {
-                        blogList.innerHTML = '<div class="no-posts">No blog posts yet. Check back soon!</div>';
-                        return;
+        async function loadBlogPosts() {
+            const blogList = document.getElementById('blog-list');
+            blogList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i> Loading blog posts...</div>';
+
+            try {
+                // Fetch list of Markdown files from Netlify Function
+                const fileListResponse = await fetch('/api/list-posts');
+                if (!fileListResponse.ok) throw new Error('Failed to fetch post list');
+                const blogFiles = await fileListResponse.json();
+
+                if (!blogFiles || blogFiles.length === 0) {
+                    blogList.innerHTML = '<div class="no-posts">No blog posts yet. Check back soon!</div>';
+                    return;
+                }
+
+                const posts = [];
+
+                // Fetch and parse each Markdown file
+                for (const file of blogFiles) {
+                    const response = await fetch(`/content/blog/${file}`);
+                    if (!response.ok) {
+                        console.error(`Failed to fetch ${file}: ${response.status}`);
+                        continue;
+                    }
+                    const markdown = await response.text();
+
+                    // Parse frontmatter and content
+                    const frontmatterRegex = /^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/;
+                    const match = markdown.match(frontmatterRegex);
+                    if (!match) {
+                        console.error(`Invalid frontmatter in ${file}`);
+                        continue;
                     }
 
-                    // Sort by date (newest first)
-                    posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    const frontmatter = match[1].split('\n').reduce((acc, line) => {
+                        const [key, value] = line.split(': ').map(s => s.trim());
+                        if (key && value) acc[key] = value.replace(/^["']|["']$/g, '');
+                        return acc;
+                    }, {});
+                    const content = match[2];
 
-                    // Create post elements
-                    posts.forEach(post => {
-                        const postDate = new Date(post.date).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        });
-
-                        const postElement = document.createElement('article');
-                        postElement.className = 'blog-post';
-                        postElement.setAttribute('itemscope', '');
-                        postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
-                        
-                        postElement.innerHTML = `
-                            <div class="post-image">
-                                <img src="${post.image || '/images/default-blog.jpg'}" alt="${post.title}" loading="lazy" itemprop="image">
-                            </div>
-                            <div class="post-content">
-                                <div class="post-meta">
-                                    <time datetime="${post.date}" itemprop="datePublished">${postDate}</time>
-                                    ${post.tags && post.tags.length ? `
-                                    <span class="post-category" itemprop="articleSection">${post.tags[0]}</span>
-                                    ` : ''}
-                                </div>
-                                <h3 class="post-title" itemprop="headline">${post.title}</h3>
-                                <div class="post-excerpt" itemprop="description">
-                                    <p>${post.excerpt || post.body.substring(0, 200) + '...'}</p>
-                                </div>
-                                <div class="post-actions">
-                                    <a href="/blogs/${post.slug}" class="btn-primary" itemprop="url">
-                                        Read Full Article <i class="fas fa-arrow-right"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <meta itemprop="author" content="Jonathan Mwaniki">
-                        `;
-                        blogList.appendChild(postElement);
+                    posts.push({
+                        title: frontmatter.title || 'Untitled',
+                        date: front heartbeat
+                        slug: file.replace('.md', ''),
+                        image: frontmatter.image || '/images/default-blog.jpg',
+                        tags: frontmatter.tags ? frontmatter.tags.split(',').map(tag => tag.trim()) : [],
+                        excerpt: frontmatter.excerpt || content.substring(0, 200) + '...'
                     });
-                })
-                .catch(error => {
-                    console.error('Error loading blog posts:', error);
-                    document.getElementById('blog-list').innerHTML = `
-                        <div class="error-message">
-                            Couldn't load blog posts. <a href="javascript:location.reload()">Try again</a>
-                            <p><small>${error.message}</small></p>
+                }
+
+                if (posts.length === 0) {
+                    blogList.innerHTML = '<div class="no-posts">No blog posts yet. Check back soon!</div>';
+                    return;
+                }
+
+                // Sort by date (newest first)
+                posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                // Create post elements
+                blogList.innerHTML = '';
+                posts.forEach(post => {
+                    const postDate = new Date(post.date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    const postElement = document.createElement('article');
+                    postElement.className = 'blog-post';
+                    postElement.setAttribute('itemscope', '');
+                    postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
+
+                    postElement.innerHTML = `
+                        <div class="post-image">
+                            <img src="${post.image}" alt="${post.title}" loading="lazy" itemprop="image">
                         </div>
+                        <div class="post-content">
+                            <div class="post-meta">
+                                <time datetime="${post.date}" itemprop="datePublished">${postDate}</time>
+                                ${post.tags && post.tags.length ? `
+                                <span class="post-category" itemprop="articleSection">${post.tags[0]}</span>
+                                ` : ''}
+                            </div>
+                            <h3 class="post-title" itemprop="headline">${post.title}</h3>
+                            <div class="post-excerpt" itemprop="description">
+                                <p>${post.excerpt}</p>
+                            </div>
+                            <div class="post-actions">
+                                <a href="/blog-post.html?slug=${post.slug}" class="btn-primary" itemprop="url">
+                                    Read Full Article <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <meta itemprop="author" content="Jonathan Mwaniki">
                     `;
+                    blogList.appendChild(postElement);
                 });
+            } catch (error) {
+                console.error('Error loading blog posts:', error);
+                blogList.innerHTML = `
+                    <div class="error-message">
+                        Couldn't load blog posts. <a href="javascript:location.reload()">Try again</a>
+                        <p><small>${error.message}</small></p>
+                    </div>
+                `;
+            }
         }
 
         // Initialize
@@ -223,4 +265,4 @@
     });
     </script>
 </body>
-    </html>
+</html>
