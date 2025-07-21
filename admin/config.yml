@@ -1,7 +1,6 @@
 backend:
-  name: github
-  repo: DKTJONATHAN/portfolio # Your GitHub repo
-  branch: main # Replace with master if that's your default branch
+  name: git-gateway
+  branch: main # Replace with master if your default branch is master
 media_folder: "content/images"
 public_folder: "/content/images"
 collections:
