@@ -1,6 +1,6 @@
 [build]
   command = "" # No build command for plain HTML
-  publish = "/" # Root directory
+  publish = "." # Use "." for root directory (more standard than "/")
   functions = "netlify/functions" # Functions directory
 
 [[redirects]]
@@ -14,8 +14,8 @@
   status = 200
 
 [[redirects]]
-  from = "/admin"
-  to = "/admin/index.html"
+  from = "/admin/*"
+  to = "/static/admin/index.html"
   status = 200
 
 [[redirects]]
