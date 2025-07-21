@@ -1,0 +1,14 @@
+backend:
+  name: git-gateway
+  branch: main # Adjust if your default branch is different (e.g., master)
+media_folder: "static/images/uploads" # Where uploaded images are stored
+public_folder: "/images/uploads" # Public URL path for images
+collections:
+  - name: "posts"
+    label: "Posts"
+    folder: "content/posts" # Where blog posts are stored
+    create: true
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Body", name: "body", widget: "markdown" }
