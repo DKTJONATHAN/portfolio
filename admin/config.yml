@@ -1,14 +1,15 @@
 backend:
-  name: git-gateway
-  branch: main # Your repository’s main branch
-media_folder: "content/images" # Where images will be stored
-public_folder: "/content/images" # Public path for images
+  name: github
+  repo: DKTJONATHAN/portfolio # Your GitHub repo
+  branch: main # Replace with master if that's your default branch
+media_folder: "content/images"
+public_folder: "/content/images"
 collections:
   - name: "posts"
     label: "Posts"
     folder: "content/posts"
     create: true
-    slug: "{{slug}}.md" # Blog posts saved as Markdown files
+    slug: "{{slug}}.md"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Publish Date", name: "date", widget: "datetime" }
