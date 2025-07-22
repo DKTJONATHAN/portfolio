@@ -1,10 +1,16 @@
 const { Octokit } = require('@octokit/rest');
 
-exports.handler = async () => {
+exports.handler = async (event) => {
     const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO } = process.env;
     const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
     try {
+        const authHeader = event.headers.authorization;
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            const token = authHeader.split(' ')[1];
+            require('jsonwebtoken').verify(token, process.env.JWT_SECRET);
+        }
+
         const { data: files } = await octokit.repos.getContent({
             owner: GITHUB_OWNER,
             repo: GITHUB_REPO,
@@ -34,6 +40,6 @@ exports.handler = async () => {
             body: JSON.stringify(posts.filter(p => p))
         };
     } catch (err) {
-        return { statusCode: 500, body: JSON.stringify({ message: err.message }) };
+        return { statusCode: err.status || 500, body: JSON.stringify({ message: err.message }) };
     }
 };
