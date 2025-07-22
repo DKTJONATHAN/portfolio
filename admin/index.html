@@ -138,6 +138,7 @@
         </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsonwebtoken@9.0.2/dist/jsonwebtoken.min.js"></script>
     <script>
         // Initialize TinyMCE
         function initTinyMCE() {
@@ -213,6 +214,8 @@
                     body: JSON.stringify({ password })
                 });
                 if (!response.ok) throw new Error('Invalid password');
+                const { token } = await response.json(); // Expect JWT token from /api/login
+                localStorage.setItem('jwtToken', token);
                 loginForm.classList.add('hidden');
                 adminPanel.classList.remove('hidden');
                 loadPosts();
@@ -242,17 +245,22 @@
                 date: formData.get('date'),
                 content: tinymce.get('content-editor') ? tinymce.get('content-editor').getContent() : formData.get('content')
             };
+            console.log('Sending postData:', postData);
 
             try {
                 const endpoint = e.target.dataset.editSlug ? '/api/update-post' : '/api/save-post';
+                const token = localStorage.getItem('jwtToken');
                 const response = await fetch(endpoint, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: JSON.stringify(postData)
                 });
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.error || 'Operation failed');
+                    throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
                 }
                 e.target.reset();
                 if (tinymce.get('content-editor')) tinymce.get('content-editor').setContent('');
@@ -260,6 +268,7 @@
                 delete e.target.dataset.editSlug;
                 loadPosts();
             } catch (err) {
+                console.error('Fetch error:', err);
                 error.textContent = `Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`;
                 error.classList.remove('hidden');
             } finally {
@@ -285,7 +294,10 @@
             error.classList.add('hidden');
 
             try {
-                const response = await fetch('/api/list-posts?t=' + Date.now());
+                const token = localStorage.getItem('jwtToken');
+                const response = await fetch('/api/list-posts?t=' + Date.now(), {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
                 if (!response.ok) throw new Error('Failed to fetch posts');
                 const posts = await response.json();
                 posts.forEach(post => {
@@ -308,7 +320,9 @@
                     button.addEventListener('click', async () => {
                         const slug = button.dataset.slug;
                         try {
-                            const response = await fetch('/api/list-posts?t=' + Date.now());
+                            const response = await fetch('/api/list-posts?t=' + Date.now(), {
+                                headers: { 'Authorization': `Bearer ${token}` }
+                            });
                             const posts = await response.json();
                             const post = posts.find(p => p.slug === slug);
                             if (post) {
@@ -338,7 +352,10 @@
                         try {
                             const response = await fetch('/api/delete-post', {
                                 method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
+                                headers: { 
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                },
                                 body: JSON.stringify({ slug })
                             });
                             if (!response.ok) {
