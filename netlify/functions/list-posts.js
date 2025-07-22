@@ -1,4 +1,5 @@
 const { Octokit } = require('@octokit/rest');
+const yaml = require('js-yaml');
 
 exports.handler = async () => {
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
@@ -17,8 +18,9 @@ exports.handler = async () => {
                 path: file.path
             });
             const content = Buffer.from(fileData.content, 'base64').toString();
-            const frontmatter = content.match(/---\n([\s\S]*?)\n---/)[1];
-            const yaml = require('js-yaml');
+            const frontmatterMatch = content.match(/---\n([\s\S]*?)\n---/);
+            if (!frontmatterMatch) throw new Error(`Invalid frontmatter in ${file.name}`);
+            const frontmatter = frontmatterMatch[1];
             const metadata = yaml.load(frontmatter);
             return {
                 ...metadata,
