@@ -3,206 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Admin Panel - Jonathan Mwaniki">
-    <title>Admin Panel</title>
+    <title>Admin Panel - Jonathan Mwaniki</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tiny.cloud/1/mn8k8hdz6yfspjdieakr2wj6o17ul3zukzga01gsm1jdi0gp/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/<your_tinymce_api_key>/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <style>
+        .hidden { display: none; }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans">
-    <div class="min-h-screen flex flex-col">
-        <!-- Desktop Navigation -->
-        <nav class="bg-white shadow-lg fixed top-0 w-full z-10 hidden md:block">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center py-4">
-                    <div class="flex items-center space-x-3">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" class="rounded-lg">
-                        <span class="text-lg font-semibold text-gray-900">Jonathan Mwaniki</span>
-                    </div>
-                    <div class="space-x-6">
-                        <a href="/index.html" class="text-gray-600 hover:text-indigo-600">Home</a>
-                        <a href="/index.html#services" class="text-gray-600 hover:text-indigo-600">Services</a>
-                        <a href="/index.html#portfolio" class="text-gray-600 hover:text-indigo-600">Portfolio</a>
-                        <a href="/blog.html" class="text-indigo-600 font-medium">Blog</a>
-                        <a href="/index.html#about" class="text-gray-600 hover:text-indigo-600">About</a>
-                        <a href="/index.html#contact" class="text-gray-600 hover:text-indigo-600">Contact</a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-        <!-- Mobile Navigation -->
-        <nav class="bg-white shadow-lg fixed bottom-0 w-full z-10 md:hidden">
-            <div class="flex justify-around py-2">
-                <a href="/index.html" class="flex flex-col items-center text-gray-600 hover:text-indigo-600">
-                    <i class="fas fa-home text-lg"></i><span class="text-xs">Home</span>
-                </a>
-                <a href="/index.html#services" class="flex flex-col items-center text-gray-600 hover:text-indigo-600">
-                    <i class="fas fa-cogs text-lg"></i><span class="text-xs">Services</span>
-                </a>
-                <a href="/index.html#portfolio" class="flex flex-col items-center text-gray-600 hover:text-indigo-600">
-                    <i class="fas fa-briefcase text-lg"></i><span class="text-xs">Portfolio</span>
-                </a>
-                <a href="/blog.html" class="flex flex-col items-center text-indigo-600">
-                    <i class="fas fa-blog text-lg"></i><span class="text-xs">Blog</span>
-                </a>
-                <a href="/index.html#contact" class="flex flex-col items-center text-gray-600 hover:text-indigo-600">
-                    <i class="fas fa-envelope text-lg"></i><span class="text-xs">Contact</span>
-                </a>
-            </div>
-        </nav>
-        <!-- Main Content -->
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 md:pb-16 mt-0 md:mt-16">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">Admin Panel</h2>
-            </div>
-            <div id="admin-content">
-                <!-- Login Form -->
-                <div id="login-form" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-                    <form id="login" class="space-y-4">
-                        <div>
-                            <label for="admin-password" class="block text-sm font-medium text-gray-700">Password</label>
-                            <input id="admin-password" type="password" required class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
-                        <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition">Login</button>
-                    </form>
-                </div>
-                <!-- Admin Panel -->
-                <div id="admin-panel" class="hidden">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Create New Post</h3>
-                    <form id="create-post" class="bg-white p-6 rounded-lg shadow-md mb-12 space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Title</label>
-                            <input type="text" name="title" required class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Slug (auto-generated, editable)</label>
-                            <input type="text" name="slug" required class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Category</label>
-                            <input type="text" name="category" required class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Tags (comma-separated)</label>
-                            <input type="text" name="tags" class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Featured Image URL (optional)</label>
-                            <input type="text" name="image" class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Date</label>
-                            <input type="date" name="date" required class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Content</label>
-                            <textarea id="content-editor" name="content" required class="mt-1 w-full"></textarea>
-                        </div>
-                        <div class="flex space-x-4">
-                            <button type="button" id="preview-post" class="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition">Preview</button>
-                            <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition">Create Post</button>
-                        </div>
-                    </form>
-                    <div id="preview-content" class="hidden bg-white p-6 rounded-lg shadow-md mb-12"></div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Edit/Delete Posts</h3>
-                    <div id="post-list" class="space-y-6"></div>
-                </div>
-                <!-- Loading/Error States -->
-                <div id="loading" class="text-center py-12 text-gray-600 text-lg hidden">
-                    <i class="fas fa-spinner animate-spin mr-2"></i> Loading...
-                </div>
-                <div id="error" class="text-center py-12 text-red-600 text-lg hidden"></div>
-            </div>
-        </main>
-        <!-- Footer -->
-        <footer class="bg-white shadow-inner mt-auto">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
-                    <div class="flex items-center gap-4">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" class="rounded-lg">
-                        <div class="text-center md:text-left">
-                            <span class="font-semibold text-gray-900">Jonathan Mwaniki</span>
-                            <p class="text-gray-600 text-sm">Professional web developer and graphic designer helping businesses thrive through technology, design, and innovation.</p>
-                        </div>
-                    </div>
-                    <div class="flex flex-col md:flex-row md:ml-auto gap-4 md:gap-6 text-center">
-                        <p class="text-gray-600 text-sm">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
-                        <div class="flex gap-4">
-                            <a href="/privacy-policy" class="text-gray-600 hover:text-indigo-600 text-sm">Privacy Policy</a>
-                            <a href="/terms-of-service" class="text-gray-600 hover:text-indigo-600 text-sm">Terms of Service</a>
-                            <a href="/sitemap.xml" class="text-gray-600 hover:text-indigo-600 text-sm">Sitemap</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
+<body class="bg-gray-100">
+    <div id="login-section" class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+            <h2 class="text-2xl font-bold mb-4 text-center">Admin Login</h2>
+            <form id="login-form">
+                <input type="password" id="password" class="w-full p-2 mb-4 border rounded-md" placeholder="Enter admin password">
+                <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">Login</button>
+            </form>
+            <p id="login-error" class="text-red-500 mt-2 hidden"></p>
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <div id="admin-section" class="min-h-screen p-4 hidden">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-2xl font-bold mb-4">Create Post</h2>
+            <form id="create-post" class="bg-white p-6 rounded-lg shadow-md mb-6">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Title</label>
+                    <input type="text" name="title" class="w-full p-2 border rounded-md" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Slug</label>
+                    <input type="text" name="slug" class="w-full p-2 border rounded-md" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Category</label>
+                    <input type="text" name="category" class="w-full p-2 border rounded-md">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Tags (comma-separated)</label>
+                    <input type="text" name="tags" class="w-full p-2 border rounded-md">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Image URL</label>
+                    <input type="text" name="image" class="w-full p-2 border rounded-md">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Date</label>
+                    <input type="date" name="date" class="w-full p-2 border rounded-md" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Content</label>
+                    <textarea id="content-editor" name="content" class="w-full p-2 border rounded-md"></textarea>
+                </div>
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Create Post</button>
+            </form>
+            <p id="error" class="text-red-500 hidden"></p>
+            <p id="loading" class="text-blue-500 hidden">Loading...</p>
+
+            <h2 class="text-2xl font-bold mb-4">Posts</h2>
+            <div id="post-list" class="space-y-4"></div>
+        </div>
+    </div>
+
     <script>
-        // Initialize TinyMCE
-        function initTinyMCE() {
-            try {
-                tinymce.init({
-                    selector: '#content-editor',
-                    plugins: 'advlist autolink lists link image code preview anchor',
-                    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image | code preview',
-                    menubar: false,
-                    content_style: 'body { font-family: sans-serif; font-size: 16px; }',
-                    images_upload_url: '/api/upload-image',
-                    images_upload_handler: async (blobInfo, success, failure) => {
-                        try {
-                            const formData = new FormData();
-                            formData.append('file', blobInfo.blob(), blobInfo.filename());
-                            const response = await fetch('/api/upload-image', {
-                                method: 'POST',
-                                body: formData
-                            });
-                            if (!response.ok) throw new Error('Image upload failed');
-                            const data = await response.json();
-                            success(data.url);
-                        } catch (error) {
-                            failure('Image upload error: Use a URL instead');
-                        }
-                    },
-                    setup: (editor) => {
-                        editor.on('init', () => console.log('TinyMCE initialized'));
-                        editor.on('error', (error) => {
-                            console.error('TinyMCE error:', error);
-                            document.getElementById('error').textContent = 'Editor failed to load.';
-                            document.getElementById('error').classList.remove('hidden');
-                        });
-                    },
-                    height: 400,
-                    mobile: { theme: 'silver', toolbar_mode: 'scrolling' }
-                });
-            } catch (err) {
-                console.error('TinyMCE init failed:', err);
-                document.getElementById('error').textContent = 'Editor failed to load.';
-                document.getElementById('error').classList.remove('hidden');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', initTinyMCE);
-
-        // Slug generation
-        document.querySelector('input[name="title"]').addEventListener('input', (e) => {
-            const slugField = document.querySelector('input[name="slug"]');
-            slugField.value = e.target.value
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '');
+        tinymce.init({
+            selector: '#content-editor',
+            plugins: 'lists link image',
+            toolbar: 'undo redo | bold italic | bullist numlist | link image',
+            menubar: false
         });
 
-        // Login Form
-        document.getElementById('login').addEventListener('submit', async (e) => {
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const password = document.getElementById('admin-password').value;
-            const loading = document.getElementById('loading');
-            const error = document.getElementById('error');
-            const loginForm = document.getElementById('login-form');
-            const adminPanel = document.getElementById('admin-panel');
-
-            loading.classList.remove('hidden');
+            const password = document.getElementById('password').value;
+            const error = document.getElementById('login-error');
             error.classList.add('hidden');
 
             try {
@@ -211,27 +84,24 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password })
                 });
-                let data;
-                try {
-                    data = await response.json();
-                } catch (jsonError) {
-                    throw new Error('Invalid JSON response from server');
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('login-section').classList.add('hidden');
+                    document.getElementById('admin-section').classList.remove('hidden');
+                    loadPosts();
+                } else {
+                    error.textContent = data.error || 'Invalid password';
+                    error.classList.remove('hidden');
                 }
-                if (!response.ok) throw new Error(data.error || 'Invalid password');
-                loginForm.classList.add('hidden');
-                adminPanel.classList.remove('hidden');
-                loadPosts();
             } catch (err) {
-                error.textContent = err.message;
+                error.textContent = 'Failed to login: ' + err.message;
                 error.classList.remove('hidden');
-            } finally {
-                loading.classList.add('hidden');
             }
         });
 
-        // Create/Update Post
         document.getElementById('create-post').addEventListener('submit', async (e) => {
             e.preventDefault();
+            alert('Create Post: Form submitted'); // Mobile debug
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
             loading.classList.remove('hidden');
@@ -242,27 +112,31 @@
                 title: formData.get('title'),
                 slug: formData.get('slug'),
                 category: formData.get('category'),
-                tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag),
-                image: formData.get('image'),
+                tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
+                image: formData.get('image') || '',
                 date: formData.get('date'),
                 content: tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : formData.get('content')
             };
 
             try {
                 const endpoint = e.target.dataset.editSlug ? '/api/update-post' : '/api/save-post';
+                alert(`Create Post: Sending form data to ${endpoint}`); // Mobile debug
                 const response = await fetch(endpoint, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(postData)
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(postData).toString()
                 });
+                alert(`Create Post: Response status ${response.status}`); // Mobile debug
                 let responseData;
                 try {
                     responseData = await response.json();
+                    alert(`Create Post: Response data ${JSON.stringify(responseData)}`); // Mobile debug
                 } catch (jsonError) {
-                    throw new Error('Invalid JSON response from server');
+                    alert(`Create Post: JSON error - ${jsonError.message}`); // Mobile debug
+                    throw new Error(`Invalid JSON response from ${endpoint}`);
                 }
                 if (!response.ok) {
-                    throw new Error(responseData.error || 'Operation failed');
+                    throw new Error(responseData.error || `Operation failed: ${response.status} ${response.statusText}`);
                 }
                 e.target.reset();
                 if (tinymce.get('content-editor')) tinymce.get('content-editor').setContent('');
@@ -270,6 +144,7 @@
                 delete e.target.dataset.editSlug;
                 loadPosts();
             } catch (err) {
+                alert(`Create Post: Error - ${err.message}`); // Mobile debug
                 error.textContent = `Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`;
                 error.classList.remove('hidden');
             } finally {
@@ -277,15 +152,6 @@
             }
         });
 
-        // Preview Post
-        document.getElementById('preview-post').addEventListener('click', () => {
-            const content = tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : document.getElementById('content-editor').value;
-            const previewContent = document.getElementById('preview-content');
-            previewContent.innerHTML = marked.parse(content);
-            previewContent.classList.remove('hidden');
-        });
-
-        // Load Posts for Edit/Delete
         async function loadPosts() {
             const postList = document.getElementById('post-list');
             const loading = document.getElementById('loading');
@@ -295,14 +161,23 @@
             error.classList.add('hidden');
 
             try {
+                alert('Load Posts: Fetching /api/list-posts'); // Mobile debug
                 const response = await fetch('/api/list-posts?t=' + Date.now());
+                alert(`Load Posts: Response status ${response.status}`); // Mobile debug
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    alert(`Load Posts: Error response - ${errorText}`); // Mobile debug
+                    throw new Error(`Failed to fetch posts: ${response.status} ${response.statusText}`);
+                }
                 let posts;
                 try {
                     posts = await response.json();
+                    alert(`Load Posts: Received ${posts.length} posts`); // Mobile debug
                 } catch (jsonError) {
-                    throw new Error('Invalid JSON response from server');
+                    alert(`Load Posts: JSON error - ${jsonError.message}`); // Mobile debug
+                    throw new Error('Invalid JSON response from /api/list-posts');
                 }
-                if (!response.ok) throw new Error(posts.error || 'Failed to fetch posts');
+                if (posts.error) throw new Error(posts.error);
                 posts.forEach(post => {
                     const postItem = document.createElement('div');
                     postItem.className = 'bg-white p-4 rounded-lg shadow-md flex justify-between items-center';
@@ -380,7 +255,8 @@
                     });
                 });
             } catch (err) {
-                error.textContent = 'Failed to fetch posts: ' + err.message;
+                alert(`Load Posts: Error - ${err.message}`); // Mobile debug
+                error.textContent = `Failed to fetch posts: ${err.message}`;
                 error.classList.remove('hidden');
             } finally {
                 loading.classList.add('hidden');
@@ -388,4 +264,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
