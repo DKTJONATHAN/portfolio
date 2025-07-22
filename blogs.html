@@ -6,17 +6,14 @@
     <meta name="description" content="Jonathan Mwaniki's Blog - Latest articles on web development, design, and digital marketing">
     <title>Blog | Jonathan Mwaniki - Web Developer & Designer</title>
     <link rel="canonical" href="https://www.jonathanmwaniki.co.ke/blog.html" />
-
     <link rel="stylesheet" href="blogstyles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- CSS_ADSBLOCK_START -->
     <link rel="stylesheet" href="https://adblockers.opera-mini.net/css_block/default-domainless.css" type="text/css" />
     <!-- CSS_ADSBLOCK_END -->
-    <!-- Add marked.js for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        /* Dynamic content loading states */
         .loading-posts {
             text-align: center;
             padding: 60px 0;
@@ -55,24 +52,19 @@
         <nav class="mobile-nav">
             <div class="mobile-nav-container">
                 <a href="/index.html" class="mobile-nav-link" aria-label="Home">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
+                    <i class="fas fa-home"></i><span>Home</span>
                 </a>
                 <a href="/index.html#services" class="mobile-nav-link" aria-label="Services">
-                    <i class="fas fa-cogs"></i>
-                    <span>Services</span>
+                    <i class="fas fa-cogs"></i><span>Services</span>
                 </a>
                 <a href="/index.html#portfolio" class="mobile-nav-link" aria-label="Portfolio">
-                    <i class="fas fa-briefcase"></i>
-                    <span>Portfolio</span>
+                    <i class="fas fa-briefcase"></i><span>Portfolio</span>
                 </a>
                 <a href="/blog.html" class="mobile-nav-link active" aria-label="Blog">
-                    <i class="fas fa-blog"></i>
-                    <span>Blog</span>
+                    <i class="fas fa-blog"></i><span>Blog</span>
                 </a>
                 <a href="/index.html#contact" class="mobile-nav-link" aria-label="Contact">
-                    <i class="fas fa-envelope"></i>
-                    <span>Contact</span>
+                    <i class="fas fa-envelope"></i><span>Contact</span>
                 </a>
             </div>
         </nav>
@@ -86,9 +78,8 @@
                 </div>
                 <div class="nav-links">
                     <a href="/index.html" class="nav-link">Home</a>
-                    <a href="index.html#services" class="nav-link">Services</a>
-                    <a href="index.html#portfolio" class="nav-link">Portfolio</a教科
-
+                    <a href="/index.html#services" class="nav-link">Services</a>
+                    <a href="/index.html#portfolio" class="nav-link">Portfolio</a>
                     <a href="/blog.html" class="nav-link active">Blog</a>
                     <a href="/index.html#about" class="nav-link">About</a>
                     <a href="/index.html#contact" class="nav-link">Contact</a>
@@ -144,7 +135,6 @@
             blogList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i> Loading blog posts...</div>';
 
             try {
-                // Fetch list of Markdown files from Netlify Function
                 const fileListResponse = await fetch('/api/list-posts');
                 if (!fileListResponse.ok) throw new Error('Failed to fetch post list');
                 const blogFiles = await fileListResponse.json();
@@ -156,7 +146,6 @@
 
                 const posts = [];
 
-                // Fetch and parse each Markdown file
                 for (const file of blogFiles) {
                     const response = await fetch(`/content/blog/${file}`);
                     if (!response.ok) {
@@ -165,7 +154,6 @@
                     }
                     const markdown = await response.text();
 
-                    // Parse frontmatter and content
                     const frontmatterRegex = /^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/;
                     const match = markdown.match(frontmatterRegex);
                     if (!match) {
@@ -195,10 +183,8 @@
                     return;
                 }
 
-                // Sort by date (newest first)
                 posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-                // Create post elements
                 blogList.innerHTML = '';
                 posts.forEach(post => {
                     const postDate = new Date(post.date).toLocaleDateString('en-US', {
@@ -228,7 +214,7 @@
                                 <p>${post.excerpt}</p>
                             </div>
                             <div class="post-actions">
-                                <a href="/blog-post.html?slug=${post.slug}" class="btn-primary" itemprop="url">
+                                <a href="/blog-post.html?slug=${encodeURIComponent(post.slug)}" class="btn-primary" itemprop="url">
                                     Read Full Article <i class="fas fa-arrow-right"></i>
                                 </a>
                             </div>
@@ -248,7 +234,6 @@
             }
         }
 
-        // Initialize
         loadBlogPosts();
     });
     </script>
