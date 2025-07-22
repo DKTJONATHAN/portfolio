@@ -5,86 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Admin Panel - Jonathan Mwaniki">
     <title>Admin Panel</title>
-    <link rel="stylesheet" href="/blogstyles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="blog-page">
-    <div id="mainContent">
-        <nav class="desktop-nav">
-            <div class="nav-container">
-                <div class="nav-brand">
-                    <div class="brand-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="eager">
+<body class="bg-gray-100 font-sans">
+    <div class="min-h-screen flex flex-col">
+        <!-- Desktop Navigation -->
+        <nav class="bg-white shadow-lg fixed top-0 w-full z-10 hidden md:block">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <div class="flex items-center space-x-3">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" class="rounded-lg">
+                        <span class="text-lg font-semibold text-gray-900">Jonathan Mwaniki</span>
                     </div>
-                    <span class="brand-name">Jonathan Mwaniki</span>
-                </div>
-                <div class="nav-links">
-                    <a href="/index.html" class="nav-link">Home</a>
-                    <a href="/index.html#services" class="nav-link">Services</a>
-                    <a href="/index.html#portfolio" class="nav-link">Portfolio</a>
-                    <a href="/blog.html" class="nav-link active">Blog</a>
-                    <a href="/index.html#about" class="nav-link">About</a>
-                    <a href="/index.html#contact" class="nav-link">Contact</a>
+                    <div class="space-x-6">
+                        <a href="/index.html" class="text-gray-600 hover:text-indigo-600">Home</a>
+                        <a href="/index.html#services" class="text-gray-600 hover:text-indigo-600">Services</a>
+                        <a href="/index.html#portfolio" class="text-gray-600 hover:text-indigo-600">Portfolio</a>
+                        <a href="/blog.html" class="text-indigo-600 font-medium">Blog</a>
+                        <a href="/index.html#about" class="text-gray-600 hover:text-indigo-600">About</a>
+                        <a href="/index.html#contact" class="text-gray-600 hover:text-indigo-600">Contact</a>
+                    </div>
                 </div>
             </div>
         </nav>
-        <nav class="mobile-nav">
-            <div class="mobile-nav-container">
-                <a href="/index.html" class="mobile-nav-link" aria-label="Home"><i class="fas fa-home"></i><span>Home</span></a>
-                <a href="/index.html#services" class="mobile-nav-link" aria-label="Services"><i class="fas fa-cogs"></i><span>Services</span></a>
-                <a href="/index.html#portfolio" class="mobile-nav-link" aria-label="Portfolio"><i class="fas fa-briefcase"></i><span>Portfolio</span></a>
-                <a href="/blog.html" class="mobile-nav-link active" aria-label="Blog"><i class="fas fa-blog"></i><span>Blog</span></a>
-                <a href="/index.html#contact" class="mobile-nav-link" aria-label="Contact"><i class="fas fa-envelope"></i><span>Contact</span></a>
+        <!-- Mobile Navigation -->
+        <nav class="bg-white shadow-lg fixed bottom-0 w-full z-10 md:hidden">
+            <div class="flex justify-around py-2">
+                <a href="/index.html" class="flex flex-col items-center text-gray-600 hover:text-indigo-600">
+                    <i class="fas fa-home text-lg"></i><span class="text-xs">Home</span>
+                </a>
+                <a href="/index.html#services" class="flex flex-col items-center text-gray-600 hover:text-indigo-600">
+                    <i class="fas fa-cogs text-lg"></i><span class="text-xs">Services</span>
+                </a>
+                <a href="/index.html#portfolio" class="flex flex-col items-center text-gray-600 hover:text-indigo-600">
+                    <i class="fas fa-briefcase text-lg"></i><span class="text-xs">Portfolio</span>
+                </a>
+                <a href="/blog.html" class="flex flex-col items-center text-indigo-600">
+                    <i class="fas fa-blog text-lg"></i><span class="text-xs">Blog</span>
+                </a>
+                <a href="/index.html#contact" class="flex flex-col items-center text-gray-600 hover:text-indigo-600">
+                    <i class="fas fa-envelope text-lg"></i><span class="text-xs">Contact</span>
+                </a>
             </div>
         </nav>
-        <main class="blog-container">
-            <div class="section-header">
-                <h2 class="section-title">Admin Panel</h2>
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 md:pb-16 mt-0 md:mt-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">Admin Panel</h2>
             </div>
             <div id="admin-content">
-                <div id="login-form" style="display: none;">
-                    <form id="login">
-                        <label>Password: <input type="password" id="admin-password" required></label><br>
-                        <button type="submit" class="btn-primary">Login</button>
+                <!-- Login Form -->
+                <div id="login-form" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+                    <form id="login" class="space-y-4">
+                        <div>
+                            <label for="admin-password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <input id="admin-password" type="password" required class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition">Login</button>
                     </form>
                 </div>
-                <div id="admin-panel" style="display: none;">
-                    <h3>Create New Post</h3>
-                    <form id="create-post">
-                        <label>Title: <input type="text" name="title" required></label><br>
-                        <label>Category: <input type="text" name="category" required></label><br>
-                        <label>Tags (comma-separated): <input type="text" name="tags"></label><br>
-                        <label>Image URL (optional): <input type="text" name="image"></label><br>
-                        <label>Image Upload (optional): <input type="file" name="image-file" accept="image/*"></label><br>
-                        <label>Date: <input type="date" name="date" required></label><br>
-                        <label>Content:<br><textarea name="content" rows="10" required></textarea></label><br>
-                        <button type="submit" class="btn-primary">Create Post</button>
+                <!-- Admin Panel -->
+                <div id="admin-panel" class="hidden">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Create New Post</h3>
+                    <form id="create-post" class="bg-white p-6 rounded-lg shadow-md mb-12 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Title</label>
+                            <input type="text" name="title" required class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Category</label>
+                            <input type="text" name="category" required class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Tags (comma-separated)</label>
+                            <input type="text" name="tags" class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Image URL (optional)</label>
+                            <input type="text" name="image" class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Image Upload (optional)</label>
+                            <input type="file" name="image-file" accept="image/*" class="mt-1 w-full p-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Date</label>
+                            <input type="date" name="date" required class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Content</label>
+                            <textarea name="content" rows="10" required class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition">Create Post</button>
                     </form>
-                    <h3>Edit/Delete Posts</h3>
-                    <div id="post-list" class="blog-posts"></div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Edit/Delete Posts</h3>
+                    <div id="post-list" class="space-y-6"></div>
                 </div>
-                <div id="loading" class="loading-posts"><i class="fas fa-spinner"></i> Loading...</div>
-                <div id="error" class="error-message" style="display: none;"></div>
+                <!-- Loading/Error States -->
+                <div id="loading" class="text-center py-12 text-gray-600 text-lg hidden">
+                    <i class="fas fa-spinner animate-spin mr-2"></i> Loading...
+                </div>
+                <div id="error" class="text-center py-12 text-red-600 text-lg hidden"></div>
             </div>
         </main>
-        <footer class="site-footer">
-            <div class="footer-container">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="lazy">
+        <!-- Footer -->
+        <footer class="bg-white shadow-inner mt-auto">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+                    <div class="flex items-center gap-4">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" class="rounded-lg">
+                        <div class="text-center md:text-left">
+                            <span class="font-semibold text-gray-900">Jonathan Mwaniki</span>
+                            <p class="text-gray-600 text-sm">Professional web developer and graphic designer helping businesses thrive through technology, design, and innovation.</p>
+                        </div>
                     </div>
-                    <div class="footer-info">
-                        <span class="footer-name">Jonathan Mwaniki</span>
-                        <p class="footer-description">Professional web developer and graphic designer helping businesses thrive through technology, design, and innovation.</p>
-                    </div>
-                </div>
-                <div class="footer-legal">
-                    <p class="copyright">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
-                    <div class="legal-links">
-                        <a href="/privacy-policy" class="legal-link">Privacy Policy</a>
-                        <a href="/terms-of-service" class="legal-link">Terms of Service</a>
-                        <a href="/sitemap.xml" class="legal-link">Sitemap</a>
+                    <div class="flex flex-col md:flex-row md:ml-auto gap-4 md:gap-6 text-center">
+                        <p class="text-gray-600 text-sm">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
+                        <div class="flex gap-4">
+                            <a href="/privacy-policy" class="text-gray-600 hover:text-indigo-600 text-sm">Privacy Policy</a>
+                            <a href="/terms-of-service" class="text-gray-600 hover:text-indigo-600 text-sm">Terms of Service</a>
+                            <a href="/sitemap.xml" class="text-gray-600 hover:text-indigo-600 text-sm">Sitemap</a>
+                        </div>
                     </div>
                 </div>
             </div>
