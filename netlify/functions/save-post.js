@@ -1,66 +1,46 @@
-const { Octokit } = require("@octokit/rest");
-const TurndownService = require("turndown");
+const { Octokit } = require('@octokit/rest');
 
-exports.handler = async function (event, context) {
-    if (event.httpMethod !== "POST") {
-        return { statusCode: 405, body: JSON.stringify({ error: "Method Not Allowed" }) };
+exports.handler = async (event) => {
+    const headers = {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+    };
+
+    if (event.httpMethod === 'OPTIONS') {
+        return { statusCode: 200, headers, body: '' };
     }
 
-    const { token, title, slug, category, tags, image, date, content } = JSON.parse(event.body);
-    if (token !== Buffer.from(process.env.ADMIN_PASSWORD).toString("base64")) {
-        return { statusCode: 403, body: JSON.stringify({ error: "Unauthorized" }) };
-    }
-    if (!title || !slug || !category || !date || !content) {
-        return { statusCode: 400, body: JSON.stringify({ error: "Missing required fields" }) };
-    }
+    try {
+        const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+        const { title, slug, category, tags, image, date, content } = JSON.parse(event.body);
 
-    const turndown = new TurndownService({
-        headingStyle: "atx",
-        codeBlockStyle: "fenced",
-        bulletListMarker: "-",
-    });
-    const markdownContent = `---
-title: ${title}
-slug: ${slug}
-category: ${category}
-tags: ${JSON.stringify(tags.split(',').map(tag => tag.trim()))}
-image: ${image || ''}
+        if (!title || !slug || !content || !date) {
+            return { statusCode: 400, headers, body: JSON.stringify({ error: 'Missing required fields' }) };
+        }
+
+        const path = `content/blog/${slug}.md`;
+        const frontmatter = `---
+title: "${title.replace(/"/g, '\\"')}"
 date: ${date}
+category: ${category || 'Uncategorized'}
+tags: ${tags?.length ? tags.join(', ') : ''}
+image: ${image || ''}
 ---
-${turndown.turndown(content)}`;
+${content}`;
 
-    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-    const owner = "DKTJONATHAN";
-    const repo = "portfolio";
-    const path = `content/blog/${slug}.md`;
-    const branch = "main";
-
-    let sha;
-    try {
-        const { data } = await octokit.repos.getContent({ owner, repo, path, ref: branch });
-        sha = data.sha;
-    } catch (error) {
-        if (error.status !== 404) throw error;
-    }
-
-    try {
-        const response = await octokit.repos.createOrUpdateFileContents({
-            owner,
-            repo,
+        await octokit.repos.createOrUpdateFileContents({
+            owner: process.env.GITHUB_OWNER,
+            repo: process.env.GITHUB_REPO,
             path,
-            message: `${sha ? "Update" : "Create"} post: ${title}`,
-            content: Buffer.from(markdownContent).toString("base64"),
-            branch,
-            sha,
+            message: `Create post ${slug}`,
+            content: Buffer.from(frontmatter).toString('base64')
         });
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ message: "Post saved", sha: response.data.commit.sha }),
-        };
+
+        return { statusCode: 200, headers, body: JSON.stringify({ message: 'Post created' }) };
     } catch (error) {
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: `Failed to save post: ${error.message}` }),
-        };
+        console.error('Save post error:', error);
+        return { statusCode: error.status || 500, headers, body: JSON.stringify({ error: `Failed to save post: ${error.message}` }) };
     }
 };
