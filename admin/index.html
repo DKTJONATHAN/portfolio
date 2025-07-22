@@ -42,6 +42,22 @@
             max-height: 90%;
             overflow-y: auto;
         }
+        #search-container {
+            position: relative;
+            display: inline-block;
+        }
+        #search-input {
+            transition: width 0.3s ease-in-out;
+            width: 0;
+            padding: 0;
+            border: none;
+        }
+        #search-input.active {
+            width: 200px;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50 font-sans">
@@ -176,17 +192,22 @@
             <p id="error" class="text-red-500 text-center mb-4 hidden"></p>
             <p id="loading" class="text-blue-500 text-center mb-4 hidden">Loading...</p>
 
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Search Posts</label>
-                <input
-                    type="text"
-                    id="search-input"
-                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    placeholder="Search by title..."
-                >
-            </div>
             <div class="flex justify-between items-center mb-6">
                 <h2 id="posts-title" class="text-3xl font-bold text-gray-800">Posts</h2>
+                <div id="search-container">
+                    <button id="search-button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        Search
+                    </button>
+                    <input
+                        type="text"
+                        id="search-input"
+                        class="absolute top-0 right-0 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        placeholder="Search by title..."
+                    >
+                </div>
             </div>
             <div id="post-list" class="space-y-4"></div>
         </div>
@@ -257,6 +278,34 @@
             showNotification('Preview opened', 'info');
         });
 
+        // Search handler
+        const searchButton = document.getElementById('search-button');
+        const searchInput = document.getElementById('search-input');
+        searchButton.addEventListener('click', () => {
+            searchInput.classList.toggle('active');
+            if (searchInput.classList.contains('active')) {
+                searchInput.focus();
+            } else {
+                searchInput.value = '';
+                loadPosts('');
+            }
+        });
+        searchInput.addEventListener('input', () => {
+            loadPosts(searchInput.value);
+        });
+        searchInput.addEventListener('blur', () => {
+            if (!searchInput.value) {
+                searchInput.classList.remove('active');
+                loadPosts('');
+            }
+        });
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                loadPosts(searchInput.value);
+                searchInput.classList.remove('active');
+            }
+        });
+
         // Check session and load posts on login
         async function checkSession() {
             const password = localStorage.getItem('admin_password');
@@ -302,7 +351,8 @@
             document.getElementById('submit-post-button').textContent = 'Create Post';
             document.getElementById('cancel-edit-button').classList.add('hidden');
             document.getElementById('slug-error').classList.add('hidden');
-            document.getElementById('search-input').value = '';
+            searchInput.value = '';
+            searchInput.classList.remove('active');
             showNotification('Logged out successfully', 'info');
         });
 
@@ -647,7 +697,7 @@
                                 isManualSlugEdit = false;
                                 slugError.classList.add('hidden');
                             }
-                            loadPosts(document.getElementById('search-input').value);
+                            loadPosts(searchInput.value);
                         })
                         .catch(err => {
                             document.getElementById('error').textContent = 'Failed to delete post: ' + err.message;
@@ -663,12 +713,6 @@
                 loading.classList.add('hidden');
             }
         }
-
-        // Search handler
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            const query = e.target.value;
-            loadPosts(query);
-        });
 
         // Enable/disable submit button based on form input
         document.getElementById('create-post').addEventListener('input', async () => {
