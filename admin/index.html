@@ -1,14 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Decap CMS for Portfolio</title>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Panel - Jonathan Mwaniki">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/blogstyles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-  <script>
-    DecapCMS.init({ config: "/admin/config.yml" });
-  </script>
+<body class="blog-page">
+    <div id="mainContent">
+        <nav class="desktop-nav">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <div class="brand-logo">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="eager">
+                    </div>
+                    <span class="brand-name">Jonathan Mwaniki</span>
+                </div>
+                <div class="nav-links">
+                    <a href="/index.html" class="nav-link">Home</a>
+                    <a href="/index.html#services" class="nav-link">Services</a>
+                    <a href="/index.html#portfolio" class="nav-link">Portfolio</a>
+                    <a href="/blog.html" class="nav-link active">Blog</a>
+                    <a href="/index.html#about" class="nav-link">About</a>
+                    <a href="/index.html#contact" class="nav-link">Contact</a>
+                </div>
+            </div>
+        </nav>
+        <nav class="mobile-nav">
+            <div class="mobile-nav-container">
+                <a href="/index.html" class="mobile-nav-link" aria-label="Home"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="/index.html#services" class="mobile-nav-link" aria-label="Services"><i class="fas fa-cogs"></i><span>Services</span></a>
+                <a href="/index.html#portfolio" class="mobile-nav-link" aria-label="Portfolio"><i class="fas fa-briefcase"></i><span>Portfolio</span></a>
+                <a href="/blog.html" class="mobile-nav-link active" aria-label="Blog"><i class="fas fa-blog"></i><span>Blog</span></a>
+                <a href="/index.html#contact" class="mobile-nav-link" aria-label="Contact"><i class="fas fa-envelope"></i><span>Contact</span></a>
+            </div>
+        </nav>
+        <main class="blog-container">
+            <div class="section-header">
+                <h2 class="section-title">Admin Panel</h2>
+            </div>
+            <div id="admin-content">
+                <div id="login-form" style="display: none;">
+                    <form id="login">
+                        <label>Password: <input type="password" id="admin-password" required></label><br>
+                        <button type="submit" class="btn-primary">Login</button>
+                    </form>
+                </div>
+                <div id="admin-panel" style="display: none;">
+                    <h3>Create New Post</h3>
+                    <form id="create-post">
+                        <label>Title: <input type="text" name="title" required></label><br>
+                        <label>Category: <input type="text" name="category" required></label><br>
+                        <label>Tags (comma-separated): <input type="text" name="tags"></label><br>
+                        <label>Image URL (optional): <input type="text" name="image"></label><br>
+                        <label>Image Upload (optional): <input type="file" name="image-file" accept="image/*"></label><br>
+                        <label>Date: <input type="date" name="date" required></label><br>
+                        <label>Content:<br><textarea name="content" rows="10" required></textarea></label><br>
+                        <button type="submit" class="btn-primary">Create Post</button>
+                    </form>
+                    <h3>Edit/Delete Posts</h3>
+                    <div id="post-list" class="blog-posts"></div>
+                </div>
+                <div id="loading" class="loading-posts"><i class="fas fa-spinner"></i> Loading...</div>
+                <div id="error" class="error-message" style="display: none;"></div>
+            </div>
+        </main>
+        <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="lazy">
+                    </div>
+                    <div class="footer-info">
+                        <span class="footer-name">Jonathan Mwaniki</span>
+                        <p class="footer-description">Professional web developer and graphic designer helping businesses thrive through technology, design, and innovation.</p>
+                    </div>
+                </div>
+                <div class="footer-legal">
+                    <p class="copyright">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
+                    <div class="legal-links">
+                        <a href="/privacy-policy" class="legal-link">Privacy Policy</a>
+                        <a href="/terms-of-service" class="legal-link">Terms of Service</a>
+                        <a href="/sitemap.xml" class="legal-link">Sitemap</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="/static/scripts.js"></script>
 </body>
 </html>
