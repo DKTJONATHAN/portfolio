@@ -12,7 +12,7 @@
             position: fixed;
             top: 1rem;
             right: 1rem;
-            padding: 1rem;
+            padding: 0.75rem 1rem;
             border-radius: 0.5rem;
             color: white;
             z-index: 50;
@@ -23,15 +23,27 @@
         .notification.info { background-color: #3b82f6; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen font-sans">
-    <div id="notification-container" class="fixed top-4 right-4 z-50"></div>
+<body class="min-h-screen bg-gray-50 font-sans">
+    <div id="notification-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
     <div id="login-section" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-gray-100">
         <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md mx-4">
             <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Admin Login</h2>
             <form id="login-form">
-                <input type="password" id="password" class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Enter admin password" required>
-                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">Login</button>
+                <input
+                    type="password"
+                    id="password"
+                    class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="Enter admin password"
+                    required
+                >
+                <button
+                    type="submit"
+                    id="login-button"
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400"
+                >
+                    Login
+                </button>
             </form>
             <p id="login-error" class="text-red-500 mt-4 text-center hidden"></p>
         </div>
@@ -39,48 +51,109 @@
 
     <div id="admin-section" class="min-h-screen p-6 hidden">
         <div class="max-w-3xl mx-auto">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6">Create Post</h2>
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Create Post</h2>
+                <button
+                    id="logout-button"
+                    class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
+                >
+                    Logout
+                </button>
+            </div>
+
             <form id="create-post" class="bg-white p-6 rounded-xl shadow-lg mb-8">
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                    <input type="text" name="title" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+                    <input
+                        type="text"
+                        name="title"
+                        id="title-input"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        required
+                    >
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Slug</label>
-                    <input type="text" name="slug" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+                    <input
+                        type="text"
+                        name="slug"
+                        id="slug-input"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        required
+                    >
+                    <p id="slug-error" class="text-red-500 text-sm mt-1 hidden">This slug is already in use</p>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <input type="text" name="category" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <input
+                        type="text"
+                        name="category"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    >
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tags (comma-separated)</label>
-                    <input type="text" name="tags" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <input
+                        type="text"
+                        name="tags"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    >
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                    <input type="text" name="image" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <input
+                        type="text"
+                        name="image"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    >
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                    <input type="date" name="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+                    <input
+                        type="date"
+                        name="date"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        required
+                    >
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
-                    <textarea id="content-editor" name="content" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+                    <textarea
+                        id="content-editor"
+                        name="content"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        rows="10"
+                    ></textarea>
                 </div>
-                <button type="submit" class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">Create Post</button>
+                <div class="flex gap-4">
+                    <button
+                        type="submit"
+                        id="submit-post-button"
+                        class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400"
+                    >
+                        Create Post
+                    </button>
+                    <button
+                        type="button"
+                        id="cancel-edit-button"
+                        class="bg-gray-600 text-white py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors hidden"
+                    >
+                        Cancel Edit
+                    </button>
+                </div>
             </form>
-            <p id="error" class="text-red-500 text-center hidden"></p>
-            <p id="loading" class="text-blue-500 text-center hidden">Loading...</p>
+            <p id="error" class="text-red-500 text-center mb-4 hidden"></p>
+            <p id="loading" class="text-blue-500 text-center mb-4 hidden">Loading...</p>
 
-            <h2 class="text-3xl font-bold text-gray-800 mb-6">Posts</h2>
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="posts-title" class="text-3xl font-bold text-gray-800">Posts</h2>
+            </div>
             <div id="post-list" class="space-y-4"></div>
         </div>
     </div>
 
     <script>
-        // Notification function to replace alerts
+        // Notification system
         function showNotification(message, type = 'info') {
             const container = document.getElementById('notification-container');
             const notification = document.createElement('div');
@@ -93,19 +166,65 @@
             }, 3000);
         }
 
+        // Slug generation function
+        function slugify(text) {
+            return text
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .trim()
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
+        }
+
+        // Ensure TinyMCE is ready
+        function waitForTinyMCE(callback) {
+            if (tinymce.get('content-editor')) {
+                callback();
+            } else {
+                setTimeout(() => waitForTinyMCE(callback), 100);
+            }
+        }
+
+        // Initialize TinyMCE
         tinymce.init({
             selector: '#content-editor',
             plugins: 'lists link image',
             toolbar: 'undo redo | bold italic | bullist numlist | link image',
             menubar: false,
-            height: 300
+            height: 300,
+            setup: (editor) => {
+                editor.on('init', () => {
+                    console.log('TinyMCE initialized for content-editor');
+                });
+            }
         });
 
+        // Logout functionality
+        document.getElementById('logout-button').addEventListener('click', () => {
+            document.getElementById('admin-section').classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('error').classList.add('hidden');
+            document.getElementById('create-post').reset();
+            if (tinymce.get('content-editor')) {
+                tinymce.get('content-editor').setContent('');
+            }
+            delete document.getElementById('create-post').dataset.editSlug;
+            document.getElementById('submit-post-button').textContent = 'Create Post';
+            document.getElementById('cancel-edit-button').classList.add('hidden');
+            document.getElementById('slug-error').classList.add('hidden');
+            showNotification('Logged out successfully', 'info');
+        });
+
+        // Login handler
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const password = document.getElementById('password').value;
             const error = document.getElementById('login-error');
+            const loginButton = document.getElementById('login-button');
             error.classList.add('hidden');
+            loginButton.textContent = 'Logging in...';
+            loginButton.disabled = true;
 
             try {
                 const response = await fetch('/api/login', {
@@ -128,65 +247,151 @@
                 error.textContent = 'Failed to login: ' + err.message;
                 error.classList.remove('hidden');
                 showNotification('Login error: ' + err.message, 'error');
+            } finally {
+                loginButton.textContent = 'Login';
+                loginButton.disabled = false;
             }
         });
 
+        // Slug generation and validation
+        let existingSlugs = [];
+        async function fetchExistingSlugs() {
+            try {
+                const response = await fetch('/api/list-posts?t=' + Date.now());
+                if (!response.ok) return [];
+                const posts = await response.json();
+                return posts.map(post => post.slug);
+            } catch (err) {
+                showNotification('Error fetching slugs for validation', 'error');
+                return [];
+            }
+        }
+
+        const titleInput = document.getElementById('title-input');
+        const slugInput = document.getElementById('slug-input');
+        const slugError = document.getElementById('slug-error');
+        let isManualSlugEdit = false;
+
+        titleInput.addEventListener('input', async () => {
+            if (!isManualSlugEdit && titleInput.value) {
+                const generatedSlug = slugify(titleInput.value);
+                slugInput.value = generatedSlug;
+                existingSlugs = await fetchExistingSlugs();
+                const isEditing = document.getElementById('create-post').dataset.editSlug;
+                if (existingSlugs.includes(generatedSlug) && generatedSlug !== isEditing) {
+                    slugError.textContent = 'This slug is already in use';
+                    slugError.classList.remove('hidden');
+                } else {
+                    slugError.classList.add('hidden');
+                }
+            }
+        });
+
+        slugInput.addEventListener('input', async () => {
+            isManualSlugEdit = true;
+            const slug = slugify(slugInput.value);
+            slugInput.value = slug;
+            existingSlugs = await fetchExistingSlugs();
+            const isEditing = document.getElementById('create-post').dataset.editSlug;
+            if (existingSlugs.includes(slug) && slug !== isEditing) {
+                slugError.textContent = 'This slug is already in use';
+                slugError.classList.remove('hidden');
+            } else {
+                slugError.classList.add('hidden');
+            }
+        });
+
+        // Reset manual edit flag on form reset
+        document.getElementById('create-post').addEventListener('reset', () => {
+            isManualSlugEdit = false;
+            slugError.classList.add('hidden');
+        });
+
+        // Create/Update post handler
         document.getElementById('create-post').addEventListener('submit', async (e) => {
             e.preventDefault();
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
-            loading.classList.remove('hidden');
-            error.classList.add('hidden');
+            const submitButton = document.getElementById('submit-post-button');
+            if (slugError.classList.contains('hidden')) {
+                loading.classList.remove('hidden');
+                error.classList.add('hidden');
+                submitButton.disabled = true;
 
-            const formData = new FormData(e.target);
-            const postData = {
-                title: formData.get('title'),
-                slug: formData.get('slug'),
-                category: formData.get('category'),
-                tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
-                image: formData.get('image') || '',
-                date: formData.get('date'),
-                content: tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : formData.get('content')
-            };
+                const formData = new FormData(e.target);
+                const postData = {
+                    title: formData.get('title'),
+                    slug: formData.get('slug'),
+                    category: formData.get('category'),
+                    tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
+                    image: formData.get('image') || '',
+                    date: formData.get('date'),
+                    content: tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : formData.get('content')
+                };
 
-            try {
-                const endpoint = e.target.dataset.editSlug ? '/api/update-post' : '/api/save-post';
-                showNotification(`Sending ${e.target.dataset.editSlug ? 'update' : 'create'} post request`, 'info');
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(postData).toString()
-                });
-                let responseData;
                 try {
-                    responseData = await response.json();
-                    showNotification(`Post ${e.target.dataset.editSlug ? 'updated' : 'created'}: Status ${response.status}`, 'success');
-                } catch (jsonError) {
-                    showNotification('Invalid server response', 'error');
-                    throw new Error('Invalid JSON response from server');
+                    const endpoint = e.target.dataset.editSlug ? '/api/update-post' : '/api/save-post';
+                    showNotification(`Sending ${e.target.dataset.editSlug ? 'update' : 'create'} post request`, 'info');
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams(postData).toString()
+                    });
+                    let responseData;
+                    try {
+                        responseData = await response.json();
+                        showNotification(`Post ${e.target.dataset.editSlug ? 'updated' : 'created'}: Status ${response.status}`, 'success');
+                    } catch (jsonError) {
+                        showNotification('Invalid server response', 'error');
+                        throw new Error('Invalid JSON response from server');
+                    }
+                    if (!response.ok) {
+                        throw new Error(responseData.error || `Operation failed: ${response.status}`);
+                    }
+                    e.target.reset();
+                    if (tinymce.get('content-editor')) {
+                        tinymce.get('content-editor').setContent('');
+                    }
+                    submitButton.textContent = 'Create Post';
+                    document.getElementById('cancel-edit-button').classList.add('hidden');
+                    delete e.target.dataset.editSlug;
+                    isManualSlugEdit = false;
+                    slugError.classList.add('hidden');
+                    showNotification('Post saved successfully', 'success');
+                    loadPosts();
+                } catch (err) {
+                    error.textContent = `Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`;
+                    error.classList.remove('hidden');
+                    showNotification(`Error: ${err.message}`, 'error');
+                } finally {
+                    loading.classList.add('hidden');
+                    submitButton.disabled = !postData.title || !postData.slug || !postData.date || !slugError.classList.contains('hidden');
                 }
-                if (!response.ok) {
-                    throw new Error(responseData.error || `Operation failed: ${response.status}`);
-                }
-                e.target.reset();
-                if (tinymce.get('content-editor')) tinymce.get('content-editor').setContent('');
-                e.target.querySelector('button[type="submit"]').textContent = 'Create Post';
-                delete e.target.dataset.editSlug;
-                showNotification('Post saved successfully', 'success');
-                loadPosts();
-            } catch (err) {
-                error.textContent = `Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`;
-                error.classList.remove('hidden');
-                showNotification(`Error: ${err.message}`, 'error');
-            } finally {
-                loading.classList.add('hidden');
+            } else {
+                showNotification('Cannot save: Slug is already in use', 'error');
             }
         });
 
+        // Cancel edit handler
+        document.getElementById('cancel-edit-button').addEventListener('click', () => {
+            document.getElementById('create-post').reset();
+            if (tinymce.get('content-editor')) {
+                tinymce.get('content-editor').setContent('');
+            }
+            document.getElementById('submit-post-button').textContent = 'Create Post';
+            document.getElementById('cancel-edit-button').classList.add('hidden');
+            delete document.getElementById('create-post').dataset.editSlug;
+            isManualSlugEdit = false;
+            slugError.classList.add('hidden');
+            showNotification('Edit cancelled', 'info');
+        });
+
+        // Load posts
         async function loadPosts() {
             const postList = document.getElementById('post-list');
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
+            const postsTitle = document.getElementById('posts-title');
             postList.innerHTML = '';
             loading.classList.remove('hidden');
             error.classList.add('hidden');
@@ -203,26 +408,49 @@
                 try {
                     posts = await response.json();
                     showNotification(`Loaded ${posts.length} posts`, 'success');
+                    postsTitle.textContent = `Posts (${posts.length})`;
                 } catch (jsonError) {
                     showNotification('Invalid post data', 'error');
                     throw new Error('Invalid JSON response from server');
                 }
                 if (posts.error) throw new Error(posts.error);
-                posts.forEach(post => {
-                    const postItem = document.createElement('div');
-                    postItem.className = 'bg-white p-4 rounded-lg shadow-md flex justify-between items-center hover:shadow-xl transition-shadow';
-                    postItem.innerHTML = `
-                        <div>
-                            <h4 class="text-lg font-medium text-gray-900">${post.title}</h4>
-                            <p class="text-sm text-gray-500">${post.date} | ${post.category}</p>
-                        </div>
-                        <div class="space-x-2">
-                            <button class="edit-post bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors" data-slug="${post.slug}">Edit</button>
-                            <button class="delete-post bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors" data-slug="${post.slug}">Delete</button>
+                if (posts.length === 0) {
+                    postList.innerHTML = `
+                        <div class="bg-white p-6 rounded-lg shadow-md text-center text-gray-500">
+                            No posts yet. Create your first post above!
                         </div>
                     `;
-                    postList.appendChild(postItem);
-                });
+                } else {
+                    posts.forEach(post => {
+                        const postItem = document.createElement('div');
+                        postItem.className = `bg-white p-4 rounded-lg shadow-md flex justify-between items-center hover:shadow-xl transition-shadow ${
+                            document.getElementById('create-post').dataset.editSlug === post.slug ? 'ring-2 ring-blue-500' : ''
+                        }`;
+                        postItem.innerHTML = `
+                            <div class="flex-1">
+                                <h4 class="text-lg font-medium text-gray-900">${post.title}</h4>
+                                <p class="text-sm text-gray-500">${post.date} | ${post.category}</p>
+                                <p class="text-xs text-gray-400 mt-1">Tags: ${post.tags || ''}</p>
+                                ${
+                                    document.getElementById('create-post').dataset.editSlug === post.slug
+                                        ? '<p class="text-xs text-blue-600 mt-1 font-medium">Currently editing</p>'
+                                        : ''
+                                }
+                            </div>
+                            <div class="space-x-2 flex-shrink-0">
+                                <button class="edit-post bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400" data-slug="${post.slug}" ${
+                                    document.getElementById('loading').classList.contains('hidden') ? '' : 'disabled'
+                                }>${
+                                    document.getElementById('create-post').dataset.editSlug === post.slug ? 'Editing' : 'Edit'
+                                }</button>
+                                <button class="delete-post bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors disabled:bg-blue-400" data-slug="${post.slug}" ${
+                                    document.getElementById('loading').classList.contains('hidden') ? '' : 'disabled'
+                                }>Delete</button>
+                            </div>
+                        `;
+                        postList.appendChild(postItem);
+                    });
+                }
 
                 document.querySelectorAll('.edit-post').forEach(button => {
                     button.addEventListener('click', async () => {
@@ -240,24 +468,32 @@
                             }
                             const post = posts.find(p => p.slug === slug);
                             if (post) {
-                                document.querySelector('input[name="title"]').value = post.title;
-                                document.querySelector('input[name="slug"]').value = post.slug;
-                                document.querySelector('input[name="category"]').value = post.category;
-                                document.querySelector('input[name="tags"]').value = post.tags.join(', ');
+                                document.querySelector('input[name="title"]').value = post.title || '';
+                                document.querySelector('input[name="slug"]').value = post.slug || '';
+                                document.querySelector('input[name="category"]').value = post.category || '';
+                                document.querySelector('input[name="tags"]').value = post.tags ? post.tags.join(', ') : '';
                                 document.querySelector('input[name="image"]').value = post.image || '';
-                                document.querySelector('input[name="date"]').value = post.date;
-                                if (tinymce.get('content-editor')) {
-                                    tinymce.get('content-editor').setContent(post.content || '');
-                                } else {
-                                    document.getElementById('content-editor').value = post.content || '';
-                                }
-                                document.querySelector('#create-post button[type="submit"]').textContent = 'Update Post';
-                                document.querySelector('#create-post').dataset.editSlug = slug;
+                                document.querySelector('input[name="date"]').value = post.date || '';
+                                waitForTinyMCE(() => {
+                                    if (tinymce.get('content-editor')) {
+                                        tinymce.get('content-editor').setContent(post.content || '');
+                                        console.log('Content set in TinyMCE:', post.content || 'Empty');
+                                    } else {
+                                        document.getElementById('content-editor').value = post.content || '';
+                                        showNotification('TinyMCE not ready, using fallback', 'error');
+                                    }
+                                });
+                                document.getElementById('submit-post-button').textContent = 'Update Post';
+                                document.getElementById('cancel-edit-button').classList.remove('hidden');
+                                document.getElementById('create-post').dataset.editSlug = slug;
+                                isManualSlugEdit = true;
+                                slugError.classList.add('hidden');
                                 showNotification('Post loaded for editing', 'success');
+                                document.querySelector('h2').scrollIntoView({ behavior: 'smooth' });
                             }
                         } catch (err) {
-                            error.textContent = 'Failed to load post: ' + err.message;
-                            error.classList.remove('hidden');
+                            document.getElementById('error').textContent = 'Failed to load post: ' + err.message;
+                            document.getElementById('error').classList.remove('hidden');
                             showNotification(`Error loading post: ${err.message}`, 'error');
                         }
                     });
@@ -285,22 +521,54 @@
                             if (!response.ok) {
                                 throw new Error(responseData.error || 'Failed to delete post');
                             }
+                            if (document.getElementById('create-post').dataset.editSlug === slug) {
+                                document.getElementById('create-post').reset();
+                                if (tinymce.get('content-editor')) {
+                                    tinymce.get('content-editor').setContent('');
+                                }
+                                document.getElementById('submit-post-button').textContent = 'Create Post';
+                                document.getElementById('cancel-edit-button').classList.add('hidden');
+                                delete document.getElementById('create-post').dataset.editSlug;
+                                isManualSlugEdit = false;
+                                slugError.classList.add('hidden');
+                            }
                             loadPosts();
                         } catch (err) {
-                            error.textContent = 'Failed to delete post: ' + err.message;
-                            error.classList.remove('hidden');
+                            document.getElementById('error').textContent = 'Failed to delete post: ' + err.message;
+                            document.getElementById('error').classList.remove('hidden');
                             showNotification(`Error deleting post: ${err.message}`, 'error');
                         }
                     });
                 });
             } catch (err) {
-                error.textContent = `Failed to fetch posts: ${err.message}`;
-                error.classList.remove('hidden');
+                document.getElementById('error').textContent = `Failed to fetch posts: ${err.message}`;
+                document.getElementById('error').classList.remove('hidden');
                 showNotification(`Error fetching posts: ${err.message}`, 'error');
             } finally {
                 loading.classList.add('hidden');
             }
         }
+
+        // Enable/disable submit button based on form input
+        document.getElementById('create-post').addEventListener('input', async () => {
+            const formData = new FormData(document.getElementById('create-post'));
+            const postData = {
+                title: formData.get('title'),
+                slug: formData.get('slug'),
+                date: formData.get('date')
+            };
+            const isEditing = document.getElementById('create-post').dataset.editSlug;
+            if (!isEditing && postData.slug) {
+                existingSlugs = await fetchExistingSlugs();
+                if (existingSlugs.includes(postData.slug) && postData.slug !== isEditing) {
+                    slugError.textContent = 'This slug is already in use';
+                    slugError.classList.remove('hidden');
+                } else {
+                    slugError.classList.add('hidden');
+                }
+            }
+            document.getElementById('submit-post-button').disabled = !postData.title || !postData.slug || !postData.date || !slugError.classList.contains('hidden');
+        });
     </script>
 </body>
 </html>
