@@ -96,7 +96,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Content</label>
-                            <textarea id="content-editor" name="content" required class="mt-1 w-full"></textarea>
+                            <textarea id="content-editor" name="content" required class="mt-1 w-full hidden"></textarea>
                         </div>
                         <div class="flex space-x-4">
                             <button type="button" id="preview-post" class="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition">Preview</button>
@@ -240,7 +240,7 @@
                 tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag),
                 image: formData.get('image'),
                 date: formData.get('date'),
-                content: tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : formData.get('content')
+                content: tinymce.get('content-editor') ? tinymce.get('content-editor').getContent() : formData.get('content')
             };
 
             try {
@@ -269,7 +269,7 @@
 
         // Preview Post
         document.getElementById('preview-post').addEventListener('click', () => {
-            const content = tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : document.getElementById('content-editor').value;
+            const content = tinymce.get('content-editor') ? tinymce.get('content-editor').getContent() : document.getElementById('content-editor').value;
             const previewContent = document.getElementById('preview-content');
             previewContent.innerHTML = marked.parse(content);
             previewContent.classList.remove('hidden');
@@ -320,8 +320,6 @@
                                 document.querySelector('input[name="date"]').value = post.date;
                                 if (tinymce.get('content-editor')) {
                                     tinymce.get('content-editor').setContent(post.content || '');
-                                } else {
-                                    document.getElementById('content-editor').value = post.content || '';
                                 }
                                 document.querySelector('#create-post button[type="submit"]').textContent = 'Update Post';
                                 document.querySelector('#create-post').dataset.editSlug = slug;
