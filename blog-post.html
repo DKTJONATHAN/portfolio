@@ -4,29 +4,145 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Blog Post - Jonathan Mwaniki">
-    <title>Blog Post</title>
-    <link rel="stylesheet" href="blogstyles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <title>Blog Post | Jonathan Mwaniki</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        /* Dynamic content loading states */
-        .loading-posts {
+        :root {
+            --primary-color: #1a73e8;
+            --text-color: #333;
+            --light-text: #666;
+            --bg-color: #f5f5f5;
+            --white: #fff;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--white);
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        .mobile-nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .mobile-nav-link.active {
+            color: var(--primary-color);
+        }
+        .mobile-nav-link i {
+            margin-bottom: 5px;
+        }
+        .desktop-nav {
+            display: none;
+            background: var(--white);
+            padding: 15px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-brand img {
+            width: 40px;
+            height: 40px;
+        }
+        .nav-links a {
+            margin-left: 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+        .blog-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        .section-header {
             text-align: center;
-            padding: 60px 0;
+            margin-bottom: 30px;
+        }
+        .section-title {
+            font-size: 2rem;
+        }
+        .blog-post {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .post-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        .post-meta {
+            display: flex;
+            gap: 15px;
             color: var(--light-text);
-            font-size: 1.2rem;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .post-image img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .post-content {
+            font-size: 1rem;
+        }
+        .post-content h1, .post-content h2, .post-content h3 {
+            margin: 20px 0 10px;
+        }
+        .post-content p {
+            margin-bottom: 15px;
+        }
+        .post-content a {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+        .loading-posts, .error-message {
+            text-align: center;
+            padding: 40px 0;
+            font-size: 1.1rem;
+            color: var(--light-text);
         }
         .loading-posts i {
-            margin-right: 10px;
             color: var(--primary-color);
             animation: spin 1s linear infinite;
         }
         .error-message {
-            text-align: center;
-            padding: 60px 0;
             color: #d9534f;
-            font-size: 1.1rem;
         }
         .error-message a {
             color: var(--primary-color);
@@ -36,31 +152,65 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .site-footer {
+            background: var(--white);
+            padding: 20px 15px;
+            margin-top: 40px;
+            border-top: 1px solid #ddd;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .footer-brand {
+            margin-bottom: 20px;
+        }
+        .footer-logo img {
+            width: 40px;
+            height: 40px;
+        }
+        .footer-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .footer-description {
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+        .footer-legal {
+            margin-top: 20px;
+        }
+        .legal-links a {
+            margin: 0 10px;
+            color: var(--light-text);
+            text-decoration: none;
+        }
+        @media (min-width: 768px) {
+            .mobile-nav { display: none; }
+            .desktop-nav { display: block; }
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
-<body class="blog-page">
+<body>
     <div id="mainContent">
         <nav class="mobile-nav">
             <div class="mobile-nav-container">
                 <a href="/index.html" class="mobile-nav-link" aria-label="Home">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
+                    <i class="fas fa-home"></i><span>Home</span>
                 </a>
                 <a href="/index.html#services" class="mobile-nav-link" aria-label="Services">
-                    <i class="fas fa-cogs"></i>
-                    <span>Services</span>
+                    <i class="fas fa-cogs"></i><span>Services</span>
                 </a>
                 <a href="/index.html#portfolio" class="mobile-nav-link" aria-label="Portfolio">
-                    <i class="fas fa-briefcase"></i>
-                    <span>Portfolio</span>
+                    <i class="fas fa-briefcase"></i><span>Portfolio</span>
                 </a>
                 <a href="/blog.html" class="mobile-nav-link active" aria-label="Blog">
-                    <i class="fas fa-blog"></i>
-                    <span>Blog</span>
+                    <i class="fas fa-blog"></i><span>Blog</span>
                 </a>
                 <a href="/index.html#contact" class="mobile-nav-link" aria-label="Contact">
-                    <i class="fas fa-envelope"></i>
-                    <span>Contact</span>
+                    <i class="fas fa-envelope"></i><span>Contact</span>
                 </a>
             </div>
         </nav>
@@ -68,14 +218,14 @@
             <div class="nav-container">
                 <div class="nav-brand">
                     <div class="brand-logo">
-                        <img src="images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="eager">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" loading="eager">
                     </div>
                     <span class="brand-name">Jonathan Mwaniki</span>
                 </div>
                 <div class="nav-links">
                     <a href="/index.html" class="nav-link">Home</a>
-                    <a href="index.html#services" class="nav-link">Services</a>
-                    <a href="index.html#portfolio" class="nav-link">Portfolio</a>
+                    <a href="/index.html#services" class="nav-link">Services</a>
+                    <a href="/index.html#portfolio" class="nav-link">Portfolio</a>
                     <a href="/blog.html" class="nav-link active">Blog</a>
                     <a href="/index.html#about" class="nav-link">About</a>
                     <a href="/index.html#contact" class="nav-link">Contact</a>
@@ -96,7 +246,7 @@
             <div class="footer-container">
                 <div class="footer-brand">
                     <div class="footer-logo">
-                        <img src="images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="lazy">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" loading="lazy">
                     </div>
                     <div class="footer-info">
                         <span class="footer-name">Jonathan Mwaniki</span>
@@ -115,59 +265,54 @@
         </footer>
     </div>
     <script>
-    document.addEventListener('DOMContentLoaded', async function() {
-        const postContent = document.getElementById('post-content');
-        const urlParams = new URLSearchParams(window.location.search);
-        const slug = urlParams.get('slug');
+        document.addEventListener('DOMContentLoaded', async () => {
+            const postContent = document.getElementById('post-content');
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
 
-        if (!slug) {
-            postContent.innerHTML = '<div class="error-message">No post specified. <a href="/blog.html">Back to Blog</a></div>';
-            return;
-        }
+            if (!slug) {
+                postContent.innerHTML = '<div class="error-message">No post specified. <a href="/blog.html">Back to Blog</a></div>';
+                return;
+            }
 
-        try {
-            const response = await fetch(`/content/blog/${slug}.md`);
-            if (!response.ok) throw new Error('Post not found');
-            const markdown = await response.text();
+            try {
+                const response = await fetch(`/api/list-posts`);
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status} ${response.statusText}`);
+                }
+                const posts = await response.json();
+                const post = posts.find(p => p.slug === slug);
 
-            // Parse frontmatter and content
-            const frontmatterRegex = /^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/;
-            const match = markdown.match(frontmatterRegex);
-            if (!match) throw new Error('Invalid post format');
+                if (!post) {
+                    throw new Error('Post not found');
+                }
 
-            const frontmatter = match[1].split('\n').reduce((acc, line) => {
-                const [key, value] = line.split(': ').map(s => s.trim());
-                if (key && value) acc[key] = value.replace(/^["']|["']$/g, '');
-                return acc;
-            }, {});
-            const content = match[2];
-
-            // Update page
-            document.title = frontmatter.title || 'Blog Post';
-            postContent.innerHTML = `
-                <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
-                    <h3 class="post-title" itemprop="headline">${frontmatter.title || 'Untitled'}</h3>
-                    <div class="post-meta">
-                        <time datetime="${frontmatter.date}" itemprop="datePublished">${new Date(frontmatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
-                        ${frontmatter.tags && frontmatter.tags.split(',').length ? `
-                        <span class="post-category" itemprop="articleSection">${frontmatter.tags.split(',')[0]}</span>
-                        ` : ''}
+                document.title = `${post.title || 'Blog Post'} | Jonathan Mwaniki`;
+                postContent.innerHTML = `
+                    <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
+                        <h3 class="post-title" itemprop="headline">${post.title || 'Untitled'}</h3>
+                        <div class="post-meta">
+                            <time datetime="${post.date}" itemprop="datePublished">${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+                            ${post.category ? `<span itemprop="articleSection">${post.category}</span>` : ''}
+                        </div>
+                        ${post.image ? `
+                        <div class="post-image">
+                            <img src="${post.image}" alt="${post.title || 'Blog Post'}" loading="lazy" itemprop="image" onerror="this.src='/images/default-blog.jpg'">
+                        </div>` : ''}
+                        <div class="post-content" itemprop="articleBody">${marked.parse(post.content || '')}</div>
+                        <meta itemprop="author" content="Jonathan Mwaniki">
+                    </article>
+                `;
+            } catch (error) {
+                console.error('Error loading post:', error);
+                postContent.innerHTML = `
+                    <div class="error-message">
+                        Failed to load post. <a href="/blog.html">Back to Blog</a>
+                        <p><small>${error.message}</small></p>
                     </div>
-                    ${frontmatter.image ? `<div class="post-image"><img src="${frontmatter.image}" alt="${frontmatter.title}" loading="lazy" itemprop="image"></div>` : ''}
-                    <div class="post-content" itemprop="articleBody">${marked.parse(content)}</div>
-                    <meta itemprop="author" content="Jonathan Mwaniki">
-                </article>
-            `;
-        } catch (error) {
-            console.error('Error loading post:', error);
-            postContent.innerHTML = `
-                <div class="error-message">
-                    Couldn't load post. <a href="/blog.html">Back to Blog</a>
-                    <p><small>${error.message}</small></p>
-                </div>
-            `;
-        }
-    });
+                `;
+            }
+        });
     </script>
 </body>
 </html>
