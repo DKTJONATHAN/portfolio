@@ -1,46 +1,9 @@
 [build]
-  command = "" # No build command for plain HTML
-  publish = "." # Root directory for static files
-  functions = "netlify/functions" # Functions directory
-
-[build.environment]
-  GITHUB_TOKEN = "{{ env.GITHUB_TOKEN }}"
-  GITHUB_REPO = "DKTJONATHAN/portfolio"
-  GITHUB_OWNER = "{{ env.GITHUB_OWNER }}"
-  ADMIN_PASSWORD = "{{ env.ADMIN_PASSWORD }}"
-  JWT_SECRET = "{{ env.JWT_SECRET }}"
+  command = "npm run build" # Adjust for your build process
+  publish = "dist" # Adjust to your output directory
+  functions = "functions"
 
 [[redirects]]
-  from = "/api/list-posts"
-  to = "/.netlify/functions/list-posts"
-  status = 200
-
-[[redirects]]
-  from = "/api/storesubmission"
-  to = "/.netlify/functions/storesubmission"
-  status = 200
-
-[[redirects]]
-  from = "/api/blog-posts"
-  to = "/.netlify/functions/blog-posts"
-  status = 200
-
-[[redirects]]
-  from = "/api/upload-image"
-  to = "/.netlify/functions/upload-image"
-  status = 200
-
-[[redirects]]
-  from = "/api/login"
-  to = "/.netlify/functions/login"
-  status = 200
-
-[[redirects]]
-  from = "/admin"
-  to = "/admin/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/admin/*"
-  to = "/admin/index.html"
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
   status = 200
