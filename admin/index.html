@@ -81,8 +81,8 @@
             try {
                 const response = await fetch('/api/login', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password })
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ password }).toString()
                 });
                 const data = await response.json();
                 if (response.ok) {
@@ -120,19 +120,19 @@
 
             try {
                 const endpoint = e.target.dataset.editSlug ? '/api/update-post' : '/api/save-post';
-                alert(`Create Post: Sending form data to ${endpoint}`); // Mobile debug
+                alert(`Create/Update Post: Sending form data to ${endpoint}`); // Mobile debug
                 const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams(postData).toString()
                 });
-                alert(`Create Post: Response status ${response.status}`); // Mobile debug
+                alert(`Create/Update Post: Response status ${response.status}`); // Mobile debug
                 let responseData;
                 try {
                     responseData = await response.json();
-                    alert(`Create Post: Response data ${JSON.stringify(responseData)}`); // Mobile debug
+                    alert(`Create/Update Post: Response data ${JSON.stringify(responseData)}`); // Mobile debug
                 } catch (jsonError) {
-                    alert(`Create Post: JSON error - ${jsonError.message}`); // Mobile debug
+                    alert(`Create/Update Post: JSON error - ${jsonError.message}`); // Mobile debug
                     throw new Error(`Invalid JSON response from ${endpoint}`);
                 }
                 if (!response.ok) {
@@ -144,7 +144,7 @@
                 delete e.target.dataset.editSlug;
                 loadPosts();
             } catch (err) {
-                alert(`Create Post: Error - ${err.message}`); // Mobile debug
+                alert(`Create/Update Post: Error - ${err.message}`); // Mobile debug
                 error.textContent = `Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`;
                 error.classList.remove('hidden');
             } finally {
@@ -197,12 +197,16 @@
                 document.querySelectorAll('.edit-post').forEach(button => {
                     button.addEventListener('click', async () => {
                         const slug = button.dataset.slug;
+                        alert(`Edit Post: Fetching post ${slug}`); // Mobile debug
                         try {
                             const response = await fetch('/api/list-posts?t=' + Date.now());
+                            alert(`Edit Post: Response status ${response.status}`); // Mobile debug
                             let posts;
                             try {
                                 posts = await response.json();
+                                alert(`Edit Post: Received ${posts.length} posts`); // Mobile debug
                             } catch (jsonError) {
+                                alert(`Edit Post: JSON error - ${jsonError.message}`); // Mobile debug
                                 throw new Error('Invalid JSON response from server');
                             }
                             const post = posts.find(p => p.slug === slug);
@@ -222,6 +226,7 @@
                                 document.querySelector('#create-post').dataset.editSlug = slug;
                             }
                         } catch (err) {
+                            alert(`Edit Post: Error - ${err.message}`); // Mobile debug
                             error.textContent = 'Failed to load post: ' + err.message;
                             error.classList.remove('hidden');
                         }
@@ -232,16 +237,20 @@
                     button.addEventListener('click', async () => {
                         if (!confirm('Are you sure you want to delete this post?')) return;
                         const slug = button.dataset.slug;
+                        alert(`Delete Post: Sending delete for ${slug}`); // Mobile debug
                         try {
                             const response = await fetch('/api/delete-post', {
                                 method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ slug })
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: new URLSearchParams({ slug }).toString()
                             });
+                            alert(`Delete Post: Response status ${response.status}`); // Mobile debug
                             let responseData;
                             try {
                                 responseData = await response.json();
+                                alert(`Delete Post: Response data ${JSON.stringify(responseData)}`); // Mobile debug
                             } catch (jsonError) {
+                                alert(`Delete Post: JSON error - ${jsonError.message}`); // Mobile debug
                                 throw new Error('Invalid JSON response from server');
                             }
                             if (!response.ok) {
@@ -249,6 +258,7 @@
                             }
                             loadPosts();
                         } catch (err) {
+                            alert(`Delete Post: Error - ${err.message}`); // Mobile debug
                             error.textContent = 'Failed to delete post: ' + err.message;
                             error.classList.remove('hidden');
                         }
