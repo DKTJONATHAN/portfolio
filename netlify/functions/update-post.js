@@ -103,4 +103,4 @@ ${content}`;
         console.error('update-post: Error:', error.message, error.stack);
         return { statusCode: error.status || 500, headers, body: JSON.stringify({ error: `Failed to update post: ${error.message}` }) };
     }
-};
+}; 
