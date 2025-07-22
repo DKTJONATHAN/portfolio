@@ -124,138 +124,105 @@
                 </div>
             </div>
         </footer>
-    </div>
-    <script>
-    document.addEventListener('DOMContentLoaded', async function() {
-        const blogList = document.getElementById('blog-list');
-        blogList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i> Loading blog posts...</div>';
+    </div><script>
+document.addEventListener('DOMContentLoaded', async function() {
+    const blogList = document.getElementById('blog-list');
+    blogList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i> Loading blog posts...</div>';
 
-        try {
-            // 1. Fetch post list
-            const fileListResponse = await fetch('/api/list-posts');
-            if (!fileListResponse.ok) throw new Error('Failed to fetch post list');
-            
-            // 2. Handle both array of strings and array of objects
-            const blogFiles = await fileListResponse.json();
-            const filenames = blogFiles.map(file => {
-                // If API returns objects with .name or .path properties
-                if (typeof file === 'object') {
-                    return file.name || file.path || file.filename;
-                }
-                // If API returns strings directly
-                return file;
-            }).filter(Boolean); // Remove any null/undefined values
+    try {
+        // 1. Fetch post list
+        const response = await fetch('/api/list-posts');
+        if (!response.ok) throw new Error(`Server returned ${response.status}`);
+        
+        // 2. Get filenames from API response
+        const data = await response.json();
+        const filenames = data.map(item => {
+            if (typeof item === 'string') return item; // Already a filename
+            return item.name || item.path || item.filename; // Extract from object
+        }).filter(Boolean); // Remove empty values
 
-            console.log("Files to process:", filenames); // Debug log
+        console.log("Files found:", filenames); // Debug log
 
-            if (!filenames || filenames.length === 0) {
-                blogList.innerHTML = '<div class="no-posts">No blog posts yet. Check back soon!</div>';
-                return;
-            }
+        if (filenames.length === 0) {
+            blogList.innerHTML = '<div class="no-posts">No blog posts yet. Check back soon!</div>';
+            return;
+        }
 
-            const posts = [];
+        // 3. Process each file
+        const posts = [];
+        for (const filename of filenames) {
+            try {
+                if (!filename.toLowerCase().endsWith('.md')) continue;
+                
+                const fileResponse = await fetch(`/content/blog/${filename}`);
+                if (!fileResponse.ok) continue;
+                
+                const markdown = await fileResponse.text();
+                const frontmatterMatch = markdown.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
+                if (!frontmatterMatch) continue;
 
-            for (const filename of filenames) {
-                try {
-                    // Skip non-Markdown files
-                    if (!filename.toLowerCase().endsWith('.md')) {
-                        console.log('Skipping non-MD file:', filename);
-                        continue;
+                const frontmatter = {};
+                frontmatterMatch[1].split('\n').forEach(line => {
+                    const [key, ...value] = line.split(':');
+                    if (key && value.length) {
+                        frontmatter[key.trim()] = value.join(':').trim().replace(/^["']|["']$/g, '');
                     }
-
-                    const response = await fetch(`/content/blog/${filename}`);
-                    if (!response.ok) {
-                        console.error(`Failed to fetch ${filename}: ${response.status}`);
-                        continue;
-                    }
-
-                    const markdown = await response.text();
-                    const frontmatterRegex = /^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/;
-                    const match = markdown.match(frontmatterRegex);
-                    
-                    if (!match) {
-                        console.error(`Invalid frontmatter in ${filename}`);
-                        continue;
-                    }
-
-                    const frontmatter = match[1].split('\n').reduce((acc, line) => {
-                        const [key, value] = line.split(':').map(s => s.trim());
-                        if (key && value) acc[key] = value.replace(/^["']|["']$/g, '');
-                        return acc;
-                    }, {});
-
-                    const content = match[2];
-
-                    posts.push({
-                        title: frontmatter.title || 'Untitled',
-                        date: frontmatter.date || new Date().toISOString(),
-                        slug: filename.replace('.md', ''),
-                        image: frontmatter.image || '/images/default-blog.jpg',
-                        tags: frontmatter.tags ? frontmatter.tags.split(',').map(tag => tag.trim()) : [],
-                        excerpt: frontmatter.excerpt || content.substring(0, 200) + '...'
-                    });
-
-                } catch (err) {
-                    console.error(`Error processing ${filename}:`, err);
-                }
-            }
-
-            if (posts.length === 0) {
-                blogList.innerHTML = '<div class="no-posts">No blog posts yet. Check back soon!</div>';
-                return;
-            }
-
-            posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            blogList.innerHTML = '';
-            posts.forEach(post => {
-                const postDate = new Date(post.date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
                 });
 
-                const postElement = document.createElement('article');
-                postElement.className = 'blog-post';
-                postElement.setAttribute('itemscope', '');
-                postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
+                posts.push({
+                    title: frontmatter.title || 'Untitled',
+                    date: frontmatter.date || new Date().toISOString(),
+                    slug: filename.replace('.md', ''),
+                    image: frontmatter.image || '/images/default-blog.jpg',
+                    tags: frontmatter.tags ? frontmatter.tags.split(',').map(t => t.trim()) : [],
+                    excerpt: frontmatter.excerpt || frontmatterMatch[2].substring(0, 200) + '...'
+                });
+            } catch (e) {
+                console.error(`Error processing ${filename}:`, e);
+            }
+        }
 
-                postElement.innerHTML = `
-                    <div class="post-image">
-                        <img src="${post.image}" alt="${post.title}" loading="lazy" itemprop="image">
-                    </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <time datetime="${post.date}" itemprop="datePublished">${postDate}</time>
-                            ${post.tags && post.tags.length ? `
-                            <span class="post-category" itemprop="articleSection">${post.tags[0]}</span>
-                            ` : ''}
-                        </div>
-                        <h3 class="post-title" itemprop="headline">${post.title}</h3>
-                        <div class="post-excerpt" itemprop="description">
-                            <p>${post.excerpt}</p>
-                        </div>
-                        <div class="post-actions">
-                            <a href="/blog-post.html?slug=${encodeURIComponent(post.slug)}" class="btn-primary" itemprop="url">
-                                Read Full Article <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <meta itemprop="author" content="Jonathan Mwaniki">
-                `;
-                blogList.appendChild(postElement);
-            });
+        if (posts.length === 0) {
+            blogList.innerHTML = '<div class="no-posts">No valid posts found</div>';
+            return;
+        }
 
-        } catch (error) {
-            console.error('Error loading blog posts:', error);
-            blogList.innerHTML = `
-                <div class="error-message">
-                    Couldn't load blog posts. <a href="javascript:location.reload()">Try again</a>
-                    <p><small>${error.message}</small></p>
+        // 4. Display posts
+        blogList.innerHTML = '';
+        posts.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(post => {
+            const postElement = document.createElement('article');
+            postElement.className = 'blog-post';
+            postElement.innerHTML = `
+                <div class="post-image">
+                    <img src="${post.image}" alt="${post.title}" loading="lazy">
+                </div>
+                <div class="post-content">
+                    <div class="post-meta">
+                        <time>${new Date(post.date).toLocaleDateString()}</time>
+                        ${post.tags.length ? `<span>${post.tags[0]}</span>` : ''}
+                    </div>
+                    <h3>${post.title}</h3>
+                    <div class="post-excerpt">
+                        <p>${post.excerpt}</p>
+                    </div>
+                    <a href="/blog-post.html?slug=${post.slug}" class="btn-primary">
+                        Read Full Article <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             `;
-        }
-    });
-    </script>
+            blogList.appendChild(postElement);
+        });
+
+    } catch (error) {
+        console.error('Failed to load posts:', error);
+        blogList.innerHTML = `
+            <div class="error-message">
+                Error loading posts. <a href="javascript:location.reload()">Try again</a>
+                <p><small>${error.message}</small></p>
+            </div>
+        `;
+    }
+});
+</script>
 </body>
 </html>
