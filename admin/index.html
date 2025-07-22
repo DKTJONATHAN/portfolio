@@ -7,7 +7,7 @@
     <title>Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/mn8k8hdz6yfspjdieakr2wj6o17ul3zukzga01gsm1jdi0gp/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="min-h-screen flex flex-col">
@@ -147,34 +147,64 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
-        // Initialize TinyMCE
-        tinymce.init({
-            selector: '#content-editor',
-            plugins: 'advlist autolink lists link image code preview anchor',
-            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image | code preview',
-            menubar: false,
-            content_style: 'body { font-family: Poppins, sans-serif; font-size: 16px; }',
-            images_upload_url: '/api/upload-image', // Placeholder: Implement this endpoint
-            images_upload_handler: async (blobInfo, success, failure) => {
-                const formData = new FormData();
-                formData.append('file', blobInfo.blob(), blobInfo.filename());
-                try {
-                    const response = await fetch('/api/upload-image', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    if (!response.ok) throw new Error('Image upload failed');
-                    const data = await response.json();
-                    success(data.location); // Expecting { location: 'image-url' }
-                } catch (error) {
-                    failure('Image upload error: ' + error.message);
-                }
-            },
-            setup: (editor) => {
-                editor.on('input change', () => {
-                    editor.save(); // Sync TinyMCE content to textarea
+        // Initialize TinyMCE with enhanced error handling
+        function initTinyMCE() {
+            try {
+                tinymce.init({
+                    selector: '#content-editor',
+                    plugins: 'advlist autolink lists link image code preview anchor',
+                    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image | code preview',
+                    menubar: false,
+                    content_style: 'body { font-family: Poppins, sans-serif; font-size: 16px; }',
+                    images_upload_url: '/api/upload-image',
+                    images_upload_handler: async (blobInfo, success, failure) => {
+                        try {
+                            const formData = new FormData();
+                            formData.append('file', blobInfo.blob(), blobInfo.filename());
+                            const response = await fetch('/api/upload-image', {
+                                method: 'POST',
+                                body: formData
+                            });
+                            if (!response.ok) throw new Error('Image upload failed');
+                            const data = await response.json();
+                            success(data.location);
+                        } catch (error) {
+                            failure('Image upload error: ' + error.message);
+                            document.getElementById('error').textContent = 'Image upload failed. Use a URL instead.';
+                            document.getElementById('error').classList.remove('hidden');
+                        }
+                    },
+                    setup: (editor) => {
+                        editor.on('init', () => {
+                            console.log('TinyMCE initialized successfully');
+                        });
+                        editor.on('input change', () => {
+                            editor.save(); // Sync content to textarea
+                        });
+                        editor.on('error', (error) => {
+                            console.error('TinyMCE error:', error);
+                            document.getElementById('error').textContent = 'Editor failed to load. Please try again or use plain text.';
+                            document.getElementById('error').classList.remove('hidden');
+                        });
+                    },
+                    height: 400, // Ensure editor is visible
+                    mobile: {
+                        theme: 'silver',
+                        toolbar_mode: 'scrolling'
+                    }
                 });
+            } catch (err) {
+                console.error('TinyMCE initialization failed:', err);
+                document.getElementById('error').textContent = 'Editor failed to load. Please try again or use plain text.';
+                document.getElementById('error').classList.remove('hidden');
+                // Fallback to plain textarea
+                document.getElementById('content-editor').style.display = 'block';
             }
+        }
+
+        // Initialize TinyMCE after DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initTinyMCE();
         });
 
         // Slug generation
@@ -216,7 +246,7 @@
             }
         });
 
-        // Create Post
+        // Create/Update Post
         document.getElementById('create-post').addEventListener('submit', async (e) => {
             e.preventDefault();
             const loading = document.getElementById('loading');
@@ -256,18 +286,21 @@
                 image: imageUrl,
                 excerpt: formData.get('excerpt'),
                 date: formData.get('date'),
-                content: formData.get('content')
+                content: tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : formData.get('content')
             };
 
             try {
-                const response = await fetch('/api/save-post', {
+                const isUpdate = e.target.dataset.slug;
+                const response = await fetch(isUpdate ? '/api/update-post' : '/api/save-post', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(postData)
                 });
-                if (!response.ok) throw new Error('Failed to create post');
+                if (!response.ok) throw new Error(isUpdate ? 'Failed to update post' : 'Failed to create post');
                 e.target.reset();
-                tinymce.get('content-editor').setContent('');
+                if (tinymce.get('content-editor')) tinymce.get('content-editor').setContent('');
+                e.target.querySelector('button[type="submit"]').textContent = 'Create Post';
+                delete e.target.dataset.slug;
                 loadPosts();
             } catch (err) {
                 error.textContent = err.message;
@@ -279,7 +312,7 @@
 
         // Preview Post
         document.getElementById('preview-post').addEventListener('click', () => {
-            const content = tinymce.get('content-editor').getContent({ format: 'text' });
+            const content = tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : document.getElementById('content-editor').value;
             const previewContent = document.getElementById('preview-content');
             previewContent.innerHTML = marked.parse(content);
             previewContent.classList.remove('hidden');
@@ -295,7 +328,7 @@
             error.classList.add('hidden');
 
             try {
-                const response = await fetch('/api/list-posts');
+                const response = await fetch('/api/list-posts?t=' + Date.now());
                 if (!response.ok) throw new Error('Failed to fetch posts');
                 const posts = await response.json();
                 posts.forEach(post => {
@@ -318,20 +351,29 @@
                 document.querySelectorAll('.edit-post').forEach(button => {
                     button.addEventListener('click', async () => {
                         const slug = button.dataset.slug;
-                        const response = await fetch('/api/list-posts');
-                        const posts = await response.json();
-                        const post = posts.find(p => p.slug === slug);
-                        if (post) {
-                            document.querySelector('input[name="title"]').value = post.title;
-                            document.querySelector('input[name="slug"]').value = post.slug;
-                            document.querySelector('input[name="category"]').value = post.category;
-                            document.querySelector('input[name="tags"]').value = post.tags.join(', ');
-                            document.querySelector('input[name="image"]').value = post.image || '';
-                            document.querySelector('textarea[name="excerpt"]').value = post.excerpt || '';
-                            document.querySelector('input[name="date"]').value = post.date;
-                            tinymce.get('content-editor').setContent(post.content);
-                            document.querySelector('#create-post button[type="submit"]').textContent = 'Update Post';
-                            document.querySelector('#create-post').dataset.slug = slug;
+                        try {
+                            const response = await fetch('/api/list-posts?t=' + Date.now());
+                            const posts = await response.json();
+                            const post = posts.find(p => p.slug === slug);
+                            if (post) {
+                                document.querySelector('input[name="title"]').value = post.title;
+                                document.querySelector('input[name="slug"]').value = post.slug;
+                                document.querySelector('input[name="category"]').value = post.category;
+                                document.querySelector('input[name="tags"]').value = post.tags.join(', ');
+                                document.querySelector('input[name="image"]').value = post.image || '';
+                                document.querySelector('textarea[name="excerpt"]').value = post.excerpt || '';
+                                document.querySelector('input[name="date"]').value = post.date;
+                                if (tinymce.get('content-editor')) {
+                                    tinymce.get('content-editor').setContent(post.content || '');
+                                } else {
+                                    document.getElementById('content-editor').value = post.content || '';
+                                }
+                                document.querySelector('#create-post button[type="submit"]').textContent = 'Update Post';
+                                document.querySelector('#create-post').dataset.slug = slug;
+                            }
+                        } catch (err) {
+                            error.textContent = 'Failed to load post: ' + err.message;
+                            error.classList.remove('hidden');
                         }
                     });
                 });
