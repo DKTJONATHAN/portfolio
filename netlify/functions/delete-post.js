@@ -1,62 +1,39 @@
-const fetch = require('node-fetch');
-const jwt = require('jsonwebtoken');
+const { Octokit } = require("@octokit/rest");
 
-exports.handler = async (event, context) => {
-    if (event.httpMethod !== 'POST') {
-        return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
-    }
+exports.handler = async function (event, context) {
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: JSON.stringify({ error: "Method Not Allowed" }) };
+  }
 
-    const token = event.headers['authorization']?.replace('Bearer ', '');
-    if (!token || !jwt.verify(token, process.env.JWT_SECRET)) {
-        return { 
-            statusCode: 401, 
-            headers: { 'Access-Control-Allow-Origin': '*' },
-            body: JSON.stringify({ error: 'Unauthorized' }) 
-        };
-    }
+  const { token, slug } = JSON.parse(event.body);
+  if (token !== Buffer.from(process.env.ADMIN_PASSWORD).toString("base64")) {
+    return { statusCode: 403, body: JSON.stringify({ error: "Unauthorized" }) };
+  }
+  if (!slug) {
+    return { statusCode: 400, body: JSON.stringify({ error: "Missing slug" }) };
+  }
 
-    const { slug } = JSON.parse(event.body);
-    const githubToken = process.env.GITHUB_TOKEN;
-    const owner = process.env.GITHUB_OWNER;
-    const repo = process.env.GITHUB_REPO;
-    const path = `content/blog/${slug}.md`;
+  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+  const owner = "DKTJONATHAN";
+  const repo = "portfolio";
+  const path = `content/blog/${slug}.md`;
+  const branch = "main";
 
-    try {
-        const getResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-            headers: { 'Authorization': `token ${githubToken}` }
-        });
-        const fileData = await getResponse.json();
-        const sha = fileData.sha;
-
-        const deleteResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `token ${githubToken}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                message: `Delete post: ${slug}`,
-                sha,
-                branch: 'main' // Adjust branch if needed
-            })
-        });
-
-        if (!deleteResponse.ok) {
-            const errorData = await deleteResponse.json();
-            throw new Error(errorData.message || 'Failed to delete post');
-        }
-
-        return {
-            statusCode: 200,
-            headers: { 'Access-Control-Allow-Origin': '*' },
-            body: JSON.stringify({ message: 'Post deleted successfully' })
-        };
-    } catch (error) {
-        console.error('Delete post error:', error);
-        return {
-            statusCode: 500,
-            headers: { 'Access-Control-Allow-Origin': '*' },
-            body: JSON.stringify({ error: error.message })
-        };
-    }
+  try {
+    const { data } = await octokit.repos.getContent({ owner, repo, path, ref: branch });
+    await octokit.repos.deleteFile({
+      owner,
+      repo,
+      path,
+      message: `Delete post: ${slug}`,
+      sha: data.sha,
+      branch,
+    });
+    return { statusCode: 200, body: JSON.stringify({ message: "Post deleted" }) };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: `Failed to delete post: ${error.message}` }),
+    };
+  }
 };
