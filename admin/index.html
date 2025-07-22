@@ -7,9 +7,7 @@
     <title>Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tiny.cloud/1/mn8k8hdz6yfspjdieakr2wj6o17ul3zukzga01gsm1jdi0gp/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.18/lib/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.2/dist/turndown.js"></script>
+    <script src="https://cdn.tiny.cloud/1/your_tinymce_api_key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="min-h-screen flex flex-col">
@@ -25,7 +23,7 @@
                         <a href="/index.html" class="text-gray-600 hover:text-indigo-600">Home</a>
                         <a href="/index.html#services" class="text-gray-600 hover:text-indigo-600">Services</a>
                         <a href="/index.html#portfolio" class="text-gray-600 hover:text-indigo-600">Portfolio</a>
-                        <a href="/blogs" class="text-indigo-600 font-medium">Blog</a>
+                        <a href="/blog.html" class="text-indigo-600 font-medium">Blog</a>
                         <a href="/index.html#about" class="text-gray-600 hover:text-indigo-600">About</a>
                         <a href="/index.html#contact" class="text-gray-600 hover:text-indigo-600">Contact</a>
                     </div>
@@ -44,7 +42,7 @@
                 <a href="/index.html#portfolio" class="flex flex-col items-center text-gray-600 hover:text-indigo-600">
                     <i class="fas fa-briefcase text-lg"></i><span class="text-xs">Portfolio</span>
                 </a>
-                <a href="/blogs" class="flex flex-col items-center text-indigo-600">
+                <a href="/blog.html" class="flex flex-col items-center text-indigo-600">
                     <i class="fas fa-blog text-lg"></i><span class="text-xs">Blog</span>
                 </a>
                 <a href="/index.html#contact" class="flex flex-col items-center text-gray-600 hover:text-indigo-600">
@@ -98,14 +96,14 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Content</label>
-                            <textarea id="content-editor" name="content" required class="mt-1 w-full hidden"></textarea>
+                            <textarea id="content-editor" name="content" required class="mt-1 w-full"></textarea>
                         </div>
                         <div class="flex space-x-4">
                             <button type="button" id="preview-post" class="w-full bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition">Preview</button>
                             <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition">Create Post</button>
                         </div>
                     </form>
-                    <div id="preview-content" class="hidden bg-white p-6 rounded-lg shadow-md mb-12 prose"></div>
+                    <div id="preview-content" class="hidden bg-white p-6 rounded-lg shadow-md mb-12"></div>
                     <h3 class="text-xl font-semibold text-gray-900 mb-4">Edit/Delete Posts</h3>
                     <div id="post-list" class="space-y-6"></div>
                 </div>
@@ -139,45 +137,55 @@
             </div>
         </footer>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         // Initialize TinyMCE
         function initTinyMCE() {
-            tinymce.init({
-                selector: '#content-editor',
-                plugins: 'advlist autolink lists link image code preview anchor table wordcount',
-                toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist outdent indent | link image table | code preview',
-                menubar: 'edit insert view format table',
-                content_style: 'body { font-family: Poppins, sans-serif; font-size: 16px; }',
-                images_upload_url: '/api/upload-image?token=' + encodeURIComponent(localStorage.getItem('adminToken') || ''),
-                images_upload_handler: async (blobInfo, success, failure) => {
-                    try {
-                        const formData = new FormData();
-                        formData.append('file', blobInfo.blob(), blobInfo.filename());
-                        const response = await fetch('/api/upload-image?token=' + encodeURIComponent(localStorage.getItem('adminToken') || ''), {
-                            method: 'POST',
-                            body: formData
+            try {
+                tinymce.init({
+                    selector: '#content-editor',
+                    plugins: 'advlist autolink lists link image code preview anchor',
+                    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image | code preview',
+                    menubar: false,
+                    content_style: 'body { font-family: sans-serif; font-size: 16px; }',
+                    images_upload_url: '/api/upload-image',
+                    images_upload_handler: async (blobInfo, success, failure) => {
+                        try {
+                            const formData = new FormData();
+                            formData.append('file', blobInfo.blob(), blobInfo.filename());
+                            const response = await fetch('/api/upload-image', {
+                                method: 'POST',
+                                body: formData
+                            });
+                            if (!response.ok) throw new Error('Image upload failed');
+                            const data = await response.json();
+                            success(data.url);
+                        } catch (error) {
+                            failure('Image upload error: Use a URL instead');
+                        }
+                    },
+                    setup: (editor) => {
+                        editor.on('init', () => console.log('TinyMCE initialized'));
+                        editor.on('error', (error) => {
+                            console.error('TinyMCE error:', error);
+                            document.getElementById('error').textContent = 'Editor failed to load.';
+                            document.getElementById('error').classList.remove('hidden');
                         });
-                        if (!response.ok) throw new Error('Image upload failed');
-                        const data = await response.json();
-                        success(data.location);
-                    } catch (error) {
-                        failure('Image upload error: Use a URL instead');
-                    }
-                },
-                setup: editor => {
-                    editor.on('init', () => console.log('TinyMCE initialized'));
-                    editor.on('input change', () => editor.save());
-                    editor.on('error', error => {
-                        showError('Editor failed to load: ' + error.message);
-                    });
-                },
-                height: 500,
-                mobile: { theme: 'silver', toolbar_mode: 'scrolling' }
-            });
+                    },
+                    height: 400,
+                    mobile: { theme: 'silver', toolbar_mode: 'scrolling' }
+                });
+            } catch (err) {
+                console.error('TinyMCE init failed:', err);
+                document.getElementById('error').textContent = 'Editor failed to load.';
+                document.getElementById('error').classList.remove('hidden');
+            }
         }
 
+        document.addEventListener('DOMContentLoaded', initTinyMCE);
+
         // Slug generation
-        document.querySelector('input[name="title"]').addEventListener('input', e => {
+        document.querySelector('input[name="title"]').addEventListener('input', (e) => {
             const slugField = document.querySelector('input[name="slug"]');
             slugField.value = e.target.value
                 .toLowerCase()
@@ -186,7 +194,7 @@
         });
 
         // Login Form
-        document.getElementById('login').addEventListener('submit', async e => {
+        document.getElementById('login').addEventListener('submit', async (e) => {
             e.preventDefault();
             const password = document.getElementById('admin-password').value;
             const loading = document.getElementById('loading');
@@ -203,21 +211,26 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password })
                 });
-                if (!response.ok) throw new Error('Invalid password');
-                const { token } = await response.json();
-                localStorage.setItem('adminToken', token);
+                let data;
+                try {
+                    data = await response.json();
+                } catch (jsonError) {
+                    throw new Error('Invalid JSON response from server');
+                }
+                if (!response.ok) throw new Error(data.error || 'Invalid password');
                 loginForm.classList.add('hidden');
                 adminPanel.classList.remove('hidden');
                 loadPosts();
             } catch (err) {
-                showError(err.message);
+                error.textContent = err.message;
+                error.classList.remove('hidden');
             } finally {
                 loading.classList.add('hidden');
             }
         });
 
         // Create/Update Post
-        document.getElementById('create-post').addEventListener('submit', async e => {
+        document.getElementById('create-post').addEventListener('submit', async (e) => {
             e.preventDefault();
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
@@ -226,34 +239,39 @@
 
             const formData = new FormData(e.target);
             const postData = {
-                token: localStorage.getItem('adminToken'),
                 title: formData.get('title'),
                 slug: formData.get('slug'),
                 category: formData.get('category'),
-                tags: formData.get('tags'),
+                tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag),
                 image: formData.get('image'),
                 date: formData.get('date'),
-                content: tinymce.get('content-editor').getContent()
+                content: tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : formData.get('content')
             };
 
             try {
-                const endpoint = e.target.dataset.editSlug ? '/api/save-post' : '/api/save-post';
+                const endpoint = e.target.dataset.editSlug ? '/api/update-post' : '/api/save-post';
                 const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(postData)
                 });
+                let responseData;
+                try {
+                    responseData = await response.json();
+                } catch (jsonError) {
+                    throw new Error('Invalid JSON response from server');
+                }
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Failed to save post');
+                    throw new Error(responseData.error || 'Operation failed');
                 }
                 e.target.reset();
-                tinymce.get('content-editor').setContent('');
+                if (tinymce.get('content-editor')) tinymce.get('content-editor').setContent('');
                 e.target.querySelector('button[type="submit"]').textContent = 'Create Post';
                 delete e.target.dataset.editSlug;
                 loadPosts();
             } catch (err) {
-                showError(`Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`);
+                error.textContent = `Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`;
+                error.classList.remove('hidden');
             } finally {
                 loading.classList.add('hidden');
             }
@@ -261,19 +279,13 @@
 
         // Preview Post
         document.getElementById('preview-post').addEventListener('click', () => {
-            const content = tinymce.get('content-editor').getContent();
-            const turndown = new TurndownService({
-                headingStyle: 'atx',
-                codeBlockStyle: 'fenced',
-                bulletListMarker: '-'
-            });
-            const markdown = turndown.turndown(content);
+            const content = tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : document.getElementById('content-editor').value;
             const previewContent = document.getElementById('preview-content');
-            previewContent.innerHTML = marked.parse(markdown);
+            previewContent.innerHTML = marked.parse(content);
             previewContent.classList.remove('hidden');
         });
 
-        // Load Posts
+        // Load Posts for Edit/Delete
         async function loadPosts() {
             const postList = document.getElementById('post-list');
             const loading = document.getElementById('loading');
@@ -283,11 +295,14 @@
             error.classList.add('hidden');
 
             try {
-                const token = localStorage.getItem('adminToken');
-                if (!token) throw new Error('Not authenticated');
-                const response = await fetch(`/api/list-posts?token=${encodeURIComponent(token)}&t=${Date.now()}`);
-                if (!response.ok) throw new Error('Failed to fetch posts');
-                const posts = await response.json();
+                const response = await fetch('/api/list-posts?t=' + Date.now());
+                let posts;
+                try {
+                    posts = await response.json();
+                } catch (jsonError) {
+                    throw new Error('Invalid JSON response from server');
+                }
+                if (!response.ok) throw new Error(posts.error || 'Failed to fetch posts');
                 posts.forEach(post => {
                     const postItem = document.createElement('div');
                     postItem.className = 'bg-white p-4 rounded-lg shadow-md flex justify-between items-center';
@@ -308,8 +323,13 @@
                     button.addEventListener('click', async () => {
                         const slug = button.dataset.slug;
                         try {
-                            const response = await fetch(`/api/list-posts?token=${encodeURIComponent(token)}&t=${Date.now()}`);
-                            const posts = await response.json();
+                            const response = await fetch('/api/list-posts?t=' + Date.now());
+                            let posts;
+                            try {
+                                posts = await response.json();
+                            } catch (jsonError) {
+                                throw new Error('Invalid JSON response from server');
+                            }
                             const post = posts.find(p => p.slug === slug);
                             if (post) {
                                 document.querySelector('input[name="title"]').value = post.title;
@@ -318,12 +338,17 @@
                                 document.querySelector('input[name="tags"]').value = post.tags.join(', ');
                                 document.querySelector('input[name="image"]').value = post.image || '';
                                 document.querySelector('input[name="date"]').value = post.date;
-                                tinymce.get('content-editor').setContent(post.content || '');
+                                if (tinymce.get('content-editor')) {
+                                    tinymce.get('content-editor').setContent(post.content || '');
+                                } else {
+                                    document.getElementById('content-editor').value = post.content || '';
+                                }
                                 document.querySelector('#create-post button[type="submit"]').textContent = 'Update Post';
                                 document.querySelector('#create-post').dataset.editSlug = slug;
                             }
                         } catch (err) {
-                            showError('Failed to load post: ' + err.message);
+                            error.textContent = 'Failed to load post: ' + err.message;
+                            error.classList.remove('hidden');
                         }
                     });
                 });
@@ -336,32 +361,31 @@
                             const response = await fetch('/api/delete-post', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ token, slug })
+                                body: JSON.stringify({ slug })
                             });
+                            let responseData;
+                            try {
+                                responseData = await response.json();
+                            } catch (jsonError) {
+                                throw new Error('Invalid JSON response from server');
+                            }
                             if (!response.ok) {
-                                const errorData = await response.json();
-                                throw new Error(errorData.error || 'Failed to delete post');
+                                throw new Error(responseData.error || 'Failed to delete post');
                             }
                             loadPosts();
                         } catch (err) {
-                            showError('Failed to delete post: ' + err.message);
+                            error.textContent = 'Failed to delete post: ' + err.message;
+                            error.classList.remove('hidden');
                         }
                     });
                 });
             } catch (err) {
-                showError('Failed to fetch posts: ' + err.message);
+                error.textContent = 'Failed to fetch posts: ' + err.message;
+                error.classList.remove('hidden');
             } finally {
                 loading.classList.add('hidden');
             }
         }
-
-        function showError(message) {
-            const error = document.getElementById('error');
-            error.textContent = message;
-            error.classList.remove('hidden');
-        }
-
-        document.addEventListener('DOMContentLoaded', initTinyMCE);
     </script>
 </body>
 </html>
