@@ -1,7 +1,14 @@
 [build]
   command = "" # No build command for plain HTML
-  publish = "." # Use "." for root directory (more standard than "/")
+  publish = "." # Root directory for static files
   functions = "netlify/functions" # Functions directory
+
+[build.environment]
+  GITHUB_TOKEN = "{{ env.GITHUB_TOKEN }}"
+  GITHUB_REPO = "DKTJONATHAN/portfolio"
+  GITHUB_OWNER = "{{ env.GITHUB_OWNER }}"
+  ADMIN_PASSWORD = "{{ env.ADMIN_PASSWORD }}"
+  JWT_SECRET = "{{ env.JWT_SECRET }}"
 
 [[redirects]]
   from = "/api/list-posts"
@@ -14,11 +21,21 @@
   status = 200
 
 [[redirects]]
-  from = "/admin/*"
-  to = "/static/admin/index.html"
+  from = "/api/upload-image"
+  to = "/.netlify/functions/upload-image"
   status = 200
 
 [[redirects]]
-  from = "/.netlify/identity/*"
-  to = "/.netlify/identity/:splat"
+  from = "/api/login"
+  to = "/.netlify/functions/login"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/index.html"
   status = 200
