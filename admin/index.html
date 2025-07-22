@@ -140,6 +140,7 @@
                     >
                         Cancel Edit
                     </button>
+               COULD NOT LOAD CONTENT, PLEASE TRY AGAIN
                 </div>
             </form>
             <p id="error" class="text-red-500 text-center mb-4 hidden"></p>
@@ -199,8 +200,38 @@
             }
         });
 
+        // Check session on page load
+        async function checkSession() {
+            const token = localStorage.getItem('admin_token');
+            if (token) {
+                try {
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams({ token }).toString()
+                    });
+                    if (response.ok) {
+                        document.getElementById('login-section').classList.add('hidden');
+                        document.getElementById('admin-section').classList.remove('hidden');
+                        showNotification('Session restored', 'success');
+                        loadPosts();
+                    } else {
+                        localStorage.removeItem('admin_token');
+                        showNotification('Invalid session, please log in', 'error');
+                    }
+                } catch (err) {
+                    localStorage.removeItem('admin_token');
+                    showNotification('Session check failed: ' + err.message, 'error');
+                }
+            }
+        }
+
+        // Run session check on load
+        checkSession();
+
         // Logout functionality
         document.getElementById('logout-button').addEventListener('click', () => {
+            localStorage.removeItem('admin_token');
             document.getElementById('admin-section').classList.add('hidden');
             document.getElementById('login-section').classList.remove('hidden');
             document.getElementById('login-error').classList.add('hidden');
@@ -234,6 +265,7 @@
                 });
                 const data = await response.json();
                 if (response.ok) {
+                    localStorage.setItem('admin_token', data.token || password); // Store token or password as fallback
                     document.getElementById('login-section').classList.add('hidden');
                     document.getElementById('admin-section').classList.remove('hidden');
                     showNotification('Logged in successfully', 'success');
@@ -428,9 +460,9 @@
                         }`;
                         postItem.innerHTML = `
                             <div class="flex-1">
-                                <h4 class="text-lg font-medium text-gray-900">${post.title}</h4>
-                                <p class="text-sm text-gray-500">${post.date} | ${post.category}</p>
-                                <p class="text-xs text-gray-400 mt-1">Tags: ${post.tags || ''}</p>
+                                <h4 class="text-lg font-medium text-gray-900">${post.title || 'Untitled'}</h4>
+                                <p class="text-sm text-gray-500">${post.date || 'No date'} | ${post.category || 'Uncategorized'}</p>
+                                <p class="text-xs text-gray-400 mt-1">Tags: ${post.tags || 'None'}</p>
                                 ${
                                     document.getElementById('create-post').dataset.editSlug === post.slug
                                         ? '<p class="text-xs text-blue-600 mt-1 font-medium">Currently editing</p>'
@@ -450,96 +482,99 @@
                         `;
                         postList.appendChild(postItem);
                     });
-                }
 
-                document.querySelectorAll('.edit-post').forEach(button => {
-                    button.addEventListener('click', async () => {
-                        const slug = button.dataset.slug;
-                        showNotification(`Fetching post ${slug}`, 'info');
-                        try {
-                            const response = await fetch('/api/list-posts?t=' + Date.now());
-                            let posts;
+                    // Bind edit and delete handlers
+                    document.querySelectorAll('.edit-post').forEach(button => {
+                        button.addEventListener('click', async () => {
+                            const slug = button.dataset.slug;
+                            showNotification(`Fetching post ${slug}`, 'info');
                             try {
-                                posts = await response.json();
-                                showNotification(`Loaded ${posts.length} posts for edit`, 'success');
-                            } catch (jsonError) {
-                                showNotification('Invalid post data', 'error');
-                                throw new Error('Invalid JSON response from server');
-                            }
-                            const post = posts.find(p => p.slug === slug);
-                            if (post) {
-                                document.querySelector('input[name="title"]').value = post.title || '';
-                                document.querySelector('input[name="slug"]').value = post.slug || '';
-                                document.querySelector('input[name="category"]').value = post.category || '';
-                                document.querySelector('input[name="tags"]').value = post.tags ? post.tags.join(', ') : '';
-                                document.querySelector('input[name="image"]').value = post.image || '';
-                                document.querySelector('input[name="date"]').value = post.date || '';
-                                waitForTinyMCE(() => {
-                                    if (tinymce.get('content-editor')) {
-                                        tinymce.get('content-editor').setContent(post.content || '');
-                                        console.log('Content set in TinyMCE:', post.content || 'Empty');
-                                    } else {
-                                        document.getElementById('content-editor').value = post.content || '';
-                                        showNotification('TinyMCE not ready, using fallback', 'error');
-                                    }
-                                });
-                                document.getElementById('submit-post-button').textContent = 'Update Post';
-                                document.getElementById('cancel-edit-button').classList.remove('hidden');
-                                document.getElementById('create-post').dataset.editSlug = slug;
-                                isManualSlugEdit = true;
-                                slugError.classList.add('hidden');
-                                showNotification('Post loaded for editing', 'success');
-                                document.querySelector('h2').scrollIntoView({ behavior: 'smooth' });
-                            }
-                        } catch (err) {
-                            document.getElementById('error').textContent = 'Failed to load post: ' + err.message;
-                            document.getElementById('error').classList.remove('hidden');
-                            showNotification(`Error loading post: ${err.message}`, 'error');
-                        }
-                    });
-                });
-
-                document.querySelectorAll('.delete-post').forEach(button => {
-                    button.addEventListener('click', async () => {
-                        if (!confirm('Are you sure you want to delete this post?')) return;
-                        const slug = button.dataset.slug;
-                        showNotification(`Deleting post ${slug}`, 'info');
-                        try {
-                            const response = await fetch('/api/delete-post', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                                body: new URLSearchParams({ slug }).toString()
-                            });
-                            let responseData;
-                            try {
-                                responseData = await response.json();
-                                showNotification('Post deleted successfully', 'success');
-                            } catch (jsonError) {
-                                showNotification('Invalid server response', 'error');
-                                throw new Error('Invalid JSON response from server');
-                            }
-                            if (!response.ok) {
-                                throw new Error(responseData.error || 'Failed to delete post');
-                            }
-                            if (document.getElementById('create-post').dataset.editSlug === slug) {
-                                document.getElementById('create-post').reset();
-                                if (tinymce.get('content-editor')) {
-                                    tinymce.get('content-editor').setContent('');
+                                const response = await fetch('/api/list-posts?t=' + Date.now());
+                                let posts;
+                                try {
+                                    posts = await response.json();
+                                    showNotification(`Loaded ${posts.length} posts for edit`, 'success');
+                                } catch (jsonError) {
+                                    showNotification('Invalid post data', 'error');
+                                    throw new Error('Invalid JSON response from server');
                                 }
-                                document.getElementById('submit-post-button').textContent = 'Create Post';
-                                document.getElementById('cancel-edit-button').classList.add('hidden');
-                                delete document.getElementById('create-post').dataset.editSlug;
-                                isManualSlugEdit = false;
-                                slugError.classList.add('hidden');
+                                const post = posts.find(p => p.slug === slug);
+                                if (post) {
+                                    document.querySelector('input[name="title"]').value = post.title || '';
+                                    document.querySelector('input[name="slug"]').value = post.slug || '';
+                                    document.querySelector('input[name="category"]').value = post.category || '';
+                                    document.querySelector('input[name="tags"]').value = post.tags ? post.tags.join(', ') : '';
+                                    document.querySelector('input[name="image"]').value = post.image || '';
+                                    document.querySelector('input[name="date"]').value = post.date || '';
+                                    waitForTinyMCE(() => {
+                                        if (tinymce.get('content-editor')) {
+                                            tinymce.get('content-editor').setContent(post.content || '');
+                                            console.log('Content set in TinyMCE:', post.content || 'Empty');
+                                        } else {
+                                            document.getElementById('content-editor').value = post.content || '';
+                                            showNotification('TinyMCE not ready, using fallback', 'error');
+                                        }
+                                    });
+                                    document.getElementById('submit-post-button').textContent = 'Update Post';
+                                    document.getElementById('cancel-edit-button').classList.remove('hidden');
+                                    document.getElementById('create-post').dataset.editSlug = slug;
+                                    isManualSlugEdit = true;
+                                    slugError.classList.add('hidden');
+                                    showNotification('Post loaded for editing', 'success');
+                                    document.querySelector('h2').scrollIntoView({ behavior: 'smooth' });
+                                } else {
+                                    throw new Error('Post not found');
+                                }
+                            } catch (err) {
+                                document.getElementById('error').textContent = 'Failed to load post: ' + err.message;
+                                document.getElementById('error').classList.remove('hidden');
+                                showNotification(`Error loading post: ${err.message}`, 'error');
                             }
-                            loadPosts();
-                        } catch (err) {
-                            document.getElementById('error').textContent = 'Failed to delete post: ' + err.message;
-                            document.getElementById('error').classList.remove('hidden');
-                            showNotification(`Error deleting post: ${err.message}`, 'error');
-                        }
+                        });
                     });
-                });
+
+                    document.querySelectorAll('.delete-post').forEach(button => {
+                        button.addEventListener('click', async () => {
+                            if (!confirm('Are you sure you want to delete this post?')) return;
+                            const slug = button.dataset.slug;
+                            showNotification(`Deleting post ${slug}`, 'info');
+                            try {
+                                const response = await fetch('/api/delete-post', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                    body: new URLSearchParams({ slug }).toString()
+                                });
+                                let responseData;
+                                try {
+                                    responseData = await response.json();
+                                    showNotification('Post deleted successfully', 'success');
+                                } catch (jsonError) {
+                                    showNotification('Invalid server response', 'error');
+                                    throw new Error('Invalid JSON response from server');
+                                }
+                                if (!response.ok) {
+                                    throw new Error(responseData.error || 'Failed to delete post');
+                                }
+                                if (document.getElementById('create-post').dataset.editSlug === slug) {
+                                    document.getElementById('create-post').reset();
+                                    if (tinymce.get('content-editor')) {
+                                        tinymce.get('content-editor').setContent('');
+                                    }
+                                    document.getElementById('submit-post-button').textContent = 'Create Post';
+                                    document.getElementById('cancel-edit-button').classList.add('hidden');
+                                    delete document.getElementById('create-post').dataset.editSlug;
+                                    isManualSlugEdit = false;
+                                    slugError.classList.add('hidden');
+                                }
+                                loadPosts();
+                            } catch (err) {
+                                document.getElementById('error').textContent = 'Failed to delete post: ' + err.message;
+                                document.getElementById('error').classList.remove('hidden');
+                                showNotification(`Error deleting post: ${err.message}`, 'error');
+                            }
+                        });
+                    });
+                }
             } catch (err) {
                 document.getElementById('error').textContent = `Failed to fetch posts: ${err.message}`;
                 document.getElementById('error').classList.remove('hidden');
