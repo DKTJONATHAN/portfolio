@@ -1,9 +1,10 @@
 [build]
-  command = "npm run build" # Adjust for your build process
-  publish = "dist" # Adjust to your output directory
+  command = "npm install"
   functions = "functions"
+  publish = "."
 
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+  force = true
