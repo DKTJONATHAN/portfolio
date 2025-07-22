@@ -1,34 +1,29 @@
-const { Octokit } = require('@octokit/rest');
+const fs = require('fs').promises;
+const path = require('path');
 
-exports.handler = async (event) => {
-    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-    const { title, slug, category, tags, image, date, content } = JSON.parse(event.body);
-
-    if (!title || !slug || !content || !date) {
-        return { statusCode: 400, body: JSON.stringify({ error: 'Missing required fields' }) };
+exports.handler = async (event, context) => {
+    if (event.httpMethod !== 'POST') {
+        return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
     }
 
-    const path = `content/blog/${slug}.md`;
-    const frontmatter = `---
-title: "${title.replace(/"/g, '\\"')}"
-date: ${date}
-category: ${category || 'Uncategorized'}
-tags: ${tags?.length ? tags.join(', ') : ''}
-image: ${image || ''}
----
-${content}`;
+    const { title, slug, category, tags, image, date, content } = JSON.parse(event.body);
 
     try {
-        await octokit.repos.createOrUpdateFileContents({
-            owner: process.env.GITHUB_OWNER,
-            repo: process.env.GITHUB_REPO,
-            path,
-            message: `Create post ${slug}`,
-            content: Buffer.from(frontmatter).toString('base64')
-        });
-        return { statusCode: 200, body: JSON.stringify({ message: 'Post created' }) };
+        const filePath = path.join('content', 'blog', `${slug}.md`);
+        const markdownContent = `---
+title: ${title}
+slug: ${slug}
+category: ${category}
+tags: [${tags.join(', ')}]
+image: ${image || ''}
+date: ${date}
+---
+${content}
+`;
+
+        await fs.writeFile(filePath, markdownContent, 'utf8');
+        return { statusCode: 200, body: JSON.stringify({ message: 'Post created successfully' }) };
     } catch (error) {
-        console.error('Save post error:', error);
-        return { statusCode: error.status || 500, body: JSON.stringify({ error: `Failed to save post: ${error.message}` }) };
+        return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
     }
 };
