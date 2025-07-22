@@ -1,86 +1,64 @@
-import { Octokit } from '@octokit/rest';
-import jwt from 'jsonwebtoken';
+const { Octokit } = require('@octokit/rest');
 
-export const handler = async (event) => {
-  const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, JWT_SECRET } = process.env;
-  const octokit = new Octokit({ auth: GITHUB_TOKEN });
+exports.handler = async (event) => {
+    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+    const { title, slug, category, tags, image, excerpt, date, content } = JSON.parse(event.body);
 
-  try {
-    const authHeader = event.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return { statusCode: 401, body: JSON.stringify({ message: 'Unauthorized' }) };
+    // Validate input
+    if (!title || !slug || !content) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ error: 'Missing required fields: title, slug, or content' })
+        };
     }
-    const token = authHeader.split(' ')[1];
-    jwt.verify(token, JWT_SECRET);
 
-    if (event.httpMethod === 'POST') {
-      const data = JSON.parse(event.body);
-      const { slug, title, category, tags, image, date, content } = data;
-      if (!title || !category || !date || !content || !slug) {
-        return { statusCode: 400, body: JSON.stringify({ message: 'Missing required fields' }) };
-      }
+    const path = `content/blog/${slug}.md`;
+    const frontmatter = `---
+title: "${title.replace(/"/g, '\\"')}"
+date: ${date}
+category: ${category || 'Uncategorized'}
+tags: ${tags?.length ? tags.join(', ') : ''}
+image: ${image || ''}
+excerpt: ${excerpt?.replace(/"/g, '\\"') || ''}
+---
+${content}`;
 
-      const path = `content/blog/${slug}.md`;
-      const contentBase64 = Buffer.from(
-        `---\ntitle: "${title}"\ndate: ${date}\ncategory: ${category}\ntags: ${tags.join(',')}\n${image ? `image: ${image}\n` : ''}---\n${content}`
-      ).toString('base64');
+    try {
+        // Check if file already exists
+        try {
+            await octokit.repos.getContent({
+                owner: process.env.GITHUB_OWNER,
+                repo: process.env.GITHUB_REPO,
+                path
+            });
+            return {
+                statusCode: 409,
+                body: JSON.stringify({ error: `Post with slug ${slug} already exists` })
+            };
+        } catch (error) {
+            if (error.status !== 404) {
+                throw error; // Rethrow non-404 errors
+            }
+        }
 
-      let sha;
-      try {
-        const { data: file } = await octokit.repos.getContent({
-          owner: GITHUB_OWNER,
-          repo: GITHUB_REPO,
-          path
+        // Create new file
+        const response = await octokit.repos.createOrUpdateFileContents({
+            owner: process.env.GITHUB_OWNER,
+            repo: process.env.GITHUB_REPO,
+            path,
+            message: `Create post ${slug}`,
+            content: Buffer.from(frontmatter).toString('base64')
         });
-        sha = file.sha;
-      } catch (err) {
-        if (err.status !== 404) throw err;
-      }
 
-      await octokit.repos.createOrUpdateFileContents({
-        owner: GITHUB_OWNER,
-        repo: GITHUB_REPO,
-        path,
-        message: sha ? `Update post ${slug}` : `Create post ${slug}`,
-        content: contentBase64,
-        sha,
-        committer: { name: 'Netlify Bot', email: 'netlify@bot.com' }
-      });
-
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ message: 'Post saved' })
-      };
-    } else if (event.httpMethod === 'DELETE') {
-      const { slug } = JSON.parse(event.body);
-      if (!slug) {
-        return { statusCode: 400, body: JSON.stringify({ message: 'Missing slug' }) };
-      }
-
-      const path = `content/blog/${slug}.md`;
-      const { data: file } = await octokit.repos.getContent({
-        owner: GITHUB_OWNER,
-        repo: GITHUB_REPO,
-        path
-      });
-
-      await octokit.repos.deleteFile({
-        owner: GITHUB_OWNER,
-        repo: GITHUB_REPO,
-        path,
-        message: `Delete post ${slug}`,
-        sha: file.sha,
-        committer: { name: 'Netlify Bot', email: 'netlify@bot.com' }
-      });
-
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ message: 'Post deleted' })
-      };
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: 'Post created', sha: response.data.content.sha })
+        };
+    } catch (error) {
+        console.error('Save post error:', error);
+        return {
+            statusCode: error.status || 500,
+            body: JSON.stringify({ error: `Failed to save post: ${error.message}` })
+        };
     }
-
-    return { statusCode: 405, body: JSON.stringify({ message: 'Method not allowed' }) };
-  } catch (err) {
-    return { statusCode: err.status || 500, body: JSON.stringify({ message: err.message }) };
-  }
 };
