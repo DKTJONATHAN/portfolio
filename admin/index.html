@@ -3,251 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Jonathan Mwaniki</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Admin Panel</title>
     <script src="https://cdn.tiny.cloud/1/mn8k8hdz6yfspjdieakr2wj6o17ul3zukzga01gsm1jdi0gp/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.0/marked.min.js"></script>
-    <style>
-        .hidden { display: none; }
-        .notification {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            color: white;
-            z-index: 50;
-            transition: opacity 0.5s ease-in-out;
-        }
-        .notification.success { background-color: #10b981; }
-        .notification.error { background-color: #ef4444; }
-        .notification.info { background-color: #3b82f6; }
-        #preview-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #preview-content {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            max-width: 90%;
-            max-height: 90%;
-            overflow-y: auto;
-        }
-        #search-container {
-            position: relative;
-            display: inline-block;
-        }
-        #search-input {
-            transition: width 0.3s ease-in-out;
-            width: 0;
-            padding: 0;
-            border: none;
-        }
-        #search-input.active {
-            width: 200px;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-        }
-    </style>
 </head>
-<body class="min-h-screen bg-gray-50 font-sans">
-    <div id="notification-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
-    <div id="preview-modal" class="hidden">
-        <div id="preview-content" class="prose"></div>
+<body>
+    <div id="login-section">
+        <form id="login-form">
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <p id="login-error" style="color: red; display: none;"></p>
     </div>
 
-    <div id="login-section" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-gray-100">
-        <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md mx-4">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Admin Login</h2>
-            <form id="login-form">
-                <input
-                    type="password"
-                    id="password"
-                    class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    placeholder="Enter admin password"
-                    required
-                >
-                <button
-                    type="submit"
-                    id="login-button"
-                    class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400"
-                >
-                    Login
-                </button>
-            </form>
-            <p id="login-error" class="text-red-500 mt-4 text-center hidden"></p>
-        </div>
-    </div>
-
-    <div id="admin-section" class="min-h-screen p-6 hidden">
-        <div class="max-w-3xl mx-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-3xl font-bold text-gray-800">Create Post</h2>
-                <button
-                    id="logout-button"
-                    class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
-                >
-                    Logout
-                </button>
+    <div id="admin-section" style="display: none;">
+        <h2>Create Post</h2>
+        <form id="create-post">
+            <div>
+                <label>Title</label>
+                <input type="text" name="title" required>
             </div>
-
-            <form id="create-post" class="bg-white p-6 rounded-xl shadow-lg mb-8">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                    <input
-                        type="text"
-                        name="title"
-                        id="title-input"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        required
-                    >
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Slug</label>
-                    <input
-                        type="text"
-                        name="slug"
-                        id="slug-input"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        required
-                    >
-                    <p id="slug-error" class="text-red-500 text-sm mt-1 hidden">This slug is already in use</p>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <input
-                        type="text"
-                        name="category"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    >
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Tags (comma-separated)</label>
-                    <input
-                        type="text"
-                        name="tags"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    >
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                    <input
-                        type="text"
-                        name="image"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    >
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                    <input
-                        type="date"
-                        name="date"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        required
-                    >
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
-                    <textarea
-                        id="content-editor"
-                        name="content"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        rows="10"
-                    ></textarea>
-                </div>
-                <div class="flex gap-4">
-                    <button
-                        type="submit"
-                        id="submit-post-button"
-                        class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400"
-                    >
-                        Create Post
-                    </button>
-                    <button
-                        type="button"
-                        id="preview-button"
-                        class="bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors"
-                    >
-                        Preview
-                    </button>
-                    <button
-                        type="button"
-                        id="cancel-edit-button"
-                        class="bg-gray-600 text-white py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors hidden"
-                    >
-                        Cancel Edit
-                    </button>
-                </div>
-            </form>
-            <p id="error" class="text-red-500 text-center mb-4 hidden"></p>
-            <p id="loading" class="text-blue-500 text-center mb-4 hidden">Loading...</p>
-
-            <div class="flex justify-between items-center mb-6">
-                <h2 id="posts-title" class="text-3xl font-bold text-gray-800">Posts</h2>
-                <div id="search-container">
-                    <button id="search-button" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        Search
-                    </button>
-                    <input
-                        type="text"
-                        id="search-input"
-                        class="absolute top-0 right-0 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        placeholder="Search by title..."
-                    >
-                </div>
+            <div>
+                <label>Slug</label>
+                <input type="text" name="slug" required>
             </div>
-            <div id="post-list" class="space-y-4"></div>
-        </div>
+            <div>
+                <label>Category</label>
+                <input type="text" name="category">
+            </div>
+            <div>
+                <label>Tags (comma-separated)</label>
+                <input type="text" name="tags">
+            </div>
+            <div>
+                <label>Image URL</label>
+                <input type="text" name="image">
+            </div>
+            <div>
+                <label>Date</label>
+                <input type="date" name="date" required>
+            </div>
+            <div>
+                <label>Content</label>
+                <textarea id="content-editor" name="content" rows="10"></textarea>
+            </div>
+            <button type="submit" id="submit-post-button">Create Post</button>
+            <button type="button" id="cancel-edit-button" style="display: none;">Cancel Edit</button>
+        </form>
+        <p id="error" style="color: red; display: none;"></p>
+        <p id="loading" style="color: blue; display: none;">Loading...</p>
+
+        <h2 id="posts-title">Posts</h2>
+        <div id="post-list"></div>
     </div>
 
     <script>
-        // Store posts globally
         let allPosts = [];
-
-        // Notification system
-        function showNotification(message, type = 'info') {
-            const container = document.getElementById('notification-container');
-            const notification = document.createElement('div');
-            notification.className = `notification ${type} opacity-100`;
-            notification.textContent = message;
-            container.appendChild(notification);
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                setTimeout(() => notification.remove(), 500);
-            }, 3000);
-        }
-
-        // Slug generation function
-        function slugify(text) {
-            return text
-                .toLowerCase()
-                .replace(/[^a-z0-9\s-]/g, '')
-                .trim()
-                .replace(/\s+/g, '-')
-                .replace(/-+/g, '-');
-        }
-
-        // Ensure TinyMCE is ready
-        function waitForTinyMCE(callback) {
-            if (tinymce.get('content-editor')) {
-                callback();
-            } else {
-                setTimeout(() => waitForTinyMCE(callback), 100);
-            }
-        }
 
         // Initialize TinyMCE
         tinymce.init({
@@ -258,113 +68,26 @@
             height: 300,
             setup: (editor) => {
                 editor.on('init', () => {
-                    console.log('TinyMCE initialized for content-editor');
+                    console.log('TinyMCE initialized');
                 });
             }
         });
 
-        // Preview handler
-        document.getElementById('preview-button').addEventListener('click', () => {
-            const content = tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : document.getElementById('content-editor').value;
-            const modal = document.getElementById('preview-modal');
-            const previewContent = document.getElementById('preview-content');
-            previewContent.innerHTML = marked.parse(content || 'No content to preview');
-            modal.classList.remove('hidden');
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.add('hidden');
-                }
-            });
-            showNotification('Preview opened', 'info');
-        });
-
-        // Search handler
-        const searchButton = document.getElementById('search-button');
-        const searchInput = document.getElementById('search-input');
-        searchButton.addEventListener('click', () => {
-            searchInput.classList.toggle('active');
-            if (searchInput.classList.contains('active')) {
-                searchInput.focus();
+        // Ensure TinyMCE is ready
+        function waitForTinyMCE(callback) {
+            if (tinymce.get('content-editor')) {
+                callback();
             } else {
-                searchInput.value = '';
-                loadPosts('');
-            }
-        });
-        searchInput.addEventListener('input', () => {
-            loadPosts(searchInput.value);
-        });
-        searchInput.addEventListener('blur', () => {
-            if (!searchInput.value) {
-                searchInput.classList.remove('active');
-                loadPosts('');
-            }
-        });
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                loadPosts(searchInput.value);
-                searchInput.classList.remove('active');
-            }
-        });
-
-        // Check session and load posts on login
-        async function checkSession() {
-            const password = localStorage.getItem('admin_password');
-            if (password) {
-                try {
-                    const response = await fetch('/api/login', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: new URLSearchParams({ password }).toString()
-                    });
-                    if (response.ok) {
-                        document.getElementById('login-section').classList.add('hidden');
-                        document.getElementById('admin-section').classList.remove('hidden');
-                        showNotification('Session restored', 'success');
-                        await loadPosts();
-                    } else {
-                        localStorage.removeItem('admin_password');
-                        showNotification('Invalid session, please log in', 'error');
-                    }
-                } catch (err) {
-                    localStorage.removeItem('admin_password');
-                    showNotification('Session check failed: ' + err.message, 'error');
-                }
+                setTimeout(() => waitForTinyMCE(callback), 100);
             }
         }
-
-        // Run session check on load
-        checkSession();
-
-        // Logout functionality
-        document.getElementById('logout-button').addEventListener('click', () => {
-            localStorage.removeItem('admin_password');
-            allPosts = [];
-            document.getElementById('admin-section').classList.add('hidden');
-            document.getElementById('login-section').classList.remove('hidden');
-            document.getElementById('login-error').classList.add('hidden');
-            document.getElementById('error').classList.add('hidden');
-            document.getElementById('create-post').reset();
-            if (tinymce.get('content-editor')) {
-                tinymce.get('content-editor').setContent('');
-            }
-            delete document.getElementById('create-post').dataset.editSlug;
-            document.getElementById('submit-post-button').textContent = 'Create Post';
-            document.getElementById('cancel-edit-button').classList.add('hidden');
-            document.getElementById('slug-error').classList.add('hidden');
-            searchInput.value = '';
-            searchInput.classList.remove('active');
-            showNotification('Logged out successfully', 'info');
-        });
 
         // Login handler
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const password = document.getElementById('password').value;
             const error = document.getElementById('login-error');
-            const loginButton = document.getElementById('login-button');
-            error.classList.add('hidden');
-            loginButton.textContent = 'Logging in...';
-            loginButton.disabled = true;
+            error.style.display = 'none';
 
             try {
                 const response = await fetch('/api/login', {
@@ -372,83 +95,19 @@
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({ password }).toString()
                 });
-                const data = await response.json();
                 if (response.ok) {
-                    localStorage.setItem('admin_password', password);
-                    document.getElementById('login-section').classList.add('hidden');
-                    document.getElementById('admin-section').classList.remove('hidden');
-                    showNotification('Logged in successfully', 'success');
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('admin-section').style.display = 'block';
                     await loadPosts();
                 } else {
+                    const data = await response.json();
                     error.textContent = data.error || 'Invalid password';
-                    error.classList.remove('hidden');
-                    showNotification('Login failed: ' + (data.error || 'Invalid password'), 'error');
+                    error.style.display = 'block';
                 }
             } catch (err) {
-                error.textContent = 'Failed to login: ' + err.message;
-                error.classList.remove('hidden');
-                showNotification('Login error: ' + err.message, 'error');
-            } finally {
-                loginButton.textContent = 'Login';
-                loginButton.disabled = false;
+                error.textContent = 'Login failed: ' + err.message;
+                error.style.display = 'block';
             }
-        });
-
-        // Slug generation and validation
-        let existingSlugs = [];
-        async function fetchExistingSlugs() {
-            try {
-                const response = await fetch('/api/list-posts?t=' + Date.now());
-                if (!response.ok) {
-                    showNotification('Failed to fetch slugs', 'error');
-                    return [];
-                }
-                const posts = await response.json();
-                return posts.map(post => post.slug || '');
-            } catch (err) {
-                showNotification('Error fetching slugs: ' + err.message, 'error');
-                return [];
-            }
-        }
-
-        const titleInput = document.getElementById('title-input');
-        const slugInput = document.getElementById('slug-input');
-        const slugError = document.getElementById('slug-error');
-        let isManualSlugEdit = false;
-
-        titleInput.addEventListener('input', async () => {
-            if (!isManualSlugEdit && titleInput.value) {
-                const generatedSlug = slugify(titleInput.value);
-                slugInput.value = generatedSlug;
-                existingSlugs = await fetchExistingSlugs();
-                const isEditing = document.getElementById('create-post').dataset.editSlug;
-                if (existingSlugs.includes(generatedSlug) && generatedSlug !== isEditing) {
-                    slugError.textContent = 'This slug is already in use';
-                    slugError.classList.remove('hidden');
-                } else {
-                    slugError.classList.add('hidden');
-                }
-            }
-        });
-
-        slugInput.addEventListener('input', async () => {
-            isManualSlugEdit = true;
-            const slug = slugify(slugInput.value);
-            slugInput.value = slug;
-            existingSlugs = await fetchExistingSlugs();
-            const isEditing = document.getElementById('create-post').dataset.editSlug;
-            if (existingSlugs.includes(slug) && slug !== isEditing) {
-                slugError.textContent = 'This slug is already in use';
-                slugError.classList.remove('hidden');
-            } else {
-                slugError.classList.add('hidden');
-            }
-        });
-
-        // Reset manual edit flag on form reset
-        document.getElementById('create-post').addEventListener('reset', () => {
-            isManualSlugEdit = false;
-            slugError.classList.add('hidden');
         });
 
         // Create/Update post handler
@@ -457,63 +116,53 @@
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
             const submitButton = document.getElementById('submit-post-button');
-            if (slugError.classList.contains('hidden')) {
-                loading.classList.remove('hidden');
-                error.classList.add('hidden');
-                submitButton.disabled = true;
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            submitButton.disabled = true;
 
-                const formData = new FormData(e.target);
-                const postData = {
-                    title: formData.get('title'),
-                    slug: formData.get('slug'),
-                    category: formData.get('category'),
-                    tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
-                    image: formData.get('image') || '',
-                    date: formData.get('date'),
-                    content: tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : formData.get('content')
-                };
+            const formData = new FormData(e.target);
+            const postData = {
+                title: formData.get('title'),
+                slug: formData.get('slug'),
+                category: formData.get('category'),
+                tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
+                image: formData.get('image') || '',
+                date: formData.get('date'),
+                content: tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : formData.get('content')
+            };
 
+            try {
+                const endpoint = e.target.dataset.editSlug ? '/api/update-post' : '/api/save-post';
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(postData).toString()
+                });
+                let responseData;
                 try {
-                    const endpoint = e.target.dataset.editSlug ? '/api/update-post' : '/api/save-post';
-                    showNotification(`Sending ${e.target.dataset.editSlug ? 'update' : 'create'} post request`, 'info');
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: new URLSearchParams(postData).toString()
-                    });
-                    let responseData;
-                    try {
-                        responseData = await response.json();
-                        console.log('Save/Update response:', responseData);
-                    } catch (jsonError) {
-                        console.log('Raw response:', await response.text());
-                        showNotification('Invalid server response', 'error');
-                        throw new Error('Invalid JSON response from server');
-                    }
-                    if (!response.ok) {
-                        throw new Error(responseData.error || `Operation failed: ${response.status}`);
-                    }
-                    e.target.reset();
-                    if (tinymce.get('content-editor')) {
-                        tinymce.get('content-editor').setContent('');
-                    }
-                    submitButton.textContent = 'Create Post';
-                    document.getElementById('cancel-edit-button').classList.add('hidden');
-                    delete e.target.dataset.editSlug;
-                    isManualSlugEdit = false;
-                    slugError.classList.add('hidden');
-                    showNotification('Post saved successfully', 'success');
-                    await loadPosts();
-                } catch (err) {
-                    error.textContent = `Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`;
-                    error.classList.remove('hidden');
-                    showNotification(`Error: ${err.message}`, 'error');
-                } finally {
-                    loading.classList.add('hidden');
-                    submitButton.disabled = !postData.title || !postData.slug || !postData.date || !slugError.classList.contains('hidden');
+                    responseData = await response.json();
+                    console.log('Save/Update response:', responseData);
+                } catch (jsonError) {
+                    console.log('Raw response:', await response.text());
+                    throw new Error('Invalid JSON response');
                 }
-            } else {
-                showNotification('Cannot save: Slug is already in use', 'error');
+                if (!response.ok) {
+                    throw new Error(responseData.error || `Operation failed: ${response.status}`);
+                }
+                e.target.reset();
+                if (tinymce.get('content-editor')) {
+                    tinymce.get('content-editor').setContent('');
+                }
+                submitButton.textContent = 'Create Post';
+                document.getElementById('cancel-edit-button').style.display = 'none';
+                delete e.target.dataset.editSlug;
+                await loadPosts();
+            } catch (err) {
+                error.textContent = `Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`;
+                error.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+                submitButton.disabled = false;
             }
         });
 
@@ -524,88 +173,44 @@
                 tinymce.get('content-editor').setContent('');
             }
             document.getElementById('submit-post-button').textContent = 'Create Post';
-            document.getElementById('cancel-edit-button').classList.add('hidden');
+            document.getElementById('cancel-edit-button').style.display = 'none';
             delete document.getElementById('create-post').dataset.editSlug;
-            isManualSlugEdit = false;
-            slugError.classList.add('hidden');
-            showNotification('Edit cancelled', 'info');
         });
 
-        // Load posts and store globally
-        async function loadPosts(searchQuery = '') {
+        // Load posts
+        async function loadPosts() {
             const postList = document.getElementById('post-list');
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
             const postsTitle = document.getElementById('posts-title');
             postList.innerHTML = '';
-            loading.classList.remove('hidden');
-            error.classList.add('hidden');
+            loading.style.display = 'block';
+            error.style.display = 'none';
 
             try {
-                showNotification('Fetching posts', 'info');
                 const response = await fetch('/api/list-posts?t=' + Date.now());
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.log('Raw response from list-posts:', errorText);
-                    showNotification('Failed to fetch posts: ' + response.status, 'error');
                     throw new Error(`Failed to fetch posts: ${response.status}`);
                 }
                 try {
                     allPosts = await response.json();
                     console.log('Parsed posts:', allPosts);
                 } catch (jsonError) {
-                    const errorText = await response.text();
-                    console.log('Raw response on JSON error:', errorText);
-                    showNotification('Invalid post data: ' + jsonError.message, 'error');
-                    throw new Error('Invalid JSON response from server');
+                    console.log('Raw response on JSON error:', await response.text());
+                    throw new Error('Invalid JSON response');
                 }
-                if (allPosts.error) {
-                    throw new Error(allPosts.error);
-                }
+                postsTitle.textContent = `Posts (${allPosts.length})`;
 
-                // Filter posts by search query
-                let filteredPosts = allPosts;
-                if (searchQuery) {
-                    const queryWords = searchQuery.toLowerCase().split(/\s+/).filter(word => word);
-                    filteredPosts = allPosts.filter(post =>
-                        queryWords.every(word =>
-                            (post.title || '').toLowerCase().includes(word)
-                        )
-                    );
-                }
-
-                postsTitle.textContent = `Posts (${filteredPosts.length})`;
-                showNotification(`Loaded ${filteredPosts.length} posts`, 'success');
-
-                if (filteredPosts.length === 0) {
-                    postList.innerHTML = `
-                        <div class="bg-white p-6 rounded-lg shadow-md text-center text-gray-500">
-                            ${searchQuery ? 'No posts match your search' : 'No posts yet. Create your first post above!'}
-                        </div>
-                    `;
+                if (allPosts.length === 0) {
+                    postList.innerHTML = '<p>No posts yet.</p>';
                 } else {
-                    postList.innerHTML = filteredPosts.map(post => `
-                        <div class="bg-white p-4 rounded-lg shadow-md flex justify-between items-center hover:shadow-xl transition-shadow ${
-                            document.getElementById('create-post').dataset.editSlug === post.slug ? 'ring-2 ring-blue-500' : ''
-                        }">
-                            <div class="flex-1">
-                                <h4 class="text-lg font-medium text-gray-900">${post.title || 'Untitled'}</h4>
-                                ${
-                                    document.getElementById('create-post').dataset.editSlug === post.slug
-                                        ? '<p class="text-xs text-blue-600 mt-1 font-medium">Currently editing</p>'
-                                        : ''
-                                }
-                            </div>
-                            <div class="space-x-2 flex-shrink-0">
-                                <button class="edit-post bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400" data-slug="${post.slug || ''}" ${
-                                    document.getElementById('loading').classList.contains('hidden') ? '' : 'disabled'
-                                }>${
-                                    document.getElementById('create-post').dataset.editSlug === post.slug ? 'Editing' : 'Edit'
-                                }</button>
-                                <button class="delete-post bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors disabled:bg-blue-400" data-slug="${post.slug || ''}" ${
-                                    document.getElementById('loading').classList.contains('hidden') ? '' : 'disabled'
-                                }>Delete</button>
-                            </div>
+                    postList.innerHTML = allPosts.map(post => `
+                        <div style="margin-bottom: 1rem;">
+                            <span>${post.title || 'Untitled'}</span>
+                            <button class="edit-post" data-slug="${post.slug || ''}" style="margin-left: 1rem;">Edit</button>
+                            <button class="delete-post" data-slug="${post.slug || ''}" style="margin-left: 0.5rem;">Delete</button>
                         </div>
                     `).join('');
                 }
@@ -624,14 +229,11 @@
                 function handleEdit(e) {
                     const slug = e.target.dataset.slug;
                     if (!slug) {
-                        showNotification('No slug found for post', 'error');
                         console.log('No slug for edit button');
                         return;
                     }
-                    showNotification(`Loading post ${slug} for editing`, 'info');
                     const post = allPosts.find(p => p.slug === slug);
                     if (!post) {
-                        showNotification('Post not found', 'error');
                         console.log('Post not found for slug:', slug);
                         return;
                     }
@@ -648,27 +250,20 @@
                             console.log('Content set in TinyMCE:', content);
                         } else {
                             document.getElementById('content-editor').value = content;
-                            showNotification('TinyMCE not ready, using textarea', 'error');
                         }
                     });
                     document.getElementById('submit-post-button').textContent = 'Update Post';
-                    document.getElementById('cancel-edit-button').classList.remove('hidden');
+                    document.getElementById('cancel-edit-button').style.display = 'inline-block';
                     document.getElementById('create-post').dataset.editSlug = slug;
-                    isManualSlugEdit = true;
-                    slugError.classList.add('hidden');
-                    showNotification('Post loaded for editing', 'success');
-                    document.querySelector('h2').scrollIntoView({ behavior: 'smooth' });
                 }
 
                 function handleDelete(e) {
                     const slug = e.target.dataset.slug;
                     if (!slug) {
-                        showNotification('No slug found for post', 'error');
                         console.log('No slug for delete button');
                         return;
                     }
-                    if (!confirm('Are you sure you want to delete this post?')) return;
-                    showNotification(`Deleting post ${slug}`, 'info');
+                    if (!confirm('Delete this post?')) return;
                     fetch('/api/delete-post', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -685,55 +280,29 @@
                         })
                         .then(data => {
                             console.log('Delete response:', data);
-                            showNotification('Post deleted successfully', 'success');
                             if (document.getElementById('create-post').dataset.editSlug === slug) {
                                 document.getElementById('create-post').reset();
                                 if (tinymce.get('content-editor')) {
                                     tinymce.get('content-editor').setContent('');
                                 }
                                 document.getElementById('submit-post-button').textContent = 'Create Post';
-                                document.getElementById('cancel-edit-button').classList.add('hidden');
+                                document.getElementById('cancel-edit-button').style.display = 'none';
                                 delete document.getElementById('create-post').dataset.editSlug;
-                                isManualSlugEdit = false;
-                                slugError.classList.add('hidden');
                             }
-                            loadPosts(searchInput.value);
+                            loadPosts();
                         })
                         .catch(err => {
                             document.getElementById('error').textContent = 'Failed to delete post: ' + err.message;
-                            document.getElementById('error').classList.remove('hidden');
-                            showNotification(`Error deleting post: ${err.message}`, 'error');
+                            document.getElementById('error').style.display = 'block';
                         });
                 }
             } catch (err) {
-                document.getElementById('error').textContent = `Failed to fetch posts: ${err.message}`;
-                document.getElementById('error').classList.remove('hidden');
-                showNotification(`Error fetching posts: ${err.message}`, 'error');
+                error.textContent = 'Failed to fetch posts: ' + err.message;
+                error.style.display = 'block';
             } finally {
-                loading.classList.add('hidden');
+                loading.style.display = 'none';
             }
         }
-
-        // Enable/disable submit button based on form input
-        document.getElementById('create-post').addEventListener('input', async () => {
-            const formData = new FormData(document.getElementById('create-post'));
-            const postData = {
-                title: formData.get('title'),
-                slug: formData.get('slug'),
-                date: formData.get('date')
-            };
-            const isEditing = document.getElementById('create-post').dataset.editSlug;
-            if (!isEditing && postData.slug) {
-                existingSlugs = await fetchExistingSlugs();
-                if (existingSlugs.includes(postData.slug) && postData.slug !== isEditing) {
-                    slugError.textContent = 'This slug is already in use';
-                    slugError.classList.remove('hidden');
-                } else {
-                    slugError.classList.add('hidden');
-                }
-            }
-            document.getElementById('submit-post-button').disabled = !postData.title || !postData.slug || !postData.date || !slugError.classList.contains('hidden');
-        });
     </script>
 </body>
 </html>
