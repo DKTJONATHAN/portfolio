@@ -1,18 +1,24 @@
-import jwt from 'jsonwebtoken';
+exports.handler = async (event) => {
+    const { password } = JSON.parse(event.body);
 
-export const handler = async (event) => {
-  const { password } = JSON.parse(event.body);
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+    if (!password) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ error: 'Password is required' })
+        };
+    }
 
-  if (password === ADMIN_PASSWORD) {
-    const token = jwt.sign({ user: 'admin' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (password !== adminPassword) {
+        return {
+            statusCode: 401,
+            body: JSON.stringify({ error: 'Invalid password' })
+        };
+    }
+
     return {
-      statusCode: 200,
-      body: JSON.stringify({ token })
+        statusCode: 200,
+        body: JSON.stringify({ message: 'Login successful' })
     };
-  }
-  return {
-    statusCode: 401,
-    body: JSON.stringify({ message: 'Invalid password' })
-  };
 };
