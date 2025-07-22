@@ -1,8 +1,13 @@
 {
-  "name": "jonathanmwaniki",
+  "name": "portfolio-admin",
   "version": "1.0.0",
+  "description": "Admin panel for DKTJONATHAN/portfolio",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'Build completed'"
+  },
   "dependencies": {
-    "@octokit/rest": "^19.0.0",
-    "js-yaml": "^4.1.0"
+    "jsonwebtoken": "^9.0.2",
+    "node-fetch": "^3.3.2"
   }
 }
