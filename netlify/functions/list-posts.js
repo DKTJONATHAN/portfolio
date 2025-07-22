@@ -69,4 +69,4 @@ exports.handler = async (event) => {
         console.error('list-posts: Error:', error.message, error.stack);
         return { statusCode: error.status || 500, headers, body: JSON.stringify({ error: `Failed to fetch posts: ${error.message}` }) };
     }
-};
+}; 
