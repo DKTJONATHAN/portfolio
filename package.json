@@ -1,13 +1,14 @@
 {
-  "name": "portfolio-admin",
+  "name": "jonathanmwaniki-blog",
   "version": "1.0.0",
-  "description": "Admin panel for DKTJONATHAN/portfolio",
-  "main": "index.js",
-  "scripts": {
-    "build": "echo 'Build completed'"
-  },
+  "description": "Blog admin panel for managing posts",
   "dependencies": {
-    "jsonwebtoken": "^9.0.2",
-    "node-fetch": "^3.3.2"
-  }
+    "@octokit/rest": "^19.0.13",
+    "js-yaml": "^4.1.0"
+  },
+  "scripts": {
+    "start": "netlify dev"
+  },
+  "author": "Jonathan Mwaniki",
+  "license": "MIT"
 }
