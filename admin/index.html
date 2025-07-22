@@ -4,60 +4,169 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.tiny.cloud/1/mn8k8hdz6yfspjdieakr2wj6o17ul3zukzga01gsm1jdi0gp/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
-<body>
-    <div id="login-section">
-        <form id="login-form">
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
-        <p id="login-error" style="color: red; display: none;"></p>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Login Section -->
+    <div id="login-section" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Admin Panel</h1>
+                <p class="text-gray-600">Enter your password to continue</p>
+            </div>
+            
+            <form id="login-form" class="space-y-6">
+                <div class="relative">
+                    <input type="password" id="password" placeholder="Password" required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                </div>
+                <button type="submit" 
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 transform hover:scale-105">
+                    Login
+                </button>
+            </form>
+            <p id="login-error" class="text-red-500 text-sm mt-4 hidden text-center"></p>
+        </div>
     </div>
 
-    <div id="admin-section" style="display: none;">
-        <h2>Create Post</h2>
-        <form id="create-post">
-            <div>
-                <label>Title</label>
-                <input type="text" name="title" required>
+    <!-- Admin Section -->
+    <div id="admin-section" class="hidden min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-6">
+                    <h1 class="text-3xl font-bold text-gray-900">Blog Admin Panel</h1>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-600">Welcome, Admin</span>
+                        <div class="h-8 w-8 bg-blue-600 rounded-full"></div>
+                    </div>
+                </div>
             </div>
-            <div>
-                <label>Slug</label>
-                <input type="text" name="slug" required>
-            </div>
-            <div>
-                <label>Category</label>
-                <input type="text" name="category">
-            </div>
-            <div>
-                <label>Tags (comma-separated)</label>
-                <input type="text" name="tags">
-            </div>
-            <div>
-                <label>Image URL</label>
-                <input type="text" name="image">
-            </div>
-            <div>
-                <label>Date</label>
-                <input type="date" name="date" required>
-            </div>
-            <div>
-                <label>Content</label>
-                <textarea id="content-editor" name="content" rows="10"></textarea>
-            </div>
-            <button type="submit" id="submit-post-button">Create Post</button>
-            <button type="button" id="cancel-edit-button" style="display: none;">Cancel Edit</button>
-        </form>
-        <p id="error" style="color: red; display: none;"></p>
-        <p id="loading" style="color: blue; display: none;">Loading...</p>
+        </header>
 
-        <h2 id="posts-title">Posts</h2>
-        <div id="post-list"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Create/Edit Post Form -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Create Post</h2>
+                        
+                        <form id="create-post" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                                    <input type="text" name="title" required
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Slug</label>
+                                    <input type="text" name="slug" required
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                    <input type="text" name="category"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tags (comma-separated)</label>
+                                    <input type="text" name="tags"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                                    <input type="text" name="image"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                    <input type="date" name="date" required
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                                <textarea id="content-editor" name="content" rows="10"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"></textarea>
+                            </div>
+
+                            <div class="flex space-x-4">
+                                <button type="submit" id="submit-post-button"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105 disabled:opacity-50 disabled:transform-none">
+                                    Create Post
+                                </button>
+                                <button type="button" id="cancel-edit-button" class="hidden bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
+                                    Cancel Edit
+                                </button>
+                                <button type="button" id="preview-button"
+                                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
+                                    Preview
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Status Messages -->
+                        <div class="mt-4">
+                            <p id="error" class="text-red-500 text-sm hidden bg-red-50 border border-red-200 rounded-lg p-3"></p>
+                            <p id="loading" class="text-blue-500 text-sm hidden bg-blue-50 border border-blue-200 rounded-lg p-3">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Posts List -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 id="posts-title" class="text-xl font-bold text-gray-900">Posts</h2>
+                        </div>
+
+                        <!-- Search Bar -->
+                        <div class="mb-6">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="search-input" placeholder="Search posts..."
+                                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                            </div>
+                        </div>
+
+                        <!-- Posts List -->
+                        <div id="post-list" class="space-y-3 max-h-96 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center rounded-t-xl">
+                <h3 class="text-2xl font-bold text-gray-900">Post Preview</h3>
+                <button id="close-preview" class="text-gray-400 hover:text-gray-600 transition duration-200">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="preview-content" class="p-6"></div>
+        </div>
     </div>
 
     <script>
         let allPosts = [];
+        let filteredPosts = [];
 
         // Initialize TinyMCE
         tinymce.init({
@@ -73,6 +182,84 @@
             }
         });
 
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                filteredPosts = [...allPosts];
+            } else {
+                filteredPosts = allPosts.filter(post => 
+                    post.title && post.title.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            displayPosts(filteredPosts);
+        });
+
+        // Preview functionality
+        document.getElementById('preview-button').addEventListener('click', () => {
+            const formData = new FormData(document.getElementById('create-post'));
+            const previewData = {
+                title: formData.get('title') || 'Untitled Post',
+                category: formData.get('category') || 'Uncategorized',
+                tags: formData.get('tags'),
+                image: formData.get('image'),
+                date: formData.get('date') || new Date().toISOString().split('T')[0],
+                content: tinymce.get('content-editor') ? tinymce.get('content-editor').getContent() : formData.get('content')
+            };
+
+            const previewHTML = generatePreviewHTML(previewData);
+            document.getElementById('preview-content').innerHTML = previewHTML;
+            document.getElementById('preview-modal').classList.remove('hidden');
+        });
+
+        document.getElementById('close-preview').addEventListener('click', () => {
+            document.getElementById('preview-modal').classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('preview-modal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                document.getElementById('preview-modal').classList.add('hidden');
+            }
+        });
+
+        function generatePreviewHTML(data) {
+            const formattedDate = new Date(data.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            const tags = data.tags ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+
+            return `
+                <article class="prose prose-lg max-w-none">
+                    ${data.image ? `<img src="${data.image}" alt="${data.title}" class="w-full h-64 object-cover rounded-lg mb-6">` : ''}
+                    
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold text-gray-900 mb-4">${data.title}</h1>
+                        
+                        <div class="flex items-center space-x-4 text-gray-600 mb-4">
+                            <time datetime="${data.date}">${formattedDate}</time>
+                            ${data.category ? `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">${data.category}</span>` : ''}
+                        </div>
+                        
+                        ${tags.length > 0 ? `
+                            <div class="flex flex-wrap gap-2">
+                                ${tags.map(tag => `<span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm">#${tag}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </header>
+                    
+                    <div class="prose prose-lg max-w-none">
+                        ${data.content || '<p class="text-gray-500 italic">No content available</p>'}
+                    </div>
+                </article>
+            `;
+        }
+
         // Ensure TinyMCE is ready
         function waitForTinyMCE(callback) {
             if (tinymce.get('content-editor')) {
@@ -87,7 +274,7 @@
             e.preventDefault();
             const password = document.getElementById('password').value;
             const error = document.getElementById('login-error');
-            error.style.display = 'none';
+            error.classList.add('hidden');
 
             try {
                 const response = await fetch('/api/login', {
@@ -96,17 +283,17 @@
                     body: new URLSearchParams({ password }).toString()
                 });
                 if (response.ok) {
-                    document.getElementById('login-section').style.display = 'none';
-                    document.getElementById('admin-section').style.display = 'block';
+                    document.getElementById('login-section').classList.add('hidden');
+                    document.getElementById('admin-section').classList.remove('hidden');
                     await loadPosts();
                 } else {
                     const data = await response.json();
                     error.textContent = data.error || 'Invalid password';
-                    error.style.display = 'block';
+                    error.classList.remove('hidden');
                 }
             } catch (err) {
                 error.textContent = 'Login failed: ' + err.message;
-                error.style.display = 'block';
+                error.classList.remove('hidden');
             }
         });
 
@@ -116,8 +303,8 @@
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
             const submitButton = document.getElementById('submit-post-button');
-            loading.style.display = 'block';
-            error.style.display = 'none';
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
             submitButton.disabled = true;
 
             const formData = new FormData(e.target);
@@ -154,14 +341,14 @@
                     tinymce.get('content-editor').setContent('');
                 }
                 submitButton.textContent = 'Create Post';
-                document.getElementById('cancel-edit-button').style.display = 'none';
+                document.getElementById('cancel-edit-button').classList.add('hidden');
                 delete e.target.dataset.editSlug;
                 await loadPosts();
             } catch (err) {
                 error.textContent = `Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`;
-                error.style.display = 'block';
+                error.classList.remove('hidden');
             } finally {
-                loading.style.display = 'none';
+                loading.classList.add('hidden');
                 submitButton.disabled = false;
             }
         });
@@ -173,19 +360,60 @@
                 tinymce.get('content-editor').setContent('');
             }
             document.getElementById('submit-post-button').textContent = 'Create Post';
-            document.getElementById('cancel-edit-button').style.display = 'none';
+            document.getElementById('cancel-edit-button').classList.add('hidden');
             delete document.getElementById('create-post').dataset.editSlug;
         });
+
+        // Display posts function
+        function displayPosts(posts) {
+            const postList = document.getElementById('post-list');
+            const postsTitle = document.getElementById('posts-title');
+            
+            postsTitle.textContent = `Posts (${posts.length})`;
+            
+            if (posts.length === 0) {
+                postList.innerHTML = '<p class="text-gray-500 text-center py-8">No posts found.</p>';
+            } else {
+                postList.innerHTML = posts.map(post => `
+                    <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition duration-200">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-medium text-gray-900 truncate">${post.title || 'Untitled'}</h3>
+                                <p class="text-sm text-gray-500 mt-1">${post.date || 'No date'}</p>
+                            </div>
+                            <div class="flex space-x-2 ml-4">
+                                <button class="edit-post bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
+                                    Edit
+                                </button>
+                                <button class="delete-post bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Bind event listeners
+            document.querySelectorAll('.edit-post').forEach(button => {
+                button.removeEventListener('click', handleEdit);
+                button.addEventListener('click', handleEdit);
+            });
+
+            document.querySelectorAll('.delete-post').forEach(button => {
+                button.removeEventListener('click', handleDelete);
+                button.addEventListener('click', handleDelete);
+            });
+        }
 
         // Load posts
         async function loadPosts() {
             const postList = document.getElementById('post-list');
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
-            const postsTitle = document.getElementById('posts-title');
-            postList.innerHTML = '';
-            loading.style.display = 'block';
-            error.style.display = 'none';
+            postList.innerHTML = '<div class="text-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div></div>';
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
 
             try {
                 const response = await fetch('/api/list-posts?t=' + Date.now());
@@ -196,112 +424,93 @@
                 }
                 try {
                     allPosts = await response.json();
+                    filteredPosts = [...allPosts];
                     console.log('Parsed posts:', allPosts);
                 } catch (jsonError) {
                     console.log('Raw response on JSON error:', await response.text());
                     throw new Error('Invalid JSON response');
                 }
-                postsTitle.textContent = `Posts (${allPosts.length})`;
 
-                if (allPosts.length === 0) {
-                    postList.innerHTML = '<p>No posts yet.</p>';
-                } else {
-                    postList.innerHTML = allPosts.map(post => `
-                        <div style="margin-bottom: 1rem;">
-                            <span>${post.title || 'Untitled'}</span>
-                            <button class="edit-post" data-slug="${post.slug || ''}" style="margin-left: 1rem;">Edit</button>
-                            <button class="delete-post" data-slug="${post.slug || ''}" style="margin-left: 0.5rem;">Delete</button>
-                        </div>
-                    `).join('');
-                }
+                displayPosts(filteredPosts);
 
-                // Bind event listeners
-                document.querySelectorAll('.edit-post').forEach(button => {
-                    button.removeEventListener('click', handleEdit);
-                    button.addEventListener('click', handleEdit);
-                });
-
-                document.querySelectorAll('.delete-post').forEach(button => {
-                    button.removeEventListener('click', handleDelete);
-                    button.addEventListener('click', handleDelete);
-                });
-
-                function handleEdit(e) {
-                    const slug = e.target.dataset.slug;
-                    if (!slug) {
-                        console.log('No slug for edit button');
-                        return;
-                    }
-                    const post = allPosts.find(p => p.slug === slug);
-                    if (!post) {
-                        console.log('Post not found for slug:', slug);
-                        return;
-                    }
-                    document.querySelector('input[name="title"]').value = post.title || '';
-                    document.querySelector('input[name="slug"]').value = post.slug || '';
-                    document.querySelector('input[name="category"]').value = post.category || '';
-                    document.querySelector('input[name="tags"]').value = Array.isArray(post.tags) ? post.tags.join(', ') : post.tags || '';
-                    document.querySelector('input[name="image"]').value = post.image || '';
-                    document.querySelector('input[name="date"]').value = post.date || '';
-                    waitForTinyMCE(() => {
-                        const content = post.content || '';
-                        if (tinymce.get('content-editor')) {
-                            tinymce.get('content-editor').setContent(content);
-                            console.log('Content set in TinyMCE:', content);
-                        } else {
-                            document.getElementById('content-editor').value = content;
-                        }
-                    });
-                    document.getElementById('submit-post-button').textContent = 'Update Post';
-                    document.getElementById('cancel-edit-button').style.display = 'inline-block';
-                    document.getElementById('create-post').dataset.editSlug = slug;
-                }
-
-                function handleDelete(e) {
-                    const slug = e.target.dataset.slug;
-                    if (!slug) {
-                        console.log('No slug for delete button');
-                        return;
-                    }
-                    if (!confirm('Delete this post?')) return;
-                    fetch('/api/delete-post', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: new URLSearchParams({ slug }).toString()
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                return response.text().then(errorText => {
-                                    console.log('Raw delete response:', errorText);
-                                    throw new Error(`Failed to delete post: ${response.status}`);
-                                });
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            console.log('Delete response:', data);
-                            if (document.getElementById('create-post').dataset.editSlug === slug) {
-                                document.getElementById('create-post').reset();
-                                if (tinymce.get('content-editor')) {
-                                    tinymce.get('content-editor').setContent('');
-                                }
-                                document.getElementById('submit-post-button').textContent = 'Create Post';
-                                document.getElementById('cancel-edit-button').style.display = 'none';
-                                delete document.getElementById('create-post').dataset.editSlug;
-                            }
-                            loadPosts();
-                        })
-                        .catch(err => {
-                            document.getElementById('error').textContent = 'Failed to delete post: ' + err.message;
-                            document.getElementById('error').style.display = 'block';
-                        });
-                }
             } catch (err) {
                 error.textContent = 'Failed to fetch posts: ' + err.message;
-                error.style.display = 'block';
+                error.classList.remove('hidden');
+                postList.innerHTML = '<p class="text-red-500 text-center py-8">Failed to load posts</p>';
             } finally {
-                loading.style.display = 'none';
+                loading.classList.add('hidden');
             }
+        }
+
+        function handleEdit(e) {
+            const slug = e.target.dataset.slug;
+            if (!slug) {
+                console.log('No slug for edit button');
+                return;
+            }
+            const post = allPosts.find(p => p.slug === slug);
+            if (!post) {
+                console.log('Post not found for slug:', slug);
+                return;
+            }
+            document.querySelector('input[name="title"]').value = post.title || '';
+            document.querySelector('input[name="slug"]').value = post.slug || '';
+            document.querySelector('input[name="category"]').value = post.category || '';
+            document.querySelector('input[name="tags"]').value = Array.isArray(post.tags) ? post.tags.join(', ') : post.tags || '';
+            document.querySelector('input[name="image"]').value = post.image || '';
+            document.querySelector('input[name="date"]').value = post.date || '';
+            waitForTinyMCE(() => {
+                const content = post.content || '';
+                if (tinymce.get('content-editor')) {
+                    tinymce.get('content-editor').setContent(content);
+                    console.log('Content set in TinyMCE:', content);
+                } else {
+                    document.getElementById('content-editor').value = content;
+                }
+            });
+            document.getElementById('submit-post-button').textContent = 'Update Post';
+            document.getElementById('cancel-edit-button').classList.remove('hidden');
+            document.getElementById('create-post').dataset.editSlug = slug;
+        }
+
+        function handleDelete(e) {
+            const slug = e.target.dataset.slug;
+            if (!slug) {
+                console.log('No slug for delete button');
+                return;
+            }
+            if (!confirm('Delete this post?')) return;
+            fetch('/api/delete-post', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ slug }).toString()
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(errorText => {
+                            console.log('Raw delete response:', errorText);
+                            throw new Error(`Failed to delete post: ${response.status}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Delete response:', data);
+                    if (document.getElementById('create-post').dataset.editSlug === slug) {
+                        document.getElementById('create-post').reset();
+                        if (tinymce.get('content-editor')) {
+                            tinymce.get('content-editor').setContent('');
+                        }
+                        document.getElementById('submit-post-button').textContent = 'Create Post';
+                        document.getElementById('cancel-edit-button').classList.add('hidden');
+                        delete document.getElementById('create-post').dataset.editSlug;
+                    }
+                    loadPosts();
+                })
+                .catch(err => {
+                    document.getElementById('error').textContent = 'Failed to delete post: ' + err.message;
+                    document.getElementById('error').classList.remove('hidden');
+                });
         }
     </script>
 </body>
