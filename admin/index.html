@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -107,6 +107,19 @@
         .ql-font-open-sans { font-family: 'Open Sans', sans-serif; }
         .ql-font-merriweather { font-family: Merriweather, serif; }
         .ql-font-source-serif-pro { font-family: 'Source Serif Pro', serif; }
+        
+        /* Notification styles */
+        .notification {
+            animation: slideIn 0.3s forwards, fadeOut 0.5s forwards 3s;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -259,6 +272,14 @@
         </div>
     </div>
 
+    <!-- Notification System -->
+    <div id="notification" class="fixed bottom-4 right-4 hidden z-[1100]">
+        <div class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3">
+            <i id="notification-icon" class="fas fa-check"></i>
+            <span id="notification-message">Operation completed successfully</span>
+        </div>
+    </div>
+
     <script>
         let allPosts = [];
         let filteredPosts = [];
@@ -269,6 +290,32 @@
             codeBlockStyle: 'indented',
             linkStyle: 'inlined'
         });
+
+        // Show notification function
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            const icon = document.getElementById('notification-icon');
+            const msgElement = document.getElementById('notification-message');
+            
+            // Set notification style based on success/error
+            if (isError) {
+                notification.firstElementChild.className = 'bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3';
+                icon.className = 'fas fa-exclamation-circle';
+            } else {
+                notification.firstElementChild.className = 'bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3';
+                icon.className = 'fas fa-check';
+            }
+            
+            msgElement.textContent = message;
+            notification.classList.remove('hidden');
+            notification.classList.add('notification');
+            
+            // Remove notification after animation
+            setTimeout(() => {
+                notification.classList.remove('notification');
+                notification.classList.add('hidden');
+            }, 3500);
+        }
 
         // Initialize Quill with font support
         function initQuill() {
@@ -617,15 +664,18 @@
                 if (response.ok) {
                     document.getElementById('login-section').classList.add('hidden');
                     document.getElementById('admin-section').classList.remove('hidden');
+                    showNotification('Login successful!');
                     await loadPosts();
                 } else {
                     const data = await response.json();
                     error.textContent = data.error || 'Invalid password';
                     error.classList.remove('hidden');
+                    showNotification('Login failed: ' + (data.error || 'Invalid password'), true);
                 }
             } catch (err) {
                 error.textContent = 'Login failed: ' + err.message;
                 error.classList.remove('hidden');
+                showNotification('Login failed: ' + err.message, true);
             }
         });
 
@@ -651,7 +701,6 @@
                 date: formData.get('date'),
                 content: markdownContent
             };
-            console.log('Post data to send:', postData);
 
             try {
                 const endpoint = e.target.dataset.editSlug ? '/api/update-post' : '/api/save-post';
@@ -661,27 +710,31 @@
                     body: new URLSearchParams(postData).toString(),
                     signal: AbortSignal.timeout(30000)
                 });
+                
                 let responseData;
                 try {
                     responseData = await response.json();
-                    console.log('Save/Update response:', responseData);
                 } catch (jsonError) {
                     const rawResponse = await response.text();
-                    console.log('Raw response:', rawResponse);
                     throw new Error('Invalid JSON response: ' + rawResponse);
                 }
+                
                 if (!response.ok) {
                     throw new Error(responseData.error || `Operation failed: ${response.status}`);
                 }
+                
                 e.target.reset();
                 quill.setContents([]);
                 document.getElementById('submit-post-button').textContent = 'Create Post';
                 document.getElementById('cancel-edit-button').classList.add('hidden');
                 delete e.target.dataset.editSlug;
+                
+                showNotification(e.target.dataset.editSlug ? 'Post updated successfully!' : 'Post created successfully!');
                 await loadPosts();
             } catch (err) {
                 error.textContent = `Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`;
                 error.classList.remove('hidden');
+                showNotification(`Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`, true);
             } finally {
                 loading.classList.add('hidden');
                 submitButton.disabled = false;
@@ -695,6 +748,7 @@
             document.getElementById('submit-post-button').textContent = 'Create Post';
             document.getElementById('cancel-edit-button').classList.add('hidden');
             delete document.getElementById('create-post').dataset.editSlug;
+            showNotification('Edit cancelled');
         });
 
         // Display posts function
@@ -749,16 +803,13 @@
                 });
                 if (!response.ok) {
                     const errorText = await response.text();
-                    console.log('Raw response from list-posts:', errorText);
                     throw new Error(`Failed to fetch posts: ${response.status}`);
                 }
                 try {
                     allPosts = await response.json();
                     filteredPosts = [...allPosts];
-                    console.log('Parsed posts:', allPosts);
                 } catch (jsonError) {
                     const rawResponse = await response.text();
-                    console.log('Raw response on JSON error:', rawResponse);
                     throw new Error('Invalid JSON response: ' + rawResponse);
                 }
                 displayPosts(filteredPosts);
@@ -766,6 +817,7 @@
                 error.textContent = 'Failed to fetch posts: ' + err.message;
                 error.classList.remove('hidden');
                 postList.innerHTML = '<p class="text-red-500 text-center py-8">Failed to load posts</p>';
+                showNotification('Failed to load posts: ' + err.message, true);
             } finally {
                 loading.classList.add('hidden');
             }
@@ -792,6 +844,7 @@
             document.getElementById('submit-post-button').textContent = 'Update Post';
             document.getElementById('cancel-edit-button').classList.remove('hidden');
             document.getElementById('create-post').dataset.editSlug = slug;
+            showNotification('Editing post: ' + post.title);
         }
 
         function handleDelete(e) {
@@ -800,37 +853,46 @@
                 console.log('No slug for delete button');
                 return;
             }
-            if (!confirm('Delete this post?')) return;
+            if (!confirm('Are you sure you want to delete this post?')) return;
+            
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
+            
             fetch('/api/delete-post', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ slug }).toString(),
                 signal: AbortSignal.timeout(10000)
             })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.text().then(errorText => {
-                            console.log('Raw delete response:', errorText);
-                            throw new Error(`Failed to delete post: ${response.status}`);
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Delete response:', data);
-                    if (document.getElementById('create-post').dataset.editSlug === slug) {
-                        document.getElementById('create-post').reset();
-                        quill.setContents([]);
-                        document.getElementById('submit-post-button').textContent = 'Create Post';
-                        document.getElementById('cancel-edit-button').classList.add('hidden');
-                        delete document.getElementById('create-post').dataset.editSlug;
-                    }
-                    loadPosts();
-                })
-                .catch(err => {
-                    document.getElementById('error').textContent = 'Failed to delete post: ' + err.message;
-                    document.getElementById('error').classList.remove('hidden');
-                });
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(errorText => {
+                        throw new Error(`Failed to delete post: ${response.status}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (document.getElementById('create-post').dataset.editSlug === slug) {
+                    document.getElementById('create-post').reset();
+                    quill.setContents([]);
+                    document.getElementById('submit-post-button').textContent = 'Create Post';
+                    document.getElementById('cancel-edit-button').classList.add('hidden');
+                    delete document.getElementById('create-post').dataset.editSlug;
+                }
+                showNotification('Post deleted successfully');
+                loadPosts();
+            })
+            .catch(err => {
+                error.textContent = 'Failed to delete post: ' + err.message;
+                error.classList.remove('hidden');
+                showNotification('Failed to delete post: ' + err.message, true);
+            })
+            .finally(() => {
+                loading.classList.add('hidden');
+            });
         }
     </script>
 </body>
