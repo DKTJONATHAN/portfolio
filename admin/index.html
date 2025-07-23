@@ -14,8 +14,8 @@
             border: 1px solid #d1d5db;
             border-radius: 0 0 8px 8px;
             padding: 12px;
-            min-height: 50vh; /* Adaptive height */
-            max-width: 100%; /* Constrain to parent */
+            min-height: 50vh;
+            max-width: 100%;
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 16px;
             background: #fff;
@@ -29,7 +29,8 @@
         }
         .quill-editor .ql-toolbar {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            overflow-x: auto; /* Scrollable toolbar */
             gap: 6px;
             padding: 8px;
             background: #f8fafc;
@@ -39,6 +40,7 @@
             max-width: 100%;
             box-sizing: border-box;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
         }
         .quill-editor .ql-toolbar button, .quill-editor .ql-toolbar .ql-picker {
             background: #ffffff;
@@ -53,6 +55,7 @@
             justify-content: center;
             color: #4b5563;
             transition: all 0.2s ease;
+            flex-shrink: 0;
         }
         .quill-editor .ql-toolbar button:hover, .quill-editor .ql-toolbar .ql-picker:hover {
             background: #e5e7eb;
@@ -88,6 +91,11 @@
         }
         .custom-context-menu button:hover {
             background: #f1f5f9;
+        }
+        .word-count {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -173,6 +181,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
                                 <div id="content-editor" class="quill-editor"></div>
+                                <div id="word-count" class="word-count"></div>
                             </div>
                             <div class="flex space-x-4">
                                 <button type="submit" id="submit-post-button"
@@ -248,12 +257,22 @@
                 theme: 'snow',
                 modules: {
                     toolbar: [
-                        ['bold', 'italic'],
-                        [{ 'header': 1 }, { 'header': 2 }],
-                        ['list'],
-                        ['link', 'image'],
-                        [{ 'background': '#FFFF00' }]
-                    ]
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        ['blockquote', 'code-block', 'link', 'image'],
+                        [{ 'align': [] }],
+                        ['clean'],
+                        ['undo', 'redo'],
+                        [{ 'color': [] }, { 'background': ['#FFFF00'] }],
+                        [{ 'size': ['small', false, 'large', 'huge'] }],
+                        ['superscript', 'subscript']
+                    ],
+                    history: {
+                        delay: 1000,
+                        maxStack: 100,
+                        userOnly: true
+                    }
                 },
                 placeholder: 'Type your content here...'
             });
@@ -296,7 +315,13 @@
                         <button data-action="link">Make Link</button>
                         <button data-action="bold">Bold</button>
                         <button data-action="italic">Italic</button>
+                        <button data-action="underline">Underline</button>
+                        <button data-action="strike">Strikethrough</button>
                         <button data-action="highlight">Highlight</button>
+                        <button data-action="align-left">Align Left</button>
+                        <button data-action="align-center">Align Center</button>
+                        <button data-action="align-right">Align Right</button>
+                        <button data-action="align-justify">Align Justify</button>
                     `;
                     document.body.appendChild(menu);
                     menu.querySelectorAll('button').forEach(button => {
@@ -318,8 +343,15 @@
                                 quill.format('bold', !quill.getFormat().bold);
                             } else if (action === 'italic') {
                                 quill.format('italic', !quill.getFormat().italic);
+                            } else if (action === 'underline') {
+                                quill.format('underline', !quill.getFormat().underline);
+                            } else if (action === 'strike') {
+                                quill.format('strike', !quill.getFormat().strike);
                             } else if (action === 'highlight') {
                                 quill.format('background', quill.getFormat().background === '#FFFF00' ? false : '#FFFF00');
+                            } else if (action.startsWith('align-')) {
+                                const align = action.replace('align-', '');
+                                quill.format('align', align === 'left' ? false : align);
                             }
                             menu.remove();
                         });
@@ -340,37 +372,96 @@
             const toolbar = editor.querySelector('.ql-toolbar');
             toolbar.querySelector('.ql-bold').innerHTML = '<i class="fas fa-bold"></i>';
             toolbar.querySelector('.ql-italic').innerHTML = '<i class="fas fa-italic"></i>';
-            toolbar.querySelector('.ql-header[value="1"]').innerHTML = '<i class="fas fa-heading"></i>';
+            toolbar.querySelector('.ql-underline').innerHTML = '<i class="fas fa-underline"></i>';
+            toolbar.querySelector('.ql-strike').innerHTML = '<i class="fas fa-strikethrough"></i>';
+            toolbar.querySelector('.ql-header[value="1"]').innerHTML = '<i class="fas fa-h1"></i>';
             toolbar.querySelector('.ql-header[value="2"]').innerHTML = '<i class="fas fa-h2"></i>';
-            toolbar.querySelector('.ql-list').innerHTML = '<i class="fas fa-list-ul"></i>';
+            toolbar.querySelector('.ql-header[value="3"]').innerHTML = '<i class="fas fa-h3"></i>';
+            toolbar.querySelector('.ql-header[value="4"]').innerHTML = '<i class="fas fa-h4"></i>';
+            toolbar.querySelector('.ql-header[value="5"]').innerHTML = '<i class="fas fa-h5"></i>';
+            toolbar.querySelector('.ql-header[value="6"]').innerHTML = '<i class="fas fa-h6"></i>';
+            toolbar.querySelector('.ql-list[value="ordered"]').innerHTML = '<i class="fas fa-list-ol"></i>';
+            toolbar.querySelector('.ql-list[value="bullet"]').innerHTML = '<i class="fas fa-list-ul"></i>';
+            toolbar.querySelector('.ql-blockquote').innerHTML = '<i class="fas fa-quote-left"></i>';
+            toolbar.querySelector('.ql-code-block').innerHTML = '<i class="fas fa-code"></i>';
             toolbar.querySelector('.ql-link').innerHTML = '<i class="fas fa-link"></i>';
             toolbar.querySelector('.ql-image').innerHTML = '<i class="fas fa-image"></i>';
+            toolbar.querySelector('.ql-align').innerHTML = '<i class="fas fa-align-left"></i>';
+            toolbar.querySelector('.ql-align[value="center"]').innerHTML = '<i class="fas fa-align-center"></i>';
+            toolbar.querySelector('.ql-align[value="right"]').innerHTML = '<i class="fas fa-align-right"></i>';
+            toolbar.querySelector('.ql-align[value="justify"]').innerHTML = '<i class="fas fa-align-justify"></i>';
+            toolbar.querySelector('.ql-clean').innerHTML = '<i class="fas fa-eraser"></i>';
+            toolbar.querySelector('.ql-undo').innerHTML = '<i class="fas fa-undo"></i>';
+            toolbar.querySelector('.ql-redo').innerHTML = '<i class="fas fa-redo"></i>';
             toolbar.querySelector('.ql-background').innerHTML = '<i class="fas fa-highlighter"></i>';
+            toolbar.querySelector('.ql-color').innerHTML = '<i class="fas fa-palette"></i>';
+            toolbar.querySelector('.ql-size').innerHTML = '<i class="fas fa-text-height"></i>';
+            toolbar.querySelector('.ql-superscript').innerHTML = '<i class="fas fa-superscript"></i>';
+            toolbar.querySelector('.ql-subscript').innerHTML = '<i class="fas fa-subscript"></i>';
+
+            // Word count
+            function updateWordCount() {
+                const text = quill.getText().trim();
+                const words = text ? text.split(/\s+/).length : 0;
+                document.getElementById('word-count').textContent = `Word count: ${words}`;
+            }
+            quill.on('text-change', updateWordCount);
+            updateWordCount();
+
+            // Custom undo/redo buttons
+            const undoButton = document.createElement('button');
+            undoButton.className = 'ql-undo';
+            undoButton.innerHTML = '<i class="fas fa-undo"></i>';
+            toolbar.querySelector('.ql-toolbar').appendChild(undoButton);
+            undoButton.addEventListener('click', () => quill.history.undo());
+
+            const redoButton = document.createElement('button');
+            redoButton.className = 'ql-redo';
+            redoButton.innerHTML = '<i class="fas fa-redo"></i>';
+            toolbar.querySelector('.ql-toolbar').appendChild(redoButton);
+            redoButton.addEventListener('click', () => quill.history.redo());
 
             // Paste handling
             quill.on('text-change', (delta, oldDelta, source) => {
                 if (source === 'user' && delta.ops.some(op => op.insert && typeof op.insert === 'string')) {
                     const text = quill.getText();
-                    if (text.match(/(?:\*\*|__)(.*?)(?:\*\*|__)/) || text.match(/\[([^\]]+)\]\(([^)]+)\)/)) {
-                        let content = text;
-                        content = content.replace(/(?:\*\*|__)(.*?)(?:\*\*|__)/g, '<strong>$1</strong>');
-                        content = content.replace(/(?:\*|_)(.*?)(?:\*|_)/g, '<em>$1</em>');
-                        content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
-                        content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
-                        content = content.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, text) => {
-                            const level = hashes.length;
-                            return `<h${level}>${text}</h${level}>`;
-                        });
-                        content = content.replace(/^(?:-|\*)\s+(.+)$/gm, '<li>$1</li>');
-                        content = content.replace(/(<li>.+<\/li>)/g, '<ul>$1</ul>');
-                        content = content.split('\n\n').map(line => {
-                            if (!line.match(/^(?:<h\d>|<ul>|<img|<a)/)) {
-                                return `<p>${line}</p>`;
-                            }
-                            return line;
-                        }).join('');
-                        quill.setContents([]);
-                        quill.clipboard.dangerouslyPasteHTML(content);
+                    let content = text;
+                    if (/<[a-z][\s\S]*>/i.test(text)) {
+                        // HTML content, let Quill handle it
+                        return;
+                    }
+                    // Markdown or plain text
+                    content = content.replace(/(?:\*\*|__)(.*?)(?:\*\*|__)/g, '<strong>$1</strong>');
+                    content = content.replace(/(?:\*|_)(.*?)(?:\*|_)/g, '<em>$1</em>');
+                    content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+                    content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+                    content = content.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, text) => {
+                        const level = hashes.length;
+                        return `<h${level}>${text}</h${level}>`;
+                    });
+                    content = content.replace(/^(?:-|\*)\s+(.+)$/gm, '<li>$1</li>');
+                    content = content.replace(/(<li>.+<\/li>)/g, '<ul>$1</ul>');
+                    content = content.replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>');
+                    content = content.replace(/`(.*?)`/g, '<code>$1</code>');
+                    content = content.split('\n\n').map(line => {
+                        if (!line.match(/^(?:<h\d>|<ul>|<img|<a|<blockquote|<code)/)) {
+                            return `<p>${line}</p>`;
+                        }
+                        return line;
+                    }).join('');
+                    quill.setContents([]);
+                    quill.clipboard.dangerouslyPasteHTML(content);
+                }
+            });
+
+            // Image drag-and-drop
+            quill.on('editor-change', (eventName, ...args) => {
+                if (eventName === 'text-change' && args[0].ops.some(op => op.insert && op.insert.image)) {
+                    const url = prompt('Enter image URL:');
+                    if (url) {
+                        const range = quill.getSelection();
+                        quill.deleteText(range.index, 1);
+                        quill.insertEmbed(range.index, 'image', url);
                     }
                 }
             });
