@@ -6,16 +6,12 @@
     <title>Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.2/dist/turndown.js"></script>
-    <script src="https://unpkg.com/@tiptap/core@2.7.4/dist/tiptap.min.js"></script>
-    <script src="https://unpkg.com/@tiptap/starter-kit@2.7.4/dist/starter-kit.min.js"></script>
-    <script src="https://unpkg.com/@tiptap/extension-link@2.7.4/dist/link.min.js"></script>
-    <script src="https://unpkg.com/@tiptap/extension-image@2.7.4/dist/image.min.js"></script>
-    <script src="https://unpkg.com/@tiptap/extension-highlight@2.7.4/dist/highlight.min.js"></script>
-    <script src="https://unpkg.com/@tiptap/extension-text-style@2.7.4/dist/text-style.min.js"></script>
-    <script src="https://unpkg.com/@tiptap/extension-markdown@2.7.4/dist/markdown.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        .tiptap-editor {
+        .summernote-editor {
             border: 1px solid #d1d5db;
             border-radius: 0 0 8px 8px;
             padding: 12px;
@@ -27,12 +23,12 @@
             user-select: text !important;
             touch-action: manipulation;
         }
-        .tiptap-editor:focus {
+        .summernote-editor:focus {
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
         }
-        .tiptap-toolbar {
+        .note-toolbar {
             display: flex;
             flex-wrap: wrap; /* Allow buttons to wrap */
             gap: 8px;
@@ -43,23 +39,22 @@
             max-width: 100%; /* Prevent overflow */
             box-sizing: border-box;
         }
-        .tiptap-toolbar button {
+        .note-toolbar .note-btn {
             background: #e5e7eb;
             border: 1px solid #d1d5db;
             padding: 6px;
             border-radius: 4px;
             font-size: 16px; /* Larger for icons */
-            cursor: pointer;
             width: 36px; /* Fixed size for icons */
             height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .tiptap-toolbar button:hover {
+        .note-toolbar .note-btn:hover {
             background: #d1d5db;
         }
-        .tiptap-toolbar button.active {
+        .note-toolbar .note-btn.active {
             background: #3b82f6;
             color: white;
             border-color: #3b82f6;
@@ -169,17 +164,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
-                                <div class="tiptap-toolbar">
-                                    <button data-action="bold" title="Bold"><i class="fas fa-bold"></i></button>
-                                    <button data-action="italic" title="Italic"><i class="fas fa-italic"></i></button>
-                                    <button data-action="heading1" title="Heading 1"><i class="fas fa-heading"></i></button>
-                                    <button data-action="heading2" title="Heading 2"><i class="fas fa-h2"></i></button>
-                                    <button data-action="bulletList" title="Bullet List"><i class="fas fa-list-ul"></i></button>
-                                    <button data-action="link" title="Link"><i class="fas fa-link"></i></button>
-                                    <button data-action="image" title="Image"><i class="fas fa-image"></i></button>
-                                    <button data-action="highlight" title="Highlight"><i class="fas fa-highlighter"></i></button>
-                                </div>
-                                <div id="content-editor" class="tiptap-editor"></div>
+                                <div id="content-editor"></div>
                             </div>
                             <div class="flex space-x-4">
                                 <button type="submit" id="submit-post-button"
@@ -243,7 +228,6 @@
     <script>
         let allPosts = [];
         let filteredPosts = [];
-        let editor = null;
         const turndownService = new TurndownService({
             headingStyle: 'atx',
             bulletListMarker: '-',
@@ -251,182 +235,162 @@
             linkStyle: 'inlined'
         });
 
-        // Initialize Tiptap
-        function initTiptap() {
-            editor = new Tiptap.Editor({
-                element: document.querySelector('#content-editor'),
-                extensions: [
-                    Tiptap.StarterKit,
-                    Tiptap.Link.configure({
-                        openOnClick: false,
-                    }),
-                    Tiptap.Image,
-                    Tiptap.Highlight.configure({ multicolor: true }),
-                    Tiptap.TextStyle,
-                    Tiptap.Markdown.configure({
-                        transformPastedText: true,
-                        transformCopiedText: true,
-                    }),
+        // Initialize Summernote
+        function initSummernote() {
+            $('#content-editor').summernote({
+                height: '50vh', // Adaptive height
+                minHeight: null,
+                maxHeight: null,
+                focus: false,
+                toolbar: [
+                    ['style', ['bold', 'italic', 'style']],
+                    ['para', ['ul']],
+                    ['insert', ['link', 'picture']],
+                    ['misc', ['highlight']]
                 ],
-                content: '',
-                onCreate({ editor }) {
-                    console.log('Tiptap initialized');
-                    const editorElement = document.querySelector('#content-editor');
-                    // Prevent default click to avoid unwanted keyboard
-                    editorElement.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        editorElement.blur();
-                    });
-                    // Double-tap to show keyboard
-                    let lastTap = 0;
-                    editorElement.addEventListener('touchend', (e) => {
-                        const currentTime = new Date().getTime();
-                        const tapLength = currentTime - lastTap;
-                        if (tapLength < 500 && tapLength > 0) {
-                            editor.commands.focus();
-                        }
-                        lastTap = currentTime;
-                    });
-                    // Long-press context menu
-                    let pressTimer;
-                    editorElement.addEventListener('touchstart', (e) => {
-                        pressTimer = setTimeout(() => {
+                styleTags: ['h1', 'h2'],
+                placeholder: 'Type your content here...',
+                callbacks: {
+                    onInit: function() {
+                        console.log('Summernote initialized');
+                        const editor = $('#content-editor').next('.note-editor');
+                        editor.find('.note-editable').addClass('summernote-editor');
+                        // Prevent default click to avoid unwanted keyboard
+                        editor.find('.note-editable').on('click', function(e) {
                             e.preventDefault();
-                            const x = e.touches[0].clientX;
-                            const y = e.touches[0].clientY;
-                            const existingMenu = document.querySelector('.custom-context-menu');
-                            if (existingMenu) existingMenu.remove();
-                            const menu = document.createElement('div');
-                            menu.className = 'custom-context-menu';
-                            menu.style.left = `${x}px`;
-                            menu.style.top = `${y}px`;
-                            menu.innerHTML = `
-                                <button data-action="select">Select Text</button>
-                                <button data-action="link">Make Link</button>
-                                <button data-action="bold">Bold</button>
-                                <button data-action="italic">Italic</button>
-                                <button data-action="highlight">Highlight</button>
-                            `;
-                            document.body.appendChild(menu);
-                            menu.querySelectorAll('button').forEach(button => {
-                                button.addEventListener('click', (e) => {
-                                    e.preventDefault();
-                                    const action = e.target.dataset.action;
-                                    if (action === 'select') {
-                                        const range = document.caretRangeFromPoint(x, y);
-                                        if (range) {
-                                            const selection = window.getSelection();
-                                            selection.removeAllRanges();
-                                            selection.addRange(range);
-                                            editor.commands.focus();
-                                        }
-                                    } else if (action === 'link') {
-                                        const url = prompt('Enter URL:');
-                                        if (url) editor.commands.setLink({ href: url });
-                                    } else if (action === 'bold') {
-                                        editor.commands.toggleBold();
-                                    } else if (action === 'italic') {
-                                        editor.commands.toggleItalic();
-                                    } else if (action === 'highlight') {
-                                        editor.commands.toggleHighlight({ color: '#FFFF00' });
-                                    }
-                                    menu.remove();
-                                });
-                            });
-                            const closeMenu = (e) => {
-                                if (!menu.contains(e.target)) {
-                                    menu.remove();
-                                    document.removeEventListener('click', closeMenu);
-                                }
-                            };
-                            document.addEventListener('click', closeMenu);
-                        }, 500);
-                    });
-                    editorElement.addEventListener('touchend', () => clearTimeout(pressTimer));
-                    editorElement.addEventListener('touchmove', () => clearTimeout(pressTimer));
-                },
-                onPaste({ editor, event }) {
-                    const clipboardData = event.clipboardData.getData('text/plain');
-                    const isPlainText = !/<[a-z][\s\S]*>/i.test(clipboardData);
-                    if (isPlainText) {
-                        let content = clipboardData;
-                        content = content.replace(/(?:\*\*|__)(.*?)(?:\*\*|__)/g, '<strong>$1</strong>');
-                        content = content.replace(/(?:\*|_)(.*?)(?:\*|_)/g, '<em>$1</em>');
-                        content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
-                        content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
-                        content = content.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, text) => {
-                            const level = hashes.length;
-                            return `<h${level}>${text}</h${level}>`;
+                            $(this).blur();
                         });
-                        content = content.replace(/^(?:-|\*)\s+(.+)$/gm, '<li>$1</li>');
-                        content = content.replace(/(<li>.+<\/li>)/g, '<ul>$1</ul>');
-                        content = content.split('\n\n').map(line => {
-                            if (!line.match(/^(?:<h\d>|<ul>|<img|<a)/)) {
-                                return `<p>${line}</p>`;
+                        // Double-tap to show keyboard
+                        let lastTap = 0;
+                        editor.find('.note-editable').on('touchend', function(e) {
+                            const currentTime = new Date().getTime();
+                            const tapLength = currentTime - lastTap;
+                            if (tapLength < 500 && tapLength > 0) {
+                                $(this).focus();
                             }
-                            return line;
-                        }).join('');
-                        editor.commands.setContent(content);
-                        event.preventDefault();
+                            lastTap = currentTime;
+                        });
+                        // Long-press context menu
+                        let pressTimer;
+                        editor.find('.note-editable').on('touchstart', function(e) {
+                            pressTimer = setTimeout(() => {
+                                e.preventDefault();
+                                const x = e.originalEvent.touches[0].clientX;
+                                const y = e.originalEvent.touches[0].clientY;
+                                const existingMenu = document.querySelector('.custom-context-menu');
+                                if (existingMenu) existingMenu.remove();
+                                const menu = document.createElement('div');
+                                menu.className = 'custom-context-menu';
+                                menu.style.left = `${x}px`;
+                                menu.style.top = `${y}px`;
+                                menu.innerHTML = `
+                                    <button data-action="select">Select Text</button>
+                                    <button data-action="link">Make Link</button>
+                                    <button data-action="bold">Bold</button>
+                                    <button data-action="italic">Italic</button>
+                                    <button data-action="highlight">Highlight</button>
+                                `;
+                                document.body.appendChild(menu);
+                                menu.querySelectorAll('button').forEach(button => {
+                                    button.addEventListener('click', (e) => {
+                                        e.preventDefault();
+                                        const action = e.target.dataset.action;
+                                        if (action === 'select') {
+                                            const range = document.caretRangeFromPoint(x, y);
+                                            if (range) {
+                                                const selection = window.getSelection();
+                                                selection.removeAllRanges();
+                                                selection.addRange(range);
+                                                editor.find('.note-editable').focus();
+                                            }
+                                        } else if (action === 'link') {
+                                            const url = prompt('Enter URL:');
+                                            if (url) $('#content-editor').summernote('createLink', { url });
+                                        } else if (action === 'bold') {
+                                            $('#content-editor').summernote('bold');
+                                        } else if (action === 'italic') {
+                                            $('#content-editor').summernote('italic');
+                                        } else if (action === 'highlight') {
+                                            $('#content-editor').summernote('backColor', '#FFFF00');
+                                        }
+                                        menu.remove();
+                                    });
+                                });
+                                const closeMenu = (e) => {
+                                    if (!menu.contains(e.target)) {
+                                        menu.remove();
+                                        document.removeEventListener('click', closeMenu);
+                                    }
+                                };
+                                document.addEventListener('click', closeMenu);
+                            }, 500);
+                        });
+                        editor.find('.note-editable').on('touchend', () => clearTimeout(pressTimer));
+                        editor.find('.note-editable').on('touchmove', () => clearTimeout(pressTimer));
+                        // Customize toolbar icons
+                        editor.find('.note-btn[title="Bold"]').html('<i class="fas fa-bold"></i>');
+                        editor.find('.note-btn[title="Italic"]').html('<i class="fas fa-italic"></i>');
+                        editor.find('.note-btn[title="Heading 1"]').html('<i class="fas fa-heading"></i>');
+                        editor.find('.note-btn[title="Heading 2"]').html('<i class="fas fa-h2"></i>');
+                        editor.find('.note-btn[title="Unordered List"]').html('<i class="fas fa-list-ul"></i>');
+                        editor.find('.note-btn[title="Link"]').html('<i class="fas fa-link"></i>');
+                        editor.find('.note-btn[title="Picture"]').html('<i class="fas fa-image"></i>');
+                        editor.find('.note-btn[title="Highlight"]').html('<i class="fas fa-highlighter"></i>');
+                        // Update active states
+                        function updateToolbar() {
+                            editor.find('.note-btn').removeClass('active');
+                            if ($('#content-editor').summernote('isBold')) {
+                                editor.find('.note-btn[title="Bold"]').addClass('active');
+                            }
+                            if ($('#content-editor').summernote('isItalic')) {
+                                editor.find('.note-btn[title="Italic"]').addClass('active');
+                            }
+                            if ($('#content-editor').summernote('isHeading', 'H1')) {
+                                editor.find('.note-btn[title="Heading 1"]').addClass('active');
+                            }
+                            if ($('#content-editor').summernote('isHeading', 'H2')) {
+                                editor.find('.note-btn[title="Heading 2"]').addClass('active');
+                            }
+                            if ($('#content-editor').summernote('isUnorderedList')) {
+                                editor.find('.note-btn[title="Unordered List"]').addClass('active');
+                            }
+                            if ($('#content-editor').summernote('isHighlight')) {
+                                editor.find('.note-btn[title="Highlight"]').addClass('active');
+                            }
+                        }
+                        editor.find('.note-editable').on('mouseup keyup', updateToolbar);
+                    },
+                    onPaste: function(e) {
+                        const clipboardData = e.originalEvent.clipboardData.getData('text/plain');
+                        const isPlainText = !/<[a-z][\s\S]*>/i.test(clipboardData);
+                        if (isPlainText) {
+                            let content = clipboardData;
+                            content = content.replace(/(?:\*\*|__)(.*?)(?:\*\*|__)/g, '<strong>$1</strong>');
+                            content = content.replace(/(?:\*|_)(.*?)(?:\*|_)/g, '<em>$1</em>');
+                            content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+                            content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+                            content = content.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, text) => {
+                                const level = hashes.length;
+                                return `<h${level}>${text}</h${level}>`;
+                            });
+                            content = content.replace(/^(?:-|\*)\s+(.+)$/gm, '<li>$1</li>');
+                            content = content.replace(/(<li>.+<\/li>)/g, '<ul>$1</ul>');
+                            content = content.split('\n\n').map(line => {
+                                if (!line.match(/^(?:<h\d>|<ul>|<img|<a)/)) {
+                                    return `<p>${line}</p>`;
+                                }
+                                return line;
+                            }).join('');
+                            $('#content-editor').summernote('code', content);
+                            e.preventDefault();
+                        }
                     }
-                },
+                }
             });
-
-            // Toolbar button handlers
-            document.querySelectorAll('.tiptap-toolbar button').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const action = e.target.dataset.action;
-                    if (action === 'bold') {
-                        editor.commands.toggleBold();
-                    } else if (action === 'italic') {
-                        editor.commands.toggleItalic();
-                    } else if (action === 'heading1') {
-                        editor.commands.toggleHeading({ level: 1 });
-                    } else if (action === 'heading2') {
-                        editor.commands.toggleHeading({ level: 2 });
-                    } else if (action === 'bulletList') {
-                        editor.commands.toggleBulletList();
-                    } else if (action === 'link') {
-                        const url = prompt('Enter URL:');
-                        if (url) editor.commands.setLink({ href: url });
-                    } else if (action === 'image') {
-                        const url = prompt('Enter image URL:');
-                        if (url) editor.commands.setImage({ src: url });
-                    } else if (action === 'highlight') {
-                        editor.commands.toggleHighlight({ color: '#FFFF00' });
-                    }
-                    updateToolbar();
-                });
-            });
-
-            // Update toolbar button states
-            function updateToolbar() {
-                document.querySelectorAll('.tiptap-toolbar button').forEach(button => {
-                    const action = button.dataset.action;
-                    button.classList.remove('active');
-                    if (action === 'bold' && editor.isActive('bold')) {
-                        button.classList.add('active');
-                    } else if (action === 'italic' && editor.isActive('italic')) {
-                        button.classList.add('active');
-                    } else if (action === 'heading1' && editor.isActive('heading', { level: 1 })) {
-                        button.classList.add('active');
-                    } else if (action === 'heading2' && editor.isActive('heading', { level: 2 })) {
-                        button.classList.add('active');
-                    } else if (action === 'bulletList' && editor.isActive('bulletList')) {
-                        button.classList.add('active');
-                    } else if (action === 'highlight' && editor.isActive('highlight', { color: '#FFFF00' })) {
-                        button.classList.add('active');
-                    }
-                });
-            }
-
-            editor.on('selectionUpdate', updateToolbar);
-            editor.on('update', updateToolbar);
         }
 
         // Initialize editor after DOM is loaded
-        document.addEventListener('DOMContentLoaded', initTiptap);
+        $(document).ready(initSummernote);
 
         // Search functionality
         document.getElementById('search-input').addEventListener('input', (e) => {
@@ -444,7 +408,7 @@
         // Preview functionality
         document.getElementById('preview-button').addEventListener('click', () => {
             const formData = new FormData(document.getElementById('create-post'));
-            const htmlContent = editor ? editor.getHTML() : formData.get('content');
+            const htmlContent = $('#content-editor').summernote('code');
             const previewData = {
                 title: formData.get('title') || 'Untitled Post',
                 category: formData.get('category') || 'Uncategorized',
@@ -537,7 +501,7 @@
             submitButton.disabled = true;
 
             const formData = new FormData(e.target);
-            const htmlContent = editor ? editor.getHTML() : formData.get('content');
+            const htmlContent = $('#content-editor').summernote('code');
             const markdownContent = turndownService.turndown(htmlContent || '');
             const postData = {
                 title: formData.get('title'),
@@ -573,9 +537,7 @@
                     throw new Error(responseData.error || `Operation failed: ${response.status}`);
                 }
                 e.target.reset();
-                if (editor) {
-                    editor.commands.setContent('');
-                }
+                $('#content-editor').summernote('reset');
                 submitButton.textContent = 'Create Post';
                 document.getElementById('cancel-edit-button').classList.add('hidden');
                 delete e.target.dataset.editSlug;
@@ -592,9 +554,7 @@
         // Cancel edit handler
         document.getElementById('cancel-edit-button').addEventListener('click', () => {
             document.getElementById('create-post').reset();
-            if (editor) {
-                editor.commands.setContent('');
-            }
+            $('#content-editor').summernote('reset');
             document.getElementById('submit-post-button').textContent = 'Create Post';
             document.getElementById('cancel-edit-button').classList.add('hidden');
             delete document.getElementById('create-post').dataset.editSlug;
@@ -691,11 +651,7 @@
             document.querySelector('input[name="tags"]').value = Array.isArray(post.tags) ? post.tags.join(', ') : post.tags || '';
             document.querySelector('input[name="image"]').value = post.image || '';
             document.querySelector('input[name="date"]').value = post.date || '';
-            if (editor) {
-                editor.commands.setContent(post.content || '');
-            } else {
-                document.getElementById('content-editor').innerHTML = post.content || '';
-            }
+            $('#content-editor').summernote('code', post.content || '');
             document.getElementById('submit-post-button').textContent = 'Update Post';
             document.getElementById('cancel-edit-button').classList.remove('hidden');
             document.getElementById('create-post').dataset.editSlug = slug;
@@ -727,9 +683,7 @@
                     console.log('Delete response:', data);
                     if (document.getElementById('create-post').dataset.editSlug === slug) {
                         document.getElementById('create-post').reset();
-                        if (editor) {
-                            editor.commands.setContent('');
-                        }
+                        $('#content-editor').summernote('reset');
                         document.getElementById('submit-post-button').textContent = 'Create Post';
                         document.getElementById('cancel-edit-button').classList.add('hidden');
                         delete document.getElementById('create-post').dataset.editSlug;
