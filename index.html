@@ -39,8 +39,8 @@
     <title>Jonathan Mwaniki | Professional Web Developer & Graphic Designer in Kenya</title>
 
     <!-- Preload Critical Resources -->
-    <link rel="stylesheet" href="styles.min.css">
-    <link rel="preload" href="styles.min.css" as="style">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preload" href="styles.css" as="style">
     <link rel="preload" href="scripts/main.js" as="script">
     <link rel="preload" href="./images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -890,7 +890,7 @@
                     <a href="#services" class="nav-link" aria-label="Services">Services</a>
                     <a href="#portfolio" class="nav-link" aria-label="Portfolio">Portfolio</a>
                     <a href="#blog" class="nav-link" aria-label="Blog">Blog</a>
-                    <a href="#about" class="nav-link" aria-label="About">About</a>
+                    <a href="#about " class="nav-link" aria-label="About">About</a>
                     <a href="#contact" class="nav-link" aria-label="Contact">Contact</a>
                 </div>
             </div>
@@ -1256,6 +1256,7 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
                                                 <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
                                             </svg>
+                                        occupé
                                         </a>
                                         <a href="https://www.instagram.com/jonaahrojo" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
                                             <i class="fab fa-instagram"></i>
@@ -1303,7 +1304,7 @@
     </div>
 
     <!-- JavaScript -->
-    <script src="scripts/main.min.js" defer></script>
+    <script src="scripts/main.js" defer></script>
 
     <!-- Performance Optimization and Blog Script -->
     <script>
@@ -1448,7 +1449,7 @@
                 blogList.appendChild(postsContainer);
             }
             blogList.innerHTML = '<div style="text-align: center; padding: 60px 0; color: #6b7280; font-size: 1.1rem;"><i class="fas fa-spinner"></i> Loading blog posts...</div>';
-            const controller朗 = new AbortController();
+            const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000);
             fetch('/api/list-posts?t=' + Date.now(), { signal: controller.signal })
                 .then(response => {
