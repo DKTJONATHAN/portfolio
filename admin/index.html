@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.2/dist/turndown.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/lib/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -231,9 +232,7 @@
                         <div class="mb-6">
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
+                                    <i class="fas fa-search h-5 w-5 text-gray-400"></i>
                                 </div>
                                 <input type="text" id="search-input" placeholder="Search posts..."
                                     class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
@@ -269,6 +268,21 @@
             codeBlockStyle: 'indented',
             linkStyle: 'inlined'
         });
+
+        // Function to convert headings to bold
+        function convertHeadingsToBold(htmlContent) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+            ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].forEach(tag => {
+                const headings = doc.querySelectorAll(tag);
+                headings.forEach(heading => {
+                    const strong = doc.createElement('strong');
+                    strong.textContent = heading.textContent;
+                    heading.replaceWith(strong);
+                });
+            });
+            return doc.body.innerHTML;
+        }
 
         // Initialize Quill with font support
         function initQuill() {
@@ -433,13 +447,13 @@
             const undoButton = document.createElement('button');
             undoButton.className = 'ql-undo';
             undoButton.innerHTML = '<i class="fas fa-undo"></i>';
-            toolbar.querySelector('.ql-toolbar').appendChild(undoButton);
+            toolbar.appendChild(undoButton);
             undoButton.addEventListener('click', () => quill.history.undo());
 
             const redoButton = document.createElement('button');
             redoButton.className = 'ql-redo';
             redoButton.innerHTML = '<i class="fas fa-redo"></i>';
-            toolbar.querySelector('.ql-toolbar').appendChild(redoButton);
+            toolbar.appendChild(redoButton);
             redoButton.addEventListener('click', () => quill.history.redo());
 
             // Paste handling
@@ -456,14 +470,14 @@
                     content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
                     content = content.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, text) => {
                         const level = hashes.length;
-                        return `<h${level}>${text}</h${level}>`;
+                        return `<strong>${text}</strong>`;
                     });
                     content = content.replace(/^(?:-|\*)\s+(.+)$/gm, '<li>$1</li>');
                     content = content.replace(/(<li>.+<\/li>)/g, '<ul>$1</ul>');
                     content = content.replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>');
                     content = content.replace(/`(.*?)`/g, '<code>$1</code>');
                     content = content.split('\n\n').map(line => {
-                        if (!line.match(/^(?:<h\d>|<ul>|<img|<a|<blockquote|<code)/)) {
+                        if (!line.match(/^(?:<strong>|<ul>|<img|<a|<blockquote|<code)/)) {
                             return `<p>${line}</p>`;
                         }
                         return line;
@@ -498,7 +512,7 @@
             titleInput.addEventListener('input', () => {
                 if (!isEditingSlug) {
                     const title = titleInput.value.trim();
-                    slugInput.value = title.toLowerCase().replace(/\s+/g, '-');
+                    slugInput.value = title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
                 }
             });
 
@@ -508,10 +522,9 @@
 
             slugInput.addEventListener('blur', () => {
                 isEditingSlug = false;
-                // Ensure slug is updated if title changed while slug was focused
                 const title = titleInput.value.trim();
                 if (slugInput.value === '' || slugInput.value === slugify(title)) {
-                    slugInput.value = title.toLowerCase().replace(/\s+/g, '-');
+                    slugInput.value = title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
                 }
             });
 
@@ -525,9 +538,9 @@
             });
         });
 
-        // Simple slugify function for blur event
+        // Improved slugify function
         function slugify(text) {
-            return text.toLowerCase().replace(/\s+/g, '-');
+            return text.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
         }
 
         // Search functionality
@@ -546,7 +559,7 @@
         // Preview functionality
         document.getElementById('preview-button').addEventListener('click', () => {
             const formData = new FormData(document.getElementById('create-post'));
-            const htmlContent = quill.root.innerHTML;
+            const htmlContent = convertHeadingsToBold(quill.root.innerHTML);
             const previewData = {
                 title: formData.get('title') || 'Untitled Post',
                 category: formData.get('category') || 'Uncategorized',
@@ -640,7 +653,7 @@
             submitButton.disabled = true;
 
             const formData = new FormData(e.target);
-            const htmlContent = quill.root.innerHTML;
+            const htmlContent = convertHeadingsToBold(quill.root.innerHTML);
             const markdownContent = turndownService.turndown(htmlContent || '');
             const postData = {
                 title: formData.get('title'),
@@ -754,6 +767,11 @@
                 }
                 try {
                     allPosts = await response.json();
+                    // Convert Markdown to HTML and apply heading conversion for consistency
+                    allPosts = allPosts.map(post => ({
+                        ...post,
+                        content: convertHeadingsToBold(marked.parse(post.content || ''))
+                    }));
                     filteredPosts = [...allPosts];
                     console.log('Parsed posts:', allPosts);
                 } catch (jsonError) {
