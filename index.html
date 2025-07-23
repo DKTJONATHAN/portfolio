@@ -40,7 +40,7 @@
     <title>Jonathan Mwaniki | Professional Web Developer & Graphic Designer in Kenya</title>
 
     <!-- Preload Critical Resources -->
-<link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
     <link rel="preload" href="styles.css" as="style">
     <link rel="preload" href="scripts/main.js" as="script">
     <link rel="preload" href="./images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
@@ -49,9 +49,11 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style" crossorigin>
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
 
+    <!-- Add marked.js for parsing Markdown content -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
     <!-- Inline Critical CSS -->
     <style>
-        /* Critical CSS - Minimal styles needed for above-the-fold content */
         :root {
             --primary-color: #4f46e5;
             --secondary-color: #10b981;
@@ -59,13 +61,17 @@
             --light-bg: #f9fafb;
             --white: #ffffff;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             margin: 0;
@@ -176,6 +182,21 @@
         .btn-primary:hover {
             transform: translateY(-2px);
         }
+        .btn-outline {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 0.375rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
         .hero-image img {
             max-width: 100%;
             height: auto;
@@ -261,6 +282,474 @@
             font-size: 1.25rem;
         }
 
+        /* Blog Section Additional Styles */
+        .blog-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .blog-posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .blog-post {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .blog-post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .post-image {
+            overflow: hidden;
+            height: 250px;
+        }
+
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .blog-post:hover .post-image img {
+            transform: scale(1.05);
+        }
+
+        .post-content {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .post-meta time {
+            position: relative;
+            padding-right: 15px;
+        }
+
+        .post-meta time::after {
+            content: '';
+            position: absolute;
+            right: 7px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            background: #6b7280;
+            border-radius: 50%;
+        }
+
+        .post-category {
+            font-weight: 500;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .post-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.3;
+            color: var(--text-color);
+        }
+
+        .post-excerpt p {
+            color: #6b7280;
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+
+        .post-actions {
+            margin-top: auto;
+        }
+
+        .loading-posts {
+            text-align: center;
+            padding: 60px 0;
+            color: #6b7280;
+            font-size: 1.2rem;
+        }
+
+        .loading-posts i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Services Section Styles */
+        .services-section {
+            padding: 80px 20px;
+            background: var(--light-bg);
+        }
+        .services-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .section-description {
+            font-size: 1.125rem;
+            color: #4b5563;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .service-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+        .service-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .service-description {
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+        }
+        .service-features {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+        .feature-item i {
+            color: var(--secondary-color);
+        }
+
+        /* Portfolio Section Styles */
+        .portfolio-section {
+            padding: 80px 20px;
+            background: var(--light-bg);
+        }
+        .portfolio-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .portfolio-card {
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .portfolio-card:hover {
+            transform: translateY(-5px);
+        }
+        .portfolio-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .card-content {
+            padding: 20px;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .card-description {
+            color: #4b5563;
+            margin-bottom: 1rem;
+        }
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .card-link:hover {
+            text-decoration: underline;
+        }
+
+        /* About Section Styles */
+        .about-section {
+            padding: 80px 20px;
+            background: var(--light-bg);
+        }
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+        }
+        .about-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .about-content {
+            padding: 20px;
+        }
+        .about-text p {
+            margin-bottom: 1rem;
+            color: #4b5563;
+        }
+        .education-section, .tech-stack-section, .hackathon-section {
+            margin-top: 2rem;
+        }
+        .education-section h3, .tech-stack-section h3, .hackathon-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .education-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .edu-icon img {
+            width: 40px;
+            height: 40px;
+        }
+        .stack-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .stack-category h4 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .stack-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .stack-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .event-timeline {
+            margin-top: 1rem;
+        }
+        .event-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .event-date {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        .event-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .tag {
+            background: #e5e7eb;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        /* Contact Section Styles */
+        .contact-section {
+            padding: 80px 20px;
+            background: var(--light-bg);
+        }
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .contact-form-container {
+            padding: 20px;
+        }
+        .form-grid {
+            display: grid;
+            gap: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .form-input, .form-select, .form-textarea {
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        .contact-info-container {
+            padding: 20px;
+        }
+        .info-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        .info-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .info-icon i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        .info-label {
+            font-weight: 500;
+        }
+        .info-value {
+            color: var(--text-color);
+            text-decoration: none;
+        }
+        .info-value:hover {
+            color: var(--primary-color);
+        }
+        .social-section {
+            margin-top: 2rem;
+        }
+        .social-title {
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        .social-link {
+            color: var(--text-color);
+            font-size: 1.5rem;
+        }
+        .social-link:hover {
+            color: var(--primary-color);
+        }
+
+        /* Footer Styles */
+        .site-footer {
+            background: var(--white);
+            padding: 50px 20px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .footer-logo img {
+            width: 40px;
+            height: 40px;
+        }
+        .footer-name {
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+        .footer-description {
+            color: #4b5563;
+        }
+        .footer-legal {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+        }
+        .copyright {
+            color: #4b5563;
+        }
+        .legal-links {
+            display: flex;
+            gap: 20px;
+        }
+        .legal-link {
+            color: #4b5563;
+            text-decoration: none;
+        }
+        .legal-link:hover {
+            color: var(--primary-color);
+        }
+
         @media (max-width: 768px) {
             .desktop-nav {
                 display: none;
@@ -274,6 +763,51 @@
             .hero-actions {
                 flex-direction: column;
                 gap: 0.75rem;
+            }
+            .about-container, .contact-content {
+                grid-template-columns: 1fr;
+            }
+            .blog-container {
+                padding: 60px 20px;
+            }
+            .blog-post {
+                grid-template-columns: 1fr;
+            }
+            .post-image {
+                height: 200px;
+            }
+            .post-content {
+                padding: 25px;
+            }
+            .post-title {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .post-title {
+                font-size: 1.4rem;
+            }
+            .post-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .post-meta time::after {
+                display: none;
+            }
+            .footer-brand {
+                flex-direction: column;
+                text-align: center;
+            }
+            .footer-legal {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            .legal-links {
+                flex-direction: column;
+                gap: 10px;
             }
         }
     </style>
@@ -306,7 +840,7 @@
       }
     }
     </script>
-    
+
     <!-- Local Business Schema -->
     <script type="application/ld+json">
     {
@@ -495,7 +1029,7 @@
                         <h3 class="service-title" itemprop="name">Digital Marketing</h3>
                         <p class="service-description" itemprop="description">Strategic campaigns to grow your online presence and engage your target audience effectively.</p>
                         <ul class="service-features">
-                            <li class="feature-item">
+                            <liapol class="feature-item">
                                 <i class="fas fa-check-circle"></i>
                                 <span itemprop="serviceType">Social Media Management</span>
                             </li>
@@ -574,86 +1108,20 @@
             </div>
         </section>
 
-        <!-- Blog Section - Fully Optimized -->
+        <!-- Blog Section -->
         <section id="blog" class="blog-section">
             <div class="blog-container">
                 <div class="section-header">
-                    <h2 class="section-title">Latest <span class="gradient-text">Blog Posts</span></h2>
+                    <h2 class="section-title">Latest <span class="gradient-text">Blog Posts</span></h2*o
                     <p class="section-description">Insights and tutorials on web development, design, and digital marketing</p>
                 </div>
-
-                <div class="blog-posts">
-                    <!-- Featured Blog Post -->
-                    <article class="featured-post" itemscope itemtype="https://schema.org/BlogPosting">
-                        <meta itemprop="mainEntityOfPage" content="https://www.jonathanmwaniki.co.ke/blogs/web-development-trends-2025.html">
-                        <div class="post-image">
-                            <img src="./images/trends.jpeg" alt="Web Development Trends 2025 - Jonathan Mwaniki Blog" itemprop="image" loading="lazy" width="800" height="450">
-                        </div>
-                        <div class="post-content">
-                            <div class="post-meta">
-                                <time datetime="2025-06-15" itemprop="datePublished">June 15, 2025</time>
-                                <span class="post-category" itemprop="articleSection">Web Development</span>
-                            </div>
-                            <h3 class="post-title" itemprop="headline">Top Web Development Trends in 2025 Every Developer Should Know</h3>
-                            <div class="post-excerpt" itemprop="description">
-                                <p>The web development landscape is constantly evolving. In this post, I explore the most significant trends shaping web development in 2025, from AI-powered development tools to advanced Web3 integrations...</p>
-                            </div>
-                            <div class="post-actions">
-                                <a href="/blogs/web-development-trends-2025.html" class="btn-primary" itemprop="url" aria-label="Read full article about Web Development Trends 2025">Read Full Article</a>
-                                <a href="/blogs.html" class="btn-outline" aria-label="View all blog posts">View All Posts</a>
-                            </div>
-                        </div>
-                        <meta itemprop="author" content="Jonathan Mwaniki">
-                        <meta itemprop="dateModified" content="2025-06-15">
-                        <meta itemprop="publisher" content="Jonathan Mwaniki">
-                    </article>
-
-                    <!-- Additional blog posts (hidden by default) -->
-                    <div class="more-posts" id="morePosts" style="display: none;">
-                        <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
-                            <meta itemprop="mainEntityOfPage" content="https://www.jonathanmwaniki.co.ke/blogs/seo-strategies-2025.html">
-                            <div class="post-image">
-                                <img src="./images/seo-strategies.jpg" alt="SEO Strategies for 2025 - Jonathan Mwaniki Blog" itemprop="image" loading="lazy" width="800" height="450">
-                            </div>
-                            <div class="post-content">
-                                <div class="post-meta">
-                                    <time datetime="2025-05-28" itemprop="datePublished">May 28, 2025</time>
-                                    <span class="post-category" itemprop="articleSection">SEO</span>
-                                </div>
-                                <h3 class="post-title" itemprop="headline">SEO Strategies That Will Dominate in 2025</h3>
-                                <div class="post-excerpt" itemprop="description">
-                                    <p>Search engine optimization continues to evolve. Discover the most effective SEO strategies that will help your website rank higher in 2025 and beyond...</p>
-                                </div>
-                                <a href="/blogs/seo-strategies-2025.html" class="post-link" itemprop="url" aria-label="Read more about SEO Strategies 2025">Read More</a>
-                            </div>
-                            <meta itemprop="author" content="Jonathan Mwaniki">
-                        </article>
-
-                        <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
-                            <meta itemprop="mainEntityOfPage" content="https://www.jonathanmwaniki.co.ke/blogs/ui-ux-design-principles.html">
-                            <div class="post-image">
-                                <img src="./images/ui-ux-tips.jpg" alt="UI/UX Design Principles - Jonathan Mwaniki Blog" itemprop="image" loading="lazy" width="800" height="450">
-                            </div>
-                            <div class="post-content">
-                                <div class="post-meta">
-                                    <time datetime="2025-04-10" itemprop="datePublished">April 10, 2025</time>
-                                    <span class="post-category" itemprop="articleSection">Design</span>
-                                </div>
-                                <h3 class="post-title" itemprop="headline">10 UI/UX Design Principles That Never Go Out of Style</h3>
-                                <div class="post-excerpt" itemprop="description">
-                                    <p>While design trends come and go, these fundamental UI/UX principles remain timeless. Learn how to apply them to create better user experiences...</p>
-                                </div>
-                                <a href="/blogs/ui-ux-design-principles.html" class="post-link" itemprop="url" aria-label="Read more about UI/UX Design Principles">Read More</a>
-                            </div>
-                            <meta itemprop="author" content="Jonathan Mwaniki">
-                        </article>
+                <div id="blog-list">
+                    <div class="loading-posts">
+                        <i class="fas fa-spinner"></i> Loading blog posts...
                     </div>
-
-                    <!-- Show More Button -->
-                    <button id="showMoreBtn" class="btn-outline" aria-expanded="false" aria-controls="morePosts">
-                        Show More Articles
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
+                </div>
+                <div class="blog-actions" style="text-align: center; margin-top: 40px;">
+                    <a href="/blog.html" class="btn-primary" aria-label="View all blog posts">View All Posts</a>
                 </div>
             </div>
         </section>
@@ -771,7 +1239,7 @@
                                 </div>
                             </div>
 
-                            <div class="event-item">
+                            <div class="event-item-force">
                                 <div class="event-date">2022</div>
                                 <div class="event-content">
                                     <h4>Africa Hackathon</h4>
@@ -866,7 +1334,7 @@
                                                 <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
                                             </svg>
                                         </a>
-                                        <a href="https://www.instagram.com/jonaahrojo" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
+                                        <a href="https://www.instagram.com/jonaahrojo" target="_blank" rel="noopener noreferrerxbb" class="social-link" aria-label="Instagram">
                                             <i class="fab fa-instagram"></i>
                                         </a>
                                         <a href="https://www.linkedin.com/in/jonathan-mwaniki-324208374" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn">
@@ -914,7 +1382,7 @@
 
     <!-- JavaScript -->
     <script src="scripts/main.js" defer></script>
-    
+
     <!-- Performance Optimization Script -->
     <script>
         // Load non-critical CSS
@@ -924,7 +1392,7 @@
             link.href = href;
             document.head.appendChild(link);
         }
-        
+
         // Load non-critical JS
         function loadJS(src, cb) {
             const script = document.createElement('script');
@@ -933,38 +1401,38 @@
             if (cb) script.onload = cb;
             document.body.appendChild(script);
         }
-        
+
         // Load Font Awesome after page load
         window.addEventListener('load', function() {
             loadCSS('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
         });
-        
+
         // Splash screen animation
         document.addEventListener('DOMContentLoaded', function() {
             const progressBar = document.getElementById('progressBar');
             const splashScreen = document.getElementById('splashScreen');
             const mainContent = document.getElementById('mainContent');
-            
+
             let progress = 0;
             const interval = setInterval(function() {
                 progress += 5;
                 progressBar.style.width = progress + '%';
-                
+
                 if (progress >= 100) {
                     clearInterval(interval);
                     splashScreen.style.opacity = '0';
                     splashScreen.style.transition = 'opacity 0.5s ease';
-                    
+
                     setTimeout(function() {
                         splashScreen.style.display = 'none';
                         mainContent.classList.remove('hidden');
-                        
+
                         // Load remaining CSS and JS
                         loadCSS('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
                     }, 500);
                 }
             }, 50);
-            
+
             // Lazy load images
             if ('IntersectionObserver' in window) {
                 const lazyImages = document.querySelectorAll('img[loading="lazy"]');
@@ -978,10 +1446,96 @@
                         }
                     });
                 });
-                
+
                 lazyImages.forEach(img => {
                     imageObserver.observe(img);
                 });
+            }
+        });
+
+        // Blog Section: Load and display first two posts
+        document.addEventListener('DOMContentLoaded', async () => {
+            const blogList = document.getElementById('blog-list');
+
+            // Function to extract first image from content
+            function getFirstImage(content) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(content, 'text/html');
+                const img = doc.querySelector('img');
+                return img ? img.src : '/images/default-blog.jpg';
+            }
+
+            // Function to extract first 50 words of first paragraph
+            function getExcerpt(content) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(content, 'text/html');
+                const firstP = doc.querySelector('p');
+                if (!firstP) return 'No excerpt available.';
+                const text = firstP.textContent.trim();
+                const words = text.split(/\s+/).slice(0, 50);
+                return words.join(' ') + (words.length < text.split(/\s+/).length ? '...' : '');
+            }
+
+            // Function to render up to two posts
+            function renderPosts(posts) {
+                blogList.innerHTML = '';
+                if (!posts.length) {
+                    blogList.innerHTML = '<div style="text-align: center; padding: 60px 0; color: #6b7280; font-size: 1.1rem;">No posts found.</div>';
+                    return;
+                }
+
+                const postsToShow = posts.slice(0, 2); // Show only first two posts
+                const postsContainer = document.createElement('div');
+                postsContainer.className = 'blog-posts';
+                postsToShow.forEach(post => {
+                    const postElement = document.createElement('article');
+                    postElement.className = 'blog-post';
+                    postElement.setAttribute('itemscope', '');
+                    postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
+                    postElement.innerHTML = `
+                        <meta itemprop="mainEntityOfPage" content="/blog-post.html?slug=${post.slug}">
+                        <div class="post-image">
+                            <img src="${getFirstImage(post.content)}" alt="${post.title || 'Blog Post'}" itemprop="image" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'">
+                        </div>
+                        <div class="post-content">
+                            <div class="post-meta">
+                                <time datetime="${post.date}" itemprop="datePublished">${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+                                <span class="post-category" itemprop="articleSection">${post.category || 'Uncategorized'}</span>
+                            </div>
+                            <h3 class="post-title" itemprop="headline">${post.title || 'Untitled'}</h3>
+                            <div class="post-excerpt" itemprop="description">
+                                <p>${getExcerpt(post.content)}</p>
+                            </div>
+                            <div class="post-actions">
+                                <a href="/blog-post.html?slug=${post.slug}" class="btn-primary" itemprop="url" aria-label="Read full article">Read Full Article</a>
+                            </div>
+                        </div>
+                        <meta itemprop="author" content="Jonathan Mwaniki">
+                        <meta itemprop="dateModified" content="${post.date}">
+                        <meta itemprop="publisher" content="Jonathan Mwaniki">
+                    `;
+                    postsContainer.appendChild(postElement);
+                });
+                blogList.appendChild(postsContainer);
+            }
+
+            // Load posts
+            blogList.innerHTML = '<div style="text-align: center; padding: 60px 0; color: #6b7280; font-size: 1.1rem;"><i class="fas fa-spinner"></i> Loading blog posts...</div>';
+            try {
+                const response = await fetch('/api/list-posts?t=' + Date.now());
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status} ${response.statusText}`);
+                }
+                const posts = await response.json();
+                renderPosts(posts.sort((a, b) => new Date(b.date) - new Date(a.date)));
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                blogList.innerHTML = `
+                    <div style="text-align: center; padding: 60px 0; color: #d9534f; font-size: 1.1rem;">
+                        Failed to load posts. <a href="javascript:location.reload()" style="color: #4f46e5; text-decoration: underline;">Try again</a>
+                        <p><small>${error.message}</small></p>
+                    </div>
+                `;
             }
         });
     </script>
