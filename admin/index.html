@@ -7,6 +7,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.tiny.cloud/1/mn8k8hdz6yfspjdieakr2wj6o17ul3zukzga01gsm1jdi0gp/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.2/dist/turndown.js"></script>
+    <style>
+        #content-editor_ifr {
+            touch-action: manipulation;
+        }
+        .tox-tinymce {
+            -webkit-user-select: text !important;
+            user-select: text !important;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <!-- Login Section -->
@@ -164,14 +173,76 @@
         // Initialize TinyMCE
         tinymce.init({
             selector: '#content-editor',
-            plugins: 'lists link image',
-            toolbar: 'undo redo | bold italic | h1 h2 h3 | bullist numlist | link image',
+            plugins: 'lists link image paste',
+            toolbar: 'undo redo | bold italic | h1 h2 h3 | bullist numlist | link image | selectall',
             menubar: false,
             height: 300,
             content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }',
+            paste_as_text: false, // Allow HTML paste
+            paste_preprocess: (editor, args) => {
+                let content = args.content;
+
+                // Step 1: Clean up stray HTML tags (in case HTML is pasted)
+                content = content.replace(/<(html|head|body)[^>]*>/gi, '')
+                               .replace(/<\/(html|head|body)>/gi, '')
+                               .trim();
+
+                // Step 2: Detect if content is plain text with Markdown-like formatting
+                const isPlainText = !/<[a-z][\s\S]*>/i.test(content); // No HTML tags
+                if (isPlainText) {
+                    // Convert common Markdown patterns to HTML
+                    // Bold: **text** or __text__
+                    content = content.replace(/(?:\*\*|__)(.*?)(?:\*\*|__)/g, '<strong>$1</strong>');
+                    // Italic: *text* or _text_
+                    content = content.replace(/(?:\*|_)(.*?)(?:\*|_)/g, '<em>$1</em>');
+                    // Links: [text](url)
+                    content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+                    // Images: ![alt](url)
+                    content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+                    // Headers: # Heading, ## Heading, etc.
+                    content = content.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, text) => {
+                        const level = hashes.length;
+                        return `<h${level}>${text}</h${level}>`;
+                    });
+                    // Lists: - item or * item
+                    content = content.replace(/^(?:-|\*)\s+(.+)$/gm, '<li>$1</li>');
+                    // Wrap loose list items in <ul>
+                    content = content.replace(/(<li>.+<\/li>)/g, '<ul>$1</ul>');
+                    // Paragraphs: Split by double newlines
+                    content = content.split('\n\n').map(line => {
+                        if (!line.match(/^(?:<h\d>|<ul>|<img|<a)/)) {
+                            return `<p>${line}</p>`;
+                        }
+                        return line;
+                    }).join('');
+                }
+
+                // Step 3: Ensure valid HTML structure for TinyMCE
+                args.content = content;
+            },
             setup: (editor) => {
                 editor.on('init', () => {
                     console.log('TinyMCE initialized');
+                    // Prevent default click behavior for keyboard
+                    const editorIframe = editor.getContainer().querySelector('iframe');
+                    if (editorIframe) {
+                        const contentDoc = editorIframe.contentDocument || editorIframe.contentWindow.document;
+                        contentDoc.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            editorIframe.blur();
+                        });
+                        // Double-tap handler
+                        let lastTap = 0;
+                        contentDoc.addEventListener('touchend', (e) => {
+                            const currentTime = new Date().getTime();
+                            const tapLength = currentTime - lastTap;
+                            if (tapLength < 500 && tapLength > 0) {
+                                editor.focus();
+                                editorIframe.focus();
+                            }
+                            lastTap = currentTime;
+                        });
+                    }
                 });
             }
         });
