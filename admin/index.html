@@ -13,13 +13,14 @@
     <script src="https://unpkg.com/@tiptap/extension-highlight@2.7.4/dist/highlight.min.js"></script>
     <script src="https://unpkg.com/@tiptap/extension-text-style@2.7.4/dist/text-style.min.js"></script>
     <script src="https://unpkg.com/@tiptap/extension-markdown@2.7.4/dist/markdown.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         .tiptap-editor {
             border: 1px solid #d1d5db;
-            border-radius: 8px;
+            border-radius: 0 0 8px 8px;
             padding: 12px;
-            min-height: 600px;
-            width: 100%;
+            min-height: 50vh; /* Adaptive height: 50% of viewport */
+            max-width: 100%; /* Constrain to parent width */
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 16px;
             -webkit-user-select: text !important;
@@ -33,19 +34,27 @@
         }
         .tiptap-toolbar {
             display: flex;
+            flex-wrap: wrap; /* Allow buttons to wrap */
             gap: 8px;
             padding: 8px;
             background: #f3f4f6;
             border-bottom: 1px solid #d1d5db;
             border-radius: 8px 8px 0 0;
+            max-width: 100%; /* Prevent overflow */
+            box-sizing: border-box;
         }
         .tiptap-toolbar button {
             background: #e5e7eb;
             border: 1px solid #d1d5db;
-            padding: 6px 12px;
+            padding: 6px;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 16px; /* Larger for icons */
             cursor: pointer;
+            width: 36px; /* Fixed size for icons */
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .tiptap-toolbar button:hover {
             background: #d1d5db;
@@ -53,6 +62,7 @@
         .tiptap-toolbar button.active {
             background: #3b82f6;
             color: white;
+            border-color: #3b82f6;
         }
         .custom-context-menu {
             position: absolute;
@@ -160,15 +170,14 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
                                 <div class="tiptap-toolbar">
-                                    <button data-action="bold" title="Bold">Bold</button>
-                                    <button data-action="italic" title="Italic">Italic</button>
-                                    <button data-action="heading1" title="Heading 1">H1</button>
-                                    <button data-action="heading2" title="Heading 2">H2</button>
-                                    <button data-action="bulletList" title="Bullet List">List</button>
-                                    <button data-action="link" title="Link">Link</button>
-                                    <button data-action="image" title="Image">Image</button>
-                                    <button data-action="highlight" title="Highlight">Highlight</button>
-                                    <button data-action="keyboard" title="Toggle Keyboard">Keyboard</button>
+                                    <button data-action="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                                    <button data-action="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                                    <button data-action="heading1" title="Heading 1"><i class="fas fa-heading"></i></button>
+                                    <button data-action="heading2" title="Heading 2"><i class="fas fa-h2"></i></button>
+                                    <button data-action="bulletList" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+                                    <button data-action="link" title="Link"><i class="fas fa-link"></i></button>
+                                    <button data-action="image" title="Image"><i class="fas fa-image"></i></button>
+                                    <button data-action="highlight" title="Highlight"><i class="fas fa-highlighter"></i></button>
                                 </div>
                                 <div id="content-editor" class="tiptap-editor"></div>
                             </div>
@@ -262,13 +271,22 @@
                 content: '',
                 onCreate({ editor }) {
                     console.log('Tiptap initialized');
-                    // Prevent default click to avoid unwanted keyboard
                     const editorElement = document.querySelector('#content-editor');
+                    // Prevent default click to avoid unwanted keyboard
                     editorElement.addEventListener('click', (e) => {
                         e.preventDefault();
                         editorElement.blur();
                     });
-
+                    // Double-tap to show keyboard
+                    let lastTap = 0;
+                    editorElement.addEventListener('touchend', (e) => {
+                        const currentTime = new Date().getTime();
+                        const tapLength = currentTime - lastTap;
+                        if (tapLength < 500 && tapLength > 0) {
+                            editor.commands.focus();
+                        }
+                        lastTap = currentTime;
+                    });
                     // Long-press context menu
                     let pressTimer;
                     editorElement.addEventListener('touchstart', (e) => {
@@ -276,12 +294,8 @@
                             e.preventDefault();
                             const x = e.touches[0].clientX;
                             const y = e.touches[0].clientY;
-
-                            // Remove existing menu
                             const existingMenu = document.querySelector('.custom-context-menu');
                             if (existingMenu) existingMenu.remove();
-
-                            // Create context menu
                             const menu = document.createElement('div');
                             menu.className = 'custom-context-menu';
                             menu.style.left = `${x}px`;
@@ -294,8 +308,6 @@
                                 <button data-action="highlight">Highlight</button>
                             `;
                             document.body.appendChild(menu);
-
-                            // Handle menu actions
                             menu.querySelectorAll('button').forEach(button => {
                                 button.addEventListener('click', (e) => {
                                     e.preventDefault();
@@ -321,8 +333,6 @@
                                     menu.remove();
                                 });
                             });
-
-                            // Close menu on outside click
                             const closeMenu = (e) => {
                                 if (!menu.contains(e.target)) {
                                     menu.remove();
@@ -332,19 +342,13 @@
                             document.addEventListener('click', closeMenu);
                         }, 500);
                     });
-
-                    editorElement.addEventListener('touchend', () => {
-                        clearTimeout(pressTimer);
-                    });
-                    editorElement.addEventListener('touchmove', () => {
-                        clearTimeout(pressTimer);
-                    });
+                    editorElement.addEventListener('touchend', () => clearTimeout(pressTimer));
+                    editorElement.addEventListener('touchmove', () => clearTimeout(pressTimer));
                 },
                 onPaste({ editor, event }) {
                     const clipboardData = event.clipboardData.getData('text/plain');
                     const isPlainText = !/<[a-z][\s\S]*>/i.test(clipboardData);
                     if (isPlainText) {
-                        // Convert Markdown-like patterns to editor commands
                         let content = clipboardData;
                         content = content.replace(/(?:\*\*|__)(.*?)(?:\*\*|__)/g, '<strong>$1</strong>');
                         content = content.replace(/(?:\*|_)(.*?)(?:\*|_)/g, '<em>$1</em>');
@@ -391,12 +395,6 @@
                         if (url) editor.commands.setImage({ src: url });
                     } else if (action === 'highlight') {
                         editor.commands.toggleHighlight({ color: '#FFFF00' });
-                    } else if (action === 'keyboard') {
-                        if (document.activeElement === editor.view.dom) {
-                            editor.view.dom.blur();
-                        } else {
-                            editor.commands.focus();
-                        }
                     }
                     updateToolbar();
                 });
