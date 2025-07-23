@@ -15,7 +15,6 @@
                 <h1 class="text-3xl font-bold text-gray-800 mb-2">Admin Panel</h1>
                 <p class="text-gray-600">Enter your password to continue</p>
             </div>
-            
             <form id="login-form" class="space-y-6">
                 <div class="relative">
                     <input type="password" id="password" placeholder="Password" required
@@ -32,7 +31,6 @@
 
     <!-- Admin Section -->
     <div id="admin-section" class="hidden min-h-screen">
-        <!-- Header -->
         <header class="bg-white shadow-sm border-b border-gray-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center py-6">
@@ -51,7 +49,6 @@
                 <div class="lg:col-span-2">
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <h2 class="text-2xl font-bold text-gray-900 mb-6">Create Post</h2>
-                        
                         <form id="create-post" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
@@ -65,7 +62,6 @@
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
                                 </div>
                             </div>
-
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
@@ -78,7 +74,6 @@
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
                                 </div>
                             </div>
-
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
@@ -91,13 +86,11 @@
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
                                 </div>
                             </div>
-
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
                                 <textarea id="content-editor" name="content" rows="10"
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"></textarea>
                             </div>
-
                             <div class="flex space-x-4">
                                 <button type="submit" id="submit-post-button"
                                     class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105 disabled:opacity-50 disabled:transform-none">
@@ -112,23 +105,18 @@
                                 </button>
                             </div>
                         </form>
-
-                        <!-- Status Messages -->
                         <div class="mt-4">
                             <p id="error" class="text-red-500 text-sm hidden bg-red-50 border border-red-200 rounded-lg p-3"></p>
                             <p id="loading" class="text-blue-500 text-sm hidden bg-blue-50 border border-blue-200 rounded-lg p-3">Loading...</p>
                         </div>
                     </div>
                 </div>
-
                 <!-- Posts List -->
                 <div class="lg:col-span-1">
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex items-center justify-between mb-6">
                             <h2 id="posts-title" class="text-xl font-bold text-gray-900">Posts</h2>
                         </div>
-
-                        <!-- Search Bar -->
                         <div class="mb-6">
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -140,8 +128,6 @@
                                     class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
                             </div>
                         </div>
-
-                        <!-- Posts List -->
                         <div id="post-list" class="space-y-3 max-h-96 overflow-y-auto"></div>
                     </div>
                 </div>
@@ -168,24 +154,37 @@
         let allPosts = [];
         let filteredPosts = [];
 
-        // Initialize TinyMCE
+        // Initialize TinyMCE with markdown plugin
         tinymce.init({
             selector: '#content-editor',
-            plugins: 'lists link image',
-            toolbar: 'undo redo | bold italic | bullist numlist | link image',
+            plugins: 'lists link image markdown',
+            toolbar: 'undo redo | bold italic | h1 h2 h3 | bullist numlist | link image',
             menubar: false,
             height: 300,
+            content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }',
+            markdown: {
+                format: 'markdown',
+                content: true
+            },
             setup: (editor) => {
                 editor.on('init', () => {
-                    console.log('TinyMCE initialized');
+                    console.log('TinyMCE initialized with markdown plugin');
                 });
             }
         });
 
+        // Ensure TinyMCE is ready
+        function waitForTinyMCE(callback) {
+            if (tinymce.get('content-editor')) {
+                callback();
+            } else {
+                setTimeout(() => waitForTinyMCE(callback), 100);
+            }
+        }
+
         // Search functionality
         document.getElementById('search-input').addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase().trim();
-            
             if (searchTerm === '') {
                 filteredPosts = [...allPosts];
             } else {
@@ -193,22 +192,23 @@
                     post.title && post.title.toLowerCase().includes(searchTerm)
                 );
             }
-            
             displayPosts(filteredPosts);
         });
 
-        // Preview functionality
+        // Preview functionality with markdown rendering
         document.getElementById('preview-button').addEventListener('click', () => {
             const formData = new FormData(document.getElementById('create-post'));
+            const content = tinymce.get('content-editor') ? 
+                tinymce.get('content-editor').getContent({ format: 'markdown' }) : 
+                formData.get('content');
             const previewData = {
                 title: formData.get('title') || 'Untitled Post',
                 category: formData.get('category') || 'Uncategorized',
                 tags: formData.get('tags'),
                 image: formData.get('image'),
                 date: formData.get('date') || new Date().toISOString().split('T')[0],
-                content: tinymce.get('content-editor') ? tinymce.get('content-editor').getContent() : formData.get('content')
+                content: content || ''
             };
-
             const previewHTML = generatePreviewHTML(previewData);
             document.getElementById('preview-content').innerHTML = previewHTML;
             document.getElementById('preview-modal').classList.remove('hidden');
@@ -218,7 +218,6 @@
             document.getElementById('preview-modal').classList.add('hidden');
         });
 
-        // Close modal when clicking outside
         document.getElementById('preview-modal').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) {
                 document.getElementById('preview-modal').classList.add('hidden');
@@ -231,42 +230,31 @@
                 month: 'long',
                 day: 'numeric'
             });
-
             const tags = data.tags ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
-
+            // Convert markdown to HTML for preview
+            const contentHTML = tinymce.get('content-editor') ? 
+                tinymce.get('content-editor').getContent() : 
+                data.content || '<p class="text-gray-500 italic">No content available</p>';
             return `
                 <article class="prose prose-lg max-w-none">
                     ${data.image ? `<img src="${data.image}" alt="${data.title}" class="w-full h-64 object-cover rounded-lg mb-6">` : ''}
-                    
                     <header class="mb-8">
                         <h1 class="text-4xl font-bold text-gray-900 mb-4">${data.title}</h1>
-                        
                         <div class="flex items-center space-x-4 text-gray-600 mb-4">
                             <time datetime="${data.date}">${formattedDate}</time>
                             ${data.category ? `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">${data.category}</span>` : ''}
                         </div>
-                        
                         ${tags.length > 0 ? `
                             <div class="flex flex-wrap gap-2">
                                 ${tags.map(tag => `<span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm">#${tag}</span>`).join('')}
                             </div>
                         ` : ''}
                     </header>
-                    
                     <div class="prose prose-lg max-w-none">
-                        ${data.content || '<p class="text-gray-500 italic">No content available</p>'}
+                        ${contentHTML}
                     </div>
                 </article>
             `;
-        }
-
-        // Ensure TinyMCE is ready
-        function waitForTinyMCE(callback) {
-            if (tinymce.get('content-editor')) {
-                callback();
-            } else {
-                setTimeout(() => waitForTinyMCE(callback), 100);
-            }
         }
 
         // Login handler
@@ -315,8 +303,11 @@
                 tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
                 image: formData.get('image') || '',
                 date: formData.get('date'),
-                content: tinymce.get('content-editor') ? tinymce.get('content-editor').getContent({ format: 'text' }) : formData.get('content')
+                content: tinymce.get('content-editor') ? 
+                    tinyce.get('content-editor').getContent({ format: 'markdown' }) : 
+                    formData.get('content')
             };
+            console.log('Post data to send:', postData);
 
             try {
                 const endpoint = e.target.dataset.editSlug ? '/api/update-post' : '/api/save-post';
@@ -330,8 +321,9 @@
                     responseData = await response.json();
                     console.log('Save/Update response:', responseData);
                 } catch (jsonError) {
-                    console.log('Raw response:', await response.text());
-                    throw new Error('Invalid JSON response');
+                    const rawResponse = await response.text();
+                    console.log('Raw response:', rawResponse);
+                    throw new Error('Invalid JSON response: ' + rawResponse);
                 }
                 if (!response.ok) {
                     throw new Error(responseData.error || `Operation failed: ${response.status}`);
@@ -368,9 +360,7 @@
         function displayPosts(posts) {
             const postList = document.getElementById('post-list');
             const postsTitle = document.getElementById('posts-title');
-            
             postsTitle.textContent = `Posts (${posts.length})`;
-            
             if (posts.length === 0) {
                 postList.innerHTML = '<p class="text-gray-500 text-center py-8">No posts found.</p>';
             } else {
@@ -393,13 +383,10 @@
                     </div>
                 `).join('');
             }
-
-            // Bind event listeners
             document.querySelectorAll('.edit-post').forEach(button => {
                 button.removeEventListener('click', handleEdit);
                 button.addEventListener('click', handleEdit);
             });
-
             document.querySelectorAll('.delete-post').forEach(button => {
                 button.removeEventListener('click', handleDelete);
                 button.addEventListener('click', handleDelete);
@@ -427,12 +414,11 @@
                     filteredPosts = [...allPosts];
                     console.log('Parsed posts:', allPosts);
                 } catch (jsonError) {
-                    console.log('Raw response on JSON error:', await response.text());
-                    throw new Error('Invalid JSON response');
+                    const rawResponse = await response.text();
+                    console.log('Raw response on JSON error:', rawResponse);
+                    throw new Error('Invalid JSON response: ' + rawResponse);
                 }
-
                 displayPosts(filteredPosts);
-
             } catch (err) {
                 error.textContent = 'Failed to fetch posts: ' + err.message;
                 error.classList.remove('hidden');
@@ -462,7 +448,7 @@
             waitForTinyMCE(() => {
                 const content = post.content || '';
                 if (tinymce.get('content-editor')) {
-                    tinymce.get('content-editor').setContent(content);
+                    tinymce.get('content-editor').setContent(content, { format: 'markdown' });
                     console.log('Content set in TinyMCE:', content);
                 } else {
                     document.getElementById('content-editor').value = content;
