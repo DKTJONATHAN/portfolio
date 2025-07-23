@@ -26,7 +26,6 @@ exports.handler = async function (event) {
     const path = `content/blog/${slug}.md`;
 
     // Check if file exists
-    let fileExists = false;
     try {
       await octokit.repos.getContent({ owner, repo, path });
       return {
@@ -35,19 +34,19 @@ exports.handler = async function (event) {
       };
     } catch (error) {
       if (error.status !== 404) {
-        console.error('Check file error:', error);
-        throw error;
+        console.error('Check file error:', error.message, error.stack);
+        throw new Error(`GitHub API error: ${error.message}`);
       }
     }
 
-    // Create markdown content with front matter
+    // Create markdown with front matter
     const markdownContent = `---
-title: ${title}
+title: "${title.replace(/"/g, '\\"')}"
 slug: ${slug}
 date: ${date}
-${category ? `category: ${category}` : ''}
-${tags ? `tags: [${tags.split(',').map(tag => tag.trim()).join(', ')}]` : ''}
-${image ? `image: ${image}` : ''}
+${category ? `category: "${category.replace(/"/g, '\\"')}"` : ''}
+${tags ? `tags: [${tags.split(',').map(tag => `"${tag.trim().replace(/"/g, '\\"')}"`).join(', ')}]` : ''}
+${image ? `image: "${image.replace(/"/g, '\\"')}"` : ''}
 ---
 ${content}
 `;
@@ -61,11 +60,11 @@ ${content}
       content: Buffer.from(markdownContent).toString('base64'),
     });
 
-    console.log('Save post response:', response.data);
+    console.log('Save post commit:', response.data.commit.sha);
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Post saved successfully', commit: response.data.commit.sha }),
+      body: JSON.stringify({ message: 'Post saved', commit: response.data.commit.sha }),
     };
   } catch (error) {
     console.error('Save post error:', error.message, error.stack);
