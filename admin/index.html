@@ -6,12 +6,11 @@
     <title>Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.2/dist/turndown.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        .summernote-editor {
+        .quill-editor .ql-container {
             border: 1px solid #d1d5db;
             border-radius: 0 0 8px 8px;
             padding: 12px;
@@ -24,24 +23,24 @@
             user-select: text !important;
             touch-action: manipulation;
         }
-        .summernote-editor:focus {
-            outline: none;
+        .quill-editor .ql-container:focus-within {
             border-color: #3b82f6;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
         }
-        .note-toolbar {
+        .quill-editor .ql-toolbar {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
             padding: 8px;
             background: #f8fafc;
-            border-bottom: 1px solid #d1d5db;
+            border: 1px solid #d1d5db;
+            border-bottom: none;
             border-radius: 8px 8px 0 0;
             max-width: 100%;
             box-sizing: border-box;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
-        .note-toolbar .note-btn {
+        .quill-editor .ql-toolbar button, .quill-editor .ql-toolbar .ql-picker {
             background: #ffffff;
             border: 1px solid #e5e7eb;
             border-radius: 6px;
@@ -55,12 +54,12 @@
             color: #4b5563;
             transition: all 0.2s ease;
         }
-        .note-toolbar .note-btn:hover {
+        .quill-editor .ql-toolbar button:hover, .quill-editor .ql-toolbar .ql-picker:hover {
             background: #e5e7eb;
             border-color: #d1d5db;
             color: #1f2937;
         }
-        .note-toolbar .note-btn.active {
+        .quill-editor .ql-toolbar button.ql-active, .quill-editor .ql-toolbar .ql-picker.ql-active {
             background: #3b82f6;
             border-color: #3b82f6;
             color: #ffffff;
@@ -89,12 +88,6 @@
         }
         .custom-context-menu button:hover {
             background: #f1f5f9;
-        }
-        .note-editor.note-frame {
-            border: none !important;
-        }
-        .preview-modal {
-            z-index: 1000 !important; /* Ensure modal is above editor */
         }
     </style>
 </head>
@@ -179,7 +172,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
-                                <div id="content-editor"></div>
+                                <div id="content-editor" class="quill-editor"></div>
                             </div>
                             <div class="flex space-x-4">
                                 <button type="submit" id="submit-post-button"
@@ -226,7 +219,7 @@
     </div>
 
     <!-- Preview Modal -->
-    <div id="preview-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[1000] flex items-center justify-center p-4 preview-modal">
+    <div id="preview-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[1000] flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div class="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center rounded-t-xl">
                 <h3 class="text-2xl font-bold text-gray-900">Post Preview</h3>
@@ -241,6 +234,7 @@
     <script>
         let allPosts = [];
         let filteredPosts = [];
+        let quill = null;
         const turndownService = new TurndownService({
             headingStyle: 'atx',
             bulletListMarker: '-',
@@ -248,164 +242,142 @@
             linkStyle: 'inlined'
         });
 
-        // Initialize Summernote
-        function initSummernote() {
-            $('#content-editor').summernote({
-                height: '50vh',
-                minHeight: null,
-                maxHeight: null,
-                focus: false,
-                toolbar: [
-                    ['style', ['bold', 'italic', 'style']],
-                    ['para', ['ul']],
-                    ['insert', ['link', 'picture']],
-                    ['misc', ['highlight']]
-                ],
-                styleTags: ['h1', 'h2'],
-                placeholder: 'Type your content here...',
-                callbacks: {
-                    onInit: function() {
-                        console.log('Summernote initialized');
-                        const editor = $('#content-editor').next('.note-editor');
-                        editor.find('.note-editable').addClass('summernote-editor');
-                        // Prevent default click to avoid unwanted keyboard
-                        editor.find('.note-editable').on('click', function(e) {
+        // Initialize Quill
+        function initQuill() {
+            quill = new Quill('#content-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic'],
+                        [{ 'header': 1 }, { 'header': 2 }],
+                        ['list'],
+                        ['link', 'image'],
+                        [{ 'background': '#FFFF00' }]
+                    ]
+                },
+                placeholder: 'Type your content here...'
+            });
+
+            const editor = document.querySelector('#content-editor');
+            editor.classList.add('quill-editor');
+
+            // Prevent default click to avoid unwanted keyboard
+            editor.querySelector('.ql-editor').addEventListener('click', (e) => {
+                e.preventDefault();
+                quill.blur();
+            });
+
+            // Double-tap to show keyboard
+            let lastTap = 0;
+            editor.querySelector('.ql-editor').addEventListener('touchend', (e) => {
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTap;
+                if (tapLength < 500 && tapLength > 0) {
+                    quill.focus();
+                }
+                lastTap = currentTime;
+            });
+
+            // Long-press context menu
+            let pressTimer;
+            editor.querySelector('.ql-editor').addEventListener('touchstart', (e) => {
+                pressTimer = setTimeout(() => {
+                    e.preventDefault();
+                    const x = e.touches[0].clientX;
+                    const y = e.touches[0].clientY;
+                    const existingMenu = document.querySelector('.custom-context-menu');
+                    if (existingMenu) existingMenu.remove();
+                    const menu = document.createElement('div');
+                    menu.className = 'custom-context-menu';
+                    menu.style.left = `${x}px`;
+                    menu.style.top = `${y}px`;
+                    menu.innerHTML = `
+                        <button data-action="select">Select Text</button>
+                        <button data-action="link">Make Link</button>
+                        <button data-action="bold">Bold</button>
+                        <button data-action="italic">Italic</button>
+                        <button data-action="highlight">Highlight</button>
+                    `;
+                    document.body.appendChild(menu);
+                    menu.querySelectorAll('button').forEach(button => {
+                        button.addEventListener('click', (e) => {
                             e.preventDefault();
-                            $(this).blur();
-                        });
-                        // Double-tap to show keyboard
-                        let lastTap = 0;
-                        editor.find('.note-editable').on('touchend', function(e) {
-                            const currentTime = new Date().getTime();
-                            const tapLength = currentTime - lastTap;
-                            if (tapLength < 500 && tapLength > 0) {
-                                $(this).focus();
-                                $('#content-editor').summernote('focus');
-                            }
-                            lastTap = currentTime;
-                        });
-                        // Long-press context menu
-                        let pressTimer;
-                        editor.find('.note-editable').on('touchstart', function(e) {
-                            pressTimer = setTimeout(() => {
-                                e.preventDefault();
-                                const x = e.originalEvent.touches[0].clientX;
-                                const y = e.originalEvent.touches[0].clientY;
-                                const existingMenu = document.querySelector('.custom-context-menu');
-                                if (existingMenu) existingMenu.remove();
-                                const menu = document.createElement('div');
-                                menu.className = 'custom-context-menu';
-                                menu.style.left = `${x}px`;
-                                menu.style.top = `${y}px`;
-                                menu.innerHTML = `
-                                    <button data-action="select">Select Text</button>
-                                    <button data-action="link">Make Link</button>
-                                    <button data-action="bold">Bold</button>
-                                    <button data-action="italic">Italic</button>
-                                    <button data-action="highlight">Highlight</button>
-                                `;
-                                document.body.appendChild(menu);
-                                menu.querySelectorAll('button').forEach(button => {
-                                    button.addEventListener('click', (e) => {
-                                        e.preventDefault();
-                                        const action = e.target.dataset.action;
-                                        if (action === 'select') {
-                                            const range = document.caretRangeFromPoint(x, y);
-                                            if (range) {
-                                                const selection = window.getSelection();
-                                                selection.removeAllRanges();
-                                                selection.addRange(range);
-                                                $('#content-editor').summernote('focus');
-                                            }
-                                        } else if (action === 'link') {
-                                            const url = prompt('Enter URL:');
-                                            if (url) $('#content-editor').summernote('createLink', { url });
-                                        } else if (action === 'bold') {
-                                            $('#content-editor').summernote('bold');
-                                        } else if (action === 'italic') {
-                                            $('#content-editor').summernote('italic');
-                                        } else if (action === 'highlight') {
-                                            $('#content-editor').summernote('backColor', '#FFFF00');
-                                        }
-                                        menu.remove();
-                                    });
-                                });
-                                const closeMenu = (e) => {
-                                    if (!menu.contains(e.target)) {
-                                        menu.remove();
-                                        document.removeEventListener('click', closeMenu);
-                                    }
-                                };
-                                document.addEventListener('click', closeMenu);
-                            }, 500);
-                        });
-                        editor.find('.note-editable').on('touchend', () => clearTimeout(pressTimer));
-                        editor.find('.note-editable').on('touchmove', () => clearTimeout(pressTimer));
-                        // Customize toolbar icons
-                        editor.find('.note-btn[title="Bold"]').html('<i class="fas fa-bold"></i>');
-                        editor.find('.note-btn[title="Italic"]').html('<i class="fas fa-italic"></i>');
-                        editor.find('.note-btn[title="Heading 1"]').html('<i class="fas fa-heading"></i>');
-                        editor.find('.note-btn[title="Heading 2"]').html('<i class="fas fa-h2"></i>');
-                        editor.find('.note-btn[title="Unordered List"]').html('<i class="fas fa-list-ul"></i>');
-                        editor.find('.note-btn[title="Link"]').html('<i class="fas fa-link"></i>');
-                        editor.find('.note-btn[title="Picture"]').html('<i class="fas fa-image"></i>');
-                        editor.find('.note-btn[title="Highlight"]').html('<i class="fas fa-highlighter"></i>');
-                        // Update active states
-                        function updateToolbar() {
-                            editor.find('.note-btn').removeClass('active');
-                            if ($('#content-editor').summernote('isBold')) {
-                                editor.find('.note-btn[title="Bold"]').addClass('active');
-                            }
-                            if ($('#content-editor').summernote('isItalic')) {
-                                editor.find('.note-btn[title="Italic"]').addClass('active');
-                            }
-                            const style = $('#content-editor').summernote('getLastStyle');
-                            if (style && style.tagName === 'H1') {
-                                editor.find('.note-btn[title="Heading 1"]').addClass('active');
-                            }
-                            if (style && style.tagName === 'H2') {
-                                editor.find('.note-btn[title="Heading 2"]').addClass('active');
-                            }
-                            if ($('#content-editor').summernote('isUnorderedList')) {
-                                editor.find('.note-btn[title="Unordered List"]').addClass('active');
-                            }
-                            if ($('#content-editor').summernote('isHighlight')) {
-                                editor.find('.note-btn[title="Highlight"]').addClass('active');
-                            }
-                        }
-                        editor.find('.note-editable').on('mouseup keyup', updateToolbar);
-                    },
-                    onPaste: function(e) {
-                        const clipboardData = e.originalEvent.clipboardData.getData('text/plain');
-                        const isPlainText = !/<[a-z][\s\S]*>/i.test(clipboardData);
-                        if (isPlainText) {
-                            let content = clipboardData;
-                            content = content.replace(/(?:\*\*|__)(.*?)(?:\*\*|__)/g, '<strong>$1</strong>');
-                            content = content.replace(/(?:\*|_)(.*?)(?:\*|_)/g, '<em>$1</em>');
-                            content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
-                            content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
-                            content = content.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, text) => {
-                                const level = hashes.length;
-                                return `<h${level}>${text}</h${level}>`;
-                            });
-                            content = content.replace(/^(?:-|\*)\s+(.+)$/gm, '<li>$1</li>');
-                            content = content.replace(/(<li>.+<\/li>)/g, '<ul>$1</ul>');
-                            content = content.split('\n\n').map(line => {
-                                if (!line.match(/^(?:<h\d>|<ul>|<img|<a)/)) {
-                                    return `<p>${line}</p>`;
+                            const action = e.target.dataset.action;
+                            if (action === 'select') {
+                                const range = document.caretRangeFromPoint(x, y);
+                                if (range) {
+                                    const selection = window.getSelection();
+                                    selection.removeAllRanges();
+                                    selection.addRange(range);
+                                    quill.focus();
                                 }
-                                return line;
-                            }).join('');
-                            $('#content-editor').summernote('code', content);
-                            e.preventDefault();
+                            } else if (action === 'link') {
+                                const url = prompt('Enter URL:');
+                                if (url) quill.format('link', url);
+                            } else if (action === 'bold') {
+                                quill.format('bold', !quill.getFormat().bold);
+                            } else if (action === 'italic') {
+                                quill.format('italic', !quill.getFormat().italic);
+                            } else if (action === 'highlight') {
+                                quill.format('background', quill.getFormat().background === '#FFFF00' ? false : '#FFFF00');
+                            }
+                            menu.remove();
+                        });
+                    });
+                    const closeMenu = (e) => {
+                        if (!menu.contains(e.target)) {
+                            menu.remove();
+                            document.removeEventListener('click', closeMenu);
                         }
+                    };
+                    document.addEventListener('click', closeMenu);
+                }, 500);
+            });
+            editor.querySelector('.ql-editor').addEventListener('touchend', () => clearTimeout(pressTimer));
+            editor.querySelector('.ql-editor').addEventListener('touchmove', () => clearTimeout(pressTimer));
+
+            // Customize toolbar icons
+            const toolbar = editor.querySelector('.ql-toolbar');
+            toolbar.querySelector('.ql-bold').innerHTML = '<i class="fas fa-bold"></i>';
+            toolbar.querySelector('.ql-italic').innerHTML = '<i class="fas fa-italic"></i>';
+            toolbar.querySelector('.ql-header[value="1"]').innerHTML = '<i class="fas fa-heading"></i>';
+            toolbar.querySelector('.ql-header[value="2"]').innerHTML = '<i class="fas fa-h2"></i>';
+            toolbar.querySelector('.ql-list').innerHTML = '<i class="fas fa-list-ul"></i>';
+            toolbar.querySelector('.ql-link').innerHTML = '<i class="fas fa-link"></i>';
+            toolbar.querySelector('.ql-image').innerHTML = '<i class="fas fa-image"></i>';
+            toolbar.querySelector('.ql-background').innerHTML = '<i class="fas fa-highlighter"></i>';
+
+            // Paste handling
+            quill.on('text-change', (delta, oldDelta, source) => {
+                if (source === 'user' && delta.ops.some(op => op.insert && typeof op.insert === 'string')) {
+                    const text = quill.getText();
+                    if (text.match(/(?:\*\*|__)(.*?)(?:\*\*|__)/) || text.match(/\[([^\]]+)\]\(([^)]+)\)/)) {
+                        let content = text;
+                        content = content.replace(/(?:\*\*|__)(.*?)(?:\*\*|__)/g, '<strong>$1</strong>');
+                        content = content.replace(/(?:\*|_)(.*?)(?:\*|_)/g, '<em>$1</em>');
+                        content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+                        content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+                        content = content.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, text) => {
+                            const level = hashes.length;
+                            return `<h${level}>${text}</h${level}>`;
+                        });
+                        content = content.replace(/^(?:-|\*)\s+(.+)$/gm, '<li>$1</li>');
+                        content = content.replace(/(<li>.+<\/li>)/g, '<ul>$1</ul>');
+                        content = content.split('\n\n').map(line => {
+                            if (!line.match(/^(?:<h\d>|<ul>|<img|<a)/)) {
+                                return `<p>${line}</p>`;
+                            }
+                            return line;
+                        }).join('');
+                        quill.setContents([]);
+                        quill.clipboard.dangerouslyPasteHTML(content);
                     }
                 }
             });
         }
 
         // Initialize editor after DOM is loaded
-        $(document).ready(initSummernote);
+        document.addEventListener('DOMContentLoaded', initQuill);
 
         // Search functionality
         document.getElementById('search-input').addEventListener('input', (e) => {
@@ -423,7 +395,7 @@
         // Preview functionality
         document.getElementById('preview-button').addEventListener('click', () => {
             const formData = new FormData(document.getElementById('create-post'));
-            const htmlContent = $('#content-editor').summernote('code');
+            const htmlContent = quill.root.innerHTML;
             const previewData = {
                 title: formData.get('title') || 'Untitled Post',
                 category: formData.get('category') || 'Uncategorized',
@@ -517,7 +489,7 @@
             submitButton.disabled = true;
 
             const formData = new FormData(e.target);
-            const htmlContent = $('#content-editor').summernote('code');
+            const htmlContent = quill.root.innerHTML;
             const markdownContent = turndownService.turndown(htmlContent || '');
             const postData = {
                 title: formData.get('title'),
@@ -553,7 +525,7 @@
                     throw new Error(responseData.error || `Operation failed: ${response.status}`);
                 }
                 e.target.reset();
-                $('#content-editor').summernote('reset');
+                quill.setContents([]);
                 submitButton.textContent = 'Create Post';
                 document.getElementById('cancel-edit-button').classList.add('hidden');
                 delete e.target.dataset.editSlug;
@@ -570,7 +542,7 @@
         // Cancel edit handler
         document.getElementById('cancel-edit-button').addEventListener('click', () => {
             document.getElementById('create-post').reset();
-            $('#content-editor').summernote('reset');
+            quill.setContents([]);
             document.getElementById('submit-post-button').textContent = 'Create Post';
             document.getElementById('cancel-edit-button').classList.add('hidden');
             delete document.getElementById('create-post').dataset.editSlug;
@@ -667,7 +639,7 @@
             document.querySelector('input[name="tags"]').value = Array.isArray(post.tags) ? post.tags.join(', ') : post.tags || '';
             document.querySelector('input[name="image"]').value = post.image || '';
             document.querySelector('input[name="date"]').value = post.date || '';
-            $('#content-editor').summernote('code', post.content || '');
+            quill.root.innerHTML = post.content || '';
             document.getElementById('submit-post-button').textContent = 'Update Post';
             document.getElementById('cancel-edit-button').classList.remove('hidden');
             document.getElementById('create-post').dataset.editSlug = slug;
@@ -699,7 +671,7 @@
                     console.log('Delete response:', data);
                     if (document.getElementById('create-post').dataset.editSlug === slug) {
                         document.getElementById('create-post').reset();
-                        $('#content-editor').summernote('reset');
+                        quill.setContents([]);
                         document.getElementById('submit-post-button').textContent = 'Create Post';
                         document.getElementById('cancel-edit-button').classList.add('hidden');
                         delete document.getElementById('create-post').dataset.editSlug;
