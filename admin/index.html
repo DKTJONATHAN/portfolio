@@ -97,6 +97,16 @@
             color: #6b7280;
             margin-top: 8px;
         }
+        .ql-font-arial { font-family: Arial, sans-serif; }
+        .ql-font-times-new-roman { font-family: 'Times New Roman', Times, serif; }
+        .ql-font-georgia { font-family: Georgia, serif; }
+        .ql-font-helvetica { font-family: Helvetica, sans-serif; }
+        .ql-font-verdana { font-family: Verdana, sans-serif; }
+        .ql-font-roboto { font-family: Roboto, sans-serif; }
+        .ql-font-lora { font-family: Lora, serif; }
+        .ql-font-open-sans { font-family: 'Open Sans', sans-serif; }
+        .ql-font-merriweather { font-family: Merriweather, serif; }
+        .ql-font-source-serif-pro { font-family: 'Source Serif Pro', serif; }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -157,8 +167,17 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                                    <input type="text" name="category"
+                                    <select name="category" required
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                        <option value="" disabled selected>Select a category</option>
+                                        <option value="News">News</option>
+                                        <option value="Breaking News">Breaking News</option>
+                                        <option value="Opinions">Opinions</option>
+                                        <option value="Business">Business</option>
+                                        <option value="Sports">Sports</option>
+                                        <option value="Tech">Tech</option>
+                                        <option value="Entertainment">Entertainment</option>
+                                    </select>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Tags (comma-separated)</label>
@@ -251,19 +270,13 @@
             linkStyle: 'inlined'
         });
 
-        // Slugify function
-        function slugify(text) {
-            return text.toLowerCase()
-                       .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphen
-                       .replace(/^-+|-+$/g, '');    // Remove leading/trailing hyphens
-        }
-
-        // Initialize Quill
+        // Initialize Quill with font support
         function initQuill() {
             quill = new Quill('#content-editor', {
                 theme: 'snow',
                 modules: {
                     toolbar: [
+                        [{ 'font': ['arial', 'times-new-roman', 'georgia', 'helvetica', 'verdana', 'roboto', 'lora', 'open-sans', 'merriweather', 'source-serif-pro', false] }],
                         ['bold', 'italic', 'underline', 'strike'],
                         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
                         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
@@ -377,6 +390,7 @@
 
             // Customize toolbar icons
             const toolbar = editor.querySelector('.ql-toolbar');
+            toolbar.querySelector('.ql-font').innerHTML = '<i class="fas fa-font"></i>';
             toolbar.querySelector('.ql-bold').innerHTML = '<i class="fas fa-bold"></i>';
             toolbar.querySelector('.ql-italic').innerHTML = '<i class="fas fa-italic"></i>';
             toolbar.querySelector('.ql-underline').innerHTML = '<i class="fas fa-underline"></i>';
@@ -472,33 +486,49 @@
             });
         }
 
-        // Initialize editor and slug handling after DOM is loaded
+        // Initialize editor and slug handling
         document.addEventListener('DOMContentLoaded', () => {
             initQuill();
 
-            // Slug handling
+            // Simple slug generation
             const titleInput = document.querySelector('input[name="title"]');
             const slugInput = document.querySelector('input[name="slug"]');
-            slugInput.dataset.manuallyEdited = 'false';
+            let isEditingSlug = false;
 
             titleInput.addEventListener('input', () => {
-                if (slugInput.dataset.manuallyEdited === 'false') {
-                    slugInput.value = slugify(titleInput.value);
+                if (!isEditingSlug) {
+                    const title = titleInput.value.trim();
+                    slugInput.value = title.toLowerCase().replace(/\s+/g, '-');
                 }
             });
 
-            slugInput.addEventListener('input', () => {
-                slugInput.dataset.manuallyEdited = 'true';
+            slugInput.addEventListener('focus', () => {
+                isEditingSlug = true;
             });
 
-            // Reset manual edit flag on form reset or edit cancel
+            slugInput.addEventListener('blur', () => {
+                isEditingSlug = false;
+                // Ensure slug is updated if title changed while slug was focused
+                const title = titleInput.value.trim();
+                if (slugInput.value === '' || slugInput.value === slugify(title)) {
+                    slugInput.value = title.toLowerCase().replace(/\s+/g, '-');
+                }
+            });
+
+            // Reset slug behavior on form reset or edit cancel
             document.getElementById('create-post').addEventListener('reset', () => {
-                slugInput.dataset.manuallyEdited = 'false';
+                isEditingSlug = false;
+                slugInput.value = '';
             });
             document.getElementById('cancel-edit-button').addEventListener('click', () => {
-                slugInput.dataset.manuallyEdited = 'false';
+                isEditingSlug = false;
             });
         });
+
+        // Simple slugify function for blur event
+        function slugify(text) {
+            return text.toLowerCase().replace(/\s+/g, '-');
+        }
 
         // Search functionality
         document.getElementById('search-input').addEventListener('input', (e) => {
@@ -645,8 +675,7 @@
                 }
                 e.target.reset();
                 quill.setContents([]);
-                document.querySelector('input[name="slug"]').dataset.manuallyEdited = 'false';
-                submitButton.textContent = 'Create Post';
+                document.getElementById('submit-post-button').textContent = 'Create Post';
                 document.getElementById('cancel-edit-button').classList.add('hidden');
                 delete e.target.dataset.editSlug;
                 await loadPosts();
@@ -666,7 +695,6 @@
             document.getElementById('submit-post-button').textContent = 'Create Post';
             document.getElementById('cancel-edit-button').classList.add('hidden');
             delete document.getElementById('create-post').dataset.editSlug;
-            document.querySelector('input[name="slug"]').dataset.manuallyEdited = 'false';
         });
 
         // Display posts function
@@ -756,8 +784,7 @@
             }
             document.querySelector('input[name="title"]').value = post.title || '';
             document.querySelector('input[name="slug"]').value = post.slug || '';
-            document.querySelector('input[name="slug"]').dataset.manuallyEdited = 'true';
-            document.querySelector('input[name="category"]').value = post.category || '';
+            document.querySelector('select[name="category"]').value = post.category || '';
             document.querySelector('input[name="tags"]').value = Array.isArray(post.tags) ? post.tags.join(', ') : post.tags || '';
             document.querySelector('input[name="image"]').value = post.image || '';
             document.querySelector('input[name="date"]').value = post.date || '';
@@ -797,7 +824,6 @@
                         document.getElementById('submit-post-button').textContent = 'Create Post';
                         document.getElementById('cancel-edit-button').classList.add('hidden');
                         delete document.getElementById('create-post').dataset.editSlug;
-                        document.querySelector('input[name="slug"]').dataset.manuallyEdited = 'false';
                     }
                     loadPosts();
                 })
