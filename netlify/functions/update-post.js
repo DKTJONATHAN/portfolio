@@ -25,7 +25,7 @@ exports.handler = async function (event) {
     const repo = process.env.GITHUB_REPO;
     const path = `content/blog/${slug}.md`;
 
-    // Get current file to obtain SHA
+    // Get file SHA
     let sha;
     try {
       const { data } = await octokit.repos.getContent({ owner, repo, path });
@@ -37,23 +37,23 @@ exports.handler = async function (event) {
           body: JSON.stringify({ error: 'Post not found' }),
         };
       }
-      console.error('Get file error:', error);
-      throw error;
+      console.error('Get file error:', error.message, error.stack);
+      throw new Error(`GitHub API error: ${error.message}`);
     }
 
-    // Create markdown content with front matter
+    // Create markdown with front matter
     const markdownContent = `---
-title: ${title}
+title: "${title.replace(/"/g, '\\"')}"
 slug: ${slug}
 date: ${date}
-${category ? `category: ${category}` : ''}
-${tags ? `tags: [${tags.split(',').map(tag => tag.trim()).join(', ')}]` : ''}
-${image ? `image: ${image}` : ''}
+${category ? `category: "${category.replace(/"/g, '\\"')}"` : ''}
+${tags ? `tags: [${tags.split(',').map(tag => `"${tag.trim().replace(/"/g, '\\"')}"`).join(', ')}]` : ''}
+${image ? `image: "${image.replace(/"/g, '\\"')}"` : ''}
 ---
 ${content}
 `;
 
-    // Update file in GitHub
+    // Update file
     const response = await octokit.repos.createOrUpdateFileContents({
       owner,
       repo,
@@ -63,11 +63,11 @@ ${content}
       sha,
     });
 
-    console.log('Update post response:', response.data);
+    console.log('Update post commit:', response.data.commit.sha);
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Post updated successfully', commit: response.data.commit.sha }),
+      body: JSON.stringify({ message: 'Post updated', commit: response.data.commit.sha }),
     };
   } catch (error) {
     console.error('Update post error:', error.message, error.stack);
