@@ -30,7 +30,7 @@
         .quill-editor .ql-toolbar {
             display: flex;
             flex-wrap: nowrap;
-            overflow-x: auto; /* Scrollable toolbar */
+            overflow-x: auto;
             gap: 6px;
             padding: 8px;
             background: #f8fafc;
@@ -40,7 +40,7 @@
             max-width: 100%;
             box-sizing: border-box;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
+            -webkit-overflow-scrolling: touch;
         }
         .quill-editor .ql-toolbar button, .quill-editor .ql-toolbar .ql-picker {
             background: #ffffff;
@@ -183,6 +183,11 @@
                                 <div id="content-editor" class="quill-editor"></div>
                                 <div id="word-count" class="word-count"></div>
                             </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Excerpt</label>
+                                <textarea name="excerpt" rows="3"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"></textarea>
+                            </div>
                             <div class="flex space-x-4">
                                 <button type="submit" id="submit-post-button"
                                     class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105 disabled:opacity-50 disabled:transform-none">
@@ -250,6 +255,13 @@
             codeBlockStyle: 'indented',
             linkStyle: 'inlined'
         });
+
+        // Slugify function
+        function slugify(text) {
+            return text.toLowerCase()
+                       .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphen
+                       .replace(/^-+|-+$/g, '');    // Remove leading/trailing hyphens
+        }
 
         // Initialize Quill
         function initQuill() {
@@ -427,10 +439,8 @@
                     const text = quill.getText();
                     let content = text;
                     if (/<[a-z][\s\S]*>/i.test(text)) {
-                        // HTML content, let Quill handle it
                         return;
                     }
-                    // Markdown or plain text
                     content = content.replace(/(?:\*\*|__)(.*?)(?:\*\*|__)/g, '<strong>$1</strong>');
                     content = content.replace(/(?:\*|_)(.*?)(?:\*|_)/g, '<em>$1</em>');
                     content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
@@ -468,7 +478,18 @@
         }
 
         // Initialize editor after DOM is loaded
-        document.addEventListener('DOMContentLoaded', initQuill);
+        document.addEventListener('DOMContentLoaded', () => {
+            initQuill();
+
+            // Automatic slug generation
+            document.querySelector('input[name="title"]').addEventListener('input', () => {
+                const slugField = document.querySelector('input[name="slug"]');
+                if (!slugField.value) {
+                    const title = document.querySelector('input[name="title"]').value;
+                    slugField.value = slugify(title);
+                }
+            });
+        });
 
         // Search functionality
         document.getElementById('search-input').addEventListener('input', (e) => {
@@ -493,11 +514,16 @@
                 tags: formData.get('tags'),
                 image: formData.get('image'),
                 date: formData.get('date') || new Date().toISOString().split('T')[0],
-                content: htmlContent || '<p class="text-gray-500 italic">No content available</p>'
+                content: htmlContent || '<p class="text-gray-500 italic">No content available</p>',
+                excerpt: formData.get('excerpt') || 'No excerpt provided'
             };
             const previewHTML = generatePreviewHTML(previewData);
             document.getElementById('preview-content').innerHTML = previewHTML;
-            document.getElementById('preview-modal').classList.remove('hidden');
+            document.getElement automaticSlugField = document.querySelector('input[name="slug"]');
+            if (!automaticSlugField.value) {
+                const title = document.querySelector('input[name="title"]').value;
+                automaticSlugField.value = slugify(title);
+            }
         });
 
         document.getElementById('close-preview').addEventListener('click', (e) => {
@@ -533,6 +559,7 @@
                             </div>
                         ` : ''}
                     </header>
+                    <p class="text-gray-600 mb-6">${data.excerpt}</p>
                     <div class="prose prose-lg max-w-none">
                         ${data.content}
                     </div>
@@ -589,10 +616,9 @@
                 tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
                 image: formData.get('image') || '',
                 date: formData.get('date'),
-                content: markdownContent
+                content: markdownContent,
+                excerpt: formData.get('excerpt') || ''
             };
-            console.log('HTML content:', htmlContent);
-            console.log('Markdown content:', markdownContent);
             console.log('Post data to send:', postData);
 
             try {
@@ -730,6 +756,7 @@
             document.querySelector('input[name="tags"]').value = Array.isArray(post.tags) ? post.tags.join(', ') : post.tags || '';
             document.querySelector('input[name="image"]').value = post.image || '';
             document.querySelector('input[name="date"]').value = post.date || '';
+            document.querySelector('textarea[name="excerpt"]').value = post.excerpt || '';
             quill.root.innerHTML = post.content || '';
             document.getElementById('submit-post-button').textContent = 'Update Post';
             document.getElementById('cancel-edit-button').classList.remove('hidden');
