@@ -262,6 +262,8 @@
         let allPosts = [];
         let filteredPosts = [];
         let quill = null;
+        let isLoading = false;
+        let abortController = null;
         const turndownService = new TurndownService({
             headingStyle: 'atx',
             bulletListMarker: '-',
@@ -269,8 +271,22 @@
             linkStyle: 'inlined'
         });
 
-        // Function to convert headings to bold
-        function convertHeadingsToBold(htmlContent) {
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        // Function to convert Markdown headings to bold
+        function convertMarkdownHeadingsToBold(markdownContent) {
+            return markdownContent.replace(/^(#{1,6})\s+(.+)$/gm, '**$2**');
+        }
+
+        // Function to convert HTML headings to bold (for preview and edit)
+        function convertHTMLHeadingsToBold(htmlContent) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlContent, 'text/html');
             ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].forEach(tag => {
@@ -468,10 +484,7 @@
                     content = content.replace(/(?:\*|_)(.*?)(?:\*|_)/g, '<em>$1</em>');
                     content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
                     content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
-                    content = content.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, text) => {
-                        const level = hashes.length;
-                        return `<strong>${text}</strong>`;
-                    });
+                    content = content.replace(/^(#{1,6})\s+(.+)$/gm, '<strong>$2</strong>');
                     content = content.replace(/^(?:-|\*)\s+(.+)$/gm, '<li>$1</li>');
                     content = content.replace(/(<li>.+<\/li>)/g, '<ul>$1</ul>');
                     content = content.replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>');
@@ -559,7 +572,7 @@
         // Preview functionality
         document.getElementById('preview-button').addEventListener('click', () => {
             const formData = new FormData(document.getElementById('create-post'));
-            const htmlContent = convertHeadingsToBold(quill.root.innerHTML);
+            const htmlContent = convertHTMLHeadingsToBold(quill.root.innerHTML);
             const previewData = {
                 title: formData.get('title') || 'Untitled Post',
                 category: formData.get('category') || 'Uncategorized',
@@ -653,8 +666,8 @@
             submitButton.disabled = true;
 
             const formData = new FormData(e.target);
-            const htmlContent = convertHeadingsToBold(quill.root.innerHTML);
-            const markdownContent = turndownService.turndown(htmlContent || '');
+            const htmlContent = convertHTMLHeadingsToBold(quill.root.innerHTML);
+            const markdownContent = convertMarkdownHeadingsToBold(turndownService.turndown(htmlContent || ''));
             const postData = {
                 title: formData.get('title'),
                 slug: formData.get('slug'),
@@ -737,6 +750,7 @@
                     </div>
                 `).join('');
             }
+            // Remove existing listeners to prevent duplicates
             document.querySelectorAll('.edit-post').forEach(button => {
                 button.removeEventListener('click', handleEdit);
                 button.addEventListener('click', handleEdit);
@@ -747,8 +761,14 @@
             });
         }
 
-        // Load posts
-        async function loadPosts() {
+        // Load posts (debounced)
+        const loadPosts = debounce(async () => {
+            if (isLoading) return;
+            isLoading = true;
+            if (abortController) {
+                abortController.abort();
+            }
+            abortController = new AbortController();
             const postList = document.getElementById('post-list');
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
@@ -758,7 +778,7 @@
 
             try {
                 const response = await fetch('/api/list-posts?t=' + Date.now(), {
-                    signal: AbortSignal.timeout(10000)
+                    signal: abortController.signal
                 });
                 if (!response.ok) {
                     const errorText = await response.text();
@@ -767,10 +787,9 @@
                 }
                 try {
                     allPosts = await response.json();
-                    // Convert Markdown to HTML and apply heading conversion for consistency
                     allPosts = allPosts.map(post => ({
                         ...post,
-                        content: convertHeadingsToBold(marked.parse(post.content || ''))
+                        content: convertHTMLHeadingsToBold(marked.parse(convertMarkdownHeadingsToBold(post.content || '')))
                     }));
                     filteredPosts = [...allPosts];
                     console.log('Parsed posts:', allPosts);
@@ -781,13 +800,19 @@
                 }
                 displayPosts(filteredPosts);
             } catch (err) {
+                if (err.name === 'AbortError') {
+                    console.log('Fetch aborted');
+                    return;
+                }
                 error.textContent = 'Failed to fetch posts: ' + err.message;
                 error.classList.remove('hidden');
                 postList.innerHTML = '<p class="text-red-500 text-center py-8">Failed to load posts</p>';
             } finally {
+                isLoading = false;
                 loading.classList.add('hidden');
+                abortController = null;
             }
-        }
+        }, 500);
 
         function handleEdit(e) {
             const slug = e.target.dataset.slug;
