@@ -6,6 +6,7 @@
     <title>Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.tiny.cloud/1/mn8k8hdz6yfspjdieakr2wj6o17ul3zukzga01gsm1jdi0gp/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.2/dist/turndown.js"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <!-- Login Section -->
@@ -153,22 +154,24 @@
     <script>
         let allPosts = [];
         let filteredPosts = [];
+        const turndownService = new TurndownService({
+            headingStyle: 'atx',
+            bulletListMarker: '-',
+            codeBlockStyle: 'indented',
+            linkStyle: 'inlined'
+        });
 
-        // Initialize TinyMCE with markdown plugin
+        // Initialize TinyMCE
         tinymce.init({
             selector: '#content-editor',
-            plugins: 'lists link image markdown',
+            plugins: 'lists link image',
             toolbar: 'undo redo | bold italic | h1 h2 h3 | bullist numlist | link image',
             menubar: false,
             height: 300,
             content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }',
-            markdown: {
-                format: 'markdown',
-                content: true
-            },
             setup: (editor) => {
                 editor.on('init', () => {
-                    console.log('TinyMCE initialized with markdown plugin');
+                    console.log('TinyMCE initialized');
                 });
             }
         });
@@ -195,11 +198,11 @@
             displayPosts(filteredPosts);
         });
 
-        // Preview functionality with markdown rendering
+        // Preview functionality
         document.getElementById('preview-button').addEventListener('click', () => {
             const formData = new FormData(document.getElementById('create-post'));
-            const content = tinymce.get('content-editor') ? 
-                tinymce.get('content-editor').getContent({ format: 'markdown' }) : 
+            const htmlContent = tinymce.get('content-editor') ? 
+                tinymce.get('content-editor').getContent() : 
                 formData.get('content');
             const previewData = {
                 title: formData.get('title') || 'Untitled Post',
@@ -207,7 +210,7 @@
                 tags: formData.get('tags'),
                 image: formData.get('image'),
                 date: formData.get('date') || new Date().toISOString().split('T')[0],
-                content: content || ''
+                content: htmlContent || '<p class="text-gray-500 italic">No content available</p>'
             };
             const previewHTML = generatePreviewHTML(previewData);
             document.getElementById('preview-content').innerHTML = previewHTML;
@@ -231,10 +234,6 @@
                 day: 'numeric'
             });
             const tags = data.tags ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
-            // Convert markdown to HTML for preview
-            const contentHTML = tinymce.get('content-editor') ? 
-                tinymce.get('content-editor').getContent() : 
-                data.content || '<p class="text-gray-500 italic">No content available</p>';
             return `
                 <article class="prose prose-lg max-w-none">
                     ${data.image ? `<img src="${data.image}" alt="${data.title}" class="w-full h-64 object-cover rounded-lg mb-6">` : ''}
@@ -251,7 +250,7 @@
                         ` : ''}
                     </header>
                     <div class="prose prose-lg max-w-none">
-                        ${contentHTML}
+                        ${data.content}
                     </div>
                 </article>
             `;
@@ -268,7 +267,8 @@
                 const response = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams({ password }).toString()
+                    body: new URLSearchParams({ password }).toString(),
+                    signal: AbortSignal.timeout(10000) // 10s timeout
                 });
                 if (response.ok) {
                     document.getElementById('login-section').classList.add('hidden');
@@ -296,6 +296,10 @@
             submitButton.disabled = true;
 
             const formData = new FormData(e.target);
+            const htmlContent = tinymce.get('content-editor') ? 
+                tinymce.get('content-editor').getContent() : 
+                formData.get('content');
+            const markdownContent = turndownService.turndown(htmlContent || '');
             const postData = {
                 title: formData.get('title'),
                 slug: formData.get('slug'),
@@ -303,10 +307,10 @@
                 tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
                 image: formData.get('image') || '',
                 date: formData.get('date'),
-                content: tinymce.get('content-editor') ? 
-                    tinyce.get('content-editor').getContent({ format: 'markdown' }) : 
-                    formData.get('content')
+                content: markdownContent
             };
+            console.log('HTML content:', htmlContent);
+            console.log('Markdown content:', markdownContent);
             console.log('Post data to send:', postData);
 
             try {
@@ -314,7 +318,8 @@
                 const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(postData).toString()
+                    body: new URLSearchParams(postData).toString(),
+                    signal: AbortSignal.timeout(30000) // 30s timeout
                 });
                 let responseData;
                 try {
@@ -403,7 +408,9 @@
             error.classList.add('hidden');
 
             try {
-                const response = await fetch('/api/list-posts?t=' + Date.now());
+                const response = await fetch('/api/list-posts?t=' + Date.now(), {
+                    signal: AbortSignal.timeout(10000) // 10s timeout
+                });
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.log('Raw response from list-posts:', errorText);
@@ -448,8 +455,11 @@
             waitForTinyMCE(() => {
                 const content = post.content || '';
                 if (tinymce.get('content-editor')) {
-                    tinymce.get('content-editor').setContent(content, { format: 'markdown' });
+                    // Convert markdown back to HTML for editing
+                    const htmlContent = turndownService.turndown(content); // Reverse conversion (simplified)
+                    tinymce.get('content-editor').setContent(content);
                     console.log('Content set in TinyMCE:', content);
+                    console.log('HTML for editing:', htmlContent);
                 } else {
                     document.getElementById('content-editor').value = content;
                 }
@@ -469,7 +479,8 @@
             fetch('/api/delete-post', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ slug }).toString()
+                body: new URLSearchParams({ slug }).toString(),
+                signal: AbortSignal.timeout(10000) // 10s timeout
             })
                 .then(response => {
                     if (!response.ok) {
