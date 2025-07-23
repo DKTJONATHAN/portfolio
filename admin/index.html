@@ -3,38 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Admin Panel | Jonathan Mwaniki</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.2/dist/turndown.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #667eea;
+            --primary-dark: #764ba2;
+            --secondary-color: #10b981;
+            --text-color: #1f2937;
+            --light-text: #6b7280;
+            --background-color: #ffffff;
+            --light-bg: #f8fafc;
+            --border-color: #e5e7eb;
+            --font-main: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+
         .quill-editor .ql-container {
-            border: 1px solid #d1d5db;
+            border: 1px solid var(--border-color);
             border-radius: 0 0 8px 8px;
             padding: 12px;
             min-height: 50vh;
             max-width: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: var(--font-main);
             font-size: 16px;
-            background: #fff;
+            background: var(--background-color);
             -webkit-user-select: text !important;
             user-select: text !important;
             touch-action: manipulation;
         }
+
         .quill-editor .ql-container:focus-within {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
         }
+
         .quill-editor .ql-toolbar {
             display: flex;
             flex-wrap: nowrap;
             overflow-x: auto;
             gap: 6px;
             padding: 8px;
-            background: #f8fafc;
-            border: 1px solid #d1d5db;
+            background: var(--light-bg);
+            border: 1px solid var(--border-color);
             border-bottom: none;
             border-radius: 8px 8px 0 0;
             max-width: 100%;
@@ -42,9 +64,10 @@
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             -webkit-overflow-scrolling: touch;
         }
+
         .quill-editor .ql-toolbar button, .quill-editor .ql-toolbar .ql-picker {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
             border-radius: 6px;
             padding: 6px;
             font-size: 16px;
@@ -53,30 +76,34 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #4b5563;
+            color: var(--light-text);
             transition: all 0.2s ease;
             flex-shrink: 0;
         }
+
         .quill-editor .ql-toolbar button:hover, .quill-editor .ql-toolbar .ql-picker:hover {
-            background: #e5e7eb;
-            border-color: #d1d5db;
-            color: #1f2937;
+            background: var(--border-color);
+            border-color: var(--border-color);
+            color: var(--text-color);
         }
+
         .quill-editor .ql-toolbar button.ql-active, .quill-editor .ql-toolbar .ql-picker.ql-active {
-            background: #3b82f6;
-            border-color: #3b82f6;
+            background: var(--primary-color);
+            border-color: var(--primary-color);
             color: #ffffff;
         }
+
         .custom-context-menu {
             position: absolute;
-            background: #ffffff;
-            border: 1px solid #d1d5db;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             z-index: 1000;
             border-radius: 6px;
             padding: 8px 0;
             min-width: 160px;
         }
+
         .custom-context-menu button {
             display: block;
             width: 100%;
@@ -86,34 +113,43 @@
             border: none;
             cursor: pointer;
             font-size: 14px;
-            color: #374151;
+            color: var(--text-color);
             transition: background 0.2s ease;
         }
+
         .custom-context-menu button:hover {
-            background: #f1f5f9;
+            background: var(--light-bg);
         }
+
         .word-count {
             font-size: 14px;
-            color: #6b7280;
+            color: var(--light-text);
             margin-top: 8px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <!-- Login Section -->
-    <div id="login-section" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
+    <div id="login-section" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[var(--primary-color)] to-[var(--primary-dark)]">
         <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
             <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">Admin Panel</h1>
-                <p class="text-gray-600">Enter your password to continue</p>
+                <h1 class="text-3xl font-bold text-[var(--text-color)] mb-2">Admin Panel</h1>
+                <p class="text-[var(--light-text)]">Enter your password to continue</p>
             </div>
             <form id="login-form" class="space-y-6">
                 <div class="relative">
                     <input type="password" id="password" placeholder="Password" required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                        class="w-full px-4 py-3 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent transition duration-200">
                 </div>
                 <button type="submit" 
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 transform hover:scale-105">
+                    class="w-full bg-[var(--primary-color)] hover:bg-[var(--primary-dark)] text-white font-semibold py-3 px-4 rounded-lg transition duration-200 transform hover:scale-105">
                     Login
                 </button>
             </form>
@@ -123,13 +159,13 @@
 
     <!-- Admin Section -->
     <div id="admin-section" class="hidden min-h-screen">
-        <header class="bg-white shadow-sm border-b border-gray-200">
+        <header class="bg-white shadow-sm border-b border-[var(--border-color)]">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center py-6">
-                    <h1 class="text-3xl font-bold text-gray-900">Blog Admin Panel</h1>
+                    <h1 class="text-3xl font-bold text-[var(--text-color)]">Blog Admin Panel</h1>
                     <div class="flex items-center space-x-4">
-                        <span class="text-gray-600">Welcome, Admin</span>
-                        <div class="h-8 w-8 bg-blue-600 rounded-full"></div>
+                        <span class="text-[var(--light-text)]">Welcome, Admin</span>
+                        <div class="h-8 w-8 bg-[var(--primary-color)] rounded-full"></div>
                     </div>
                 </div>
             </div>
@@ -140,71 +176,71 @@
                 <!-- Create/Edit Post Form -->
                 <div class="lg:col-span-2">
                     <div class="bg-white rounded-xl shadow-lg p-6">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Create Post</h2>
+                        <h2 class="text-2xl font-bold text-[var(--text-color)] mb-6">Create Post</h2>
                         <form id="create-post" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                                    <label class="block text-sm font-medium text-[var(--text-color)] mb-2">Title</label>
                                     <input type="text" name="title" required
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                        class="w-full px-4 py-3 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent transition duration-200">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Slug</label>
+                                    <label class="block text-sm font-medium text-[var(--text-color)] mb-2">Slug</label>
                                     <input type="text" name="slug" required
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                        class="w-full px-4 py-3 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent transition duration-200">
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                    <label class="block text-sm font-medium text-[var(--text-color)] mb-2">Category</label>
                                     <input type="text" name="category"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                        class="w-full px-4 py-3 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent transition duration-200">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tags (comma-separated)</label>
+                                    <label class="block text-sm font-medium text-[var(--text-color)] mb-2">Tags (comma-separated)</label>
                                     <input type="text" name="tags"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                        class="w-full px-4 py-3 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent transition duration-200">
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                                    <label class="block text-sm font-medium text-[var(--text-color)] mb-2">Image URL</label>
                                     <input type="text" name="image"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                        class="w-full px-4 py-3 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent transition duration-200">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                    <label class="block text-sm font-medium text-[var(--text-color)] mb-2">Date</label>
                                     <input type="date" name="date" required
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                        class="w-full px-4 py-3 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent transition duration-200">
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                                <label class="block text-sm font-medium text-[var(--text-color)] mb-2">Content</label>
                                 <div id="content-editor" class="quill-editor"></div>
                                 <div id="word-count" class="word-count"></div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Excerpt</label>
+                                <label class="block text-sm font-medium text-[var(--text-color)] mb-2">Excerpt</label>
                                 <textarea name="excerpt" rows="3"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"></textarea>
+                                    class="w-full px-4 py-3 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent transition duration-200"></textarea>
                             </div>
                             <div class="flex space-x-4">
                                 <button type="submit" id="submit-post-button"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105 disabled:opacity-50 disabled:transform-none">
+                                    class="bg-[var(--primary-color)] hover:bg-[var(--primary-dark)] text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105 disabled:opacity-50 disabled:transform-none">
                                     Create Post
                                 </button>
                                 <button type="button" id="cancel-edit-button" class="hidden bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
                                     Cancel Edit
                                 </button>
                                 <button type="button" id="preview-button"
-                                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
+                                    class="bg-[var(--secondary-color)] hover:bg-[#059669] text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
                                     Preview
                                 </button>
                             </div>
                         </form>
                         <div class="mt-4">
                             <p id="error" class="text-red-500 text-sm hidden bg-red-50 border border-red-200 rounded-lg p-3"></p>
-                            <p id="loading" class="text-blue-500 text-sm hidden bg-blue-50 border border-blue-200 rounded-lg p-3">Loading...</p>
+                            <p id="loading" class="text-[var(--primary-color)] text-sm hidden bg-blue-50 border border-blue-200 rounded-lg p-3">Loading...</p>
                         </div>
                     </div>
                 </div>
@@ -212,17 +248,17 @@
                 <div class="lg:col-span-1">
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex items-center justify-between mb-6">
-                            <h2 id="posts-title" class="text-xl font-bold text-gray-900">Posts</h2>
+                            <h2 id="posts-title" class="text-xl font-bold text-[var(--text-color)]">Posts</h2>
                         </div>
                         <div class="mb-6">
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg class="h-5 w-5 text-[var(--light-text)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
                                 </div>
                                 <input type="text" id="search-input" placeholder="Search posts..."
-                                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                                    class="block w-full pl-10 pr-3 py-2 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent transition duration-200">
                             </div>
                         </div>
                         <div id="post-list" class="space-y-3 max-h-96 overflow-y-auto"></div>
@@ -235,9 +271,9 @@
     <!-- Preview Modal -->
     <div id="preview-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[1000] flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center rounded-t-xl">
-                <h3 class="text-2xl font-bold text-gray-900">Post Preview</h3>
-                <button id="close-preview" class="text-gray-500 hover:text-gray-700 transition duration-200 p-2">
+            <div class="sticky top-0 bg-white border-b border-[var(--border-color)] p-6 flex justify-between items-center rounded-t-xl">
+                <h3 class="text-2xl font-bold text-[var(--text-color)]">Post Preview</h3>
+                <button id="close-preview" class="text-[var(--light-text)] hover:text-[var(--text-color)] transition duration-200 p-2">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
@@ -477,7 +513,7 @@
             });
         }
 
-        // Initialize editor after DOM is loaded
+        // Initialize editor and slug generation
         document.addEventListener('DOMContentLoaded', () => {
             initQuill();
 
@@ -514,16 +550,12 @@
                 tags: formData.get('tags'),
                 image: formData.get('image'),
                 date: formData.get('date') || new Date().toISOString().split('T')[0],
-                content: htmlContent || '<p class="text-gray-500 italic">No content available</p>',
+                content: htmlContent || '<p class="text-[var(--light-text)] italic">No content available</p>',
                 excerpt: formData.get('excerpt') || 'No excerpt provided'
             };
             const previewHTML = generatePreviewHTML(previewData);
             document.getElementById('preview-content').innerHTML = previewHTML;
-            document.getElement automaticSlugField = document.querySelector('input[name="slug"]');
-            if (!automaticSlugField.value) {
-                const title = document.querySelector('input[name="title"]').value;
-                automaticSlugField.value = slugify(title);
-            }
+            document.getElementById('preview-modal').classList.remove('hidden');
         });
 
         document.getElementById('close-preview').addEventListener('click', (e) => {
@@ -545,24 +577,24 @@
             });
             const tags = data.tags ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
             return `
-                <article class="prose prose-lg max-w-none">
-                    ${data.image ? `<img src="${data.image}" alt="${data.title}" class="w-full h-64 object-cover rounded-lg mb-6">` : ''}
-                    <header class="mb-8">
-                        <h1 class="text-4xl font-bold text-gray-900 mb-4">${data.title}</h1>
-                        <div class="flex items-center space-x-4 text-gray-600 mb-4">
-                            <time datetime="${data.date}">${formattedDate}</time>
-                            ${data.category ? `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">${data.category}</span>` : ''}
-                        </div>
-                        ${tags.length > 0 ? `
-                            <div class="flex flex-wrap gap-2">
-                                ${tags.map(tag => `<span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm">#${tag}</span>`).join('')}
-                            </div>
-                        ` : ''}
-                    </header>
-                    <p class="text-gray-600 mb-6">${data.excerpt}</p>
-                    <div class="prose prose-lg max-w-none">
-                        ${data.content}
+                <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
+                    ${data.image ? `
+                    <div class="post-image">
+                        <img src="${data.image}" alt="${data.title}" loading="lazy" class="w-full max-h-[400px] object-cover rounded-lg mb-6" itemprop="image" onerror="this.src='/images/default-blog.jpg'">
+                    </div>` : ''}
+                    <h3 class="post-title" itemprop="headline">${data.title}</h3>
+                    <div class="post-meta">
+                        <time datetime="${data.date}" itemprop="datePublished">${formattedDate}</time>
+                        ${data.category ? `<span class="post-category" itemprop="articleSection">${data.category}</span>` : ''}
                     </div>
+                    <p class="post-excerpt text-[var(--light-text)] mb-6" itemprop="description">${data.excerpt}</p>
+                    ${tags.length > 0 ? `
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            ${tags.map(tag => `<span class="bg-[var(--light-bg)] text-[var(--light-text)] px-2 py-1 rounded text-sm" itemprop="keywords">#${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="post-content" itemprop="articleBody">${data.content}</div>
+                    <meta itemprop="author" content="Jonathan Mwaniki">
                 </article>
             `;
         }
@@ -619,7 +651,6 @@
                 content: markdownContent,
                 excerpt: formData.get('excerpt') || ''
             };
-            console.log('Post data to send:', postData);
 
             try {
                 const endpoint = e.target.dataset.editSlug ? '/api/update-post' : '/api/save-post';
@@ -632,10 +663,8 @@
                 let responseData;
                 try {
                     responseData = await response.json();
-                    console.log('Save/Update response:', responseData);
                 } catch (jsonError) {
                     const rawResponse = await response.text();
-                    console.log('Raw response:', rawResponse);
                     throw new Error('Invalid JSON response: ' + rawResponse);
                 }
                 if (!response.ok) {
@@ -671,17 +700,17 @@
             const postsTitle = document.getElementById('posts-title');
             postsTitle.textContent = `Posts (${posts.length})`;
             if (posts.length === 0) {
-                postList.innerHTML = '<p class="text-gray-500 text-center py-8">No posts found.</p>';
+                postList.innerHTML = '<p class="text-[var(--light-text)] text-center py-8">No posts found.</p>';
             } else {
                 postList.innerHTML = posts.map(post => `
-                    <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition duration-200">
+                    <div class="bg-[var(--light-bg)] rounded-lg p-4 hover:bg-gray-100 transition duration-200">
                         <div class="flex items-start justify-between">
                             <div class="flex-1 min-w-0">
-                                <h3 class="font-medium text-gray-900 truncate">${post.title || 'Untitled'}</h3>
-                                <p class="text-sm text-gray-500 mt-1">${post.date || 'No date'}</p>
+                                <h3 class="font-medium text-[var(--text-color)] truncate">${post.title || 'Untitled'}</h3>
+                                <p class="text-sm text-[var(--light-text)] mt-1">${post.date || 'No date'}</p>
                             </div>
                             <div class="flex space-x-2 ml-4">
-                                <button class="edit-post bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
+                                <button class="edit-post bg-[var(--primary-color)]/10 hover:bg-[var(--primary-color)]/20 text-[var(--primary-color)] px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
                                     Edit
                                 </button>
                                 <button class="delete-post bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
@@ -707,7 +736,7 @@
             const postList = document.getElementById('post-list');
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
-            postList.innerHTML = '<div class="text-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div></div>';
+            postList.innerHTML = '<div class="text-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--primary-color)] mx-auto"></div></div>';
             loading.classList.remove('hidden');
             error.classList.add('hidden');
 
@@ -717,16 +746,13 @@
                 });
                 if (!response.ok) {
                     const errorText = await response.text();
-                    console.log('Raw response from list-posts:', errorText);
-                    throw new Error(`Failed to fetch posts: ${response.status}`);
+                    throw new Error(`Failed to fetch posts: ${response.status} ${errorText}`);
                 }
                 try {
                     allPosts = await response.json();
                     filteredPosts = [...allPosts];
-                    console.log('Parsed posts:', allPosts);
                 } catch (jsonError) {
                     const rawResponse = await response.text();
-                    console.log('Raw response on JSON error:', rawResponse);
                     throw new Error('Invalid JSON response: ' + rawResponse);
                 }
                 displayPosts(filteredPosts);
@@ -779,14 +805,12 @@
                 .then(response => {
                     if (!response.ok) {
                         return response.text().then(errorText => {
-                            console.log('Raw delete response:', errorText);
-                            throw new Error(`Failed to delete post: ${response.status}`);
+                            throw new Error(`Failed to delete post: ${response.status} ${errorText}`);
                         });
                     }
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Delete response:', data);
                     if (document.getElementById('create-post').dataset.editSlug === slug) {
                         document.getElementById('create-post').reset();
                         quill.setContents([]);
