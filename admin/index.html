@@ -9,11 +9,37 @@
     <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.2/dist/turndown.js"></script>
     <style>
         #content-editor_ifr {
-            touch-action: manipulation;
+            touch-action: manipulation; /* Optimize touch events */
         }
         .tox-tinymce {
-            -webkit-user-select: text !important;
+            -webkit-user-select: text !important; /* Enable text selection on iOS */
             user-select: text !important;
+            height: 500px !important; /* Larger editor height */
+            width: 100% !important; /* Full width */
+            border-radius: 8px;
+        }
+        /* Custom context menu styling */
+        .custom-context-menu {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 4px;
+            padding: 8px 0;
+        }
+        .custom-context-menu button {
+            display: block;
+            width: 100%;
+            padding: 8px 16px;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .custom-context-menu button:hover {
+            background: #f0f0f0;
         }
     </style>
 </head>
@@ -174,41 +200,33 @@
         tinymce.init({
             selector: '#content-editor',
             plugins: 'lists link image paste',
-            toolbar: 'undo redo | bold italic | h1 h2 h3 | bullist numlist | link image | selectall',
+            toolbar: 'undo redo | bold italic | h1 h2 h3 | bullist numlist | link image | keyboard',
             menubar: false,
-            height: 300,
-            content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }',
+            height: 500, // Match CSS height
+            content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 16px; }',
             paste_as_text: false, // Allow HTML paste
             paste_preprocess: (editor, args) => {
                 let content = args.content;
 
-                // Step 1: Clean up stray HTML tags (in case HTML is pasted)
+                // Clean up stray HTML tags (in case HTML is pasted)
                 content = content.replace(/<(html|head|body)[^>]*>/gi, '')
                                .replace(/<\/(html|head|body)>/gi, '')
                                .trim();
 
-                // Step 2: Detect if content is plain text with Markdown-like formatting
-                const isPlainText = !/<[a-z][\s\S]*>/i.test(content); // No HTML tags
+                // Detect if content is plain text with Markdown-like formatting
+                const isPlainText = !/<[a-z][\s\S]*>/i.test(content);
                 if (isPlainText) {
-                    // Convert common Markdown patterns to HTML
-                    // Bold: **text** or __text__
+                    // Convert Markdown patterns to HTML
                     content = content.replace(/(?:\*\*|__)(.*?)(?:\*\*|__)/g, '<strong>$1</strong>');
-                    // Italic: *text* or _text_
                     content = content.replace(/(?:\*|_)(.*?)(?:\*|_)/g, '<em>$1</em>');
-                    // Links: [text](url)
                     content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
-                    // Images: ![alt](url)
                     content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
-                    // Headers: # Heading, ## Heading, etc.
                     content = content.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, text) => {
                         const level = hashes.length;
                         return `<h${level}>${text}</h${level}>`;
                     });
-                    // Lists: - item or * item
                     content = content.replace(/^(?:-|\*)\s+(.+)$/gm, '<li>$1</li>');
-                    // Wrap loose list items in <ul>
                     content = content.replace(/(<li>.+<\/li>)/g, '<ul>$1</ul>');
-                    // Paragraphs: Split by double newlines
                     content = content.split('\n\n').map(line => {
                         if (!line.match(/^(?:<h\d>|<ul>|<img|<a)/)) {
                             return `<p>${line}</p>`;
@@ -217,30 +235,103 @@
                     }).join('');
                 }
 
-                // Step 3: Ensure valid HTML structure for TinyMCE
                 args.content = content;
             },
             setup: (editor) => {
+                // Add custom keyboard toggle button
+                editor.ui.registry.addButton('keyboard', {
+                    text: 'Keyboard',
+                    onAction: () => {
+                        const editorIframe = editor.getContainer().querySelector('iframe');
+                        if (editorIframe) {
+                            if (document.activeElement === editorIframe) {
+                                editorIframe.blur();
+                            } else {
+                                editor.focus();
+                                editorIframe.focus();
+                            }
+                        }
+                    }
+                });
+
                 editor.on('init', () => {
                     console.log('TinyMCE initialized');
-                    // Prevent default click behavior for keyboard
                     const editorIframe = editor.getContainer().querySelector('iframe');
                     if (editorIframe) {
                         const contentDoc = editorIframe.contentDocument || editorIframe.contentWindow.document;
+
+                        // Prevent default click to avoid unwanted keyboard
                         contentDoc.addEventListener('click', (e) => {
                             e.preventDefault();
                             editorIframe.blur();
                         });
-                        // Double-tap handler
-                        let lastTap = 0;
-                        contentDoc.addEventListener('touchend', (e) => {
-                            const currentTime = new Date().getTime();
-                            const tapLength = currentTime - lastTap;
-                            if (tapLength < 500 && tapLength > 0) {
-                                editor.focus();
-                                editorIframe.focus();
-                            }
-                            lastTap = currentTime;
+
+                        // Long-press context menu
+                        let pressTimer;
+                        contentDoc.addEventListener('touchstart', (e) => {
+                            pressTimer = setTimeout(() => {
+                                e.preventDefault();
+                                const selection = editor.selection.getContent() || '';
+                                const range = editor.selection.getRng();
+                                const rect = range.getBoundingClientRect();
+                                const x = e.touches[0].clientX;
+                                const y = e.touches[0].clientY;
+
+                                // Remove existing menu
+                                const existingMenu = contentDoc.querySelector('.custom-context-menu');
+                                if (existingMenu) existingMenu.remove();
+
+                                // Create context menu
+                                const menu = contentDoc.createElement('div');
+                                menu.className = 'custom-context-menu';
+                                menu.style.left = `${x}px`;
+                                menu.style.top = `${y}px`;
+                                menu.innerHTML = `
+                                    <button data-action="select">Select Text</button>
+                                    <button data-action="link">Make Link</button>
+                                    <button data-action="bold">Bold</button>
+                                    <button data-action="italic">Italic</button>
+                                    <button data-action="highlight">Highlight</button>
+                                `;
+                                contentDoc.body.appendChild(menu);
+
+                                // Handle menu actions
+                                menu.querySelectorAll('button').forEach(button => {
+                                    button.addEventListener('click', (e) => {
+                                        e.preventDefault();
+                                        const action = e.target.dataset.action;
+                                        if (action === 'select') {
+                                            editor.selection.select(range.commonAncestorContainer);
+                                        } else if (action === 'link') {
+                                            const url = prompt('Enter URL:');
+                                            if (url) editor.execCommand('mceInsertLink', false, url);
+                                        } else if (action === 'bold') {
+                                            editor.execCommand('Bold');
+                                        } else if (action === 'italic') {
+                                            editor.execCommand('Italic');
+                                        } else if (action === 'highlight') {
+                                            editor.execCommand('HiliteColor', false, '#FFFF00');
+                                        }
+                                        menu.remove();
+                                    });
+                                });
+
+                                // Close menu on outside click
+                                const closeMenu = (e) => {
+                                    if (!menu.contains(e.target)) {
+                                        menu.remove();
+                                        contentDoc.removeEventListener('click', closeMenu);
+                                    }
+                                };
+                                contentDoc.addEventListener('click', closeMenu);
+                            }, 500); // Long-press after 500ms
+                        });
+
+                        contentDoc.addEventListener('touchend', () => {
+                            clearTimeout(pressTimer);
+                        });
+                        contentDoc.addEventListener('touchmove', () => {
+                            clearTimeout(pressTimer);
                         });
                     }
                 });
@@ -339,7 +430,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({ password }).toString(),
-                    signal: AbortSignal.timeout(10000) // 10s timeout
+                    signal: AbortSignal.timeout(10000)
                 });
                 if (response.ok) {
                     document.getElementById('login-section').classList.add('hidden');
@@ -390,7 +481,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams(postData).toString(),
-                    signal: AbortSignal.timeout(30000) // 30s timeout
+                    signal: AbortSignal.timeout(30000)
                 });
                 let responseData;
                 try {
@@ -480,7 +571,7 @@
 
             try {
                 const response = await fetch('/api/list-posts?t=' + Date.now(), {
-                    signal: AbortSignal.timeout(10000) // 10s timeout
+                    signal: AbortSignal.timeout(10000)
                 });
                 if (!response.ok) {
                     const errorText = await response.text();
@@ -526,11 +617,8 @@
             waitForTinyMCE(() => {
                 const content = post.content || '';
                 if (tinymce.get('content-editor')) {
-                    // Convert markdown back to HTML for editing
-                    const htmlContent = turndownService.turndown(content); // Reverse conversion (simplified)
                     tinymce.get('content-editor').setContent(content);
                     console.log('Content set in TinyMCE:', content);
-                    console.log('HTML for editing:', htmlContent);
                 } else {
                     document.getElementById('content-editor').value = content;
                 }
@@ -551,7 +639,7 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ slug }).toString(),
-                signal: AbortSignal.timeout(10000) // 10s timeout
+                signal: AbortSignal.timeout(10000)
             })
                 .then(response => {
                     if (!response.ok) {
