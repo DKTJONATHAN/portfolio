@@ -30,18 +30,17 @@
     <link rel="canonical" href="https://www.jonathanmwaniki.co.ke">
 
     <!-- Favicon Section -->
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="any">
-    <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
 
     <title>Jonathan Mwaniki | Professional Web Developer & Graphic Designer in Kenya</title>
 
     <!-- Preload Critical Resources -->
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preload" href="styles.css" as="style">
+    <link rel="stylesheet" href="styles.min.css">
+    <link rel="preload" href="styles.min.css" as="style">
     <link rel="preload" href="scripts/main.js" as="script">
     <link rel="preload" href="./images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -139,7 +138,7 @@
         /* Font face for fallback */
         @font-face {
             font-family: 'Poppins-fallback';
-            src: local('Arial');
+            src: local('Helvetica'), local('Verdana');
             size-adjust: 105%;
             ascent-override: 95%;
             descent-override: 22%;
@@ -288,14 +287,12 @@
             margin: 0 auto;
             padding: 80px 20px;
         }
-
         .blog-posts {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 40px;
             margin-bottom: 40px;
         }
-
         .blog-post {
             background: var(--white);
             border-radius: 16px;
@@ -304,34 +301,28 @@
             transition: all 0.3s ease;
             border: 1px solid rgba(0, 0, 0, 0.05);
         }
-
         .blog-post:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
         }
-
         .post-image {
             overflow: hidden;
             height: 250px;
         }
-
         .post-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.5s ease;
         }
-
         .blog-post:hover .post-image img {
             transform: scale(1.05);
         }
-
         .post-content {
             padding: 30px;
             display: flex;
             flex-direction: column;
         }
-
         .post-meta {
             display: flex;
             align-items: center;
@@ -340,12 +331,10 @@
             font-size: 0.9rem;
             color: #6b7280;
         }
-
         .post-meta time {
             position: relative;
             padding-right: 15px;
         }
-
         .post-meta time::after {
             content: '';
             position: absolute;
@@ -357,7 +346,6 @@
             background: #6b7280;
             border-radius: 50%;
         }
-
         .post-category {
             font-weight: 500;
             color: var(--primary-color);
@@ -365,7 +353,6 @@
             font-size: 0.8rem;
             letter-spacing: 0.5px;
         }
-
         .post-title {
             font-size: 1.8rem;
             font-weight: 600;
@@ -373,30 +360,25 @@
             line-height: 1.3;
             color: var(--text-color);
         }
-
         .post-excerpt p {
             color: #6b7280;
             margin-bottom: 25px;
             line-height: 1.7;
         }
-
         .post-actions {
             margin-top: auto;
         }
-
         .loading-posts {
             text-align: center;
             padding: 60px 0;
             color: #6b7280;
             font-size: 1.2rem;
         }
-
         .loading-posts i {
             margin-right: 10px;
             color: var(--primary-color);
             animation: spin 1s linear infinite;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -650,6 +632,9 @@
             outline: none;
             border-color: var(--primary-color);
         }
+        .form-group.hidden { display: none; }
+        .error-message { color: #d9534f; font-size: 0.875rem; }
+        .error-message.hidden { display: none; }
         .contact-info-container {
             padding: 20px;
         }
@@ -750,65 +735,32 @@
             color: var(--primary-color);
         }
 
+        /* Mobile Adjustments */
         @media (max-width: 768px) {
-            .desktop-nav {
-                display: none;
-            }
-            .mobile-nav {
-                display: block;
-            }
-            .hero-title {
-                font-size: 2rem;
-            }
-            .hero-actions {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-            .about-container, .contact-content {
-                grid-template-columns: 1fr;
-            }
-            .blog-container {
-                padding: 60px 20px;
-            }
-            .blog-post {
-                grid-template-columns: 1fr;
-            }
-            .post-image {
-                height: 200px;
-            }
-            .post-content {
-                padding: 25px;
-            }
-            .post-title {
-                font-size: 1.6rem;
-            }
+            .desktop-nav { display: none; }
+            .mobile-nav { display: block; }
+            .hero-title { font-size: 2rem; }
+            .hero-actions { flex-direction: column; gap: 0.75rem; }
+            .about-container, .contact-content { grid-template-columns: 1fr; }
+            .blog-container { padding: 60px 20px; }
+            .blog-post { grid-template-columns: 1fr; }
+            .post-image { height: 200px; }
+            .post-content { padding: 25px; }
+            .post-title { font-size: 1.6rem; }
         }
 
         @media (max-width: 480px) {
-            .post-title {
-                font-size: 1.4rem;
-            }
+            .post-title { font-size: 1.6rem; }
+            .section-description { font-size: 1rem; }
             .post-meta {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 8px;
             }
-            .post-meta time::after {
-                display: none;
-            }
-            .footer-brand {
-                flex-direction: column;
-                text-align: center;
-            }
-            .footer-legal {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-            .legal-links {
-                flex-direction: column;
-                gap: 10px;
-            }
+            .post-meta time::after { display: none; }
+            .footer-brand { flex-direction: column; text-align: center; }
+            .footer-legal { flex-direction: column; gap: 15px; text-align: center; }
+            .legal-links { flex-direction: column; gap: 10px; }
         }
     </style>
 
@@ -818,7 +770,7 @@
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Jonathan Mwaniki",
-      "image": "https://www.jonathanmwaniki.co.ke/images/profile.jpg",
+      "image": "https://www.jonathanmwaniki.co.ke/images/favicon-96x96.png",
       "@id": "https://www.jonathanmwaniki.co.ke",
       "url": "https://www.jonathanmwaniki.co.ke",
       "sameAs": [
@@ -847,7 +799,7 @@
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
       "name": "Jonathan Mwaniki Digital Solutions",
-      "image": "https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png",
+      "image": "https://www.jonathanmwaniki.co.ke/images/favicon-96x96.png",
       "@id": "https://www.jonathanmwaniki.co.ke",
       "url": "https://www.jonathanmwaniki.co.ke",
       "telephone": "+254706396305",
@@ -881,10 +833,10 @@
 </head>
 <body>
     <!-- Splash Screen -->
-    <div id="splashScreen" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center text-center">
+    <div id="splashScreen" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center text-center" tabindex="-1">
         <div class="splash-content">
             <div class="splash-logo">
-                <img src="images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="80" height="80" loading="eager">
+                <img src="images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Branding Logo for Web Development and Design" width="80" height="80" loading="eager">
             </div>
             <h1>Jonathan Mwaniki</h1>
             <p>Professional Web Developer & Graphic Designer</p>
@@ -955,12 +907,8 @@
                         I create stunning, responsive websites and eye-catching graphic designs to help businesses establish a powerful online presence and attract more customers.
                     </p>
                     <div class="hero-actions">
-                        <a href="#contact" class="btn-primary" aria-label="Hire Me">
-                           Hire Me
-                        </a>
-                        <a href="#portfolio" class="btn-outline" aria-label="View My Work">
-                            View My Portfolio
-                        </a>
+                        <a href="#contact" class="btn-primary" aria-label="Hire Me">Hire Me</a>
+                        <a href="#portfolio" class="btn-outline" aria-label="View My Work">View My Portfolio</a>
                     </div>
                 </div>
                 <div class="hero-image">
@@ -976,7 +924,6 @@
                     <h2 class="section-title">Professional <span class="gradient-text">Services</span></h2>
                     <p class="section-description">Comprehensive digital solutions tailored for businesses and entrepreneurs</p>
                 </div>
-
                 <div class="services-grid">
                     <div class="service-card" itemscope itemtype="https://schema.org/Service">
                         <div class="service-icon">
@@ -999,7 +946,6 @@
                             </li>
                         </ul>
                     </div>
-
                     <div class="service-card" itemscope itemtype="https://schema.org/Service">
                         <div class="service-icon">
                             <i class="fas fa-paint-brush"></i>
@@ -1021,7 +967,6 @@
                             </li>
                         </ul>
                     </div>
-
                     <div class="service-card" itemscope itemtype="https://schema.org/Service">
                         <div class="service-icon">
                             <i class="fas fa-bullhorn"></i>
@@ -1029,7 +974,7 @@
                         <h3 class="service-title" itemprop="name">Digital Marketing</h3>
                         <p class="service-description" itemprop="description">Strategic campaigns to grow your online presence and engage your target audience effectively.</p>
                         <ul class="service-features">
-                            <liapol class="feature-item">
+                            <li class="feature-item">
                                 <i class="fas fa-check-circle"></i>
                                 <span itemprop="serviceType">Social Media Management</span>
                             </li>
@@ -1054,7 +999,6 @@
                     <h2 class="section-title">My <span class="gradient-text">Portfolio</span></h2>
                     <p class="section-description">A selection of projects showcasing my expertise in web development</p>
                 </div>
-
                 <div class="portfolio-grid">
                     <div class="portfolio-card" itemscope itemtype="https://schema.org/CreativeWork">
                         <img src="./images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani - Rental Platform by Jonathan Mwaniki" loading="lazy" width="400" height="200">
@@ -1067,7 +1011,6 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="portfolio-card" itemscope itemtype="https://schema.org/CreativeWork">
                         <img src="./images/3.PNG" alt="Jamtech Electronics E-commerce - Developed by Jonathan Mwaniki" loading="lazy" width="400" height="200">
                         <div class="card-content">
@@ -1079,7 +1022,6 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="portfolio-card" itemscope itemtype="https://schema.org/CreativeWork">
                         <img src="./images/afri.png" alt="AfriChain WEB3 - Blockchain Platform by Jonathan Mwaniki" loading="lazy" width="400" height="200">
                         <div class="card-content">
@@ -1091,8 +1033,6 @@
                             </a>
                         </div>
                     </div>
-
-                    <!-- Added RutoMustGo project -->
                     <div class="portfolio-card" itemscope itemtype="https://schema.org/CreativeWork">
                         <img src="./images/cap1.JPG" alt="RutoMustGo Website - Developed by Jonathan Mwaniki" loading="lazy" width="400" height="200">
                         <div class="card-content">
@@ -1112,7 +1052,7 @@
         <section id="blog" class="blog-section">
             <div class="blog-container">
                 <div class="section-header">
-                    <h2 class="section-title">Latest <span class="gradient-text">Blog Posts</span></h2*o
+                    <h2 class="section-title">Latest <span class="gradient-text">Blog Posts</span></h2>
                     <p class="section-description">Insights and tutorials on web development, design, and digital marketing</p>
                 </div>
                 <div id="blog-list">
@@ -1130,7 +1070,7 @@
         <section id="about" class="about-section">
             <div class="about-container">
                 <div class="about-image">
-                    <img src="./images/file.enc" alt="About Jonathan Mwaniki - Web Developer & Designer in Kenya" loading="lazy" width="400" height="500">
+                    <img src="./images/file.enc" alt="Jonathan Mwaniki Profile - Web Developer & Designer in Kenya" loading="lazy" width="400" height="500">
                 </div>
                 <div class="about-content">
                     <h2 class="section-title">About <span class="gradient-text">Jonathan Mwaniki</span></h2>
@@ -1139,11 +1079,8 @@
                         <p>My approach combines technical expertise with creative problem-solving to deliver solutions that are not only visually appealing but also drive real business results.</p>
                         <p><strong>When I'm not working:</strong> You'll find me exploring new technologies, contributing to open-source projects, or enjoying the vibrant coffee shop scene while working on my latest web development project.</p>
                     </div>
-
-                    <!-- Education Section -->
                     <div class="education-section">
                         <h3>Education & Training</h3>
-
                         <div class="education-item">
                             <div class="edu-icon">
                                 <img src="images/FreeCodeCamo.webp" alt="freeCodeCamp Logo" width="40" height="40" loading="lazy">
@@ -1154,7 +1091,6 @@
                                 <p class="edu-details">Completed 300+ hours of intensive coding curriculum including JavaScript algorithms and front-end libraries</p>
                             </div>
                         </div>
-
                         <div class="education-item">
                             <div class="edu-icon">
                                 <img src="images/Egerton-University.webp" alt="Egerton University Logo" width="40" height="40" loading="lazy">
@@ -1166,8 +1102,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Tech Stack Section -->
                     <div class="tech-stack-section">
                         <h3>My Tech Stack</h3>
                         <div class="stack-categories">
@@ -1188,7 +1122,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="stack-category">
                                 <h4>Frameworks & Libraries</h4>
                                 <div class="stack-items">
@@ -1206,7 +1139,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="stack-category">
                                 <h4>Currently Learning</h4>
                                 <div class="stack-items">
@@ -1222,8 +1154,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Hackathon Section -->
                     <div class="hackathon-section">
                         <h3>Hackathon & Tech Expo Experience</h3>
                         <div class="event-timeline">
@@ -1238,8 +1168,7 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="event-item-force">
+                            <div class="event-item">
                                 <div class="event-date">2022</div>
                                 <div class="event-content">
                                     <h4>Africa Hackathon</h4>
@@ -1263,21 +1192,20 @@
                     <h2 class="section-title">Contact <span class="gradient-text">Jonathan Mwaniki</span></h2>
                     <p class="section-description">Ready to start your web development or design project? Reach out and let's create something amazing.</p>
                 </div>
-
                 <div class="contact-content">
                     <div class="contact-form-container">
-                        <form id="contactForm" class="contact-form" netlify>
+                        <form id="contactForm" class="contact-form" data-netlify="true" name="contact">
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label for="name" class="form-label">Name</label>
-                                    <input type="text" id="name" name="name" required class="form-input">
+                                    <input type="text" id="name" name="name" required class="form-input" aria-describedby="name-error">
+                                    <span id="name-error" class="error-message hidden">Please enter your name.</span>
                                 </div>
-
                                 <div class="form-group">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="email" id="email" name="email" required class="form-input">
+                                    <input type="email" id="email" name="email" required class="form-input" aria-describedby="email-error">
+                                    <span id="email-error" class="error-message hidden">Please enter a valid email.</span>
                                 </div>
-
                                 <div class="form-group">
                                     <label for="service" class="form-label">Service Needed</label>
                                     <select id="service" name="service" required class="form-select">
@@ -1288,23 +1216,20 @@
                                         <option value="other">Other</option>
                                     </select>
                                 </div>
-
                                 <div class="form-group">
                                     <label for="message" class="form-label">Message</label>
                                     <textarea id="message" name="message" required rows="5" class="form-textarea"></textarea>
                                 </div>
-
-                                <button type="submit" class="btn-primary">
-                                    Send Message
-                                </button>
+                                <div class="form-group hidden">
+                                    <input type="text" name="bot-field" class="form-input">
+                                </div>
+                                <button type="submit" class="btn-primary">Send Message</button>
                             </div>
                         </form>
                     </div>
-
                     <div class="contact-info-container">
                         <div class="contact-info">
                             <h3 class="info-title">Contact Information</h3>
-
                             <div class="info-items">
                                 <div class="info-item">
                                     <div class="info-icon">
@@ -1315,7 +1240,6 @@
                                         <a href="mailto:info@jonathanmwaniki.co.ke" class="info-value">info@jonathanmwaniki.co.ke</a>
                                     </div>
                                 </div>
-
                                 <div class="info-item">
                                     <div class="info-icon">
                                         <i class="fas fa-phone-alt"></i>
@@ -1325,7 +1249,6 @@
                                         <a href="tel:+254706396305" class="info-value">+254 706 396 305</a>
                                     </div>
                                 </div>
-
                                 <div class="social-section">
                                     <h4 class="social-title">Connect With Me</h4>
                                     <div class="social-links">
@@ -1334,7 +1257,7 @@
                                                 <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
                                             </svg>
                                         </a>
-                                        <a href="https://www.instagram.com/jonaahrojo" target="_blank" rel="noopener noreferrerxbb" class="social-link" aria-label="Instagram">
+                                        <a href="https://www.instagram.com/jonaahrojo" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
                                             <i class="fab fa-instagram"></i>
                                         </a>
                                         <a href="https://www.linkedin.com/in/jonathan-mwaniki-324208374" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn">
@@ -1367,7 +1290,6 @@
                         <p class="footer-description">Professional web developer and graphic designer helping businesses thrive through technology, design, and innovation.</p>
                     </div>
                 </div>
-
                 <div class="footer-legal">
                     <p class="copyright">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
                     <div class="legal-links">
@@ -1381,9 +1303,9 @@
     </div>
 
     <!-- JavaScript -->
-    <script src="scripts/main.js" defer></script>
+    <script src="scripts/main.min.js" defer></script>
 
-    <!-- Performance Optimization Script -->
+    <!-- Performance Optimization and Blog Script -->
     <script>
         // Load non-critical CSS
         function loadCSS(href) {
@@ -1403,31 +1325,30 @@
         }
 
         // Load Font Awesome after page load
-        window.addEventListener('load', function() {
+        window.addEventListener('load', () => {
             loadCSS('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
         });
 
-        // Splash screen animation
-        document.addEventListener('DOMContentLoaded', function() {
-            const progressBar = document.getElementById('progressBar');
+        // Splash screen animation and focus management
+        document.addEventListener('DOMContentLoaded', () => {
             const splashScreen = document.getElementById('splashScreen');
+            const progressBar = document.getElementById('progressBar');
             const mainContent = document.getElementById('mainContent');
 
+            splashScreen.setAttribute('tabindex', '-1');
+            splashScreen.focus();
+
             let progress = 0;
-            const interval = setInterval(function() {
+            const interval = setInterval(() => {
                 progress += 5;
                 progressBar.style.width = progress + '%';
-
                 if (progress >= 100) {
                     clearInterval(interval);
                     splashScreen.style.opacity = '0';
                     splashScreen.style.transition = 'opacity 0.5s ease';
-
-                    setTimeout(function() {
+                    setTimeout(() => {
                         splashScreen.style.display = 'none';
                         mainContent.classList.remove('hidden');
-
-                        // Load remaining CSS and JS
                         loadCSS('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
                     }, 500);
                 }
@@ -1446,26 +1367,37 @@
                         }
                     });
                 });
-
-                lazyImages.forEach(img => {
-                    imageObserver.observe(img);
-                });
+                lazyImages.forEach(img => imageObserver.observe(img));
             }
-        });
 
-        // Blog Section: Load and display first two posts
-        document.addEventListener('DOMContentLoaded', async () => {
+            // Form validation
+            document.getElementById('contactForm').addEventListener('submit', (e) => {
+                const name = document.getElementById('name');
+                const email = document.getElementById('email');
+                let valid = true;
+                if (!name.value) {
+                    document.getElementById('name-error').classList.remove('hidden');
+                    valid = false;
+                } else {
+                    document.getElementById('name-error').classList.add('hidden');
+                }
+                if (!email.value || !/^\S+@\S+\.\S+$/.test(email.value)) {
+                    document.getElementById('email-error').classList.remove('hidden');
+                    valid = false;
+                } else {
+                    document.getElementById('email-error').classList.add('hidden');
+                }
+                if (!valid) e.preventDefault();
+            });
+
+            // Blog Section: Load and display first two posts
             const blogList = document.getElementById('blog-list');
-
-            // Function to extract first image from content
             function getFirstImage(content) {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(content, 'text/html');
                 const img = doc.querySelector('img');
                 return img ? img.src : '/images/default-blog.jpg';
             }
-
-            // Function to extract first 50 words of first paragraph
             function getExcerpt(content) {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(content, 'text/html');
@@ -1475,16 +1407,13 @@
                 const words = text.split(/\s+/).slice(0, 50);
                 return words.join(' ') + (words.length < text.split(/\s+/).length ? '...' : '');
             }
-
-            // Function to render up to two posts
             function renderPosts(posts) {
                 blogList.innerHTML = '';
                 if (!posts.length) {
                     blogList.innerHTML = '<div style="text-align: center; padding: 60px 0; color: #6b7280; font-size: 1.1rem;">No posts found.</div>';
                     return;
                 }
-
-                const postsToShow = posts.slice(0, 2); // Show only first two posts
+                const postsToShow = posts.slice(0, 2);
                 const postsContainer = document.createElement('div');
                 postsContainer.className = 'blog-posts';
                 postsToShow.forEach(post => {
@@ -1518,24 +1447,24 @@
                 });
                 blogList.appendChild(postsContainer);
             }
-
-            // Load posts
             blogList.innerHTML = '<div style="text-align: center; padding: 60px 0; color: #6b7280; font-size: 1.1rem;"><i class="fas fa-spinner"></i> Loading blog posts...</div>';
-            try {
-                const response = await fetch('/api/list-posts?t=' + Date.now());
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status} ${response.statusText}`);
-                }
-                const posts = await response.json();
-                renderPosts(posts.sort((a, b) => new Date(b.date) - new Date(a.date)));
-            } catch (error) {
-                console.error('Error loading posts:', error);
-                blogList.innerHTML = `
-                    <div style="text-align: center; padding: 60px 0; color: #d9534f; font-size: 1.1rem;">
-                        Failed to load posts. <a href="javascript:location.reload()" style="color: #4f46e5; text-decoration: underline;">Try again</a>
-                        <p><small>${error.message}</small></p>
-                    </div>
-                `;
+            const controller朗 = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            fetch('/api/list-posts?t=' + Date.now(), { signal: controller.signal })
+                .then(response => {
+                    clearTimeout(timeoutId);
+                    if (!response.ok) throw new Error(`API error: ${response.status}`);
+                    return response.json();
+                })
+                .then(posts => renderPosts(posts.sort((a, b) => new Date(b.date) - new Date(a.date))))
+                .catch(error => {
+                    console.error('Error loading posts:', error);
+                    blogList.innerHTML = `<div style="text-align: center; padding: 60px 0; color: #d9534f; font-size: 1.1rem;">Failed to load posts. <a href="javascript:location.reload()" style="color: #4f46e5; text-decoration: underline;">Try again</a><p><small>${error.message}</small></p></div>`;
+                });
+
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js');
             }
         });
     </script>
