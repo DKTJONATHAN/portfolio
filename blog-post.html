@@ -236,22 +236,80 @@
             border-radius: 8px;
         }
 
+        /* Updated Post Content Styles */
         .post-content {
-            font-size: 1rem;
+            font-size: 1.05rem;
+            color: var(--text-color);
+            line-height: 1.5;
         }
 
-        .post-content h1, .post-content h2, .post-content h3 {
-            margin: 20px 0 10px;
+        .post-content h1,
+        .post-content h2,
+        .post-content h3 {
+            margin: 1.5rem 0 0.75rem;
             color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .post-content h1 {
+            font-size: 1.75rem;
+        }
+
+        .post-content h2 {
+            font-size: 1.5rem;
+        }
+
+        .post-content h3 {
+            font-size: 1.25rem;
         }
 
         .post-content p {
-            margin-bottom: 15px;
-            color: var(--light-text);
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .post-content ul,
+        .post-content ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .post-content ul li,
+        .post-content ol li {
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .post-content ul li {
+            list-style: none;
+            padding-left: 1.2rem;
+        }
+
+        .post-content ul li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .post-content ol li {
+            list-style-type: decimal;
+        }
+
+        .post-content ul ul,
+        .post-content ol ol {
+            margin: 0.5rem 0 0.5rem 1.5rem;
         }
 
         .post-content a {
             color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .post-content a:hover {
+            color: var(--primary-dark);
             text-decoration: underline;
         }
 
@@ -259,43 +317,64 @@
             max-width: 100%;
             height: auto;
             border-radius: 8px;
-            margin: 20px 0;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
         }
 
         .post-content pre {
             background: #1e293b;
-            padding: 15px;
+            padding: 1rem;
             border-radius: 8px;
             overflow-x: auto;
             color: #f8fafc;
-            margin: 20px 0;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary-color);
         }
 
         .post-content code {
             font-family: 'Fira Code', monospace;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+        }
+
+        .post-content :not(pre) > code {
+            background: var(--light-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: #374151;
+        }
+
+        .post-content blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding: 0.5rem 0 0.5rem 1rem;
+            margin: 1rem 0;
+            background: var(--light-bg);
+            font-style: italic;
+            color: var(--text-color);
         }
 
         .post-content table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin: 1rem 0;
+            background: #fff;
         }
 
-        .post-content table, 
-        .post-content th, 
+        .post-content th,
         .post-content td {
+            padding: 0.75rem;
             border: 1px solid var(--border-color);
-        }
-
-        .post-content th, 
-        .post-content td {
-            padding: 12px;
             text-align: left;
         }
 
         .post-content th {
-            background-color: var(--light-bg);
+            background: var(--light-bg);
+            font-weight: 600;
+        }
+
+        .post-content hr {
+            border: 0;
+            border-top: 1px solid var(--border-color);
+            margin: 1.5rem 0;
         }
 
         /* Loading States */
@@ -429,6 +508,22 @@
             .post-meta time::after {
                 display: none;
             }
+
+            .post-content {
+                font-size: 1rem;
+            }
+
+            .post-content h1 {
+                font-size: 1.5rem;
+            }
+
+            .post-content h2 {
+                font-size: 1.3rem;
+            }
+
+            .post-content h3 {
+                font-size: 1.15rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -454,6 +549,14 @@
             .legal-links {
                 flex-direction: column;
                 gap: 10px;
+            }
+
+            .post-content {
+                font-size: 0.95rem;
+            }
+
+            .post-content pre {
+                padding: 0.75rem;
             }
         }
     </style>
@@ -563,7 +666,7 @@
                         </div>
                         ${post.image ? `
                         <div class="post-image">
-                            <img src="${post.image}" alt="${post.title || 'Blog Post'}" loading="lazy" itemprop="image" onerror="this.src='/images/default-blog.jpg'">
+                            <img src="${post.image}" alt="${post.title || 'Blog Post Image'}" loading="lazy" itemprop="image" onerror="this.src='/images/default-blog.jpg'">
                         </div>` : ''}
                         <div class="post-content" itemprop="articleBody">${marked.parse(post.content || '')}</div>
                         <meta itemprop="author" content="Jonathan Mwaniki">
