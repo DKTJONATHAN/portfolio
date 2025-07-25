@@ -1,4 +1,5 @@
 const { Octokit } = require('@octokit/rest');
+const marked = require('marked');
 
 exports.handler = async function () {
   try {
@@ -24,7 +25,7 @@ exports.handler = async function () {
           const markdownContent = frontMatterMatch[2];
           const post = {
             slug: file.name.replace('.md', ''),
-            content: markdownContent,
+            content: marked.parse(markdownContent),
           };
           frontMatter.split('\n').forEach(line => {
             const [key, value] = line.split(': ').map(s => s.trim());
@@ -32,6 +33,12 @@ exports.handler = async function () {
               post[key] = key === 'tags' ? value.replace(/\[|\]/g, '').split(',').map(t => t.trim()) : value.replace(/^"(.*)"$/, '$1');
             }
           });
+          // Normalize fields
+          post.title = post.title || 'Untitled';
+          post.description = post.description || '';
+          post.date = post.date || new Date().toISOString().split('T')[0];
+          post.category = post.category || 'Uncategorized';
+          post.image = post.image || '/images/default-blog.jpg';
           posts.push(post);
         }
       }
