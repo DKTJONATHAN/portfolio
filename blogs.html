@@ -500,7 +500,6 @@
             .footer-legal { flex-direction: column; gap: 10px; text-align: center; }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <div id="mainContent">
@@ -586,119 +585,175 @@
             const categoryTags = document.querySelectorAll('.category-tag');
             let allPosts = [];
 
+            // Function to extract first image from content
             function getFirstImage(content) {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(content, 'text/html');
-                const img = doc.querySelector('img');
-                return img ? img.src : '/images/default-blog.jpg';
+                if (!content) return '/images/default-blog.jpg';
+                const imgRegex = /<img[^>]+src="([^">]+)"/;
+                const match = content.match(imgRegex);
+                return match ? match[1] : '/images/default-blog.jpg';
             }
 
-            function getExcerpt(content) {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(content, 'text/html');
-                const firstP = doc.querySelector('p');
-                if (!firstP) return 'No excerpt available.';
-                const text = firstP.textContent.trim();
-                const words = text.split(/\s+/).slice(0, 30);
-                return words.join(' ') + (words.length < text.split(/\s+/).length ? '...' : '');
+            // Function to create excerpt from content
+            function getExcerpt(content, maxLength = 150) {
+                if (!content) return 'No excerpt available';
+                
+                // Remove HTML tags
+                const plainText = content.replace(/<[^>]*>/g, '');
+                
+                // Trim to max length
+                if (plainText.length <= maxLength) return plainText;
+                
+                // Find the last space before maxLength
+                let trimmed = plainText.substr(0, maxLength);
+                trimmed = trimmed.substr(0, Math.min(trimmed.length, trimmed.lastIndexOf(' ')));
+                
+                return trimmed + '...';
             }
 
+            // Function to format date
+            function formatDate(dateString) {
+                if (!dateString) return 'No date';
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                return new Date(dateString).toLocaleDateString('en-US', options);
+            }
+
+            // Function to render posts
             function renderPosts(posts) {
-                postList.innerHTML = '';
-                if (!posts.length) {
-                    postList.innerHTML = '<div class="no-posts">No posts found.</div>';
+                if (!posts || posts.length === 0) {
+                    postList.innerHTML = '<div class="no-posts">No posts found matching your criteria.</div>';
                     return;
                 }
 
-                const categories = ['all', 'News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
-                categories.forEach(category => {
-                    const categoryPosts = category === 'all' ? posts : posts.filter(post => post.category === category);
-                    if (categoryPosts.length) {
-                        const categorySection = document.createElement('section');
-                        categorySection.className = 'category-section';
-                        categorySection.innerHTML = `<h2 class="category-title">${category === 'all' ? 'All Posts' : category}</h2>`;
-                        const postsContainer = document.createElement('div');
-                        postsContainer.className = 'blog-posts';
-                        categoryPosts.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(post => {
-                            const postElement = document.createElement('article');
-                            postElement.className = 'blog-post';
-                            postElement.innerHTML = `
-                                <div class="post-image">
-                                    <img src="${post.image || getFirstImage(post.content)}" alt="${post.title || 'Post'}" loading="lazy" onerror="this.src='/images/default-blog.jpg'">
-                                </div>
-                                <div class="post-content">
-                                    <div class="post-meta">
-                                        <time datetime="${post.date}">${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
-                                        <span class="post-category">${post.category || 'Uncategorized'}</span>
-                                    </div>
-                                    <h3 class="post-title">${post.title || 'Untitled'}</h3>
-                                    <div class="post-excerpt">
-                                        <p>${post.description || getExcerpt(post.content)}</p>
-                                    </div>
-                                    <div class="post-tags">
-                                        ${post.tags.map(tag => `<a href="/blog.html?tag=${encodeURIComponent(tag)}" class="post-tag">${tag}</a>`).join('')}
-                                    </div>
-                                    <a href="/content/articles/${post.slug}.html" class="btn-primary">
-                                        Read More <i class="fas fa-arrow-right"></i>
-                                    </a>
-                                </div>
-                            `;
-                            postsContainer.appendChild(postElement);
-                        });
-                        categorySection.appendChild(postsContainer);
-                        postList.appendChild(categorySection);
+                // Group posts by category
+                const postsByCategory = {};
+                posts.forEach(post => {
+                    const category = post.category || 'Uncategorized';
+                    if (!postsByCategory[category]) {
+                        postsByCategory[category] = [];
                     }
+                    postsByCategory[category].push(post);
+                });
+
+                // Sort posts by date (newest first)
+                Object.keys(postsByCategory).forEach(category => {
+                    postsByCategory[category].sort((a, b) => new Date(b.date) - new Date(a.date));
+                });
+
+                // Clear the post list
+                postList.innerHTML = '';
+
+                // Render each category section
+                Object.keys(postsByCategory).forEach(category => {
+                    const section = document.createElement('section');
+                    section.className = 'category-section';
+                    
+                    const title = document.createElement('h2');
+                    title.className = 'category-title';
+                    title.textContent = category;
+                    section.appendChild(title);
+                    
+                    const postsContainer = document.createElement('div');
+                    postsContainer.className = 'blog-posts';
+                    
+                    postsByCategory[category].forEach(post => {
+                        const postElement = document.createElement('article');
+                        postElement.className = 'blog-post';
+                        
+                        const imageUrl = post.image || getFirstImage(post.content);
+                        const excerpt = post.description || getExcerpt(post.content);
+                        const formattedDate = formatDate(post.date);
+                        const tags = post.tags || [];
+                        
+                        postElement.innerHTML = `
+                            <div class="post-image">
+                                <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" onerror="this.src='/images/default-blog.jpg'">
+                            </div>
+                            <div class="post-content">
+                                <div class="post-meta">
+                                    <time datetime="${post.date}">${formattedDate}</time>
+                                    <span class="post-category">${category}</span>
+                                </div>
+                                <h3 class="post-title">${post.title || 'Untitled Post'}</h3>
+                                <div class="post-excerpt">
+                                    <p>${excerpt}</p>
+                                </div>
+                                ${tags.length > 0 ? `
+                                <div class="post-tags">
+                                    ${tags.map(tag => `<a href="/blog.html?tag=${encodeURIComponent(tag)}" class="post-tag">${tag}</a>`).join('')}
+                                </div>
+                                ` : ''}
+                                <a href="/content/articles/${post.slug || 'post'}.html" class="btn-primary">
+                                    Read More <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        `;
+                        
+                        postsContainer.appendChild(postElement);
+                    });
+                    
+                    section.appendChild(postsContainer);
+                    postList.appendChild(section);
                 });
             }
 
-            function applyFilters() {
-                const searchTerm = searchInput.value.trim().toLowerCase();
-                const urlParams = new URLSearchParams(window.location.search);
-                const selectedTag = urlParams.get('tag')?.toLowerCase();
-                const selectedCategory = Array.from(categoryTags).find(tag => tag.classList.contains('active'))?.dataset.category.toLowerCase();
-
-                let filteredPosts = allPosts;
+            // Function to filter posts based on search and category
+            function filterPosts() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const activeCategory = document.querySelector('.category-tag.active').dataset.category;
+                
+                let filtered = allPosts;
+                
+                // Filter by search term
                 if (searchTerm) {
-                    filteredPosts = filteredPosts.filter(post => 
-                        post.title?.toLowerCase().includes(searchTerm) || 
-                        post.description?.toLowerCase().includes(searchTerm) ||
-                        post.content?.toLowerCase().includes(searchTerm)
+                    filtered = filtered.filter(post => 
+                        (post.title && post.title.toLowerCase().includes(searchTerm)) ||
+                        (post.description && post.description.toLowerCase().includes(searchTerm)) ||
+                        (post.content && post.content.toLowerCase().includes(searchTerm))
                     );
                 }
-                if (selectedTag) {
-                    filteredPosts = filteredPosts.filter(post => 
-                        post.tags.map(t => t.toLowerCase()).includes(selectedTag)
+                
+                // Filter by category
+                if (activeCategory !== 'all') {
+                    filtered = filtered.filter(post => 
+                        post.category && post.category.toLowerCase() === activeCategory.toLowerCase()
                     );
                 }
-                if (selectedCategory && selectedCategory !== 'all') {
-                    filteredPosts = filteredPosts.filter(post => 
-                        post.category.toLowerCase() === selectedCategory
-                    );
-                }
-                renderPosts(filteredPosts);
+                
+                renderPosts(filtered);
             }
 
-            searchInput.addEventListener('input', applyFilters);
-
+            // Event listeners
+            searchInput.addEventListener('input', filterPosts);
+            
             categoryTags.forEach(tag => {
                 tag.addEventListener('click', () => {
                     categoryTags.forEach(t => t.classList.remove('active'));
                     tag.classList.add('active');
-                    history.pushState({}, '', window.location.pathname);
-                    applyFilters();
+                    filterPosts();
                 });
             });
 
-            postList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i>Loading posts...</div>';
-            try {
-                const response = await fetch('/.netlify/functions/list-posts?t=' + Date.now());
-                if (!response.ok) throw new Error(`API error: ${response.status}`);
-                allPosts = await response.json();
-                applyFilters();
-            } catch (error) {
-                console.error('Error loading posts:', error);
-                postList.innerHTML = `<div class="error-message">Failed to load posts. <a href="/blog.html">Try again</a></div>`;
+            // Load posts from Netlify function
+            async function loadPosts() {
+                try {
+                    const response = await fetch('/.netlify/functions/list-post');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    allPosts = await response.json();
+                    renderPosts(allPosts);
+                } catch (error) {
+                    console.error('Error loading posts:', error);
+                    postList.innerHTML = `
+                        <div class="error-message">
+                            Failed to load posts. <a href="javascript:location.reload()">Try again</a>
+                        </div>
+                    `;
+                }
             }
+
+            // Initial load
+            loadPosts();
         });
     </script>
 </body>
