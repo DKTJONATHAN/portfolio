@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/turndown@7.1.2/dist/turndown.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.5/purify.min.js"></script>
     <style>
         .quill-editor .ql-container {
             border: 1px solid #d1d5db;
@@ -67,48 +67,11 @@
             border-color: #3b82f6;
             color: #ffffff;
         }
-        .custom-context-menu {
-            position: absolute;
-            background: #ffffff;
-            border: 1px solid #d1d5db;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            border-radius: 6px;
-            padding: 8px 0;
-            min-width: 160px;
-        }
-        .custom-context-menu button {
-            display: block;
-            width: 100%;
-            padding: 8px 16px;
-            text-align: left;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            color: #374151;
-            transition: background 0.2s ease;
-        }
-        .custom-context-menu button:hover {
-            background: #f1f5f9;
-        }
         .word-count {
             font-size: 14px;
             color: #6b7280;
             margin-top: 8px;
         }
-        .ql-font-arial { font-family: Arial, sans-serif; }
-        .ql-font-times-new-roman { font-family: 'Times New Roman', Times, serif; }
-        .ql-font-georgia { font-family: Georgia, serif; }
-        .ql-font-helvetica { font-family: Helvetica, sans-serif; }
-        .ql-font-verdana { font-family: Verdana, sans-serif; }
-        .ql-font-roboto { font-family: Roboto, sans-serif; }
-        .ql-font-lora { font-family: Lora, serif; }
-        .ql-font-open-sans { font-family: 'Open Sans', sans-serif; }
-        .ql-font-merriweather { font-family: Merriweather, serif; }
-        .ql-font-source-serif-pro { font-family: 'Source Serif Pro', serif; }
-
-        /* Notification styles */
         .notification {
             animation: slideIn 0.3s forwards, fadeOut 0.5s forwards 3s;
         }
@@ -152,7 +115,9 @@
                     <h1 class="text-3xl font-bold text-gray-900">Blog Admin Panel</h1>
                     <div class="flex items-center space-x-4">
                         <span class="text-gray-600">Welcome, Admin</span>
-                        <div class="h-8 w-8 bg-blue-600 rounded-full"></div>
+                        <button id="logout-button" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                            Logout
+                        </button>
                     </div>
                 </div>
             </div>
@@ -163,8 +128,8 @@
                 <!-- Create/Edit Post Form -->
                 <div class="lg:col-span-2">
                     <div class="bg-white rounded-xl shadow-lg p-6">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Create Post</h2>
-                        <form id="create-post" class="space-y-6">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6" id="form-title">Create Post</h2>
+                        <form id="post-form" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
@@ -202,7 +167,7 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
                                     <input type="url" name="image"
-                                        class="w-full px4 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 py-3">
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
@@ -257,7 +222,7 @@
                                     class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
                             </div>
                         </div>
-                        <div id="post-list" class="space-y-3 max-h-96 overflow-y-auto"></div>
+                        <div id="post-list" class="space-y-3 max-h-[calc(100vh-300px)] overflow-y-auto"></div>
                     </div>
                 </div>
             </div>
@@ -289,51 +254,21 @@
         let allPosts = [];
         let filteredPosts = [];
         let quill = null;
-        const turndownService = new TurndownService({
-            headingStyle: 'atx',
-            bulletListMarker: '-',
-            codeBlockStyle: 'indented',
-            linkStyle: 'inlined'
-        });
+        let currentEditingSlug = null;
 
-        // Show notification function
-        function showNotification(message, isError = false) {
-            const notification = document.getElementById('notification');
-            const icon = document.getElementById('notification-icon');
-            const msgElement = document.getElementById('notification-message');
-            if (isError) {
-                notification.firstElementChild.className = 'bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3';
-                icon.className = 'fas fa-exclamation-circle';
-            } else {
-                notification.firstElementChild.className = 'bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3';
-                icon.className = 'fas fa-check';
-            }
-            msgElement.textContent = message;
-            notification.classList.remove('hidden');
-            notification.classList.add('notification');
-            setTimeout(() => {
-                notification.classList.remove('notification');
-                notification.classList.add('hidden');
-            }, 3500);
-        }
-
-        // Initialize Quill with font support
+        // Initialize Quill editor
         function initQuill() {
             quill = new Quill('#content-editor', {
                 theme: 'snow',
                 modules: {
                     toolbar: [
-                        [{ 'font': ['arial', 'times-new-roman', 'georgia', 'helvetica', 'verdana', 'roboto', 'lora', 'open-sans', 'merriweather', 'source-serif-pro', false] }],
                         ['bold', 'italic', 'underline', 'strike'],
                         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
                         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
                         ['blockquote', 'code-block', 'link', 'image'],
                         [{ 'align': [] }],
                         ['clean'],
-                        ['undo', 'redo'],
-                        [{ 'color': [] }, { 'background': ['#FFFF00'] }],
-                        [{ 'size': ['small', false, 'large', 'huge'] }],
-                        ['superscript', 'subscript']
+                        [{ 'color': [] }, { 'background': [] }],
                     ],
                     history: {
                         delay: 1000,
@@ -344,129 +279,6 @@
                 placeholder: 'Type your content here...'
             });
 
-            const editor = document.querySelector('#content-editor');
-            editor.classList.add('quill-editor');
-
-            // Prevent default click to avoid unwanted keyboard
-            editor.querySelector('.ql-editor').addEventListener('click', (e) => {
-                e.preventDefault();
-                quill.blur();
-            });
-
-            // Double-tap to show keyboard
-            let lastTap = 0;
-            editor.querySelector('.ql-editor').addEventListener('touchend', (e) => {
-                const currentTime = new Date().getTime();
-                const tapLength = currentTime - lastTap;
-                if (tapLength < 500 && tapLength > 0) {
-                    quill.focus();
-                }
-                lastTap = currentTime;
-            });
-
-            // Long-press context menu
-            let pressTimer;
-            editor.querySelector('.ql-editor').addEventListener('touchstart', (e) => {
-                pressTimer = setTimeout(() => {
-                    e.preventDefault();
-                    const x = e.touches[0].clientX;
-                    const y = e.touches[0].clientY;
-                    const existingMenu = document.querySelector('.custom-context-menu');
-                    if (existingMenu) existingMenu.remove();
-                    const menu = document.createElement('div');
-                    menu.className = 'custom-context-menu';
-                    menu.style.left = `${x}px`;
-                    menu.style.top = `${y}px`;
-                    menu.innerHTML = `
-                        <button data-action="select">Select Text</button>
-                        <button data-action="link">Make Link</button>
-                        <button data-action="bold">Bold</button>
-                        <button data-action="italic">Italic</button>
-                        <button data-action="underline">Underline</button>
-                        <button data-action="strike">Strikethrough</button>
-                        <button data-action="highlight">Highlight</button>
-                        <button data-action="align-left">Align Left</button>
-                        <button data-action="align-center">Align Center</button>
-                        <button data-action="align-right">Align Right</button>
-                        <button data-action="align-justify">Align Justify</button>
-                    `;
-                    document.body.appendChild(menu);
-                    menu.querySelectorAll('button').forEach(button => {
-                        button.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            const action = e.target.dataset.action;
-                            if (action === 'select') {
-                                const range = document.caretRangeFromPoint(x, y);
-                                if (range) {
-                                    const selection = window.getSelection();
-                                    selection.removeAllRanges();
-                                    selection.addRange(range);
-                                    quill.focus();
-                                }
-                            } else if (action === 'link') {
-                                const url = prompt('Enter URL:');
-                                if (url) quill.format('link', url);
-                            } else if (action === 'bold') {
-                                quill.format('bold', !quill.getFormat().bold);
-                            } else if (action === 'italic') {
-                                quill.format('italic', !quill.getFormat().italic);
-                            } else if (action === 'underline') {
-                                quill.format('underline', !quill.getFormat().underline);
-                            } else if (action === 'strike') {
-                                quill.format('strike', !quill.getFormat().strike);
-                            } else if (action === 'highlight') {
-                                quill.format('background', quill.getFormat().background === '#FFFF00' ? false : '#FFFF00');
-                            } else if (action.startsWith('align-')) {
-                                const align = action.replace('align-', '');
-                                quill.format('align', align === 'left' ? false : align);
-                            }
-                            menu.remove();
-                        });
-                    });
-                    const closeMenu = (e) => {
-                        if (!menu.contains(e.target)) {
-                            menu.remove();
-                            document.removeEventListener('click', closeMenu);
-                        }
-                    };
-                    document.addEventListener('click', closeMenu);
-                }, 500);
-            });
-            editor.querySelector('.ql-editor').addEventListener('touchend', () => clearTimeout(pressTimer));
-            editor.querySelector('.ql-editor').addEventListener('touchmove', () => clearTimeout(pressTimer));
-
-            // Customize toolbar icons
-            const toolbar = editor.querySelector('.ql-toolbar');
-            toolbar.querySelector('.ql-font').innerHTML = '<i class="fas fa-font"></i>';
-            toolbar.querySelector('.ql-bold').innerHTML = '<i class="fas fa-bold"></i>';
-            toolbar.querySelector('.ql-italic').innerHTML = '<i class="fas fa-italic"></i>';
-            toolbar.querySelector('.ql-underline').innerHTML = '<i class="fas fa-underline"></i>';
-            toolbar.querySelector('.ql-strike').innerHTML = '<i class="fas fa-strikethrough"></i>';
-            toolbar.querySelector('.ql-header[value="1"]').innerHTML = '<i class="fas fa-h1"></i>';
-            toolbar.querySelector('.ql-header[value="2"]').innerHTML = '<i class="fas fa-h2"></i>';
-            toolbar.querySelector('.ql-header[value="3"]').innerHTML = '<i class="fas fa-h3"></i>';
-            toolbar.querySelector('.ql-header[value="4"]').innerHTML = '<i class="fas fa-h4"></i>';
-            toolbar.querySelector('.ql-header[value="5"]').innerHTML = '<i class="fas fa-h5"></i>';
-            toolbar.querySelector('.ql-header[value="6"]').innerHTML = '<i class="fas fa-h6"></i>';
-            toolbar.querySelector('.ql-list[value="ordered"]').innerHTML = '<i class="fas fa-list-ol"></i>';
-            toolbar.querySelector('.ql-list[value="bullet"]').innerHTML = '<i class="fas fa-list-ul"></i>';
-            toolbar.querySelector('.ql-blockquote').innerHTML = '<i class="fas fa-quote-left"></i>';
-            toolbar.querySelector('.ql-code-block').innerHTML = '<i class="fas fa-code"></i>';
-            toolbar.querySelector('.ql-link').innerHTML = '<i class="fas fa-link"></i>';
-            toolbar.querySelector('.ql-image').innerHTML = '<i class="fas fa-image"></i>';
-            toolbar.querySelector('.ql-align').innerHTML = '<i class="fas fa-align-left"></i>';
-            toolbar.querySelector('.ql-align[value="center"]').innerHTML = '<i class="fas fa-align-center"></i>';
-            toolbar.querySelector('.ql-align[value="right"]').innerHTML = '<i class="fas fa-align-right"></i>';
-            toolbar.querySelector('.ql-align[value="justify"]').innerHTML = '<i class="fas fa-align-justify"></i>';
-            toolbar.querySelector('.ql-clean').innerHTML = '<i class="fas fa-eraser"></i>';
-            toolbar.querySelector('.ql-undo').innerHTML = '<i class="fas fa-undo"></i>';
-            toolbar.querySelector('.ql-redo').innerHTML = '<i class="fas fa-redo"></i>';
-            toolbar.querySelector('.ql-background').innerHTML = '<i class="fas fa-highlighter"></i>';
-            toolbar.querySelector('.ql-color').innerHTML = '<i class="fas fa-palette"></i>';
-            toolbar.querySelector('.ql-size').innerHTML = '<i class="fas fa-text-height"></i>';
-            toolbar.querySelector('.ql-superscript').innerHTML = '<i class="fas fa-superscript"></i>';
-            toolbar.querySelector('.ql-subscript').innerHTML = '<i class="fas fa-subscript"></i>';
-
             // Word count
             function updateWordCount() {
                 const text = quill.getText().trim();
@@ -475,116 +287,9 @@
             }
             quill.on('text-change', updateWordCount);
             updateWordCount();
-
-            // Custom undo/redo buttons
-            const undoButton = document.createElement('button');
-            undoButton.className = 'ql-undo';
-            undoButton.innerHTML = '<i class="fas fa-undo"></i>';
-            toolbar.querySelector('.ql-toolbar').appendChild(undoButton);
-            undoButton.addEventListener('click', () => quill.history.undo());
-
-            const redoButton = document.createElement('button');
-            redoButton.className = 'ql-redo';
-            redoButton.innerHTML = '<i class="fas fa-redo"></i>';
-            toolbar.querySelector('.ql-toolbar').appendChild(redoButton);
-            redoButton.addEventListener('click', () => quill.history.redo());
-
-            // Paste handling
-            quill.on('text-change', (delta, oldDelta, source) => {
-                if (source === 'user' && delta.ops.some(op => op.insert && typeof op.insert === 'string')) {
-                    const text = quill.getText();
-                    let content = text;
-                    if (/<[a-z][\s\S]*>/i.test(text)) {
-                        return;
-                    }
-                    content = content.replace(/(?:\*\*|__)(.*?)(?:\*\*|__)/g, '<strong>$1</strong>');
-                    content = content.replace(/(?:\*|_)(.*?)(?:\*|_)/g, '<em>$1</em>');
-                    content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
-                    content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
-                    content = content.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, text) => {
-                        const level = hashes.length;
-                        return `<h${level}>${text}</h${level}>`;
-                    });
-                    content = content.replace(/^(?:-|\*)\s+(.+)$/gm, '<li>$1</li>');
-                    content = content.replace(/(<li>.+<\/li>)/g, '<ul>$1</ul>');
-                    content = content.replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>');
-                    content = content.replace(/`(.*?)`/g, '<code>$1</code>');
-                    content = content.split('\n\n').map(line => {
-                        if (!line.match(/^(?:<h\d>|<ul>|<img|<a|<blockquote|<code)/)) {
-                            return `<p>${line}</p>`;
-                        }
-                        return line;
-                    }).join('');
-                    quill.setContents([]);
-                    quill.clipboard.dangerouslyPasteHTML(content);
-                }
-            });
-
-            // Image drag-and-drop
-            quill.on('editor-change', (eventName, ...args) => {
-                if (eventName === 'text-change' && args[0].ops.some(op => op.insert && op.insert.image)) {
-                    const url = prompt('Enter image URL:');
-                    if (url) {
-                        const range = quill.getSelection();
-                        quill.deleteText(range.index, 1);
-                        quill.insertEmbed(range.index, 'image', url);
-                    }
-                }
-            });
         }
 
-        // Initialize editor and slug handling
-        document.addEventListener('DOMContentLoaded', () => {
-            initQuill();
-
-            // Simple slug generation
-            const titleInput = document.querySelector('input[name="title"]');
-            const slugInput = document.querySelector('input[name="slug"]');
-            let isEditingSlug = false;
-
-            titleInput.addEventListener('input', () => {
-                if (!isEditingSlug) {
-                    const title = titleInput.value.trim();
-                    slugInput.value = slugify(title);
-                }
-            });
-
-            slugInput.addEventListener('focus', () => {
-                isEditingSlug = true;
-            });
-
-            slugInput.addEventListener('blur', () => {
-                isEditingSlug = false;
-                const title = titleInput.value.trim();
-                if (slugInput.value === '' || slugInput.value === slugify(title)) {
-                    slugInput.value = slugify(title);
-                }
-            });
-
-            // Reset slug behavior on form reset or edit cancel
-            document.getElementById('create-post').addEventListener('reset', () => {
-                isEditingSlug = false;
-                slugInput.value = '';
-            });
-            document.getElementById('cancel-edit-button').addEventListener('click', () => {
-                isEditingSlug = false;
-            });
-
-            // Add logout button
-            const header = document.querySelector('#admin-section .flex.items-center.space-x-4');
-            const logoutButton = document.createElement('button');
-            logoutButton.className = 'bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200';
-            logoutButton.textContent = 'Logout';
-            logoutButton.addEventListener('click', () => {
-                document.getElementById('admin-section').classList.add('hidden');
-                document.getElementById('login-section').classList.remove('hidden');
-                document.getElementById('login-form').reset();
-                showNotification('Logged out successfully');
-            });
-            header.appendChild(logoutButton);
-        });
-
-        // Enhanced slugify function
+        // Slugify function
         function slugify(text) {
             return text
                 .toLowerCase()
@@ -594,60 +299,163 @@
                 .trim();
         }
 
-        // Search functionality
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            if (searchTerm === '') {
-                filteredPosts = [...allPosts];
-            } else {
-                filteredPosts = allPosts.filter(post => 
-                    (post.title && post.title.toLowerCase().includes(searchTerm)) ||
-                    (post.category && post.category.toLowerCase().includes(searchTerm)) ||
-                    (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
-                );
+        // Show notification function
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            const icon = document.getElementById('notification-icon');
+            const msgElement = document.getElementById('notification-message');
+            
+            notification.firstElementChild.className = isError 
+                ? 'bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3'
+                : 'bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3';
+                
+            icon.className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check';
+            msgElement.textContent = message;
+            
+            notification.classList.remove('hidden');
+            notification.classList.add('notification');
+            
+            setTimeout(() => {
+                notification.classList.remove('notification');
+                notification.classList.add('hidden');
+            }, 3500);
+        }
+
+        // Login handler
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const error = document.getElementById('login-error');
+            error.classList.add('hidden');
+
+            try {
+                // In a real implementation, you would verify the password against your ADMIN_PASSWORD
+                if (password !== atob(process.env.ADMIN_PASSWORD)) {
+                    throw new Error('Invalid password');
+                }
+
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('admin-section').classList.remove('hidden');
+                showNotification('Login successful!');
+                await loadPosts();
+            } catch (err) {
+                error.textContent = err.message;
+                error.classList.remove('hidden');
+                showNotification('Login failed: ' + err.message, true);
             }
-            displayPosts(filteredPosts);
         });
 
-        // Preview functionality
+        // Logout handler
+        document.getElementById('logout-button').addEventListener('click', () => {
+            document.getElementById('admin-section').classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('login-form').reset();
+            showNotification('Logged out successfully');
+        });
+
+        // Form submission handler (create/update)
+        document.getElementById('post-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const submitButton = document.getElementById('submit-post-button');
+            
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
+            submitButton.disabled = true;
+
+            const formData = new FormData(e.target);
+            const htmlContent = DOMPurify.sanitize(quill.root.innerHTML);
+            
+            const postData = {
+                title: formData.get('title') || 'Untitled',
+                slug: formData.get('slug') || slugify(formData.get('title') || 'untitled'),
+                category: formData.get('category') || 'Uncategorized',
+                tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
+                image: formData.get('image') || '',
+                date: formData.get('date') || new Date().toISOString().split('T')[0],
+                description: formData.get('description') || '',
+                content: htmlContent
+            };
+
+            try {
+                const isUpdate = currentEditingSlug !== null;
+                const endpoint = '/.netlify/functions/save-post';
+                
+                const response = await fetch(`${endpoint}?update=${isUpdate}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(postData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to save post');
+                }
+
+                resetForm();
+                showNotification(isUpdate ? 'Post updated successfully!' : 'Post created successfully!');
+                await loadPosts();
+            } catch (err) {
+                error.textContent = err.message;
+                error.classList.remove('hidden');
+                showNotification('Failed to save post: ' + err.message, true);
+            } finally {
+                loading.classList.add('hidden');
+                submitButton.disabled = false;
+            }
+        });
+
+        // Reset form to create new post
+        function resetForm() {
+            document.getElementById('post-form').reset();
+            quill.setContents([]);
+            document.getElementById('form-title').textContent = 'Create Post';
+            document.getElementById('submit-post-button').textContent = 'Create Post';
+            document.getElementById('cancel-edit-button').classList.add('hidden');
+            currentEditingSlug = null;
+        }
+
+        // Cancel edit handler
+        document.getElementById('cancel-edit-button').addEventListener('click', resetForm);
+
+        // Preview handler
         document.getElementById('preview-button').addEventListener('click', () => {
-            const formData = new FormData(document.getElementById('create-post'));
-            const htmlContent = quill.root.innerHTML;
+            const formData = new FormData(document.getElementById('post-form'));
+            const htmlContent = DOMPurify.sanitize(quill.root.innerHTML);
+            
             const previewData = {
                 title: formData.get('title') || 'Untitled Post',
                 category: formData.get('category') || 'Uncategorized',
                 tags: formData.get('tags'),
-                image: formData.get('image') || '/images/default-blog.jpg',
+                image: formData.get('image') || '',
                 date: formData.get('date') || new Date().toISOString().split('T')[0],
                 description: formData.get('description') || '',
                 content: htmlContent || '<p class="text-gray-500 italic">No content available</p>'
             };
-            const previewHTML = generatePreviewHTML(previewData);
-            document.getElementById('preview-content').innerHTML = previewHTML;
+            
+            document.getElementById('preview-content').innerHTML = generatePreviewHTML(previewData);
             document.getElementById('preview-modal').classList.remove('hidden');
         });
 
-        document.getElementById('close-preview').addEventListener('click', (e) => {
-            e.stopPropagation();
+        // Close preview handler
+        document.getElementById('close-preview').addEventListener('click', () => {
             document.getElementById('preview-modal').classList.add('hidden');
         });
 
-        document.getElementById('preview-modal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('preview-modal')) {
-                document.getElementById('preview-modal').classList.add('hidden');
-            }
-        });
-
+        // Generate preview HTML
         function generatePreviewHTML(data) {
             const formattedDate = new Date(data.date).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             });
+            
             const tags = data.tags ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+            
             return `
                 <article class="prose prose-lg max-w-none">
-                    ${data.image ? `<img src="${data.image}" alt="${data.title}" class="w-full h-64 object-cover rounded-lg mb-6" onerror="this.src='/images/default-blog.jpg'">` : ''}
+                    ${data.image ? `<img src="${data.image}" alt="${data.title}" class="w-full h-64 object-cover rounded-lg mb-6">` : ''}
                     <header class="mb-8">
                         <h1 class="text-4xl font-bold text-gray-900 mb-4">${data.title}</h1>
                         ${data.description ? `<p class="text-gray-600 mb-4">${data.description}</p>` : ''}
@@ -668,116 +476,42 @@
             `;
         }
 
-        // Login handler
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const password = document.getElementById('password').value;
-            const error = document.getElementById('login-error');
-            error.classList.add('hidden');
-
-            try {
-                const response = await fetch('/.netlify/functions/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams({ password }).toString(),
-                    signal: AbortSignal.timeout(10000)
-                });
-                if (response.ok) {
-                    document.getElementById('login-section').classList.add('hidden');
-                    document.getElementById('admin-section').classList.remove('hidden');
-                    showNotification('Login successful!');
-                    await loadPosts();
-                } else {
-                    const data = await response.json();
-                    error.textContent = data.error || 'Invalid password';
-                    error.classList.remove('hidden');
-                    showNotification('Login failed: ' + (data.error || 'Invalid password'), true);
-                }
-            } catch (err) {
-                error.textContent = 'Login failed: ' + err.message;
-                error.classList.remove('hidden');
-                showNotification('Login failed: ' + err.message, true);
-            }
-        });
-
-        // Create/Update post handler
-        document.getElementById('create-post').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // Load posts from GitHub
+        async function loadPosts() {
+            const postList = document.getElementById('post-list');
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
-            const submitButton = document.getElementById('submit-post-button');
+            
+            postList.innerHTML = '<div class="text-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div></div>';
             loading.classList.remove('hidden');
             error.classList.add('hidden');
-            submitButton.disabled = true;
-
-            const formData = new FormData(e.target);
-            const htmlContent = quill.root.innerHTML;
-            const markdownContent = turndownService.turndown(htmlContent || '');
-            const postData = {
-                title: formData.get('title') || 'Untitled',
-                slug: formData.get('slug') || slugify(formData.get('title') || 'untitled'),
-                category: formData.get('category') || 'Uncategorized',
-                tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
-                image: formData.get('image') || '/images/default-blog.jpg',
-                date: formData.get('date') || new Date().toISOString().split('T')[0],
-                description: formData.get('description') || '',
-                content: markdownContent
-            };
 
             try {
-                const endpoint = e.target.dataset.editSlug ? '/.netlify/functions/update-post' : '/.netlify/functions/save-post';
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(postData).toString(),
-                    signal: AbortSignal.timeout(30000)
-                });
-
-                let responseData;
-                try {
-                    responseData = await response.json();
-                } catch (jsonError) {
-                    const rawResponse = await response.text();
-                    throw new Error('Invalid JSON response: ' + rawResponse);
-                }
-
+                const response = await fetch('/.netlify/functions/list-posts');
                 if (!response.ok) {
-                    throw new Error(responseData.error || `Operation failed: ${response.status}`);
+                    throw new Error('Failed to fetch posts');
                 }
-
-                e.target.reset();
-                quill.setContents([]);
-                document.getElementById('submit-post-button').textContent = 'Create Post';
-                document.getElementById('cancel-edit-button').classList.add('hidden');
-                delete e.target.dataset.editSlug;
-
-                showNotification(e.target.dataset.editSlug ? 'Post updated successfully!' : 'Post created successfully!');
-                await loadPosts();
+                
+                allPosts = await response.json();
+                filteredPosts = [...allPosts];
+                displayPosts(filteredPosts);
             } catch (err) {
-                error.textContent = `Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`;
+                error.textContent = 'Failed to load posts: ' + err.message;
                 error.classList.remove('hidden');
-                showNotification(`Failed to ${e.target.dataset.editSlug ? 'update' : 'create'} post: ${err.message}`, true);
+                postList.innerHTML = '<p class="text-red-500 text-center py-8">Failed to load posts</p>';
+                showNotification('Failed to load posts: ' + err.message, true);
             } finally {
                 loading.classList.add('hidden');
-                submitButton.disabled = false;
             }
-        });
+        }
 
-        // Cancel edit handler
-        document.getElementById('cancel-edit-button').addEventListener('click', () => {
-            document.getElementById('create-post').reset();
-            quill.setContents([]);
-            document.getElementById('submit-post-button').textContent = 'Create Post';
-            document.getElementById('cancel-edit-button').classList.add('hidden');
-            delete document.getElementById('create-post').dataset.editSlug;
-            showNotification('Edit cancelled');
-        });
-
-        // Display posts function
+        // Display posts in the sidebar
         function displayPosts(posts) {
             const postList = document.getElementById('post-list');
             const postsTitle = document.getElementById('posts-title');
+            
             postsTitle.textContent = `Posts (${posts.length})`;
+            
             if (posts.length === 0) {
                 postList.innerHTML = '<p class="text-gray-500 text-center py-8">No posts found.</p>';
             } else {
@@ -786,8 +520,8 @@
                         <div class="flex items-start justify-between">
                             <div class="flex-1 min-w-0">
                                 <h3 class="font-medium text-gray-900 truncate">${post.title || 'Untitled'}</h3>
-                                <p class="text-sm text-gray-500 mt-1">${post.date || 'No date'}</p>
-                                <p class="text-sm text-gray-500 mt-1">${post.category || 'Uncategorized'}</p>
+                                <p class="text-sm text-gray-500 mt-1">${post.date || 'No date'} • ${post.category || 'Uncategorized'}</p>
+                                <p class="text-sm text-gray-500 mt-1 truncate">${post.description || ''}</p>
                             </div>
                             <div class="flex space-x-2 ml-4">
                                 <button class="edit-post bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
@@ -801,62 +535,25 @@
                     </div>
                 `).join('');
             }
+
+            // Attach event listeners to edit/delete buttons
             document.querySelectorAll('.edit-post').forEach(button => {
-                button.removeEventListener('click', handleEdit);
                 button.addEventListener('click', handleEdit);
             });
+            
             document.querySelectorAll('.delete-post').forEach(button => {
-                button.removeEventListener('click', handleDelete);
                 button.addEventListener('click', handleDelete);
             });
         }
 
-        // Load posts
-        async function loadPosts() {
-            const postList = document.getElementById('post-list');
-            const loading = document.getElementById('loading');
-            const error = document.getElementById('error');
-            postList.innerHTML = '<div class="text-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div></div>';
-            loading.classList.remove('hidden');
-            error.classList.add('hidden');
-
-            try {
-                const response = await fetch('/.netlify/functions/list-posts?t=' + Date.now(), {
-                    signal: AbortSignal.timeout(10000)
-                });
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Failed to fetch posts: ${response.status}`);
-                }
-                try {
-                    allPosts = await response.json();
-                    filteredPosts = [...allPosts];
-                } catch (jsonError) {
-                    const rawResponse = await response.text();
-                    throw new Error('Invalid JSON response: ' + rawResponse);
-                }
-                displayPosts(filteredPosts);
-            } catch (err) {
-                error.textContent = 'Failed to fetch posts: ' + err.message;
-                error.classList.remove('hidden');
-                postList.innerHTML = '<p class="text-red-500 text-center py-8">Failed to load posts</p>';
-                showNotification('Failed to load posts: ' + err.message, true);
-            } finally {
-                loading.classList.add('hidden');
-            }
-        }
-
+        // Edit post handler
         function handleEdit(e) {
             const slug = e.target.dataset.slug;
-            if (!slug) {
-                console.log('No slug for edit button');
-                return;
-            }
             const post = allPosts.find(p => p.slug === slug);
-            if (!post) {
-                console.log('Post not found for slug:', slug);
-                return;
-            }
+            
+            if (!post) return;
+
+            // Fill form with post data
             document.querySelector('input[name="title"]').value = post.title || '';
             document.querySelector('input[name="slug"]').value = post.slug || '';
             document.querySelector('select[name="category"]').value = post.category || 'Uncategorized';
@@ -865,59 +562,90 @@
             document.querySelector('input[name="date"]').value = post.date || '';
             document.querySelector('textarea[name="description"]').value = post.description || '';
             quill.root.innerHTML = post.content || '';
+            
+            // Update UI for edit mode
+            document.getElementById('form-title').textContent = 'Edit Post';
             document.getElementById('submit-post-button').textContent = 'Update Post';
             document.getElementById('cancel-edit-button').classList.remove('hidden');
-            document.getElementById('create-post').dataset.editSlug = slug;
-            showNotification('Editing post: ' + post.title);
+            currentEditingSlug = post.slug;
+            
+            showNotification(`Editing post: ${post.title}`);
         }
 
-        function handleDelete(e) {
+        // Delete post handler
+        async function handleDelete(e) {
             const slug = e.target.dataset.slug;
-            if (!slug) {
-                console.log('No slug for delete button');
-                return;
-            }
-            if (!confirm('Are you sure you want to delete this post?')) return;
+            if (!slug || !confirm('Are you sure you want to delete this post?')) return;
 
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
             loading.classList.remove('hidden');
             error.classList.add('hidden');
 
-            fetch('/.netlify/functions/delete-post', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ slug }).toString(),
-                signal: AbortSignal.timeout(10000)
-            })
-            .then(response => {
+            try {
+                const response = await fetch('/.netlify/functions/delete-post', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ slug })
+                });
+
                 if (!response.ok) {
-                    return response.text().then(errorText => {
-                        throw new Error(`Failed to delete post: ${response.status}`);
-                    });
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to delete post');
                 }
-                return response.json();
-            })
-            .then(data => {
-                if (document.getElementById('create-post').dataset.editSlug === slug) {
-                    document.getElementById('create-post').reset();
-                    quill.setContents([]);
-                    document.getElementById('submit-post-button').textContent = 'Create Post';
-                    document.getElementById('cancel-edit-button').classList.add('hidden');
-                    delete document.getElementById('create-post').dataset.editSlug;
+
+                // If we're editing the deleted post, reset the form
+                if (currentEditingSlug === slug) {
+                    resetForm();
                 }
+
                 showNotification('Post deleted successfully');
-                loadPosts();
-            })
-            .catch(err => {
+                await loadPosts();
+            } catch (err) {
                 error.textContent = 'Failed to delete post: ' + err.message;
                 error.classList.remove('hidden');
                 showNotification('Failed to delete post: ' + err.message, true);
-            })
-            .finally(() => {
+            } finally {
                 loading.classList.add('hidden');
-            });
+            }
         }
+
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                filteredPosts = [...allPosts];
+            } else {
+                filteredPosts = allPosts.filter(post => 
+                    (post.title && post.title.toLowerCase().includes(searchTerm)) ||
+                    (post.category && post.category.toLowerCase().includes(searchTerm)) ||
+                    (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm))) ||
+                    (post.description && post.description.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            displayPosts(filteredPosts);
+        });
+
+        // Auto-generate slug from title
+        document.querySelector('input[name="title"]').addEventListener('input', (e) => {
+            if (!currentEditingSlug) { // Only auto-generate when not editing
+                document.querySelector('input[name="slug"]').value = slugify(e.target.value);
+            }
+        });
+
+        // Initialize the editor when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initQuill();
+            
+            // Example environment variable (in a real app, this would come from Netlify)
+            window.process = {
+                env: {
+                    ADMIN_PASSWORD: btoa('your-admin-password') // This is just for demo
+                }
+            };
+        });
     </script>
 </body>
 </html>
