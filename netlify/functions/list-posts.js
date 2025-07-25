@@ -5,15 +5,27 @@ exports.handler = async function () {
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
     // List all files in the /content/articles directory
-    const { data: files } = await octokit.repos.getContent({
-      owner: process.env.GITHUB_OWNER,
-      repo: process.env.GITHUB_REPO,
-      path: "content/articles",
-    });
+    let files = [];
+    try {
+      const { data } = await octokit.repos.getContent({
+        owner: process.env.GITHUB_OWNER,
+        repo: process.env.GITHUB_REPO,
+        path: "content/articles",
+      });
+      files = Array.isArray(data) ? data : [data];
+    } catch (error) {
+      if (error.status === 404) {
+        return {
+          statusCode: 200,
+          body: JSON.stringify([]), // Return empty array if directory is empty or doesn't exist
+        };
+      }
+      throw error;
+    }
 
     const posts = await Promise.all(
       files
-        .filter((file) => file.name.endsWith(".html"))
+        .filter((file) => file.type === "file" && file.name.endsWith(".html"))
         .map(async (file) => {
           // Get file content
           const { data } = await octokit.repos.getContent({
@@ -25,29 +37,29 @@ exports.handler = async function () {
           // Decode base64 content
           const content = Buffer.from(data.content, "base64").toString("utf-8");
 
-          // Extract metadata and content (assuming HTML structure)
-          const titleMatch = content.match(/<h1>(.*?)<\/h1>/i);
-          const dateMatch = content.match(/<p>(\d{4}-\d{2}-\d{2})\s*•\s*(.*?)</i);
-          const descriptionMatch = content.match(/<p>(.*?)</p>\s*(?=<div class="tags"|$)/i);
-          const tagsMatch = content.match(/<div class="tags">(.*?)<\/div>/i);
-          const imageMatch = content.match(/<img src="(.*?)" alt=".*?"/i);
+          // Extract metadata and content from HTML
+          const titleMatch = content.match(/<h1>(.*?)<\/h1>/i) || ["", "Untitled"];
+          const dateCategoryMatch = content.match(/<p>(\d{4}-\d{2}-\d{2})\s*•\s*(.*?)</i) || ["", "", "Uncategorized"];
+          const descriptionMatch = content.match(/<p>(.*?)</p>\s*(?=<div class="tags"|$)/i) || ["", ""];
+          const tagsMatch = content.match(/<div class="tags">(.*?)<\/div>/i) || ["", ""];
+          const imageMatch = content.match(/<img src="(.*?)" alt=".*?"/i) || ["", ""];
           const contentStart = content.indexOf("<main>") + 6;
           const contentEnd = content.indexOf("</main>");
-          const postContent = content.slice(contentStart, contentEnd).trim();
+          const postContent = contentStart > 5 && contentEnd > contentStart ? content.slice(contentStart, contentEnd).trim() : "";
 
           return {
             slug: file.name.replace(".html", ""),
-            title: titleMatch ? titleMatch[1] : "Untitled",
-            date: dateMatch ? dateMatch[1] : "",
-            category: dateMatch ? dateMatch[2] : "Uncategorized",
-            description: descriptionMatch ? descriptionMatch[1] : "",
-            tags: tagsMatch
+            title: titleMatch[1],
+            date: dateCategoryMatch[1],
+            category: dateCategoryMatch[2],
+            description: descriptionMatch[1],
+            tags: tagsMatch[1]
               ? tagsMatch[1]
                   .match(/<span class="tag">(.*?)<\/span>/g)
                   ?.map((tag) => tag.match(/<span class="tag">(.*?)<\/span>/)[1])
-                  .join(",")
+                  .join(",") || ""
               : "",
-            image: imageMatch ? imageMatch[1] : "",
+            image: imageMatch[1],
             content: postContent,
           };
         })
@@ -60,7 +72,7 @@ exports.handler = async function () {
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: `Failed to list posts: ${error.message}` }),
+      body: JSON.stringify({ error: `Failed to fetch posts: ${error.message}` }),
     };
   }
 };
