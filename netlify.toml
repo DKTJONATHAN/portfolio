@@ -1,5 +1,5 @@
 [build]
-  command = "npm install @octokit/rest marked && node netlify/functions/generate-files.js"
+  command = "npm install @octokit/rest marked js-yaml && node netlify/functions/generate-files.js"
   publish = "."
   functions = "netlify/functions"
 
