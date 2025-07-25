@@ -1,10 +1,18 @@
 [build]
-  command = "npm install"
-  functions = "netlify/functions"
+  command = "npm install @octokit/rest marked && node netlify/functions/generate-files.js"
   publish = "."
+  functions = "netlify/functions"
 
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
   force = true
+
+[context.production.environment]
+  NODE_VERSION = "16"
+  GITHUB_TOKEN = "{{GITHUB_TOKEN}}"
+  GITHUB_OWNER = "{{GITHUB_OWNER}}"
+  GITHUB_REPO = "{{GITHUB_REPO}}"
+  ADMIN_PASSWORD = "{{ADMIN_PASSWORD}}"
+  NETLIFY_BUILD_HOOK = "{{NETLIFY_BUILD_HOOK}}"
