@@ -20,7 +20,7 @@ exports.handler = async function () {
           body: JSON.stringify([]), // Return empty array if directory is empty or doesn't exist
         };
       }
-      throw error;
+      throw new Error(`GitHub API error: ${error.message}`);
     }
 
     const posts = await Promise.all(
@@ -28,30 +28,33 @@ exports.handler = async function () {
         .filter((file) => file.type === "file" && file.name.endsWith(".html"))
         .map(async (file) => {
           // Get file content
-          const { data } = await octokit.repos.getContent({
-            owner: process.env.GITHUB_OWNER,
-            repo: process.env.GITHUB_REPO,
-            path: file.path,
-          });
-
-          // Decode base64 content
-          const content = Buffer.from(data.content, "base64").toString("utf-8");
+          let content;
+          try {
+            const { data } = await octokit.repos.getContent({
+              owner: process.env.GITHUB_OWNER,
+              repo: process.env.GITHUB_REPO,
+              path: file.path,
+            });
+            content = Buffer.from(data.content, "base64").toString("utf-8");
+          } catch (error) {
+            throw new Error(`Failed to fetch content for ${file.name}: ${error.message}`);
+          }
 
           // Extract metadata and content from HTML
           const titleMatch = content.match(/<h1>(.*?)<\/h1>/i) || ["", "Untitled"];
-          const dateCategoryMatch = content.match(/<p>(\d{4}-\d{2}-\d{2})\s*•\s*(.*?)</i) || ["", "", "Uncategorized"];
+          const dateCategoryMatch = content.match(/<p>(\d{4}-\d{2}-\d{2})\s*•\s*([^<]*?)(?=<|$)/i) || ["", "", "Uncategorized"];
           const descriptionMatch = content.match(/<p>(.*?)</p>\s*(?=<div class="tags"|$)/i) || ["", ""];
           const tagsMatch = content.match(/<div class="tags">(.*?)<\/div>/i) || ["", ""];
-          const imageMatch = content.match(/<img src="(.*?)" alt=".*?"/i) || ["", ""];
+          const imageMatch = content.match(/<img src="(.*?)" alt="[^"]*"/i) || ["", ""];
           const contentStart = content.indexOf("<main>") + 6;
           const contentEnd = content.indexOf("</main>");
-          const postContent = contentStart > 5 && contentEnd > contentStart ? content.slice(contentStart, contentEnd).trim() : "";
+          const postContent = contentStart > 5 && contentEnd > contentStart ? content.slice(contentStart, contentEnd).trim() : content;
 
           return {
             slug: file.name.replace(".html", ""),
             title: titleMatch[1],
             date: dateCategoryMatch[1],
-            category: dateCategoryMatch[2],
+            category: dateCategoryMatch[2].trim(),
             description: descriptionMatch[1],
             tags: tagsMatch[1]
               ? tagsMatch[1]
