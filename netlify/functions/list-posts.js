@@ -1,5 +1,6 @@
 const { Octokit } = require('@octokit/rest');
 const marked = require('marked');
+const yaml = require('js-yaml');
 
 exports.handler = async function () {
   try {
@@ -21,24 +22,18 @@ exports.handler = async function () {
         const content = Buffer.from(fileData.content, 'base64').toString();
         const frontMatterMatch = content.match(/---\n([\s\S]*?)\n---\n([\s\S]*)/);
         if (frontMatterMatch) {
-          const frontMatter = frontMatterMatch[1];
+          const frontMatter = yaml.load(frontMatterMatch[1]);
           const markdownContent = frontMatterMatch[2];
           const post = {
             slug: file.name.replace('.md', ''),
             content: marked.parse(markdownContent),
+            title: frontMatter.title || 'Untitled',
+            description: frontMatter.description || '',
+            date: frontMatter.date || new Date().toISOString().split('T')[0],
+            category: frontMatter.category || 'Uncategorized',
+            image: frontMatter.image || '/images/default-blog.jpg',
+            tags: frontMatter.tags || [],
           };
-          frontMatter.split('\n').forEach(line => {
-            const [key, value] = line.split(': ').map(s => s.trim());
-            if (key && value) {
-              post[key] = key === 'tags' ? value.replace(/\[|\]/g, '').split(',').map(t => t.trim()) : value.replace(/^"(.*)"$/, '$1');
-            }
-          });
-          // Normalize fields
-          post.title = post.title || 'Untitled';
-          post.description = post.description || '';
-          post.date = post.date || new Date().toISOString().split('T')[0];
-          post.category = post.category || 'Uncategorized';
-          post.image = post.image || '/images/default-blog.jpg';
           posts.push(post);
         }
       }
