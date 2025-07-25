@@ -1,55 +1,66 @@
 const { Octokit } = require("@octokit/rest");
 
-exports.handler = async () => {
-  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-  const owner = process.env.GITHUB_OWNER;
-  const repo = process.env.GITHUB_REPO;
-  const path = "content/articles";
-
+exports.handler = async function () {
   try {
-    const { data } = await octokit.repos.getContent({ owner, repo, path });
-    
-    const posts = await Promise.all(data.map(async (file) => {
-      if (file.name.endsWith('.html')) {
-        const content = await octokit.repos.getContent({ owner, repo, path: file.path });
-        const decoded = Buffer.from(content.data.content, 'base64').toString('utf8');
-        
-        // Extract front matter
-        const frontMatter = decoded.split('---')[1];
-        const contentHtml = decoded.split('---')[2];
-        
-        const metadata = {};
-        frontMatter.split('\n').forEach(line => {
-          const match = line.match(/(\w+):\s*(.*)/);
-          if (match) {
-            let value = match[2].trim();
-            // Remove surrounding quotes if present
-            if (value.startsWith('"') && value.endsWith('"')) {
-              value = value.slice(1, -1);
-            }
-            metadata[match[1]] = value;
-          }
-        });
+    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-        return {
-          title: metadata.title,
-          slug: file.name.replace('.html', ''),
-          date: metadata.date,
-          category: metadata.category,
-          tags: metadata.tags ? metadata.tags.split(',').map(t => t.trim().replace(/["\[\]]/g, '')) : [],
-          image: metadata.image,
-          description: metadata.description,
-          content: contentHtml.trim()
-        };
-      }
-      return null;
-    }));
+    // List all files in the /content/articles directory
+    const { data: files } = await octokit.repos.getContent({
+      owner: process.env.GITHUB_OWNER,
+      repo: process.env.GITHUB_REPO,
+      path: "content/articles",
+    });
+
+    const posts = await Promise.all(
+      files
+        .filter((file) => file.name.endsWith(".html"))
+        .map(async (file) => {
+          // Get file content
+          const { data } = await octokit.repos.getContent({
+            owner: process.env.GITHUB_OWNER,
+            repo: process.env.GITHUB_REPO,
+            path: file.path,
+          });
+
+          // Decode base64 content
+          const content = Buffer.from(data.content, "base64").toString("utf-8");
+
+          // Extract metadata and content (assuming HTML structure)
+          const titleMatch = content.match(/<h1>(.*?)<\/h1>/i);
+          const dateMatch = content.match(/<p>(\d{4}-\d{2}-\d{2})\s*•\s*(.*?)</i);
+          const descriptionMatch = content.match(/<p>(.*?)</p>\s*(?=<div class="tags"|$)/i);
+          const tagsMatch = content.match(/<div class="tags">(.*?)<\/div>/i);
+          const imageMatch = content.match(/<img src="(.*?)" alt=".*?"/i);
+          const contentStart = content.indexOf("<main>") + 6;
+          const contentEnd = content.indexOf("</main>");
+          const postContent = content.slice(contentStart, contentEnd).trim();
+
+          return {
+            slug: file.name.replace(".html", ""),
+            title: titleMatch ? titleMatch[1] : "Untitled",
+            date: dateMatch ? dateMatch[1] : "",
+            category: dateMatch ? dateMatch[2] : "Uncategorized",
+            description: descriptionMatch ? descriptionMatch[1] : "",
+            tags: tagsMatch
+              ? tagsMatch[1]
+                  .match(/<span class="tag">(.*?)<\/span>/g)
+                  ?.map((tag) => tag.match(/<span class="tag">(.*?)<\/span>/)[1])
+                  .join(",")
+              : "",
+            image: imageMatch ? imageMatch[1] : "",
+            content: postContent,
+          };
+        })
+    );
 
     return {
       statusCode: 200,
-      body: JSON.stringify(posts.filter(Boolean))
+      body: JSON.stringify(posts),
     };
   } catch (error) {
-    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: `Failed to list posts: ${error.message}` }),
+    };
   }
 };
