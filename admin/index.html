@@ -320,33 +320,35 @@
                 notification.classList.add('hidden');
             }, 3500);
         }
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const password = document.getElementById('password').value;
-  const error = document.getElementById('login-error');
-  error.classList.add('hidden');
 
-  try {
-    const response = await fetch('/.netlify/functions/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password })
-    });
+        // Login handler
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const error = document.getElementById('login-error');
+            error.classList.add('hidden');
 
-    const data = await response.json();
+            try {
+                const response = await fetch('/.netlify/functions/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
 
-    if (!response.ok) {
-      throw new Error(data.error || 'Login failed');
-    }
+                const data = await response.json();
 
-    document.getElementById('login-section').classList.add('hidden');
-    document.getElementById('admin-section').classList.remove('hidden');
-    await loadPosts();
-  } catch (err) {
-    error.textContent = err.message;
-    error.classList.remove('hidden');
-  }
-});
+                if (!response.ok) {
+                    throw new Error(data.error || 'Login failed');
+                }
+
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('admin-section').classList.remove('hidden');
+                await loadPosts();
+            } catch (err) {
+                error.textContent = err.message;
+                error.classList.remove('hidden');
+            }
+        });
 
         // Logout handler
         document.getElementById('logout-button').addEventListener('click', () => {
@@ -495,7 +497,10 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
                     throw new Error('Failed to fetch posts');
                 }
                 
-                allPosts = await response.json();
+                const { data, error } = await response.json();
+                if (error) throw new Error(error);
+                
+                allPosts = data;
                 filteredPosts = [...allPosts];
                 displayPosts(filteredPosts);
             } catch (err) {
@@ -560,7 +565,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             document.querySelector('input[name="title"]').value = post.title || '';
             document.querySelector('input[name="slug"]').value = post.slug || '';
             document.querySelector('select[name="category"]').value = post.category || 'Uncategorized';
-            document.querySelector('input[name="tags"]').value = Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags || '');
+            document.querySelector('input[name="tags"]').value = post.tags ? post.tags.split(',').map(tag => tag.trim()).join(', ') : '';
             document.querySelector('input[name="image"]').value = post.image || '';
             document.querySelector('input[name="date"]').value = post.date || '';
             document.querySelector('textarea[name="description"]').value = post.description || '';
@@ -623,7 +628,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
                 filteredPosts = allPosts.filter(post => 
                     (post.title && post.title.toLowerCase().includes(searchTerm)) ||
                     (post.category && post.category.toLowerCase().includes(searchTerm)) ||
-                    (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm))) ||
+                    (post.tags && post.tags.split(',').map(tag => tag.trim()).some(tag => tag.toLowerCase().includes(searchTerm))) ||
                     (post.description && post.description.toLowerCase().includes(searchTerm))
                 );
             }
@@ -645,7 +650,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             // Example environment variable (in a real app, this would come from Netlify)
             window.process = {
                 env: {
-                    ADMIN_PASSWORD: btoa('your-admin-password') // This is just for demo
+                    ADMIN_PASSWORD: btoa('your-admin-password') // Replace with actual password in Netlify environment variables
                 }
             };
         });
