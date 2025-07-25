@@ -1,7 +1,7 @@
-const bcrypt = require('bcryptjs');
-
+// netlify/functions/login.js
 exports.handler = async (event) => {
   try {
+    // Parse the incoming request
     const { password } = JSON.parse(event.body);
     
     if (!password) {
@@ -11,16 +11,15 @@ exports.handler = async (event) => {
       };
     }
 
-    // Compare with hashed admin password from environment
-    const isMatch = await bcrypt.compare(password, process.env.ADMIN_PASSWORD);
-
-    if (!isMatch) {
+    // Compare with the password from environment variables
+    if (password !== process.env.ADMIN_PASSWORD) {
       return {
         statusCode: 401,
         body: JSON.stringify({ error: "Invalid password" })
       };
     }
 
+    // Successful login
     return {
       statusCode: 200,
       body: JSON.stringify({ success: true })
