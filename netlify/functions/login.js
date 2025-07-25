@@ -1,33 +1,24 @@
-// netlify/functions/login.js
-exports.handler = async (event) => {
+exports.handler = async function (event) {
   try {
-    // Parse the incoming request
     const { password } = JSON.parse(event.body);
-    
+
     if (!password) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "Password is required" })
-      };
+      throw new Error("Password is required");
     }
 
-    // Compare with the password from environment variables
-    if (password !== process.env.ADMIN_PASSWORD) {
-      return {
-        statusCode: 401,
-        body: JSON.stringify({ error: "Invalid password" })
-      };
+    // Compare provided password with ADMIN_PASSWORD environment variable
+    if (password !== atob(process.env.ADMIN_PASSWORD)) {
+      throw new Error("Invalid password");
     }
 
-    // Successful login
     return {
       statusCode: 200,
-      body: JSON.stringify({ success: true })
+      body: JSON.stringify({ message: "Login successful" }),
     };
   } catch (error) {
     return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message })
+      statusCode: 401,
+      body: JSON.stringify({ error: `Login failed: ${error.message}` }),
     };
   }
 };
