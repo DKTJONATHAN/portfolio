@@ -12,6 +12,13 @@
   status = 200
   force = true
 
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/.netlify/functions/sitemap"
+  status = 200
+  force = true
+  headers = { "Content-Type" = "application/xml" }
+
 [context.production.environment]
   NODE_VERSION = "16"
   GITHUB_TOKEN = "{{GITHUB_TOKEN}}"
