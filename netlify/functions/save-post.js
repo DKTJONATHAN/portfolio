@@ -11,7 +11,7 @@ exports.handler = async function (event) {
 
   try {
     const body = qs.parse(event.body);
-    const { title, slug, category, tags, image, date, content } = body;
+    const { title, slug, category, tags, image, date, description, content } = body;
 
     if (!title || !slug || !date || !content) {
       return {
@@ -42,11 +42,12 @@ exports.handler = async function (event) {
     // Create markdown with front matter
     const markdownContent = `---
 title: "${title.replace(/"/g, '\\"')}"
-slug: ${slug}
+description: "${description ? description.replace(/"/g, '\\"') : ''}"
 date: ${date}
-${category ? `category: "${category.replace(/"/g, '\\"')}"` : ''}
-${tags ? `tags: [${tags.split(',').map(tag => `"${tag.trim().replace(/"/g, '\\"')}"`).join(', ')}]` : ''}
-${image ? `image: "${image.replace(/"/g, '\\"')}"` : ''}
+category: "${category ? category.replace(/"/g, '\\"') : 'Uncategorized'}"
+slug: ${slug}
+image: "${image ? image.replace(/"/g, '\\"') : '/images/default-blog.jpg'}"
+tags: [${tags ? tags.split(',').map(tag => `"${tag.trim().replace(/"/g, '\\"')}"`).join(', ') : ''}]
 ---
 ${content}
 `;
@@ -58,7 +59,11 @@ ${content}
       path,
       message: `Create post: ${title}`,
       content: Buffer.from(markdownContent).toString('base64'),
+      committer: { name: 'CMS Bot', email: 'bot@jonathanmwaniki.co.ke' }
     });
+
+    // Trigger Netlify build
+    await fetch(process.env.NETLIFY_BUILD_HOOK, { method: 'POST' });
 
     console.log('Save post commit:', response.data.commit.sha);
 
