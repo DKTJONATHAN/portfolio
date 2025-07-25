@@ -1,7 +1,10 @@
 [build]
-  command = "npm install @octokit/rest marked js-yaml && node netlify/functions/generate-files.cjs"
+  command = "npm install @octokit/rest marked js-yaml sanitize-html && node netlify/functions/generate-files.cjs"
   publish = "."
   functions = "netlify/functions"
+
+[[plugins]]
+  package = "@netlify/plugin-functions-install-core"
 
 [[redirects]]
   from = "/api/*"
