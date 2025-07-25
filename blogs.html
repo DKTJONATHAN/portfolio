@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Mwaniki Reports - Your trusted source for news, sports, tech, and entertainment.">
+    <meta name="keywords" content="news, sports, tech, entertainment, Mwaniki Reports">
     <meta name="robots" content="index, follow">
+    <meta name="author" content="Mwaniki Reports">
     <title>News | Mwaniki Reports</title>
-    <link rel="canonical" href="https://www.jonathanmwaniki.co.ke/blog.html" />
+    <link rel="canonical" href="https://www.jonathanmwaniki.co.ke/blogs.html" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -54,7 +56,7 @@
             top: 0;
             left: 0;
             right: 0;
-            z-index: 1000;
+            z-index: 10;
         }
 
         .nav-container {
@@ -74,12 +76,12 @@
 
         .brand-logo img {
             border-radius: 8px;
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: auto;
         }
 
         .brand-name {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: var(--text-color);
         }
@@ -108,7 +110,7 @@
             right: 0;
             background: var(--background-color);
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            z-index: 10;
         }
 
         .mobile-nav-container {
@@ -519,7 +521,7 @@
                 <a href="/index.html" class="mobile-nav-link" aria-label="Home"><i class="fas fa-home"></i><span>Home</span></a>
                 <a href="/index.html#services" class="mobile-nav-link" aria-label="Services"><i class="fas fa-cogs"></i><span>Services</span></a>
                 <a href="/index.html#portfolio" class="mobile-nav-link" aria-label="Portfolio"><i class="fas fa-briefcase"></i><span>Portfolio</span></a>
-                <a href="/blog.html" class="mobile-nav-link active" aria-label="Blog"><i class="fas fa-blog"></i><span>Blog</span></a>
+                <a href="/blogs.html" class="mobile-nav-link active" aria-label="Blog"><i class="fas fa-blog"></i><span>Blog</span></a>
                 <a href="/index.html#contact" class="mobile-nav-link" aria-label="Contact"><i class="fas fa-envelope"></i><span>Contact</span></a>
             </div>
         </nav>
@@ -535,7 +537,7 @@
                     <a href="/index.html" class="nav-link">Home</a>
                     <a href="/index.html#services" class="nav-link">Services</a>
                     <a href="/index.html#portfolio" class="nav-link">Portfolio</a>
-                    <a href="/blog.html" class="nav-link active">Blog</a>
+                    <a href="/blogs.html" class="nav-link active">Blog</a>
                     <a href="/index.html#about" class="nav-link">About</a>
                     <a href="/index.html#contact" class="nav-link">Contact</a>
                 </div>
@@ -666,7 +668,7 @@
                         const imageUrl = post.image || getFirstImage(post.content);
                         const excerpt = post.description || getExcerpt(post.content);
                         const formattedDate = formatDate(post.date);
-                        const tags = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+                        const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
                         
                         postElement.innerHTML = `
                             <div class="post-image">
@@ -683,9 +685,9 @@
                                 <div class="post-excerpt">
                                     <p>${excerpt}</p>
                                 </div>
-                                ${tags.length > 0 ? `
+                                ${keywords.length > 0 ? `
                                 <div class="post-tags">
-                                    ${tags.map(tag => `<a href="/blog.html?tag=${encodeURIComponent(tag)}" class="post-tag">${tag}</a>`).join('')}
+                                    ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="post-tag">${keyword}</a>`).join('')}
                                 </div>
                                 ` : ''}
                                 <a href="/content/articles/${post.slug || 'post'}.html" class="btn-primary">
