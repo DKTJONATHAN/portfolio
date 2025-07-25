@@ -6,8 +6,8 @@ exports.handler = async function (event) {
       throw new Error("Password is required");
     }
 
-    // Compare provided password with ADMIN_PASSWORD environment variable
-    if (password !== atob(process.env.ADMIN_PASSWORD)) {
+    // Compare provided password with ADMIN_PASSWORD environment variable (plain text)
+    if (password !== process.env.ADMIN_PASSWORD) {
       throw new Error("Invalid password");
     }
 
