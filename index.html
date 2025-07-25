@@ -759,6 +759,18 @@
             color: var(--primary-color);
         }
 
+        /* Blog Section Tag Styling */
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 20px;
+        }
+        .tag:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
         @media (max-width: 768px) {
             .desktop-nav {
                 display: none;
@@ -983,7 +995,7 @@
                             </li>
                             <li class="feature-item">
                                 <i class="fas fa-check-circle"></i>
-                                <span itemprop="serviceType">SEO Optimized Websites</span>
+                                <span itempropxaf="serviceType">SEO Optimized Websites</span>
                             </li>
                             <li class="feature-item">
                                 <i class="fas fa-check-circle"></i>
@@ -1459,8 +1471,11 @@
                     postElement.setAttribute('itemscope', '');
                     postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
                     
+                    // Limit tags to first three
+                    const tags = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+
                     postElement.innerHTML = `
-                        <meta itemprop="mainEntityOfPage" content="/blog-post.html?slug=${post.slug}">
+                        <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
                         <div class="post-image">
                             <img src="${getFirstImage(post.content)}" alt="${post.title || 'Blog Post'}" itemprop="image" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'">
                         </div>
@@ -1473,8 +1488,13 @@
                             <div class="post-excerpt" itemprop="description">
                                 <p>${getExcerpt(post.content)}</p>
                             </div>
+                            ${tags.length > 0 ? `
+                            <div class="post-tags">
+                                ${tags.map(tag => `<a href="/blogs.html?tag=${encodeURIComponent(tag)}" class="tag">${tag}</a>`).join('')}
+                            </div>
+                            ` : ''}
                             <div class="post-actions">
-                                <a href="/blog-post.html?slug=${post.slug}" class="btn-primary" itemprop="url" aria-label="Read full article">Read Full Article</a>
+                                <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url" aria-label="Read full article">Read Full Article</a>
                             </div>
                         </div>
                         <meta itemprop="author" content="Jonathan Mwaniki">
@@ -1492,13 +1512,13 @@
             blogList.innerHTML = '<div style="text-align: center; padding: 60px 0; color: #6b7280; font-size: 1.1rem;"><i class="fas fa-spinner"></i> Loading blog posts...</div>';
             
             try {
-                const response = await fetch('/api/list-posts?t=' + Date.now());
+                const response = await fetch('/.netlify/functions/list-posts?t=' + Date.now());
                 if (!response.ok) {
                     throw new Error(`API error: ${response.status} ${response.statusText}`);
                 }
                 
-                const posts = await response.json();
-                renderPosts(posts.sort((a, b) => new Date(b.date) - new Date(a.date)));
+                const { data } = await response.json();
+                renderPosts(data.sort((a, b) => new Date(b.date) - new Date(a.date)));
                 
             } catch (error) {
                 console.error('Error loading posts:', error);
