@@ -1100,6 +1100,7 @@
                 </div>
             </div>
         </section>
+
 <!-- Blog Section -->
 <section id="blog" class="blog-section">
     <div class="blog-container">
@@ -1136,7 +1137,7 @@
             const doc = parser.parseFromString(unescapedContent, 'text/html');
             const firstP = doc.querySelector('p');
             if (!firstP) return 'No excerpt available.';
-            const text = firstP.textContent.trim();
+            const text = firstP.textContent.trim().replace(/\s+/g, ' ');
             const words = text.split(/\s+/).slice(0, 50);
             return words.join(' ') + (words.length < text.split(/\s+/).length ? '...' : '');
         }
@@ -1203,7 +1204,7 @@
         blogList.innerHTML = '<div style="text-align: center; padding: 60px 0; color: #6b7280; font-size: 1.1rem;"><i class="fas fa-spinner"></i> Loading blog posts...</div>';
         
         try {
-            const response = await fetch('/.netlify/functions/list-posts?t=' + Date.now());
+            const response = await fetch('/api/list-posts?t=' + Date.now());
             if (!response.ok) {
                 throw new Error(`API error: ${response.status} ${response.statusText}`);
             }
@@ -1222,6 +1223,7 @@
         }
     });
 </script>
+
         <!-- About Section -->
         <section id="about" class="about-section">
             <div class="about-container">
