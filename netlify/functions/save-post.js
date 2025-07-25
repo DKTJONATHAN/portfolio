@@ -1,67 +1,89 @@
 const { Octokit } = require("@octokit/rest");
-const sanitizeHtml = require('sanitize-html');
+const { marked } = require("marked");
 
-exports.handler = async (event) => {
-  const { title, slug, content, category, tags, image, date, description } = JSON.parse(event.body);
-  
-  // Validate inputs
-  if (!title || !slug) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Title and slug are required" }) };
-  }
-
-  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-  const owner = process.env.GITHUB_OWNER;
-  const repo = process.env.GITHUB_REPO;
-  const path = `content/articles/${slug}.html`;
-  
-  // Sanitize HTML content
-  const cleanContent = sanitizeHtml(content, {
-    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
-    allowedAttributes: {
-      ...sanitizeHtml.defaults.allowedAttributes,
-      img: ['src', 'alt', 'width', 'height']
-    }
-  });
-
-  // Front matter for metadata
-  const frontMatter = `---
-title: "${title.replace(/"/g, '\\"')}"
-date: "${date}"
-category: "${category}"
-tags: [${tags.split(',').map(t => `"${t.trim()}"`).join(', ')}]
-image: "${image}"
-description: "${description.replace(/"/g, '\\"')}"
----\n\n`;
-
-  const fullContent = frontMatter + cleanContent;
-  const message = event.queryStringParameters.update ? `Update ${slug}` : `Create ${slug}`;
-
+exports.handler = async function (event) {
   try {
-    let sha = null;
+    const { update, ...postData } = JSON.parse(event.body);
+
+    // Initialize GitHub API client
+    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+    const filePath = `content/articles/${postData.slug}.html`;
+
+    // Convert content to HTML if it's markdown, otherwise use as-is
+    let htmlContent = postData.content;
+    if (postData.content.trim().startsWith("---") || postData.content.includes("\n# ") || postData.content.includes("\n* ")) {
+      // Assume markdown if it starts with frontmatter or contains markdown syntax
+      htmlContent = marked(postData.content);
+    } else if (!postData.content.includes("<") && !postData.content.includes(">")) {
+      // Treat as raw text if no HTML tags
+      htmlContent = `<p>${postData.content.replace(/\n/g, "<br>")}</p>`;
+    }
+    // If content is already HTML (e.g., from Quill), use it directly
+
+    // Generate HTML file content
+    const fileContent = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${postData.title}</title>
+        <link rel="stylesheet" href="/styles.css">
+      </head>
+      <body>
+        <article>
+          <header>
+            <h1>${postData.title}</h1>
+            <p>${postData.date} • ${postData.category}</p>
+            ${postData.image ? `<img src="${postData.image}" alt="${postData.title}" class="w-full h-64 object-cover rounded-lg mb-6">` : ""}
+            ${postData.description ? `<p>${postData.description}</p>` : ""}
+            ${postData.tags ? `<div class="tags">${postData.tags
+              .split(",")
+              .map((tag) => `<span class="tag">${tag.trim()}</span>`)
+              .join("")}</div>` : ""}
+          </header>
+          <main>
+            ${htmlContent}
+          </main>
+        </article>
+      </body>
+      </html>
+    `;
+
+    // Encode content to base64 for GitHub API
+    const contentBase64 = Buffer.from(fileContent).toString("base64");
+
     // Check if file exists (for updates)
-    if (event.queryStringParameters.update) {
-      try {
-        const { data } = await octokit.repos.getContent({ owner, repo, path });
-        sha = data.sha;
-      } catch (e) {
-        // File doesn't exist yet (new post)
-      }
+    let sha;
+    try {
+      const { data } = await octokit.repos.getContent({
+        owner: process.env.GITHUB_OWNER,
+        repo: process.env.GITHUB_REPO,
+        path: filePath,
+      });
+      sha = data.sha;
+    } catch (error) {
+      if (error.status !== 404) throw error; // Ignore 404 (file not found)
     }
 
+    // Create or update file in GitHub
     await octokit.repos.createOrUpdateFileContents({
-      owner,
-      repo,
-      path,
-      message,
-      content: Buffer.from(fullContent).toString('base64'),
-      sha,
+      owner: process.env.GITHUB_OWNER,
+      repo: process.env.GITHUB_REPO,
+      path: filePath,
+      message: update ? `Update post: ${postData.title}` : `Create post: ${postData.title}`,
+      content: contentBase64,
+      sha: sha || undefined,
     });
 
-    // Trigger Netlify rebuild
-    await fetch(process.env.NETLIFY_BUILD_HOOK, { method: 'POST' });
-
-    return { statusCode: 200, body: JSON.stringify({ success: true }) };
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: "Post saved successfully" }),
+    };
   } catch (error) {
-    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: `Failed to save post: ${error.message}` }),
+    };
   }
-}; 
+};
