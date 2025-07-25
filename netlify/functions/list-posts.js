@@ -79,4 +79,14 @@ exports.handler = async function () {
       statusCode: 200,
       body: JSON.stringify({
         data: posts,
-        error: errors.length
+        error: errors.length > 0 ? `Partial errors: ${errors.join("; ")}` : null,
+      }),
+    };
+  } catch (error) {
+    console.error("Error in handler:", error.message); // Debug log
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ data: [], error: `Failed to fetch posts: ${error.message}` }),
+    };
+  }
+};
