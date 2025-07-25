@@ -4,7 +4,8 @@
   "description": "Blog admin panel for managing posts",
   "dependencies": {
     "@octokit/rest": "^19.0.13",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "marked": "^4.0.0"
   },
   "scripts": {
     "start": "netlify dev"
