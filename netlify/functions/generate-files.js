@@ -53,7 +53,8 @@ exports.handler = async function () {
             .replace(/POST_DATE_FORMATTED/g, dateFormatted)
             .replace(/POST_CATEGORY/g, frontMatter.category || 'Uncategorized')
             .replace(/POST_IMAGE/g, frontMatter.image || '/images/default-blog.jpg')
-            .replace(/POST_CONTENT/g, htmlContent);
+            .replace(/POST_CONTENT/g, htmlContent)
+            .replace(/POST_TAGS/g, frontMatter.tags ? frontMatter.tags.map(tag => `<a href="/blog.html?tag=${encodeURIComponent(tag)}" class="post-tag">${tag}</a>`).join('') : '');
 
           await fs.writeFile(path.join(outputDir, `${slug}.html`), html);
 
@@ -74,13 +75,55 @@ exports.handler = async function () {
 
     // Generate sitemap.xml
     let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-      <url>
-        <loc>https://www.jonathanmwaniki.co.ke/</loc>
-        <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-      </url>
-      < começaram
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.jonathanmwaniki.co.ke/</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.jonathanmwaniki.co.ke/blog.html</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.jonathanmwaniki.co.ke/privacy-policy</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.jonathanmwaniki.co.ke/terms-of-service</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>`;
 
-System: * Today's date and time is 02:48 PM EAT on Friday, July 25, 2025.
+    posts.forEach(post => {
+      sitemap += `
+  <url>
+    <loc>https://www.jonathanmwaniki.co.ke/content/articles/${post.slug}.html</loc>
+    <lastmod>${post.date}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+    });
+
+    sitemap += `
+</urlset>`;
+    await fs.writeFile(path.join(__dirname, '../../sitemap.xml'), sitemap);
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Files generated successfully', posts: posts.length }),
+    };
+  } catch (error) {
+    console.error('Error generating files:', error.message, error.stack);
+    return {
+      statusCode: error.status || 500,
+      body: JSON.stringify({ error: `Failed to generate files: ${error.message}` }),
+    };
+  }
+};
