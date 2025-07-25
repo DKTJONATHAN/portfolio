@@ -304,6 +304,30 @@
             line-height: 1.5;
         }
 
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .post-tag {
+            padding: 4px 12px;
+            background: var(--light-bg);
+            color: var(--primary-color);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .post-tag:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
         .btn-primary {
             display: inline-flex;
             align-items: center;
@@ -493,7 +517,7 @@
             <div class="nav-container">
                 <div class="nav-brand">
                     <div class="brand-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="eager">
+                        <img src="/images/Jonathanmwaniki-logo.png" alt="Mwaniki Reports Logo" loading="eager">
                     </div>
                     <span class="brand-name">Mwaniki Reports</span>
                 </div>
@@ -509,43 +533,43 @@
         </nav>
         <main class="blog-container">
             <div class="section-header">
-                <h2 class="section-title">Mwaniki <span class="gradient-text">Reports</span></h2>
+                <h1 class="section-title">Mwaniki <span class="gradient-text">Reports</span></h1>
                 <p class="section-description">Your trusted source for news, sports, tech, and entertainment.</p>
             </div>
             <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Search articles..." aria-label="Search articles">
+                <input type="text" id="search-input" placeholder="Search posts..." aria-label="Search posts">
                 <i class="fas fa-search"></i>
             </div>
             <section class="blog-categories">
-                <h3 class="section-subtitle">Browse by Category</h3>
+                <h2 class="section-subtitle">Browse by Category</h2>
                 <div class="category-list">
-                    <span class="category-tag active" data-category="All">All</span>
+                    <span class="category-tag active" data-category="all">All</span>
                     <span class="category-tag" data-category="News">News</span>
                     <span class="category-tag" data-category="Breaking News">Breaking News</span>
-                    <span class="category-tag" data-category="Opinions">Opinions</span>
+                    <span class="category-tag" data-category="Opinions">Opinion</span>
                     <span class="category-tag" data-category="Business">Business</span>
                     <span class="category-tag" data-category="Sports">Sports</span>
                     <span class="category-tag" data-category="Tech">Tech</span>
-                    <span class="category-tag" data-category="Entertainment">Entertainment</span>
+                    <span class="category-tag" data-category="Entertainment">Data</span>
                 </div>
             </section>
-            <div id="blog-list">
-                <div class="loading-posts"><i class="fas fa-spinner"></i> Loading articles...</div>
+            <div id="post-list">
+                <div class="loading-posts"><i class="fas fa-spinner"></i>Loading posts...</div>
             </div>
         </main>
         <footer class="site-footer">
             <div class="footer-container">
                 <div class="footer-brand">
                     <div class="footer-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="lazy">
+                        <img src="/images/jonathanmwaniki.png" alt="Workflow" loading="lazy">
                     </div>
                     <div class="footer-info">
-                        <span class="footer-name">Mwaniki Reports</span>
-                        <p class="footer-description">Your trusted source for news, sports, tech, and entertainment.</p>
+                        <span class="footer-name">Mwaniki</span>
+                        <p class="footer-description">Your trusted source for news, sports, tech, and analytics.</p>
                     </div>
                 </div>
                 <div class="footer-legal">
-                    <p class="copyright">© 2025 Mwaniki Reports. All Rights Reserved.</p>
+                    <p class="license">© 2025 Mwaniki Analytics. All Rights Reserved.</p>
                     <div class="legal-links">
                         <a href="/privacy-policy" class="legal-link">Privacy Policy</a>
                         <a href="/terms-of-service" class="legal-link">Terms of Service</a>
@@ -557,7 +581,7 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            const blogList = document.getElementById('blog-list');
+            const postList = document.getElementById('post-list');
             const searchInput = document.getElementById('search-input');
             const categoryTags = document.querySelectorAll('.category-tag');
             let allPosts = [];
@@ -580,19 +604,19 @@
             }
 
             function renderPosts(posts) {
-                blogList.innerHTML = '';
+                postList.innerHTML = '';
                 if (!posts.length) {
-                    blogList.innerHTML = '<div class="no-posts">No articles found.</div>';
+                    postList.innerHTML = '<div class="no-posts">No posts found.</div>';
                     return;
                 }
 
-                const categories = ['All', 'News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
+                const categories = ['all', 'News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
                 categories.forEach(category => {
-                    const categoryPosts = category === 'All' ? posts : posts.filter(post => post.category === category);
+                    const categoryPosts = category === 'all' ? posts : posts.filter(post => post.category === category);
                     if (categoryPosts.length) {
                         const categorySection = document.createElement('section');
                         categorySection.className = 'category-section';
-                        categorySection.innerHTML = `<h3 class="category-title">${category}</h3>`;
+                        categorySection.innerHTML = `<h2 class="category-title">${category === 'all' ? 'All Posts' : category}</h2>`;
                         const postsContainer = document.createElement('div');
                         postsContainer.className = 'blog-posts';
                         categoryPosts.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(post => {
@@ -600,16 +624,19 @@
                             postElement.className = 'blog-post';
                             postElement.innerHTML = `
                                 <div class="post-image">
-                                    <img src="${post.image || getFirstImage(post.content)}" alt="${post.title || 'Article'}" loading="lazy" onerror="this.src='/images/default-blog.jpg'">
+                                    <img src="${post.image || getFirstImage(post.content)}" alt="${post.title || 'Post'}" loading="lazy" onerror="this.src='/images/default-blog.jpg'">
                                 </div>
                                 <div class="post-content">
                                     <div class="post-meta">
-                                        <time>${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+                                        <time datetime="${post.date}">${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
                                         <span class="post-category">${post.category || 'Uncategorized'}</span>
                                     </div>
                                     <h3 class="post-title">${post.title || 'Untitled'}</h3>
                                     <div class="post-excerpt">
                                         <p>${post.description || getExcerpt(post.content)}</p>
+                                    </div>
+                                    <div class="post-tags">
+                                        ${post.tags.map(tag => `<a href="/blog.html?tag=${encodeURIComponent(tag)}" class="post-tag">${tag}</a>`).join('')}
                                     </div>
                                     <a href="/content/articles/${post.slug}.html" class="btn-primary">
                                         Read More <i class="fas fa-arrow-right"></i>
@@ -619,38 +646,58 @@
                             postsContainer.appendChild(postElement);
                         });
                         categorySection.appendChild(postsContainer);
-                        blogList.appendChild(categorySection);
+                        postList.appendChild(categorySection);
                     }
                 });
             }
 
-            searchInput.addEventListener('input', () => {
+            function applyFilters() {
                 const searchTerm = searchInput.value.trim().toLowerCase();
-                const filteredPosts = searchTerm
-                    ? allPosts.filter(post => post.title?.toLowerCase().includes(searchTerm) || post.description?.toLowerCase().includes(searchTerm))
-                    : allPosts;
+                const urlParams = new URLSearchParams(window.location.search);
+                const selectedTag = urlParams.get('tag')?.toLowerCase();
+                const selectedCategory = Array.from(categoryTags).find(tag => tag.classList.contains('active'))?.dataset.category.toLowerCase();
+
+                let filteredPosts = allPosts;
+                if (searchTerm) {
+                    filteredPosts = filteredPosts.filter(post => 
+                        post.title?.toLowerCase().includes(searchTerm) || 
+                        post.description?.toLowerCase().includes(searchTerm) ||
+                        post.content?.toLowerCase().includes(searchTerm)
+                    );
+                }
+                if (selectedTag) {
+                    filteredPosts = filteredPosts.filter(post => 
+                        post.tags.map(t => t.toLowerCase()).includes(selectedTag)
+                    );
+                }
+                if (selectedCategory && selectedCategory !== 'all') {
+                    filteredPosts = filteredPosts.filter(post => 
+                        post.category.toLowerCase() === selectedCategory
+                    );
+                }
                 renderPosts(filteredPosts);
-            });
+            }
+
+            searchInput.addEventListener('input', applyFilters);
 
             categoryTags.forEach(tag => {
                 tag.addEventListener('click', () => {
                     categoryTags.forEach(t => t.classList.remove('active'));
                     tag.classList.add('active');
-                    const category = tag.dataset.category;
-                    const filteredPosts = category === 'All' ? allPosts : allPosts.filter(post => post.category === category);
-                    renderPosts(filteredPosts);
+                    history.pushState({}, '', window.location.pathname);
+                    applyFilters();
                 });
             });
 
-            blogList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i> Loading articles...</div>';
+            postList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i>Loading posts...</div>';
             try {
                 const response = await fetch('/.netlify/functions/list-posts?t=' + Date.now());
                 if (!response.ok) throw new Error(`API error: ${response.status}`);
                 allPosts = await response.json();
-                renderPosts(allPosts);
+                applyFilters();
             } catch (error) {
                 console.error('Error loading posts:', error);
-                blogList.innerHTML = `<div class="error-message">Failed to load articles. <a href="/blog.html">Try again</a></div>`;
+                postList.innerHTML = `<div class="error-message">Failed to load posts. <a href="/blog.html">Try again</a></div>`;
             }
         });
     </script>
