@@ -320,30 +320,33 @@
                 notification.classList.add('hidden');
             }, 3500);
         }
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const password = document.getElementById('password').value;
+  const error = document.getElementById('login-error');
+  error.classList.add('hidden');
 
-        // Login handler
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const password = document.getElementById('password').value;
-            const error = document.getElementById('login-error');
-            error.classList.add('hidden');
+  try {
+    const response = await fetch('/.netlify/functions/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password })
+    });
 
-            try {
-                // In a real implementation, you would verify the password against your ADMIN_PASSWORD
-                if (password !== atob(process.env.ADMIN_PASSWORD)) {
-                    throw new Error('Invalid password');
-                }
+    const data = await response.json();
 
-                document.getElementById('login-section').classList.add('hidden');
-                document.getElementById('admin-section').classList.remove('hidden');
-                showNotification('Login successful!');
-                await loadPosts();
-            } catch (err) {
-                error.textContent = err.message;
-                error.classList.remove('hidden');
-                showNotification('Login failed: ' + err.message, true);
-            }
-        });
+    if (!response.ok) {
+      throw new Error(data.error || 'Login failed');
+    }
+
+    document.getElementById('login-section').classList.add('hidden');
+    document.getElementById('admin-section').classList.remove('hidden');
+    await loadPosts();
+  } catch (err) {
+    error.textContent = err.message;
+    error.classList.remove('hidden');
+  }
+});
 
         // Logout handler
         document.getElementById('logout-button').addEventListener('click', () => {
