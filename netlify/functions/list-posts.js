@@ -15,6 +15,7 @@ exports.handler = async function () {
       files = Array.isArray(data) ? data.filter((item) => item.type === "file") : [];
     } catch (error) {
       if (error.status === 404) {
+        console.log("Directory not found, returning empty array");
         return {
           statusCode: 200,
           body: JSON.stringify({ data: [], error: null }),
@@ -27,7 +28,6 @@ exports.handler = async function () {
       files
         .filter((file) => file.name.endsWith(".html"))
         .map(async (file) => {
-          // Fetch file content
           const { data } = await octokit.repos.getContent({
             owner: process.env.GITHUB_OWNER,
             repo: process.env.GITHUB_REPO,
@@ -41,7 +41,6 @@ exports.handler = async function () {
           // Parse HTML
           const titleMatch = content.match(/<h1[^>]*>(.*?)<\/h1>/i) || ["", "Untitled"];
           const dateCategoryMatch = content.match(/<p[^>]*>(\d{4}-\d{2}-\d{2})\s*•\s*([^<]*?)(?=<|$)/i) || ["", "", "Uncategorized"];
-          // Match description as the <p> after date/category but before <div class="tags">
           const descriptionMatch = content.match(/<p[^>]*>(\d{4}-\d{2}-\d{2})\s*•\s*[^<]*<\/p>\s*<p[^>]*>(.*?)(?=<div class="tags"|$)/is) || ["", "", ""];
           const tagsMatch = content.match(/<div class="tags">([\s\S]*?)<\/div>/i) || ["", ""];
           const imageMatch = content.match(/<img[^>]+src=["'](.*?)["']/i) || ["", ""];
@@ -54,7 +53,7 @@ exports.handler = async function () {
             title: titleMatch[1],
             date: dateCategoryMatch[1],
             category: dateCategoryMatch[2].trim(),
-            description: descriptionMatch[2] || "", // Use second capture group for description
+            description: descriptionMatch[2] || "",
             tags: tagsMatch[1]
               ? tagsMatch[1]
                   .match(/<span class="tag">([\s\S]*?)<\/span>/g)
@@ -75,17 +74,9 @@ exports.handler = async function () {
       .filter((result) => result.status === "rejected")
       .map((result) => result.reason.message);
 
+    console.log("Processed posts:", posts); // Debug log
     return {
       statusCode: 200,
       body: JSON.stringify({
         data: posts,
-        error: errors.length > 0 ? `Partial errors: ${errors.join("; ")}` : null,
-      }),
-    };
-  } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ data: [], error: `Failed to fetch posts: ${error.message}` }),
-    };
-  }
-};
+        error: errors.length
