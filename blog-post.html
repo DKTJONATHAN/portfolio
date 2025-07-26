@@ -250,104 +250,103 @@
             </div>
         </article>
     </div>
+<script>
+    // Utility to unescape HTML
+    function unescapeHTML(str) {
+        const textarea = document.createElement('textarea');
+        textarea.innerHTML = str;
+        return textarea.value;
+    }
 
-    <script>
-        // Utility to unescape HTML
-        function unescapeHTML(str) {
-            const textarea = document.createElement('textarea');
-            textarea.innerHTML = str;
-            return textarea.value;
-        }
+    document.addEventListener('DOMContentLoaded', async () => {
+        const postContainer = document.getElementById('blog-post');
+        const slug = new URLSearchParams(window.location.search).get('slug');
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            const postContainer = document.getElementById('blog-post');
-            const slug = new URLSearchParams(window.location.search).get('slug');
-
-            if (!slug) {
-                postContainer.innerHTML = `
-                    <div class="error-post">
-                        No post specified. <a href="/blogs.html" style="color: var(--primary-color); text-decoration: underline;">Return to Blog</a>
-                    </div>
-                `;
-                return;
-            }
-
+        if (!slug) {
             postContainer.innerHTML = `
-                <div class="loading-post">
-                    <i class="fas fa-spinner"></i> Loading blog post...
+                <div class="error-post">
+                    No post specified. <a href="/blogs.html" style="color: var(--primary-color); text-decoration: underline;">Return to Blog</a>
                 </div>
             `;
+            return;
+        }
 
-            try {
-                const response = await fetch(`/.netlify/functions/get-post?file=${encodeURIComponent(slug)}&t=${Date.now()}`);
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status} ${response.statusText}`);
-                }
+        postContainer.innerHTML = `
+            <div class="loading-post">
+                <i class="fas fa-spinner"></i> Loading blog post...
+            </div>
+        `;
 
-                const { data: post } = await response.json();
-                if (!post) {
-                    throw new Error('Post not found');
-                }
-
-                // Unescape content to ensure proper HTML
-                const content = unescapeHTML(post.content || 'No content available.');
-
-                // Limit tags to first three
-                const tags = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
-
-                postContainer.innerHTML = `
-                    <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
-                    <header class="blog-post-header">
-                        <h1 class="blog-post-title" itemprop="headline">${post.title || 'Untitled'}</h1>
-                        <div class="blog-post-meta">
-                            <time datetime="${post.date}" itemprop="datePublished">${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
-                            <span class="blog-post-category" itemprop="articleSection">${post.category || 'Uncategorized'}</span>
-                        </div>
-                    </header>
-                    ${post.image ? `
-                    <div class="blog-post-image">
-                        <img src="${post.image}" alt="${post.title || 'Blog Post'}" itemprop="image" loading="lazy" width="1200" height="675">
-                    </div>
-                    ` : ''}
-                    <div class="blog-post-content" itemprop="articleBody">
-                        ${content}
-                    </div>
-                    ${tags.length > 0 ? `
-                    <div class="blog-post-tags">
-                        ${tags.map(tag => `<a href="/blogs.html?tag=${encodeURIComponent(tag)}" class="tag">${tag}</a>`).join('')}
-                    </div>
-                    ` : ''}
-                    <div class="blog-post-actions">
-                        <a href="/blogs.html" class="btn-primary" aria-label="Back to all posts">Back to All Posts</a>
-                    </div>
-                    <meta itemprop="author" content="Jonathan Mwaniki">
-                    <meta itemprop="dateModified" content="${post.date}">
-                    <meta itemprop="publisher" content="Jonathan Mwaniki">
-                `;
-
-                // Update meta tags dynamically
-                document.title = `${post.title || 'Blog Post'} | Jonathan Mwaniki`;
-                document.querySelector('meta[name="description"]').setAttribute('content', post.description || 'Blog post by Jonathan Mwaniki');
-                document.querySelector('meta[property="og:title"]').setAttribute('content', `${post.title || 'Blog Post'} | Jonathan Mwaniki`);
-                document.querySelector('meta[property="og:description"]').setAttribute('content', post.description || 'Insights and tutorials by Jonathan Mwaniki');
-                document.querySelector('meta[property="og:url"]').setAttribute('content', `https://www.jonathanmwaniki.co.ke/content/articles/${post.slug}.html`);
-                document.querySelector('meta[name="twitter:title"]').setAttribute('content', `${post.title || 'Blog Post'} | Jonathan Mwaniki`);
-                document.querySelector('meta[name="twitter:description"]').setAttribute('content', post.description || 'Insights and tutorials by Jonathan Mwaniki`);
-                if (post.image) {
-                    document.querySelector('meta[property="og:image"]').setAttribute('content', post.image);
-                    document.querySelector('meta[name="twitter:image"]').setAttribute('content', post.image);
-                }
-
-            } catch (error) {
-                console.error('Error loading post:', error);
-                postContainer.innerHTML = `
-                    <div class="error-post">
-                        Failed to load post. <a href="/blogs.html" style="color: var(--primary-color); text-decoration: underline;">Return to Blog</a>
-                        <p><small>${error.message}</small></p>
-                    </div>
-                `;
+        try {
+            const response = await fetch(`/api/list-posts?file=${encodeURIComponent(slug)}&t=${Date.now()}`);
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status} ${response.statusText}`);
             }
-        });
-    </script>
+
+            const { data: post } = await response.json();
+            if (!post) {
+                throw new Error('Post not found');
+            }
+
+            // Unescape content to ensure proper HTML
+            const content = unescapeHTML(post.content || 'No content available.');
+
+            // Limit tags to first three
+            const tags = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+
+            postContainer.innerHTML = `
+                <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
+                <header class="blog-post-header">
+                    <h1 class="blog-post-title" itemprop="headline">${post.title || 'Untitled'}</h1>
+                    <div class="blog-post-meta">
+                        <time datetime="${post.date}" itemprop="datePublished">${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+                        <span class="blog-post-category" itemprop="articleSection">${post.category || 'Uncategorized'}</span>
+                    </div>
+                </header>
+                ${post.image ? `
+                <div class="blog-post-image">
+                    <img src="${post.image}" alt="${post.title || 'Blog Post'}" itemprop="image" loading="lazy" width="1200" height="675">
+                </div>
+                ` : ''}
+                <div class="blog-post-content" itemprop="articleBody">
+                    ${content}
+                </div>
+                ${tags.length > 0 ? `
+                <div class="blog-post-tags">
+                    ${tags.map(tag => `<a href="/blogs.html?tag=${encodeURIComponent(tag)}" class="tag">${tag}</a>`).join('')}
+                </div>
+                ` : ''}
+                <div class="blog-post-actions">
+                    <a href="/blogs.html" class="btn-primary" aria-label="Back to all posts">Back to All Posts</a>
+                </div>
+                <meta itemprop="author" content="Jonathan Mwaniki">
+                <meta itemprop="dateModified" content="${post.date}">
+                <meta itemprop="publisher" content="Jonathan Mwaniki">
+            `;
+
+            // Update meta tags dynamically
+            document.title = `${post.title || 'Blog Post'} | Jonathan Mwaniki`;
+            document.querySelector('meta[name="description"]').setAttribute('content', post.description || 'Blog post by Jonathan Mwaniki');
+            document.querySelector('meta[property="og:title"]').setAttribute('content', `${post.title || 'Blog Post'} | Jonathan Mwaniki`);
+            document.querySelector('meta[property="og:description"]').setAttribute('content', post.description || 'Insights and tutorials by Jonathan Mwaniki');
+            document.querySelector('meta[property="og:url"]').setAttribute('content', `https://www.jonathanmwaniki.co.ke/content/articles/${post.slug}.html`);
+            document.querySelector('meta[name="twitter:title"]').setAttribute('content', `${post.title || 'Blog Post'} | Jonathan Mwaniki`);
+            document.querySelector('meta[name="twitter:description"]').setAttribute('content', post.description || 'Insights and tutorials by Jonathan Mwaniki');
+            if (post.image) {
+                document.querySelector('meta[property="og:image"]').setAttribute('content', post.image);
+                document.querySelector('meta[name="twitter:image"]').setAttribute('content', post.image);
+            }
+
+        } catch (error) {
+            console.error('Error loading post:', error);
+            postContainer.innerHTML = `
+                <div class="error-post">
+                    Failed to load post. <a href="/blogs.html" style="color: var(--primary-color); text-decoration: underline;">Return to Blog</a>
+                    <p><small>${error.message}</small></p>
+                </div>
+            `;
+        }
+    });
+</script>
 </body>
 </html>
