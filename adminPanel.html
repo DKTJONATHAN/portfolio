@@ -394,167 +394,182 @@
             </div>
         </div>
     </div>
+<script>
+    // Configuration
+    const ADMIN_PIN = "1711"; // Change this to your preferred PIN
+    const AUTH_KEY = "form_admin_auth";
+    const API_ROUTE = "/api/submissions"; // Vercel API route
 
-    <script>
-        // Configuration
-        const ADMIN_PIN = "1711"; // Change this to your preferred PIN
-        const GITHUB_DATA_URL = "https://raw.githubusercontent.com/DKTJONATHAN/Portfolio/main/data/forms.json";
-        const AUTH_KEY = "form_admin_auth";
+    // DOM Elements
+    const pinScreen = document.getElementById('pinScreen');
+    const pinInput = document.getElementById('pinInput');
+    const pinError = document.getElementById('pinError');
+    const adminPanel = document.getElementById('adminPanel');
+    const submissionsContainer = document.getElementById('submissionsContainer');
+    const totalSubmissions = document.getElementById('totalSubmissions');
 
-        // DOM Elements
-        const pinScreen = document.getElementById('pinScreen');
-        const pinInput = document.getElementById('pinInput');
-        const pinError = document.getElementById('pinError');
-        const adminPanel = document.getElementById('adminPanel');
-        const submissionsContainer = document.getElementById('submissionsContainer');
-        const totalSubmissions = document.getElementById('totalSubmissions');
-
-        // Check PIN and grant access
-        function checkPin() {
-            if (pinInput.value === ADMIN_PIN) {
-                // Store authentication for 1 hour
-                const authToken = {
-                    timestamp: Date.now(),
-                    expires: 3600000 // 1 hour
-                };
-                localStorage.setItem(AUTH_KEY, JSON.stringify(authToken));
-                
-                pinScreen.style.display = 'none';
-                adminPanel.style.display = 'block';
-                loadSubmissions();
-            } else {
-                pinError.style.display = 'block';
-                pinInput.value = '';
-                pinInput.focus();
-            }
+    // Check PIN and grant access
+    function checkPin() {
+        if (pinInput.value === ADMIN_PIN) {
+            // Store authentication for 1 hour
+            const authToken = {
+                timestamp: Date.now(),
+                expires: 3600000 // 1 hour
+            };
+            localStorage.setItem(AUTH_KEY, JSON.stringify(authToken));
+            
+            pinScreen.style.display = 'none';
+            adminPanel.style.display = 'block';
+            loadSubmissions();
+        } else {
+            pinError.style.display = 'block';
+            pinInput.value = '';
+            pinInput.focus();
         }
+    }
 
-        // Load submissions from GitHub
-        async function loadSubmissions() {
+    // Load submissions from Vercel API
+    async function loadSubmissions() {
+        submissionsContainer.innerHTML = `
+            <div class="loading-state">
+                <div class="loading-icon">
+                    <i class="fas fa-spinner"></i>
+                </div>
+                <p>Loading submissions...</p>
+            </div>
+        `;
+
+        try {
+            const response = await fetch(API_ROUTE);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            displaySubmissions(data.submissions || []);
+            
+        } catch (error) {
+            console.error("Failed to load submissions:", error);
+            showErrorState(error.message);
+        }
+    }
+
+    // Display submissions in the UI
+    function displaySubmissions(submissions) {
+        if (!submissions || submissions.length === 0) {
             submissionsContainer.innerHTML = `
-                <div class="loading-state">
-                    <div class="loading-icon">
-                        <i class="fas fa-spinner"></i>
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-inbox"></i>
                     </div>
-                    <p>Loading submissions...</p>
+                    <h3>No submissions yet</h3>
+                    <p>Contact form submissions will appear here</p>
                 </div>
             `;
-
-            try {
-                const response = await fetch(GITHUB_DATA_URL);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const submissions = await response.json();
-                displaySubmissions(submissions);
-                
-            } catch (error) {
-                submissionsContainer.innerHTML = `
-                    <div class="error-state">
-                        <div>
-                            <i class="fas fa-exclamation-circle error-icon"></i>
-                            <strong>Error loading submissions</strong>
-                        </div>
-                        <p style="margin-top: 0.5rem;">${error.message}</p>
-                    </div>
-                `;
-                console.error("Failed to load submissions:", error);
-            }
+            totalSubmissions.textContent = '0';
+            return;
         }
 
-        // Display submissions in the UI
-        function displaySubmissions(submissions) {
-            if (!submissions || submissions.length === 0) {
-                submissionsContainer.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">
-                            <i class="fas fa-inbox"></i>
+        // Update stats
+        totalSubmissions.textContent = submissions.length;
+
+        // Display submissions (newest first)
+        submissionsContainer.innerHTML = submissions.reverse().map(sub => `
+            <div class="submission-card">
+                <div class="submission-header">
+                    <div class="submission-user">
+                        <div class="user-icon">
+                            <i class="fas fa-user"></i>
                         </div>
-                        <h3>No submissions yet</h3>
-                        <p>Contact form submissions will appear here</p>
+                        <div class="user-info">
+                            <h3>${escapeHTML(sub.name) || 'No name'}</h3>
+                            <p>
+                                <i class="far fa-clock"></i> ${new Date(sub.timestamp).toLocaleString()}
+                            </p>
+                        </div>
                     </div>
-                `;
-                totalSubmissions.textContent = '0';
-                return;
-            }
-
-            // Update stats
-            totalSubmissions.textContent = submissions.length;
-
-            // Display submissions (newest first)
-            submissionsContainer.innerHTML = submissions.reverse().map(sub => `
-                <div class="submission-card">
-                    <div class="submission-header">
-                        <div class="submission-user">
-                            <div class="user-icon">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="user-info">
-                                <h3>${sub.name || 'No name'}</h3>
-                                <p>
-                                    <i class="far fa-clock"></i> ${new Date(sub.timestamp).toLocaleString()}
-                                </p>
-                            </div>
-                        </div>
-                        <span class="submission-badge">Contact</span>
+                    <span class="submission-badge">Contact</span>
+                </div>
+                
+                <div class="submission-details">
+                    <div class="detail-item">
+                        <label>Email</label>
+                        <p>${escapeHTML(sub.email) || '-'}</p>
                     </div>
                     
-                    <div class="submission-details">
-                        <div class="detail-item">
-                            <label>Email</label>
-                            <p>${sub.email || '-'}</p>
-                        </div>
-                        
-                        ${sub.service ? `
-                        <div class="detail-item">
-                            <label>Service</label>
-                            <p>${sub.service}</p>
-                        </div>
-                        ` : ''}
-                        
-                        <div class="detail-item" style="grid-column: 1 / -1">
-                            <label>Message</label>
-                            <p style="white-space: pre-line;">${sub.message || '-'}</p>
-                        </div>
+                    ${sub.service ? `
+                    <div class="detail-item">
+                        <label>Service</label>
+                        <p>${escapeHTML(sub.service)}</p>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="detail-item" style="grid-column: 1 / -1">
+                        <label>Message</label>
+                        <p style="white-space: pre-line;">${escapeHTML(sub.message) || '-'}</p>
                     </div>
                 </div>
-            `).join('');
-        }
+            </div>
+        `).join('');
+    }
 
-        // Logout functionality
-        function logout() {
+    // Show error state
+    function showErrorState(message) {
+        submissionsContainer.innerHTML = `
+            <div class="error-state">
+                <div>
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <strong>Error loading submissions</strong>
+                </div>
+                <p style="margin-top: 0.5rem;">${message}</p>
+            </div>
+        `;
+    }
+
+    // Basic HTML escaping for security
+    function escapeHTML(str) {
+        if (!str) return str;
+        return str.toString()
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // Logout functionality
+    function logout() {
+        localStorage.removeItem(AUTH_KEY);
+        location.reload();
+    }
+
+    // Check for existing valid session on page load
+    function checkAuth() {
+        const authData = localStorage.getItem(AUTH_KEY);
+        if (!authData) return;
+
+        const { timestamp, expires } = JSON.parse(authData);
+        const now = Date.now();
+
+        if (now - timestamp < expires) {
+            pinScreen.style.display = 'none';
+            adminPanel.style.display = 'block';
+            loadSubmissions();
+        } else {
             localStorage.removeItem(AUTH_KEY);
-            location.reload();
         }
+    }
 
-        // Check for existing valid session on page load
-        function checkAuth() {
-            const authData = localStorage.getItem(AUTH_KEY);
-            if (!authData) return;
+    // Initialize admin panel
+    checkAuth();
 
-            const { timestamp, expires } = JSON.parse(authData);
-            const now = Date.now();
-
-            if (now - timestamp < expires) {
-                pinScreen.style.display = 'none';
-                adminPanel.style.display = 'block';
-                loadSubmissions();
-            } else {
-                localStorage.removeItem(AUTH_KEY);
-            }
+    // Handle Enter key in PIN input
+    pinInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            checkPin();
         }
-
-        // Initialize admin panel
-        checkAuth();
-
-        // Handle Enter key in PIN input
-        pinInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                checkPin();
-            }
-        });
-    </script>
+    });
+</script>
 </body>
 </html>
