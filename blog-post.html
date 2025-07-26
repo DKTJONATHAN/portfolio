@@ -3,246 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    
-    <title>Jonathan Mwaniki | Blog Post</title>
     <meta name="description" content="Blog post by Jonathan Mwaniki, Kenya's leading web developer and graphic designer">
     <meta name="keywords" content="Jonathan Mwaniki, web developer Kenya, graphic designer Nairobi, blog">
     <meta name="author" content="Jonathan Mwaniki">
     <meta name="robots" content="index, follow">
     
-    <!-- Favicon -->
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16 32x32">
-    <link rel="icon" href="/images/favicon-96x96.png" type="image/png" sizes="96x96">
-    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="KE">
+    <meta name="geo.placename" content="Nairobi">
+    <meta name="geo.position" content="-1.286389;36.817223">
     
     <!-- Open Graph -->
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://www.jonathanmwaniki.co.ke/content/articles/">
     <meta property="og:title" content="Jonathan Mwaniki | Blog Post">
     <meta property="og:description" content="Insights and tutorials by Jonathan Mwaniki">
-    <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/jonathanmwaniki.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="Jonathan Mwaniki Portfolio">
+    <meta property="og:site_name" content="Mwaniki Reports">
+    <meta property="og:locale" content="en_KE">
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@maestropuns">
+    <meta name="twitter:creator" content="@maestropuns">
     <meta name="twitter:title" content="Jonathan Mwaniki | Blog Post">
     <meta name="twitter:description" content="Insights and tutorials by Jonathan Mwaniki">
-    <meta name="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    <meta name="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/jonathanmwaniki.png">
     
     <!-- Canonical -->
     <link rel="canonical" href="https://www.jonathanmwaniki.co.ke/content/articles/">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16 32x32">
+    <link rel="icon" href="/images/favicon-96x96.png" type="image/png" sizes="96x96">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
     
     <!-- Preload Resources -->
     <link rel="stylesheet" href="/styles.css">
     <link rel="preload" href="/styles.css" as="style">
     <link rel="preload" href="/scripts/main.js" as="script">
-    <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
+    <link rel="preload" href="/images/jonathanmwaniki.png" as="image" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style" crossorigin>
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <!-- Inline Critical CSS -->
     <style>
         :root {
             --primary-color: #4f46e5;
+            --primary-dark: #3b82f6;
             --secondary-color: #10b981;
             --text-color: #1f2937;
+            --light-text: #6b7280;
+            --background-color: #ffffff;
             --light-bg: #f9fafb;
-            --white: #ffffff;
+            --border-color: #e5e7eb;
+            --font-main: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-main); line-height: 1.6; color: var(--text-color); background-color: var(--light-bg); overflow-x: hidden; }
+        
+        /* Navigation styles (from blogs.html) */
+        .desktop-nav { background: var(--background-color); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        .nav-container { max-width: 1280px; margin: 0 auto; padding: 1rem 20px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; }
+        .brand-logo img { border-radius: 8px; width: 40px; height: auto; }
+        .brand-name { font-size: 1.25rem; font-weight: 700; color: var(--text-color); }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-link { color: var(--light-text); font-weight: 500; text-decoration: none; transition: color 0.3s ease; }
+        .nav-link:hover, .nav-link.active { color: var(--primary-color); }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--background-color); box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); z-index: 90; }
+        .mobile-nav-container { display: flex; justify-content: space-around; padding: 12px 0; }
+        .mobile-nav-link { display: flex; flex-direction: column; align-items: center; color: var(--light-text); font-size: 0.85rem; text-decoration: none; transition: color 0.3s ease; }
+        .mobile-nav-link i { font-size: 1.3rem; margin-bottom: 4px; }
+        .mobile-nav-link:hover, .mobile-nav-link.active { color: var(--primary-color); }
 
-        body {
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            color: var(--text-color);
-            background-color: var(--light-bg);
-            line-height: 1.5;
-            overflow-x: hidden;
-        }
+        /* Blog post styles */
+        .container { max-width: 1280px; margin: 0 auto; padding: 100px 20px 80px; }
+        .blog-post-header { text-align: center; margin-bottom: 40px; }
+        .blog-post-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.2; }
+        .gradient-text { background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .blog-post-meta { display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--light-text); margin-bottom: 20px; }
+        .blog-post-meta time::after { content: ''; display: inline-block; width: 4px; height: 4px; background: var(--light-text); border-radius: 50%; margin: 0 10px; }
+        .blog-post-category { color: var(--primary-color); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; }
+        .blog-post-image { margin-bottom: 40px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
+        .blog-post-image img { width: 100%; height: auto; display: block; object-fit: cover; }
+        .blog-post-content { font-size: 1.125rem; color: var(--text-color); line-height: 1.8; margin-bottom: 40px; }
+        .blog-post-content p { margin-bottom: 1.5rem; }
+        .blog-post-content h2 { font-size: 1.8rem; font-weight: 600; margin: 2rem 0 1rem; }
+        .blog-post-content h3 { font-size: 1.5rem; font-weight: 600; margin: 1.5rem 0 1rem; }
+        .blog-post-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 1.5rem 0; }
+        .blog-post-content ul, .blog-post-content ol { margin: 1rem 0; padding-left: 2rem; }
+        .blog-post-content li { margin-bottom: 0.5rem; }
+        .blog-post-content a { color: var(--primary-color); text-decoration: underline; }
+        .blog-post-content a:hover { text-decoration: none; }
+        .blog-post-content blockquote { border-left: 4px solid var(--primary-color); padding-left: 1rem; margin: 1.5rem 0; font-style: italic; color: var(--light-text); }
+        .blog-post-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; }
+        .post-tag { padding: 5px 12px; background: var(--light-bg); color: var(--primary-color); border-radius: 15px; font-size: 0.85rem; text-decoration: none; border: 1px solid var(--border-color); transition: all 0.3s ease; }
+        .post-tag:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); color: white; border-radius: 25px; font-weight: 500; text-decoration: none; transition: all 0.3s ease; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3); }
+        .blog-post-actions { text-align: center; }
+        
+        /* Footer styles (from blogs.html) */
+        .site-footer { background: var(--background-color); padding: 40px 0; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); }
+        .footer-container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+        .footer-brand { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .footer-logo img { border-radius: 8px; width: 40px; height: 40px; }
+        .footer-name { font-weight: 600; font-size: 1.2rem; color: var(--text-color); }
+        .footer-description { color: var(--light-text); font-size: 0.95rem; }
+        .footer-legal { border-top: 1px solid var(--border-color); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .copyright { color: var(--light-text); font-size: 0.9rem; }
+        .legal-links { display: flex; gap: 20px; }
+        .legal-link { color: var(--light-text); font-size: 0.9rem; text-decoration: none; transition: color 0.3s ease; }
+        .legal-link:hover { color: var(--primary-color); }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 20px;
-        }
-
-        .blog-post-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .blog-post-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-
-        .blog-post-meta {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            font-size: 0.9rem;
-            color: #6b7280;
-            margin-bottom: 20px;
-        }
-
-        .blog-post-meta time::after {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 4px;
-            background: #6b7280;
-            border-radius: 50%;
-            margin: 0 10px;
-        }
-
-        .blog-post-category {
-            color: var(--primary-color);
-            font-weight: 500;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-        }
-
-        .blog-post-image {
-            margin-bottom: 40px;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .blog-post-image img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .blog-post-content {
-            font-size: 1.125rem;
-            color: #4b5563;
-            line-height: 1.8;
-            margin-bottom: 40px;
-        }
-
-        .blog-post-content p {
-            margin-bottom: 1.5rem;
-        }
-
-        .blog-post-content h2 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin: 2rem 0 1rem;
-        }
-
-        .blog-post-content img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin: 1.5rem 0;
-        }
-
-        .blog-post-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 40px;
-        }
-
-        .tag {
-            background: #e5e7eb;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.875rem;
-            text-decoration: none;
-            color: var(--text-color);
-        }
-
-        .tag:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .blog-post-actions {
-            text-align: center;
-        }
-
-        .btn-primary {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            color: white;
-            border-radius: 0.375rem;
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.2s;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-        }
-
-        .loading-post, .error-post {
-            text-align: center;
-            padding: 60px 0;
-            font-size: 1.2rem;
-        }
-
-        .loading-post i {
-            margin-right: 10px;
-            color: var(--primary-color);
-            animation: spin 1s linear infinite;
-        }
-
-        .error-post {
-            color: #d9534f;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        .loading-post, .error-post { text-align: center; padding: 60px 0; font-size: 1.2rem; color: var(--light-text); }
+        .loading-post i { margin-right: 10px; color: var(--primary-color); animation: spin 1s linear infinite; }
+        .error-post { color: #d9534f; }
+        .error-post a { color: var(--primary-color); text-decoration: underline; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 60px 20px;
-            }
-            .blog-post-title {
-                font-size: 2rem;
-            }
-            .blog-post-content {
-                font-size: 1rem;
-            }
+            .desktop-nav { display: none; }
+            .mobile-nav { display: block; }
+            .container { padding: 80px 20px 100px; }
+            .blog-post-title { font-size: 2rem; }
+            .blog-post-content { font-size: 1rem; }
         }
 
         @media (max-width: 480px) {
-            .blog-post-title {
-                font-size: 1.8rem;
-            }
-            .blog-post-meta {
-                flex-direction: column;
-                gap: 8px;
-            }
-            .blog-post-meta time::after {
-                display: none;
-            }
+            .blog-post-title { font-size: 1.8rem; }
+            .blog-post-meta { flex-direction: column; gap: 8px; }
+            .blog-post-meta time::after { display: none; }
+            .footer-brand { flex-direction: column; text-align: center; }
+            .footer-legal { flex-direction: column; gap: 10px; text-align: center; }
         }
     </style>
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "publisher": {
+        "@type": "Person",
+        "name": "Jonathan Mwaniki",
+        "sameAs": [
+          "https://twitter.com/maestropuns",
+          "https://www.instagram.com/jonaahrojo",
+          "https://www.linkedin.com/in/jonathan-mwaniki-324208374",
+          "https://github.com/DKTJONATHAN"
+        ]
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Nairobi",
+        "addressRegion": "Nairobi",
+        "addressCountry": "Kenya"
+      }
+    }
+    </script>
 </head>
 <body>
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav">
+        <div class="mobile-nav-container">
+            <a href="/index.html" class="mobile-nav-link" aria-label="Home"><i class="fas fa-home"></i><span>Home</span></a>
+            <a href="/index.html#services" class="mobile-nav-link" aria-label="Services"><i class="fas fa-cogs"></i><span>Services</span></a>
+            <a href="/index.html#portfolio" class="mobile-nav-link" aria-label="Portfolio"><i class="fas fa-briefcase"></i><span>Portfolio</span></a>
+            <a href="/blogs.html" class="mobile-nav-link active" aria-label="Blog"><i class="fas fa-blog"></i><span>Blog</span></a>
+            <a href="/index.html#contact" class="mobile-nav-link" aria-label="Contact"><i class="fas fa-envelope"></i><span>Contact</span></a>
+        </div>
+    </nav>
+
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-logo">
+                    <img src="/images/jonathanmwaniki.png" alt="Mwaniki Reports Logo" loading="eager" width="40" height="40">
+                </div>
+                <span class="brand-name">Mwaniki Reports</span>
+            </div>
+            <div class="nav-links">
+                <a href="/index.html" class="nav-link" aria-label="Home">Home</a>
+                <a href="/index.html#services" class="nav-link" aria-label="Services">Services</a>
+                <a href="/index.html#portfolio" class="nav-link" aria-label="Portfolio">Portfolio</a>
+                <a href="/blogs.html" class="nav-link active" aria-label="Blog">Blog</a>
+                <a href="/index.html#about" class="nav-link" aria-label="About">About</a>
+                <a href="/index.html#contact" class="nav-link" aria-label="Contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Blog Post Content -->
     <div class="container">
         <article id="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
             <div class="loading-post">
@@ -250,103 +211,170 @@
             </div>
         </article>
     </div>
-<script>
-    // Utility to unescape HTML
-    function unescapeHTML(str) {
-        const textarea = document.createElement('textarea');
-        textarea.innerHTML = str;
-        return textarea.value;
-    }
 
-    document.addEventListener('DOMContentLoaded', async () => {
-        const postContainer = document.getElementById('blog-post');
-        const slug = new URLSearchParams(window.location.search).get('slug');
-
-        if (!slug) {
-            postContainer.innerHTML = `
-                <div class="error-post">
-                    No post specified. <a href="/blogs.html" style="color: var(--primary-color); text-decoration: underline;">Return to Blog</a>
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <img src="/images/jonathanmwaniki.png" alt="Mwaniki Reports Logo" loading="lazy" width="40" height="40">
                 </div>
-            `;
-            return;
-        }
-
-        postContainer.innerHTML = `
-            <div class="loading-post">
-                <i class="fas fa-spinner"></i> Loading blog post...
+                <div class="footer-info">
+                    <span class="footer-name">Mwaniki Reports</span>
+                    <p class="footer-description">Your trusted source for news, sports, tech, and entertainment.</p>
+                </div>
             </div>
-        `;
+            <div class="footer-legal">
+                <p class="copyright">© 2025 Mwaniki Reports. All Rights Reserved.</p>
+                <div class="legal-links">
+                    <a href="/privacy-policy" class="legal-link">Privacy Policy</a>
+                    <a href="/terms-of-service" class="legal-link">Terms of Service</a>
+                    <a href="/sitemap.xml" class="legal-link">Sitemap</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-        try {
-            const response = await fetch(`/api/list-posts?file=${encodeURIComponent(slug)}&t=${Date.now()}`);
-            if (!response.ok) {
-                throw new Error(`API error: ${response.status} ${response.statusText}`);
+    <script>
+        // Utility to sanitize and render HTML content
+        function sanitizeHTML(html) {
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            
+            // Allowed tags and attributes
+            const allowedTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'strong', 'em', 'img', 'blockquote', 'code', 'pre'];
+            const allowedAttributes = ['href', 'src', 'alt', 'class'];
+
+            // Recursive function to sanitize nodes
+            function cleanNode(node) {
+                if (node.nodeType === 1) { // Element node
+                    if (!allowedTags.includes(node.tagName.toLowerCase())) {
+                        node.replaceWith(...Array.from(node.childNodes).map(cleanNode));
+                    } else {
+                        Array.from(node.attributes).forEach(attr => {
+                            if (!allowedAttributes.includes(attr.name)) {
+                                node.removeAttribute(attr.name);
+                            }
+                        });
+                        Array.from(node.childNodes).forEach(cleanNode);
+                    }
+                } else if (node.nodeType === 3) { // Text node
+                    return node;
+                } else {
+                    node.remove();
+                }
+                return node;
             }
 
-            const { data: post } = await response.json();
-            if (!post) {
-                throw new Error('Post not found');
-            }
-
-            // Unescape content to ensure proper HTML
-            const content = unescapeHTML(post.content || 'No content available.');
-
-            // Limit tags to first three
-            const tags = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
-
-            postContainer.innerHTML = `
-                <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
-                <header class="blog-post-header">
-                    <h1 class="blog-post-title" itemprop="headline">${post.title || 'Untitled'}</h1>
-                    <div class="blog-post-meta">
-                        <time datetime="${post.date}" itemprop="datePublished">${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
-                        <span class="blog-post-category" itemprop="articleSection">${post.category || 'Uncategorized'}</span>
-                    </div>
-                </header>
-                ${post.image ? `
-                <div class="blog-post-image">
-                    <img src="${post.image}" alt="${post.title || 'Blog Post'}" itemprop="image" loading="lazy" width="1200" height="675">
-                </div>
-                ` : ''}
-                <div class="blog-post-content" itemprop="articleBody">
-                    ${content}
-                </div>
-                ${tags.length > 0 ? `
-                <div class="blog-post-tags">
-                    ${tags.map(tag => `<a href="/blogs.html?tag=${encodeURIComponent(tag)}" class="tag">${tag}</a>`).join('')}
-                </div>
-                ` : ''}
-                <div class="blog-post-actions">
-                    <a href="/blogs.html" class="btn-primary" aria-label="Back to all posts">Back to All Posts</a>
-                </div>
-                <meta itemprop="author" content="Jonathan Mwaniki">
-                <meta itemprop="dateModified" content="${post.date}">
-                <meta itemprop="publisher" content="Jonathan Mwaniki">
-            `;
-
-            // Update meta tags dynamically
-            document.title = `${post.title || 'Blog Post'} | Jonathan Mwaniki`;
-            document.querySelector('meta[name="description"]').setAttribute('content', post.description || 'Blog post by Jonathan Mwaniki');
-            document.querySelector('meta[property="og:title"]').setAttribute('content', `${post.title || 'Blog Post'} | Jonathan Mwaniki`);
-            document.querySelector('meta[property="og:description"]').setAttribute('content', post.description || 'Insights and tutorials by Jonathan Mwaniki');
-            document.querySelector('meta[property="og:url"]').setAttribute('content', `https://www.jonathanmwaniki.co.ke/content/articles/${post.slug}.html`);
-            document.querySelector('meta[name="twitter:title"]').setAttribute('content', `${post.title || 'Blog Post'} | Jonathan Mwaniki`);
-            document.querySelector('meta[name="twitter:description"]').setAttribute('content', post.description || 'Insights and tutorials by Jonathan Mwaniki');
-            if (post.image) {
-                document.querySelector('meta[property="og:image"]').setAttribute('content', post.image);
-                document.querySelector('meta[name="twitter:image"]').setAttribute('content', post.image);
-            }
-
-        } catch (error) {
-            console.error('Error loading post:', error);
-            postContainer.innerHTML = `
-                <div class="error-post">
-                    Failed to load post. <a href="/blogs.html" style="color: var(--primary-color); text-decoration: underline;">Return to Blog</a>
-                    <p><small>${error.message}</small></p>
-                </div>
-            `;
+            Array.from(div.childNodes).forEach(cleanNode);
+            return div.innerHTML;
         }
-    });
-</script>
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const postContainer = document.getElementById('blog-post');
+            const slug = window.location.pathname.split('/').pop().replace('.html', '');
+
+            if (!slug) {
+                postContainer.innerHTML = `
+                    <div class="error-post">
+                        No post specified. <a href="/blogs.html">Return to Blog</a>
+                    </div>
+                `;
+                return;
+            }
+
+            postContainer.innerHTML = `
+                <div class="loading-post">
+                    <i class="fas fa-spinner"></i> Loading blog post...
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`/api/list-posts?file=${encodeURIComponent(slug)}&t=${Date.now()}`);
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status} ${response.statusText}`);
+                }
+
+                const { data: post } = await response.json();
+                if (!post) {
+                    throw new Error('Post not found');
+                }
+
+                // Sanitize and render content
+                const content = sanitizeHTML(post.content || '<p>No content available.</p>');
+
+                // Limit tags to first three
+                const tags = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+
+                postContainer.innerHTML = `
+                    <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
+                    <header class="blog-post-header">
+                        <h1 class="blog-post-title" itemprop="headline">${post.title || 'Untitled'}</h1>
+                        <div class="blog-post-meta">
+                            <time datetime="${post.date}" itemprop="datePublished">${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+                            <span class="blog-post-category" itemprop="articleSection">${post.category || 'Uncategorized'}</span>
+                        </div>
+                    </header>
+                    ${post.image ? `
+                    <div class="blog-post-image">
+                        <img src="${post.image}" alt="${post.title || 'Blog Post'}" itemprop="image" loading="lazy" width="1200" height="675">
+                    </div>
+                    ` : ''}
+                    <div class="blog-post-content" itemprop="articleBody">
+                        ${content}
+                    </div>
+                    ${tags.length > 0 ? `
+                    <div class="blog-post-tags">
+                        ${tags.map(tag => `<a href="/blogs.html?tag=${encodeURIComponent(tag)}" class="post-tag">${tag}</a>`).join('')}
+                    </div>
+                    ` : ''}
+                    <div class="blog-post-actions">
+                        <a href="/blogs.html" class="btn-primary" aria-label="Back to all posts">Back to All Posts <i class="fas fa-arrow-left"></i></a>
+                    </div>
+                    <meta itemprop="author" content="Jonathan Mwaniki">
+                    <meta itemprop="dateModified" content="${post.date}">
+                    <meta itemprop="publisher" content="Mwaniki Reports">
+                `;
+
+                // Update meta tags dynamically
+                document.title = `${post.title || 'Blog Post'} | Mwaniki Reports`;
+                document.querySelector('meta[name="description"]').setAttribute('content', post.description || 'Blog post by Jonathan Mwaniki');
+                document.querySelector('meta[property="og:title"]').setAttribute('content', `${post.title || 'Blog Post'} | Mwaniki Reports`);
+                document.querySelector('meta[property="og:description"]').setAttribute('content', post.description || 'Insights and tutorials by Jonathan Mwaniki');
+                document.querySelector('meta[property="og:url"]').setAttribute('content', `https://www.jonathanmwaniki.co.ke/content/articles/${post.slug}.html`);
+                document.querySelector('meta[name="twitter:title"]').setAttribute('content', `${post.title || 'Blog Post'} | Mwaniki Reports`);
+                document.querySelector('meta[name="twitter:description"]').setAttribute('content', post.description || 'Insights and tutorials by Jonathan Mwaniki');
+                if (post.image) {
+                    document.querySelector('meta[property="og:image"]').setAttribute('content', post.image);
+                    document.querySelector('meta[name="twitter:image"]').setAttribute('content', post.image);
+                }
+
+                // Lazy load images
+                if ('IntersectionObserver' in window) {
+                    const lazyImages = postContainer.querySelectorAll('img[loading="lazy"]');
+                    const imageObserver = new IntersectionObserver((entries, observer) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const img = entry.target;
+                                img.src = img.dataset.src || img.src;
+                                img.removeAttribute('loading');
+                                observer.unobserve(img);
+                            }
+                        });
+                    });
+                    lazyImages.forEach(img => imageObserver.observe(img));
+                }
+
+            } catch (error) {
+                console.error('Error loading post:', error);
+                postContainer.innerHTML = `
+                    <div class="error-post">
+                        Failed to load post. <a href="/blogs.html">Return to Blog</a>
+                        <p><small>${error.message}</small></p>
+                    </div>
+                `;
+            }
+        });
+    </script>
 </body>
 </html>
