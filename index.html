@@ -1108,120 +1108,329 @@
             <p class="section-description">Insights and tutorials by Jonathan Mwaniki</p>
         </div>
         <div id="blog-list">
-            <div class="loading-posts">
-                <i class="fas fa-spinner"></i> Loading blog posts...
-            </div>
+            <div class="loading-posts"><i class="fas fa-spinner"></i> Loading posts...</div>
         </div>
         <div class="blog-actions" style="text-align: center; margin-top: 40px;">
             <a href="/blogs.html" class="btn-primary" aria-label="View all blog posts">View All Posts</a>
         </div>
     </div>
 </section>
-        <script>
-            document.addEventListener('DOMContentLoaded', async () => {
-                const blogList = document.getElementById('blog-list');
 
-                // Utility to unescape HTML
-                function unescapeHTML(str) {
-                    const textarea = document.createElement('textarea');
-                    textarea.innerHTML = str || '';
-                    return textarea.value;
-                }
+<style>
+    /* Blog Section Styles */
+    .blog-section {
+        padding: 80px 20px;
+        background: var(--light-bg);
+    }
 
-                // Function to extract first 50 words of first paragraph
-                function getExcerpt(content) {
-                    const unescapedContent = unescapeHTML(content);
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(unescapedContent, 'text/html');
-                    const firstP = doc.querySelector('p');
-                    if (!firstP) return 'No excerpt available.';
-                    const text = firstP.textContent.trim().replace(/\s+/g, ' ');
-                    const words = text.split(/\s+/).slice(0, 50);
-                    return words.join(' ') + (words.length < text.split(/\s+/).length ? '...' : '');
-                }
+    .blog-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
 
-                // Function to render up to two posts
-                function renderPosts(posts) {
-                    blogList.innerHTML = '';
-                    
-                    if (!posts.length) {
-                        blogList.innerHTML = '<div style="text-align: center; padding: 60px 0; color: #6b7280; font-size: 1.1rem;">No posts found.</div>';
-                        return;
-                    }
+    .blog-posts {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
 
-                    const postsToShow = posts.slice(0, 2); // Show only first two posts
-                    const postsContainer = document.createElement('div');
-                    postsContainer.className = 'blog-posts';
+    .blog-post {
+        background: var(--white);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color);
+    }
 
-                    postsToShow.forEach(post => {
-                        const postElement = document.createElement('article');
-                        postElement.className = 'blog-post';
-                        postElement.setAttribute('itemscope', '');
-                        postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
-                        
-                        // Limit tags to first three
-                        const tags = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+    .blog-post:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
 
-                        postElement.innerHTML = `
-                            <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
-                            ${post.image ? `
-                            <div class="post-image">
-                                <img src="${post.image}" alt="${post.title || 'Blog Post'}" itemprop="image" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'">
-                            </div>
-                            ` : ''}
-                            <div class="post-content">
-                                <div class="post-meta">
-                                    <time datetime="${post.date}" itemprop="datePublished">${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
-                                    <span class="post-category" itemprop="articleSection">${post.category || 'Uncategorized'}</span>
-                                </div>
-                                <h3 class="post-title" itemprop="headline">${post.title || 'Untitled'}</h3>
-                                <div class="post-excerpt" itemprop="description">
-                                    <p>${getExcerpt(post.content)}</p>
-                                </div>
-                                ${tags.length > 0 ? `
-                                <div class="post-tags">
-                                    ${tags.map(tag => `<a href="/blogs.html?tag=${encodeURIComponent(tag)}" class="tag">${tag}</a>`).join('')}
-                                </div>
-                                ` : ''}
-                                <div class="post-actions">
-                                    <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url" aria-label="Read full article">Read Full Article</a>
-                                </div>
-                            </div>
-                            <meta itemprop="author" content="Jonathan Mwaniki">
-                            <meta itemprop="dateModified" content="${post.date}">
-                            <meta itemprop="publisher" content="Jonathan Mwaniki">
-                        `;
-                        
-                        postsContainer.appendChild(postElement);
-                    });
+    .post-image {
+        height: 220px;
+        overflow: hidden;
+        position: relative;
+    }
 
-                    blogList.appendChild(postsContainer);
-                }
+    .post-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
 
-                // Load posts
-                blogList.innerHTML = '<div style="text-align: center; padding: 60px 0; color: #6b7280; font-size: 1.1rem;"><i class="fas fa-spinner"></i> Loading blog posts...</div>';
-                
-                try {
-                    const response = await fetch('/api/list-posts?t=' + Date.now());
-                    if (!response.ok) {
-                        throw new Error(`API error: ${response.status} ${response.statusText}`);
-                    }
-                    
-                    const { data } = await response.json();
-                    renderPosts(data.sort((a, b) => new Date(b.date) - new Date(a.date)));
-                    
-                } catch (error) {
-                    console.error('Error loading posts:', error);
-                    blogList.innerHTML = `
-                        <div style="text-align: center; padding: 60px 0; color: #d9534f; font-size: 1.1rem;">
-                            Failed to load posts. <a href="javascript:location.reload()" style="color: #4f46e5; text-decoration: underline;">Try again</a>
-                            <p><small>${error.message}</small></p>
+    .blog-post:hover .post-image img {
+        transform: scale(1.05);
+    }
+
+    .post-content {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .post-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+        color: var(--light-text);
+    }
+
+    .post-meta time {
+        position: relative;
+        padding-right: 12px;
+    }
+
+    .post-meta time::after {
+        content: '';
+        position: absolute;
+        right: 6px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 4px;
+        background: var(--light-text);
+        border-radius: 50%;
+    }
+
+    .post-category {
+        font-weight: 600;
+        color: var(--primary-color);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+
+    .post-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 1.3;
+        color: var(--text-color);
+    }
+
+    .post-excerpt {
+        color: var(--light-text);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+
+    .post-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+
+    .post-tag {
+        padding: 5px 12px;
+        background: var(--light-bg);
+        color: var(--primary-color);
+        border-radius: 15px;
+        font-size: 0.85rem;
+        text-decoration: none;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+
+    .post-tag:hover {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .loading-posts, .no-posts, .error-message {
+        text-align: center;
+        padding: 40px 0;
+        color: var(--light-text);
+        font-size: 1.1rem;
+    }
+
+    .loading-posts i {
+        margin-right: 10px;
+        color: var(--primary-color);
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+        .post-image {
+            height: 200px;
+        }
+        .post-title {
+            font-size: 1.4rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .post-title {
+            font-size: 1.3rem;
+        }
+        .post-meta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+        .post-meta time::after {
+            display: none;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const postList = document.getElementById('blog-list');
+        let allPosts = [];
+
+        // Function to unescape HTML
+        function unescapeHTML(str) {
+            const textarea = document.createElement('textarea');
+            textarea.innerHTML = str || '';
+            return textarea.value;
+        }
+
+        // Function to extract first image from content
+        function getFirstImage(content) {
+            if (!content) return '/images/default-blog.jpg';
+            const imgRegex = /<img[^>]+src="([^">]+)"/i;
+            const match = content.match(imgRegex);
+            return match ? match[1] : '/images/default-blog.jpg';
+        }
+
+        // Function to create excerpt from content
+        function getExcerpt(content, maxLength = 150) {
+            if (!content) return '<p>No excerpt available</p>';
+            const div = document.createElement('div');
+            div.innerHTML = unescapeHTML(content);
+            const textOnly = div.textContent.replace(/\s+/g, ' ').trim();
+            if (textOnly.length <= maxLength) return textOnly;
+            let trimmed = textOnly.substr(0, maxLength);
+            trimmed = trimmed.substr(0, Math.min(trimmed.length, trimmed.lastIndexOf(' ')));
+            return `<p>${trimmed}...</p>`;
+        }
+
+        // Function to format date
+        function formatDate(dateString) {
+            if (!dateString) return 'No date';
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        // Function to render posts (showing only 2)
+        function renderPosts(posts) {
+            if (!posts || posts.length === 0) {
+                postList.innerHTML = '<div class="no-posts">No posts found matching your criteria.</div>';
+                return;
+            }
+
+            // Only show first 2 posts
+            const limitedPosts = posts.slice(0, 2);
+            
+            postList.innerHTML = '';
+            const postsContainer = document.createElement('div');
+            postsContainer.className = 'blog-posts';
+
+            limitedPosts.forEach(post => {
+                const postElement = document.createElement('article');
+                postElement.className = 'blog-post';
+                postElement.setAttribute('itemscope', '');
+                postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
+
+                const imageUrl = post.image || getFirstImage(post.content);
+                const excerpt = post.description || getExcerpt(post.content);
+                const formattedDate = formatDate(post.date);
+                const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+
+                postElement.innerHTML = `
+                    <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug || 'post'}.html">
+                    <div class="post-image">
+                        <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
+                            <span class="post-category" itemprop="articleSection">${post.category || 'Uncategorized'}</span>
                         </div>
-                    `;
-                }
-            });
-        </script>
+                        <h3 class="post-title" itemprop="headline">
+                            <a href="/content/articles/${post.slug || 'post'}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
+                        </h3>
+                        <div class="post-excerpt" itemprop="description">${excerpt}</div>
+                        ${keywords.length > 0 ? `
+                        <div class="post-tags">
+                            ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
+                        </div>
+                        ` : ''}
+                        <a href="/content/articles/${post.slug || 'post'}.html" class="btn-primary" itemprop="url">
+                            Continue Reading <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <meta itemprop="author" content="Jonathan Mwaniki">
+                    <meta itemprop="dateModified" content="${post.date}">
+                    <meta itemprop="publisher" content="Mwaniki Reports">
+                `;
 
+                postsContainer.appendChild(postElement);
+            });
+
+            postList.appendChild(postsContainer);
+        }
+
+        // Load posts from API
+        async function loadPosts() {
+            postList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i>Loading posts...</div>';
+            try {
+                const response = await fetch('/api/list-posts?t=' + Date.now());
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const { data, error } = await response.json();
+                if (error) throw new Error(error);
+                allPosts = data.map(post => ({
+                    ...post,
+                    content: unescapeHTML(post.content)
+                }));
+                renderPosts(allPosts);
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                postList.innerHTML = `
+                    <div class="error-message">
+                        Failed to load posts. <a href="javascript:location.reload()">Try again</a>
+                        <p><small>${error.message}</small></p>
+                    </div>
+                `;
+            }
+        }
+
+        // Initial load
+        loadPosts();
+
+        // Lazy load images
+        if ('IntersectionObserver' in window) {
+            const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src || img.src;
+                        img.removeAttribute('loading');
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            lazyImages.forEach(img => imageObserver.observe(img));
+        }
+    });
+</script>
         <!-- About Section -->
         <section id="about" class="about-section">
             <div class="about-container">
