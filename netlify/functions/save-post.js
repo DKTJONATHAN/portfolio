@@ -1,26 +1,24 @@
-const { Octokit } = require("@octokit/rest");
-const { marked } = require("marked");
+import { Octokit } from '@octokit/rest';
+import { marked } from 'marked';
 
-exports.handler = async function (event) {
+export default async function handler(req, res) {
   try {
-    const { update, ...postData } = JSON.parse(event.body);
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
 
-    // Initialize GitHub API client
+    const { update, ...postData } = req.body;
+
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
     const filePath = `content/articles/${postData.slug}.html`;
 
-    // Convert content to HTML if it's markdown, otherwise use as-is
     let htmlContent = postData.content;
-    if (postData.content.trim().startsWith("---") || postData.content.includes("\n# ") || postData.content.includes("\n* ")) {
-      // Assume markdown if it starts with frontmatter or contains markdown syntax
+    if (postData.content.trim().startsWith('---') || postData.content.includes('\n# ') || postData.content.includes('\n* ')) {
       htmlContent = marked(postData.content);
-    } else if (!postData.content.includes("<") && !postData.content.includes(">")) {
-      // Treat as raw text if no HTML tags
-      htmlContent = `<p>${postData.content.replace(/\n/g, "<br>")}</p>`;
+    } else if (!postData.content.includes('<') && !postData.content.includes('>')) {
+      htmlContent = `<p>${postData.content.replace(/\n/g, '<br>')}</p>`;
     }
-    // If content is already HTML (e.g., from Quill), use it directly
 
-    // Generate HTML file content
     const fileContent = `
       <!DOCTYPE html>
       <html lang="en">
@@ -35,12 +33,12 @@ exports.handler = async function (event) {
           <header>
             <h1>${postData.title}</h1>
             <p>${postData.date} • ${postData.category}</p>
-            ${postData.image ? `<img src="${postData.image}" alt="${postData.title}" class="w-full h-64 object-cover rounded-lg mb-6">` : ""}
-            ${postData.description ? `<p>${postData.description}</p>` : ""}
+            ${postData.image ? `<img src="${postData.image}" alt="${postData.title}" class="w-full h-64 object-cover rounded-lg mb-6">` : ''}
+            ${postData.description ? `<p>${postData.description}</p>` : ''}
             ${postData.tags ? `<div class="tags">${postData.tags
-              .split(",")
+              .split(',')
               .map((tag) => `<span class="tag">${tag.trim()}</span>`)
-              .join("")}</div>` : ""}
+              .join('')}</div>` : ''}
           </header>
           <main>
             ${htmlContent}
@@ -50,10 +48,8 @@ exports.handler = async function (event) {
       </html>
     `;
 
-    // Encode content to base64 for GitHub API
-    const contentBase64 = Buffer.from(fileContent).toString("base64");
+    const contentBase64 = Buffer.from(fileContent).toString('base64');
 
-    // Check if file exists (for updates)
     let sha;
     try {
       const { data } = await octokit.repos.getContent({
@@ -63,10 +59,9 @@ exports.handler = async function (event) {
       });
       sha = data.sha;
     } catch (error) {
-      if (error.status !== 404) throw error; // Ignore 404 (file not found)
+      if (error.status !== 404) throw error;
     }
 
-    // Create or update file in GitHub
     await octokit.repos.createOrUpdateFileContents({
       owner: process.env.GITHUB_OWNER,
       repo: process.env.GITHUB_REPO,
@@ -76,14 +71,8 @@ exports.handler = async function (event) {
       sha: sha || undefined,
     });
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: "Post saved successfully" }),
-    };
+    return res.status(200).json({ message: 'Post saved successfully' });
   } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: `Failed to save post: ${error.message}` }),
-    };
+    return res.status(500).json({ error: `Failed to save post: ${error.message}` });
   }
-};
+}
