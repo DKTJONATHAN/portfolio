@@ -249,403 +249,406 @@
             <span id="notification-message">Operation completed successfully</span>
         </div>
     </div>
-<script>
-    let allPosts = [];
-    let filteredPosts = [];
-    let quill = null;
-    let currentEditingSlug = null;
 
-    // Initialize Quill editor
-    function initQuill() {
-        quill = new Quill('#content-editor', {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    ['blockquote', 'code-block', 'link', 'image'],
-                    [{ 'align': [] }],
-                    ['clean'],
-                    [{ 'color': [] }, { 'background': [] }],
-                ],
-                history: {
-                    delay: 1000,
-                    maxStack: 100,
-                    userOnly: true
+    <script>
+        let allPosts = [];
+        let filteredPosts = [];
+        let quill = null;
+        let currentEditingSlug = null;
+
+        // Initialize Quill editor
+        function initQuill() {
+            quill = new Quill('#content-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        ['blockquote', 'code-block', 'link', 'image'],
+                        [{ 'align': [] }],
+                        ['clean'],
+                        [{ 'color': [] }, { 'background': [] }],
+                    ],
+                    history: {
+                        delay: 1000,
+                        maxStack: 100,
+                        userOnly: true
+                    }
+                },
+                placeholder: 'Type your content here...'
+            });
+
+            // Word count
+            function updateWordCount() {
+                const text = quill.getText().trim();
+                const words = text ? text.split(/\s+/).length : 0;
+                document.getElementById('word-count').textContent = `Word count: ${words}`;
+            }
+            quill.on('text-change', updateWordCount);
+            updateWordCount();
+        }
+
+        // Slugify function
+        function slugify(text) {
+            return text
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .trim();
+        }
+
+        // Show notification function
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            const icon = document.getElementById('notification-icon');
+            const msgElement = document.getElementById('notification-message');
+            
+            notification.firstElementChild.className = isError 
+                ? 'bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3'
+                : 'bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3';
+            
+            icon.className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check';
+            msgElement.textContent = message;
+            
+            notification.classList.remove('hidden');
+            notification.classList.add('notification');
+            
+            setTimeout(() => {
+                notification.classList.remove('notification');
+                notification.classList.add('hidden');
+            }, 3500);
+        }
+
+        // Login handler
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const error = document.getElementById('login-error');
+            error.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Login failed');
                 }
-            },
-            placeholder: 'Type your content here...'
+
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('admin-section').classList.remove('hidden');
+                await loadPosts();
+            } catch (err) {
+                error.textContent = err.message;
+                error.classList.remove('hidden');
+            }
         });
 
-        // Word count
-        function updateWordCount() {
-            const text = quill.getText().trim();
-            const words = text ? text.split(/\s+/).length : 0;
-            document.getElementById('word-count').textContent = `Word count: ${words}`;
-        }
-        quill.on('text-change', updateWordCount);
-        updateWordCount();
-    }
-
-    // Slugify function
-    function slugify(text) {
-        return text
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .trim();
-    }
-
-    // Show notification function
-    function showNotification(message, isError = false) {
-        const notification = document.getElementById('notification');
-        const icon = document.getElementById('notification-icon');
-        const msgElement = document.getElementById('notification-message');
-        
-        notification.firstElementChild.className = isError 
-            ? 'bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3'
-            : 'bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3';
-            
-        icon.className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check';
-        msgElement.textContent = message;
-        
-        notification.classList.remove('hidden');
-        notification.classList.add('notification');
-        
-        setTimeout(() => {
-            notification.classList.remove('notification');
-            notification.classList.add('hidden');
-        }, 3500);
-    }
-
-    // Login handler
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const password = document.getElementById('password').value;
-        const error = document.getElementById('login-error');
-        error.classList.add('hidden');
-
-        try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Login failed');
-            }
-
-            document.getElementById('login-section').classList.add('hidden');
-            document.getElementById('admin-section').classList.remove('hidden');
-            await loadPosts();
-        } catch (err) {
-            error.textContent = err.message;
-            error.classList.remove('hidden');
-        }
-    });
-
-    // Logout handler
-    document.getElementById('logout-button').addEventListener('click', () => {
-        document.getElementById('admin-section').classList.add('hidden');
-        document.getElementById('login-section').classList.remove('hidden');
-        document.getElementById('login-form').reset();
-        showNotification('Logged out successfully');
-    });
-
-    // Form submission handler (create/update)
-    document.getElementById('post-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const loading = document.getElementById('loading');
-        const error = document.getElementById('error');
-        const submitButton = document.getElementById('submit-post-button');
-        
-        loading.classList.remove('hidden');
-        error.classList.add('hidden');
-        submitButton.disabled = true;
-
-        const formData = new FormData(e.target);
-        const htmlContent = DOMPurify.sanitize(quill.root.innerHTML);
-        
-        const postData = {
-            title: formData.get('title') || 'Untitled',
-            slug: formData.get('slug') || slugify(formData.get('title') || 'untitled'),
-            category: formData.get('category') || 'Uncategorized',
-            tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
-            image: formData.get('image') || '',
-            date: formData.get('date') || new Date().toISOString().split('T')[0],
-            description: formData.get('description') || '',
-            content: htmlContent
-        };
-
-        try {
-            const isUpdate = currentEditingSlug !== null;
-            const endpoint = '/api/save-post';
-            
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...postData, isUpdate })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to save post');
-            }
-
-            resetForm();
-            showNotification(isUpdate ? 'Post updated successfully!' : 'Post created successfully!');
-            await loadPosts();
-        } catch (err) {
-            error.textContent = err.message;
-            error.classList.remove('hidden');
-            showNotification('Failed to save post: ' + err.message, true);
-        } finally {
-            loading.classList.add('hidden');
-            submitButton.disabled = false;
-        }
-    });
-
-    // Reset form to create new post
-    function resetForm() {
-        document.getElementById('post-form').reset();
-        quill.setContents([]);
-        document.getElementById('form-title').textContent = 'Create Post';
-        document.getElementById('submit-post-button').textContent = 'Create Post';
-        document.getElementById('cancel-edit-button').classList.add('hidden');
-        currentEditingSlug = null;
-    }
-
-    // Cancel edit handler
-    document.getElementById('cancel-edit-button').addEventListener('click', resetForm);
-
-    // Preview handler
-    document.getElementById('preview-button').addEventListener('click', () => {
-        const formData = new FormData(document.getElementById('post-form'));
-        const htmlContent = DOMPurify.sanitize(quill.root.innerHTML);
-        
-        const previewData = {
-            title: formData.get('title') || 'Untitled Post',
-            category: formData.get('category') || 'Uncategorized',
-            tags: formData.get('tags'),
-            image: formData.get('image') || '',
-            date: formData.get('date') || new Date().toISOString().split('T')[0],
-            description: formData.get('description') || '',
-            content: htmlContent || '<p class="text-gray-500 italic">No content available</p>'
-        };
-        
-        document.getElementById('preview-content').innerHTML = generatePreviewHTML(previewData);
-        document.getElementById('preview-modal').classList.remove('hidden');
-    });
-
-    // Close preview handler
-    document.getElementById('close-preview').addEventListener('click', () => {
-        document.getElementById('preview-modal').classList.add('hidden');
-    });
-
-    // Generate preview HTML
-    function generatePreviewHTML(data) {
-        const formattedDate = new Date(data.date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
+        // Logout handler
+        document.getElementById('logout-button').addEventListener('click', () => {
+            document.getElementById('admin-section').classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('login-form').reset();
+            showNotification('Logged out successfully');
         });
-        
-        const tags = data.tags ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
-        
-        return `
-            <article class="prose prose-lg max-w-none">
-                ${data.image ? `<img src="${data.image}" alt="${data.title}" class="w-full h-64 object-cover rounded-lg mb-6">` : ''}
-                <header class="mb-8">
-                    <h1 class="text-4xl font-bold text-gray-900 mb-4">${data.title}</h1>
-                    ${data.description ? `<p class="text-gray-600 mb-4">${data.description}</p>` : ''}
-                    <div class="flex items-center space-x-4 text-gray-600 mb-4">
-                        <time datetime="${data.date}">${formattedDate}</time>
-                        ${data.category ? `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">${data.category}</span>` : ''}
-                    </div>
-                    ${tags.length > 0 ? `
-                        <div class="flex flex-wrap gap-2">
-                            ${tags.map(tag => `<span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm">#${tag}</span>`).join('')}
-                        </div>
-                    ` : ''}
-                </header>
-                <div class="prose prose-lg max-w-none">
-                    ${data.content}
-                </div>
-            </article>
-        `;
-    }
 
-    // Load posts from API
-    async function loadPosts() {
-        const postList = document.getElementById('post-list');
-        const loading = document.getElementById('loading');
-        const error = document.getElementById('error');
-        
-        postList.innerHTML = '<div class="text-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div></div>';
-        loading.classList.remove('hidden');
-        error.classList.add('hidden');
-
-        try {
-            const response = await fetch('/api/list-posts');
-            if (!response.ok) {
-                throw new Error('Failed to fetch posts');
-            }
+        // Form submission handler (create/update)
+        document.getElementById('post-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const submitButton = document.getElementById('submit-post-button');
             
-            const { data, error: apiError } = await response.json();
-            if (apiError) throw new Error(apiError);
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
+            submitButton.disabled = true;
+
+            const formData = new FormData(e.target);
+            const htmlContent = DOMPurify.sanitize(quill.root.innerHTML);
             
-            allPosts = data;
-            filteredPosts = [...allPosts];
-            displayPosts(filteredPosts);
-        } catch (err) {
-            error.textContent = 'Failed to load posts: ' + err.message;
-            error.classList.remove('hidden');
-            postList.innerHTML = '<p class="text-red-500 text-center py-8">Failed to load posts</p>';
-            showNotification('Failed to load posts: ' + err.message, true);
-        } finally {
-            loading.classList.add('hidden');
-        }
-    }
+            const postData = {
+                title: formData.get('title') || 'Untitled',
+                slug: formData.get('slug') || slugify(formData.get('title') || 'untitled'),
+                category: formData.get('category') || 'Uncategorized',
+                tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
+                image: formData.get('image') || '',
+                date: formData.get('date') || new Date().toISOString().split('T')[0],
+                description: formData.get('description') || '',
+                content: htmlContent
+            };
 
-    // Display posts in the sidebar
-    function displayPosts(posts) {
-        const postList = document.getElementById('post-list');
-        const postsTitle = document.getElementById('posts-title');
-        
-        postsTitle.textContent = `Posts (${posts.length})`;
-        
-        if (posts.length === 0) {
-            postList.innerHTML = '<p class="text-gray-500 text-center py-8">No posts found.</p>';
-        } else {
-            postList.innerHTML = posts.map(post => `
-                <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition duration-200">
-                    <div class="flex items-start justify-between">
-                        <div class="flex-1 min-w-0">
-                            <h3 class="font-medium text-gray-900 truncate">${post.title || 'Untitled'}</h3>
-                            <p class="text-sm text-gray-500 mt-1">${post.date || 'No date'} • ${post.category || 'Uncategorized'}</p>
-                            <p class="text-sm text-gray-500 mt-1 truncate">${post.description || ''}</p>
-                        </div>
-                        <div class="flex space-x-2 ml-4">
-                            <button class="edit-post bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
-                                Edit
-                            </button>
-                            <button class="delete-post bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
+            try {
+                const isUpdate = currentEditingSlug !== null;
+                const endpoint = '/api/save-post';
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ...postData, isUpdate })
+                });
 
-        // Attach event listeners to edit/delete buttons
-        document.querySelectorAll('.edit-post').forEach(button => {
-            button.addEventListener('click', handleEdit);
-        });
-        
-        document.querySelectorAll('.delete-post').forEach(button => {
-            button.addEventListener('click', handleDelete);
-        });
-    }
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to save post');
+                }
 
-    // Edit post handler
-    function handleEdit(e) {
-        const slug = e.target.dataset.slug;
-        const post = allPosts.find(p => p.slug === slug);
-        
-        if (!post) return;
-
-        // Fill form with post data
-        document.querySelector('input[name="title"]').value = post.title || '';
-        document.querySelector('input[name="slug"]').value = post.slug || '';
-        document.querySelector('select[name="category"]').value = post.category || 'Uncategorized';
-        document.querySelector('input[name="tags"]').value = post.tags ? post.tags.split(',').map(tag => tag.trim()).join(', ') : '';
-        document.querySelector('input[name="image"]').value = post.image || '';
-        document.querySelector('input[name="date"]').value = post.date || '';
-        document.querySelector('textarea[name="description"]').value = post.description || '';
-        quill.root.innerHTML = post.content || '';
-        
-        // Update UI for edit mode
-        document.getElementById('form-title').textContent = 'Edit Post';
-        document.getElementById('submit-post-button').textContent = 'Update Post';
-        document.getElementById('cancel-edit-button').classList.remove('hidden');
-        currentEditingSlug = post.slug;
-        
-        showNotification(`Editing post: ${post.title}`);
-    }
-
-    // Delete post handler
-    async function handleDelete(e) {
-        const slug = e.target.dataset.slug;
-        if (!slug || !confirm('Are you sure you want to delete this post?')) return;
-
-        const loading = document.getElementById('loading');
-        const error = document.getElementById('error');
-        loading.classList.remove('hidden');
-        error.classList.add('hidden');
-
-        try {
-            const response = await fetch('/api/delete-post', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ slug })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to delete post');
-            }
-
-            // If we're editing the deleted post, reset the form
-            if (currentEditingSlug === slug) {
                 resetForm();
+                showNotification(isUpdate ? 'Post updated successfully!' : 'Post created successfully!');
+                await loadPosts();
+            } catch (err) {
+                error.textContent = err.message;
+                error.classList.remove('hidden');
+                showNotification('Failed to save post: ' + err.message, true);
+            } finally {
+                loading.classList.add('hidden');
+                submitButton.disabled = false;
+            }
+        });
+
+        // Reset form to create new post
+        function resetForm() {
+            document.getElementById('post-form').reset();
+            quill.setContents([]);
+            document.getElementById('form-title').textContent = 'Create Post';
+            document.getElementById('submit-post-button').textContent = 'Create Post';
+            document.getElementById('cancel-edit-button').classList.add('hidden');
+            currentEditingSlug = null;
+        }
+
+        // Cancel edit handler
+        document.getElementById('cancel-edit-button').addEventListener('click', resetForm);
+
+        // Preview handler
+        document.getElementById('preview-button').addEventListener('click', () => {
+            const formData = new FormData(document.getElementById('post-form'));
+            const htmlContent = DOMPurify.sanitize(quill.root.innerHTML);
+            
+            const previewData = {
+                title: formData.get('title') || 'Untitled Post',
+                category: formData.get('category') || 'Uncategorized',
+                tags: formData.get('tags'),
+                image: formData.get('image') || '',
+                date: formData.get('date') || new Date().toISOString().split('T')[0],
+                description: formData.get('description') || '',
+                content: htmlContent || '<p class="text-gray-500 italic">No content available</p>'
+            };
+            
+            document.getElementById('preview-content').innerHTML = generatePreviewHTML(previewData);
+            document.getElementById('preview-modal').classList.remove('hidden');
+        });
+
+        // Close preview handler
+        document.getElementById('close-preview').addEventListener('click', () => {
+            document.getElementById('preview-modal').classList.add('hidden');
+        });
+
+        // Generate preview HTML
+        function generatePreviewHTML(data) {
+            const formattedDate = new Date(data.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            const tags = data.tags ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+            
+            return `
+                <article class="prose prose-lg max-w-none">
+                    ${data.image ? `<img src="${data.image}" alt="${data.title}" class="w-full h-64 object-cover rounded-lg mb-6">` : ''}
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold text-gray-900 mb-4">${data.title}</h1>
+                        ${data.description ? `<p class="text-gray-600 mb-4">${data.description}</p>` : ''}
+                        <div class="flex items-center space-x-4 text-gray-600 mb-4">
+                            <time datetime="${data.date}">${formattedDate}</time>
+                            ${data.category ? `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">${data.category}</span>` : ''}
+                        </div>
+                        ${tags.length > 0 ? `
+                            <div class="flex flex-wrap gap-2">
+                                ${tags.map(tag => `<span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm">#${tag}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </header>
+                    <div class="prose prose-lg max-w-none">
+                        ${data.content}
+                    </div>
+                </article>
+            `;
+        }
+
+        // Load posts from API
+        async function loadPosts() {
+            const postList = document.getElementById('post-list');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            
+            postList.innerHTML = '<div class="text-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div></div>';
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/list-posts?t=' + Date.now());
+                if (!response.ok) {
+                    throw new Error('Failed to fetch posts');
+                }
+                
+                const { data, error: apiError } = await response.json();
+                if (apiError) throw new Error(apiError);
+                
+                allPosts = data;
+                filteredPosts = [...allPosts];
+                displayPosts(filteredPosts);
+            } catch (err) {
+                error.textContent = 'Failed to load posts: ' + err.message;
+                error.classList.remove('hidden');
+                postList.innerHTML = '<p class="text-red-500 text-center py-8">Failed to load posts</p>';
+                showNotification('Failed to load posts: ' + err.message, true);
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        // Display posts in the sidebar
+        function displayPosts(posts) {
+            const postList = document.getElementById('post-list');
+            const postsTitle = document.getElementById('posts-title');
+            
+            // Show total post count
+            postsTitle.textContent = `Posts (${allPosts.length})`;
+
+            // Limit to first 5 posts unless filtered by search
+            const displayPosts = document.getElementById('search-input').value.trim() ? posts : posts.slice(0, 5);
+            
+            if (displayPosts.length === 0) {
+                postList.innerHTML = '<p class="text-gray-500 text-center py-8">No posts found.</p>';
+            } else {
+                postList.innerHTML = displayPosts.map(post => `
+                    <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition duration-200">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-medium text-gray-900 truncate">${post.title || 'Untitled'}</h3>
+                            </div>
+                            <div class="flex space-x-2 ml-4">
+                                <button class="edit-post bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
+                                    Edit
+                                </button>
+                                <button class="delete-post bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
             }
 
-            showNotification('Post deleted successfully');
-            await loadPosts();
-        } catch (err) {
-            error.textContent = 'Failed to delete post: ' + err.message;
-            error.classList.remove('hidden');
-            showNotification('Failed to delete post: ' + err.message, true);
-        } finally {
-            loading.classList.add('hidden');
+            // Attach event listeners to edit/delete buttons
+            document.querySelectorAll('.edit-post').forEach(button => {
+                button.addEventListener('click', handleEdit);
+            });
+            
+            document.querySelectorAll('.delete-post').forEach(button => {
+                button.addEventListener('click', handleDelete);
+            });
         }
-    }
 
-    // Search functionality
-    document.getElementById('search-input').addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase().trim();
-        
-        if (searchTerm === '') {
-            filteredPosts = [...allPosts];
-        } else {
-            filteredPosts = allPosts.filter(post => 
-                (post.title && post.title.toLowerCase().includes(searchTerm)) ||
-                (post.category && post.category.toLowerCase().includes(searchTerm)) ||
-                (post.tags && post.tags.split(',').map(tag => tag.trim()).some(tag => tag.toLowerCase().includes(searchTerm))) ||
-                (post.description && post.description.toLowerCase().includes(searchTerm))
-            );
+        // Edit post handler
+        function handleEdit(e) {
+            const slug = e.target.dataset.slug;
+            const post = allPosts.find(p => p.slug === slug);
+            
+            if (!post) return;
+
+            // Fill form with post data
+            document.querySelector('input[name="title"]').value = post.title || '';
+            document.querySelector('input[name="slug"]').value = post.slug || '';
+            document.querySelector('select[name="category"]').value = post.category || 'Uncategorized';
+            document.querySelector('input[name="tags"]').value = post.tags ? post.tags.split(',').map(tag => tag.trim()).join(', ') : '';
+            document.querySelector('input[name="image"]').value = post.image || '';
+            document.querySelector('input[name="date"]').value = post.date || '';
+            document.querySelector('textarea[name="description"]').value = post.description || '';
+            quill.root.innerHTML = post.content || '';
+            
+            // Update UI for edit mode
+            document.getElementById('form-title').textContent = 'Edit Post';
+            document.getElementById('submit-post-button').textContent = 'Update Post';
+            document.getElementById('cancel-edit-button').classList.remove('hidden');
+            currentEditingSlug = post.slug;
+            
+            showNotification(`Editing post: ${post.title}`);
         }
-        
-        displayPosts(filteredPosts);
-    });
 
-    // Auto-generate slug from title
-    document.querySelector('input[name="title"]').addEventListener('input', (e) => {
-        if (!currentEditingSlug) { // Only auto-generate when not editing
-            document.querySelector('input[name="slug"]').value = slugify(e.target.value);
+        // Delete post handler
+        async function handleDelete(e) {
+            const slug = e.target.dataset.slug;
+            if (!slug || !confirm('Are you sure you want to delete this post?')) return;
+
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/delete-post', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ slug })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to delete post');
+                }
+
+                // If we're editing the deleted post, reset the form
+                if (currentEditingSlug === slug) {
+                    resetForm();
+                }
+
+                showNotification('Post deleted successfully');
+                await loadPosts();
+            } catch (err) {
+                error.textContent = 'Failed to delete post: ' + err.message;
+                error.classList.remove('hidden');
+                showNotification('Failed to delete post: ' + err.message, true);
+            } finally {
+                loading.classList.add('hidden');
+            }
         }
-    });
 
-    // Initialize the editor when DOM is loaded
-    document.addEventListener('DOMContentLoaded', () => {
-        initQuill();
-    });
-</script>
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                filteredPosts = [...allPosts];
+            } else {
+                filteredPosts = allPosts.filter(post => 
+                    (post.title && post.title.toLowerCase().includes(searchTerm)) ||
+                    (post.category && post.category.toLowerCase().includes(searchTerm)) ||
+                    (post.tags && post.tags.split(',').map(tag => tag.trim()).some(tag => tag.toLowerCase().includes(searchTerm))) ||
+                    (post.description && post.description.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            displayPosts(filteredPosts);
+        });
+
+        // Auto-generate slug from title
+        document.querySelector('input[name="title"]').addEventListener('input', (e) => {
+            if (!currentEditingSlug) { // Only auto-generate when not editing
+                document.querySelector('input[name="slug"]').value = slugify(e.target.value);
+            }
+        });
+
+        // Initialize the editor when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initQuill();
+        });
+    </script>
 </body>
 </html>
