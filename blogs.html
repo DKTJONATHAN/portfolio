@@ -72,58 +72,12 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { font-family: var(--font-main); line-height: 1.6; color: var(--text-color); background-color: var(--light-bg); overflow-x: hidden; }
-        .hidden { display: none !important; }
-        .fixed { position: fixed; }
-        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
-        .z-50 { z-index: 50; }
         .bg-white { background-color: var(--background-color); }
         .flex { display: flex; }
         .flex-col { flex-direction: column; }
         .items-center { align-items: center; }
         .justify-center { justify-content: center; }
         .text-center { text-align: center; }
-
-        /* Splash screen styles */
-        #splashScreen {
-            background-color: var(--background-color);
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-        #splashScreen h1 {
-            font-size: 1.875rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #111827;
-        }
-        #splashScreen p {
-            color: var(--light-text);
-            margin-bottom: 2rem;
-        }
-        .progress-bar {
-            width: 100%;
-            max-width: 20rem;
-            margin: 0 auto 1.5rem;
-        }
-        .progress-bar-track {
-            height: 0.5rem;
-            background-color: #e5e7eb;
-            border-radius: 9999px;
-            overflow: hidden;
-        }
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            border-radius: 9999px;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
 
         .gradient-text { background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
@@ -258,24 +212,8 @@
     </script>
 </head>
 <body>
-    <!-- Splash Screen -->
-    <div id="splashScreen" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center text-center">
-        <div class="splash-content">
-            <div class="splash-logo">
-                <img src="/images/jonathanmwaniki.png" alt="Mwaniki Reports Logo" width="80" height="80" loading="eager">
-            </div>
-            <h1>Mwaniki Reports</h1>
-            <p>Your trusted source for news, sports, tech, and entertainment</p>
-            <div class="progress-bar">
-                <div class="progress-bar-track">
-                    <div id="progressBar" class="progress-bar-fill"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Main Layout -->
-    <div id="mainContent" class="hidden">
+    <div id="mainContent">
         <!-- Mobile Navigation -->
         <nav class="mobile-nav">
             <div class="mobile-nav-container">
@@ -555,11 +493,11 @@
                 });
             });
 
-            // Load posts from Netlify function
+            // Load posts from Vercel API
             async function loadPosts() {
                 postList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i>Loading posts...</div>';
                 try {
-                    const response = await fetch('/.netlify/functions/list-posts?t=' + Date.now());
+                    const response = await fetch('/api/list-posts?t=' + Date.now());
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
@@ -583,28 +521,6 @@
 
             // Initial load
             loadPosts();
-
-            // Splash screen animation
-            const progressBar = document.getElementById('progressBar');
-            const splashScreen = document.getElementById('splashScreen');
-            const mainContent = document.getElementById('mainContent');
-            let progress = 0;
-
-            const interval = setInterval(() => {
-                progress += 5;
-                progressBar.style.width = progress + '%';
-
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    splashScreen.style.opacity = '0';
-                    splashScreen.style.transition = 'opacity 0.5s ease';
-
-                    setTimeout(() => {
-                        splashScreen.style.display = 'none';
-                        mainContent.classList.remove('hidden');
-                    }, 500);
-                }
-            }, 50);
 
             // Lazy load images
             if ('IntersectionObserver' in window) {
