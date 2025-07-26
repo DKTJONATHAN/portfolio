@@ -1,16 +1,19 @@
-const { Octokit } = require("@octokit/rest");
+import { Octokit } from '@octokit/rest';
 
-exports.handler = async function (event) {
+export default async function handler(req, res) {
   try {
-    const { slug } = JSON.parse(event.body);
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    const { slug } = req.body;
     if (!slug) {
-      throw new Error("Slug is required");
+      throw new Error('Slug is required');
     }
 
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
     const filePath = `content/articles/${slug}.html`;
 
-    // Get the file's SHA (required for deletion)
     let sha;
     try {
       const { data } = await octokit.repos.getContent({
@@ -21,12 +24,11 @@ exports.handler = async function (event) {
       sha = data.sha;
     } catch (error) {
       if (error.status === 404) {
-        throw new Error("Post not found");
+        throw new Error('Post not found');
       }
       throw error;
     }
 
-    // Delete the file
     await octokit.repos.deleteFile({
       owner: process.env.GITHUB_OWNER,
       repo: process.env.GITHUB_REPO,
@@ -35,14 +37,8 @@ exports.handler = async function (event) {
       sha,
     });
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: "Post deleted successfully" }),
-    };
+    return res.status(200).json({ message: 'Post deleted successfully' });
   } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: `Failed to delete post: ${error.message}` }),
-    };
+    return res.status(500).json({ error: `Failed to delete post: ${error.message}` });
   }
-};
+}
