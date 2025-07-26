@@ -1,29 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Enhanced SEO Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     
-    <!-- Primary Meta Tags -->
     <title>Jonathan Mwaniki | Professional Web Developer & Graphic Designer in Kenya</title>
     <meta name="description" content="Jonathan Mwaniki - Kenya's leading web developer & graphic designer with 5+ years experience. Custom websites, UI/UX design, and digital solutions.">
     <meta name="keywords" content="Jonathan Mwaniki, web developer Kenya, graphic designer Nairobi, professional web developer Kenya, UI/UX designer Kenya">
     <meta name="author" content="Jonathan Mwaniki">
     <meta name="robots" content="index, follow">
     
-    <!-- Geo Tags for Local SEO -->
     <meta name="geo.region" content="KE">
     <meta name="geo.placename" content="Nairobi">
     <meta name="geo.position" content="-1.286389;36.817223">
     
-    <!-- Favicon Configuration -->
-    <link rel="icon" href="favicon.ico" type="image/x-icon" sizes="16x16 32x32">
-    <link rel="icon" href="images/favicon-96x96.png" type="image/png" sizes="96x96">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16 32x32">
+    <link rel="icon" href="/images/favicon-96x96.png" type="image/png" sizes="96x96">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
     
-    <!-- Open Graph / Facebook Meta Tags -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.jonathanmwaniki.co.ke/">
     <meta property="og:title" content="Jonathan Mwaniki | Web Developer & Graphic Designer">
@@ -35,7 +30,6 @@
     <meta property="og:site_name" content="Jonathan Mwaniki Portfolio">
     <meta property="og:locale" content="en_KE">
     
-    <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@maestropuns">
     <meta name="twitter:creator" content="@maestropuns">
@@ -45,23 +39,17 @@
     <meta name="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
     <meta name="twitter:image:alt" content="Jonathan Mwaniki Professional Logo">
     
-    <!-- Canonical URL -->
     <link rel="canonical" href="https://www.jonathanmwaniki.co.ke">
     
-    <!-- Preload Critical Resources -->
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preload" href="styles.css" as="style">
-    <link rel="preload" href="scripts/main.js" as="script">
-    <link rel="preload" href="./images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preload" href="/styles.css" as="style">
+    <link rel="preload" href="/scripts/main.js" as="script">
+    <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style" crossorigin>
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Add marked.js for parsing Markdown content -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-    <!-- Inline Critical CSS -->
     <style>
         :root {
             --primary-color: #4f46e5;
@@ -69,22 +57,14 @@
             --text-color: #1f2937;
             --light-bg: #f9fafb;
             --white: #ffffff;
+            --border-color: #e5e7eb;
+            --light-text: #6b7280;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            margin: 0;
-            padding: 0;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             color: var(--text-color);
             background-color: var(--light-bg);
             line-height: 1.5;
@@ -103,7 +83,6 @@
         .justify-center { justify-content: center; }
         .text-center { text-align: center; }
 
-        /* Splash screen styles */
         #splashScreen {
             background-color: var(--white);
             position: fixed;
@@ -145,20 +124,6 @@
             transition: width 0.3s ease;
         }
 
-        /* Font face for fallback */
-        @font-face {
-            font-family: 'Poppins-fallback';
-            src: local('Arial');
-            size-adjust: 105%;
-            ascent-override: 95%;
-            descent-override: 22%;
-            line-gap-override: 0;
-        }
-        body {
-            font-family: 'Poppins', 'Poppins-fallback', sans-serif;
-        }
-
-        /* Hero section critical styles */
         .hero-section {
             padding: 2rem 1rem;
             background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
@@ -179,7 +144,9 @@
             margin-bottom: 2rem;
         }
         .btn-primary {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             padding: 0.75rem 1.5rem;
             background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
             color: white;
@@ -192,7 +159,6 @@
             transform: translateY(-2px);
         }
         .btn-outline {
-            display: inline-block;
             padding: 0.75rem 1.5rem;
             background: transparent;
             color: var(--primary-color);
@@ -213,7 +179,6 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        /* Navigation critical styles */
         .desktop-nav {
             position: fixed;
             top: 0;
@@ -254,15 +219,10 @@
             font-weight: 500;
             transition: color 0.2s;
         }
-        .nav-link:hover {
+        .nav-link:hover, .nav-link.active {
             color: var(--primary-color);
-        }
-        .nav-link.active {
-            color: var(--primary-color);
-            font-weight: 600;
         }
 
-        /* Mobile navigation */
         .mobile-nav {
             position: fixed;
             bottom: 0;
@@ -291,132 +251,11 @@
             font-size: 1.25rem;
         }
 
-        /* Blog Section Additional Styles */
-        .blog-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 20px;
-        }
-
-        .blog-posts {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .blog-post {
-            background: var(--white);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .blog-post:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
-        }
-
-        .post-image {
-            overflow: hidden;
-            height: 250px;
-        }
-
-        .post-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .blog-post:hover .post-image img {
-            transform: scale(1.05);
-        }
-
-        .post-content {
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .post-meta {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            color: #6b7280;
-        }
-
-        .post-meta time {
-            position: relative;
-            padding-right: 15px;
-        }
-
-        .post-meta time::after {
-            content: '';
-            position: absolute;
-            right: 7px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 4px;
-            background: #6b7280;
-            border-radius: 50%;
-        }
-
-        .post-category {
-            font-weight: 500;
-            color: var(--primary-color);
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.5px;
-        }
-
-        .post-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            line-height: 1.3;
-            color: var(--text-color);
-        }
-
-        .post-excerpt p {
-            color: #6b7280;
-            margin-bottom: 25px;
-            line-height: 1.7;
-        }
-
-        .post-actions {
-            margin-top: auto;
-        }
-
-        .loading-posts {
-            text-align: center;
-            padding: 60px 0;
-            color: #6b7280;
-            font-size: 1.2rem;
-        }
-
-        .loading-posts i {
-            margin-right: 10px;
-            color: var(--primary-color);
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Services Section Styles */
-        .services-section {
+        .services-section, .portfolio-section, .about-section, .contact-section, .blog-section {
             padding: 80px 20px;
             background: var(--light-bg);
         }
-        .services-container {
+        .services-container, .portfolio-container, .about-container, .contact-container, .blog-container {
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -435,20 +274,20 @@
             max-width: 700px;
             margin: 0 auto;
         }
-        .services-grid {
+
+        .services-grid, .portfolio-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
         }
-        .service-card {
+        .service-card, .portfolio-card {
             background: var(--white);
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
             transition: transform 0.3s;
         }
-        .service-card:hover {
+        .service-card:hover, .portfolio-card:hover {
             transform: translateY(-5px);
         }
         .service-icon {
@@ -456,70 +295,19 @@
             color: var(--primary-color);
             margin-bottom: 1rem;
         }
-        .service-title {
+        .service-title, .card-title {
             font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 1rem;
         }
-        .service-description {
+        .service-description, .card-description {
             color: #4b5563;
             margin-bottom: 1.5rem;
-        }
-        .service-features {
-            list-style: none;
-            padding: 0;
-        }
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #4b5563;
-            margin-bottom: 0.5rem;
-        }
-        .feature-item i {
-            color: var(--secondary-color);
-        }
-
-        /* Portfolio Section Styles */
-        .portfolio-section {
-            padding: 80px 20px;
-            background: var(--light-bg);
-        }
-        .portfolio-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        .portfolio-card {
-            background: var(--white);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-        }
-        .portfolio-card:hover {
-            transform: translateY(-5px);
         }
         .portfolio-card img {
             width: 100%;
             height: 200px;
             object-fit: cover;
-        }
-        .card-content {
-            padding: 20px;
-        }
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .card-description {
-            color: #4b5563;
-            margin-bottom: 1rem;
         }
         .card-link {
             display: inline-flex;
@@ -533,14 +321,7 @@
             text-decoration: underline;
         }
 
-        /* About Section Styles */
-        .about-section {
-            padding: 80px 20px;
-            background: var(--light-bg);
-        }
         .about-container {
-            max-width: 1200px;
-            margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr 2fr;
             gap: 40px;
@@ -549,9 +330,6 @@
             width: 100%;
             height: auto;
             border-radius: 8px;
-        }
-        .about-content {
-            padding: 20px;
         }
         .about-text p {
             margin-bottom: 1rem;
@@ -620,22 +398,10 @@
             font-size: 0.875rem;
         }
 
-        /* Contact Section Styles */
-        .contact-section {
-            padding: 80px 20px;
-            background: var(--light-bg);
-        }
-        .contact-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
         .contact-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 40px;
-        }
-        .contact-form-container {
-            padding: 20px;
         }
         .form-grid {
             display: grid;
@@ -655,12 +421,9 @@
             border-radius: 4px;
             font-size: 1rem;
         }
-        .form-input:focus, .form-select Maus:focus, .form-textarea:focus {
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
             outline: none;
             border-color: var(--primary-color);
-        }
-        .contact-info-container {
-            padding: 20px;
         }
         .info-title {
             font-size: 1.5rem;
@@ -681,22 +444,12 @@
             font-size: 1.5rem;
             color: var(--primary-color);
         }
-        .info-label {
-            font-weight: 500;
-        }
         .info-value {
             color: var(--text-color);
             text-decoration: none;
         }
         .info-value:hover {
             color: var(--primary-color);
-        }
-        .social-section {
-            margin-top: 2rem;
-        }
-        .social-title {
-            font-weight: 500;
-            margin-bottom: 1rem;
         }
         .social-links {
             display: flex;
@@ -710,7 +463,6 @@
             color: var(--primary-color);
         }
 
-        /* Footer Styles */
         .site-footer {
             background: var(--white);
             padding: 50px 20px;
@@ -759,81 +511,22 @@
             color: var(--primary-color);
         }
 
-        /* Blog Section Tag Styling */
-        .post-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 20px;
-        }
-        .tag:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-
         @media (max-width: 768px) {
-            .desktop-nav {
-                display: none;
-            }
-            .mobile-nav {
-                display: block;
-            }
-            .hero-title {
-                font-size: 2rem;
-            }
-            .hero-actions {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-            .about-container, .contact-content {
-                grid-template-columns: 1fr;
-            }
-            .blog-container {
-                padding: 60px 20px;
-            }
-            .blog-post {
-                grid-template-columns: 1fr;
-            }
-            .post-image {
-                height: 200px;
-            }
-            .post-content {
-                padding: 25px;
-            }
-            .post-title {
-                font-size: 1.6rem;
-            }
+            .desktop-nav { display: none; }
+            .mobile-nav { display: block; }
+            .hero-title { font-size: 2rem; }
+            .hero-actions { flex-direction: column; gap: 0.75rem; }
+            .about-container, .contact-content { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 480px) {
-            .post-title {
-                font-size: 1.4rem;
-            }
-            .post-meta {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-            .post-meta time::after {
-                display: none;
-            }
-            .footer-brand {
-                flex-direction: column;
-                text-align: center;
-            }
-            .footer-legal {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-            .legal-links {
-                flex-direction: column;
-                gap: 10px;
-            }
+            .section-title { font-size: 2rem; }
+            .footer-brand { flex-direction: column; text-align: center; }
+            .footer-legal { flex-direction: column; gap: 15px; text-align: center; }
+            .legal-links { flex-direction: column; gap: 10px; }
         }
     </style>
-    
-    <!-- Schema.org Structured Data -->
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -857,8 +550,7 @@
       }
     }
     </script>
-    
-    <!-- Local Business Schema -->
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -887,11 +579,10 @@
     </script>
 </head>
 <body>
-    <!-- Splash Screen -->
     <div id="splashScreen" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center text-center">
         <div class="splash-content">
             <div class="splash-logo">
-                <img src="images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="80" height="80" loading="eager">
+                <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="80" height="80" loading="eager">
             </div>
             <h1>Jonathan Mwaniki</h1>
             <p>Professional Web Developer & Graphic Designer</p>
@@ -903,40 +594,22 @@
         </div>
     </div>
 
-    <!-- Main Layout -->
     <div id="mainContent" class="hidden">
-        <!-- Mobile Navigation -->
         <nav class="mobile-nav">
             <div class="mobile-nav-container">
-                <a href="#home" class="mobile-nav-link" aria-label="Home">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </a>
-                <a href="#services" class="mobile-nav-link" aria-label="Services">
-                    <i class="fas fa-cogs"></i>
-                    <span>Services</span>
-                </a>
-                <a href="#portfolio" class="mobile-nav-link" aria-label="Portfolio">
-                    <i class="fas fa-briefcase"></i>
-                    <span>Portfolio</span>
-                </a>
-                <a href="#blog" class="mobile-nav-link" aria-label="Blog">
-                    <i class="fas fa-blog"></i>
-                    <span>Blog</span>
-                </a>
-                <a href="#contact" class="mobile-nav-link" aria-label="Contact">
-                    <i class="fas fa-envelope"></i>
-                    <span>Contact</span>
-                </a>
+                <a href="#home" class="mobile-nav-link" aria-label="Home"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="#services" class="mobile-nav-link" aria-label="Services"><i class="fas fa-cogs"></i><span>Services</span></a>
+                <a href="#portfolio" class="mobile-nav-link" aria-label="Portfolio"><i class="fas fa-briefcase"></i><span>Portfolio</span></a>
+                <a href="#blog" class="mobile-nav-link" aria-label="Blog"><i class="fas fa-blog"></i><span>Blog</span></a>
+                <a href="#contact" class="mobile-nav-link" aria-label="Contact"><i class="fas fa-envelope"></i><span>Contact</span></a>
             </div>
         </nav>
 
-        <!-- Desktop Navigation -->
         <nav class="desktop-nav">
             <div class="nav-container">
                 <div class="nav-brand">
                     <div class="brand-logo">
-                        <img src="images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="eager">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="eager">
                     </div>
                     <span class="brand-name">Jonathan Mwaniki</span>
                 </div>
@@ -951,7 +624,6 @@
             </div>
         </nav>
 
-        <!-- Hero Section -->
         <section id="home" class="hero-section">
             <div class="hero-container">
                 <div class="hero-content">
@@ -969,12 +641,11 @@
                     </div>
                 </div>
                 <div class="hero-image">
-                    <img src="./images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki - Professional Web Developer & Designer in Kenya" loading="eager" width="600" height="400">
+                    <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki - Professional Web Developer & Designer in Kenya" loading="eager" width="600" height="400">
                 </div>
             </div>
         </section>
 
-        <!-- Services Section -->
         <section id="services" class="services-section">
             <div class="services-container">
                 <div class="section-header">
@@ -989,18 +660,9 @@
                         <h3 class="service-title" itemprop="name">Web Development</h3>
                         <p class="service-description" itemprop="description">Custom websites and web applications built with modern technologies.</p>
                         <ul class="service-features">
-                            <li class="feature-item">
-                                <i class="fas fa-check-circle"></i>
-                                <span itemprop="serviceType">Responsive Web Design</span>
-                            </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check-circle"></i>
-                                <span itemprop="serviceType">SEO Optimized Websites</span>
-                            </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check-circle"></i>
-                                <span itemprop="serviceType">E-commerce Development</span>
-                            </li>
+                            <li class="feature-item"><i class="fas fa-check-circle"></i><span>Responsive Web Design</span></li>
+                            <li class="feature-item"><i class="fas fa-check-circle"></i><span>SEO Optimized Websites</span></li>
+                            <li class="feature-item"><i class="fas fa-check-circle"></i><span>E-commerce Development</span></li>
                         </ul>
                     </div>
                     <div class="service-card" itemscope itemtype="https://schema.org/Service">
@@ -1010,18 +672,9 @@
                         <h3 class="service-title" itemprop="name">Graphic Design</h3>
                         <p class="service-description" itemprop="description">Visually stunning designs that communicate your brand's message.</p>
                         <ul class="service-features">
-                            <li class="feature-item">
-                                <i class="fas fa-check-circle"></i>
-                                <span itemprop="serviceType">Logo Design</span>
-                            </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check-circle"></i>
-                                <span itemprop="serviceType">Brand Identity</span>
-                            </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check-circle"></i>
-                                <span itemprop="serviceType">Marketing Materials</span>
-                            </li>
+                            <li class="feature-item"><i class="fas fa-check-circle"></i><span>Logo Design</span></li>
+                            <li class="feature-item"><i class="fas fa-check-circle"></i><span>Brand Identity</span></li>
+                            <li class="feature-item"><i class="fas fa-check-circle"></i><span>Marketing Materials</span></li>
                         </ul>
                     </div>
                     <div class="service-card" itemscope itemtype="https://schema.org/Service">
@@ -1031,25 +684,15 @@
                         <h3 class="service-title" itemprop="name">Digital Marketing</h3>
                         <p class="service-description" itemprop="description">Strategic campaigns to grow your online presence.</p>
                         <ul class="service-features">
-                            <li class="feature-item">
-                                <i class="fas fa-check-circle"></i>
-                                <span itemprop="serviceType">Social Media Management</span>
-                            </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check-circle"></i>
-                                <span itemprop="serviceType">SEO Services</span>
-                            </li>
-                            <li class="feature-item">
-                                <i class="fas fa-check-circle"></i>
-                                <span itemprop="serviceType">Content Marketing</span>
-                            </li>
+                            <li class="feature-item"><i class="fas fa-check-circle"></i><span>Social Media Management</span></li>
+                            <li class="feature-item"><i class="fas fa-check-circle"></i><span>SEO Services</span></li>
+                            <li class="feature-item"><i class="fas fa-check-circle"></i><span>Content Marketing</span></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Portfolio Section -->
         <section id="portfolio" class="portfolio-section">
             <div class="portfolio-container">
                 <div class="section-header">
@@ -1058,384 +701,88 @@
                 </div>
                 <div class="portfolio-grid">
                     <div class="portfolio-card" itemscope itemtype="https://schema.org/CreativeWork">
-                        <img src="./images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani - Rental Platform by Jonathan Mwaniki" loading="lazy" width="400" height="200">
+                        <img src="/images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani - Rental Platform by Jonathan Mwaniki" loading="lazy" width="400" height="200">
                         <div class="card-content">
                             <h3 class="card-title" itemprop="name">Nooki Mtaani</h3>
                             <p class="card-description" itemprop="description">Rental platform with secure payment integration.</p>
-                            <a href="https://nookimtaani.netlify.app" target="_blank" rel="noopener noreferrer" class="card-link" itemprop="url">
-                                View Project <i class="fas fa-arrow-right"></i>
-                            </a>
+                            <a href="https://nookimtaani.netlify.app" target="_blank" rel="noopener noreferrer" class="card-link" itemprop="url">View Project <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                     <div class="portfolio-card" itemscope itemtype="https://schema.org/CreativeWork">
-                        <img src="./images/3.PNG" alt="Jamtech Electronics - E-commerce by Jonathan Mwaniki" loading="lazy" width="400" height="200">
+                        <img src="/images/3.PNG" alt="Jamtech Electronics - E-commerce by Jonathan Mwaniki" loading="lazy" width="400" height="200">
                         <div class="card-content">
                             <h3 class="card-title" itemprop="name">Jamtech Electronics</h3>
                             <p class="card-description" itemprop="description">E-commerce platform with product catalog.</p>
-                            <a href="https://jamtech.pages.dev" target="_blank" rel="noopener noreferrer" class="card-link" itemprop="url">
-                                View Project <i class="fas fa-arrow-right"></i>
-                            </a>
+                            <a href="https://jamtech.pages.dev" target="_blank" rel="noopener noreferrer" class="card-link" itemprop="url">View Project <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                     <div class="portfolio-card" itemscope itemtype="https://schema.org/CreativeWork">
-                        <img src="./images/afri.png" alt="AfriChain WEB3 - Blockchain by Jonathan Mwaniki" loading="lazy" width="400" height="200">
+                        <img src="/images/afri.png" alt="AfriChain WEB3 - Blockchain by Jonathan Mwaniki" loading="lazy" width="400" height="200">
                         <div class="card-content">
                             <h3 class="card-title" itemprop="name">AfriChain WEB3</h3>
                             <p class="card-description" itemprop="description">Blockchain platform with cryptocurrency integration.</p>
-                            <a href="https://africhainke.netlify.app" target="_blank" rel="noopener noreferrer" class="card-link" itemprop="url">
-                                View Project <i class="fas fa-arrow-right"></i>
-                            </a>
+                            <a href="https://africhainke.netlify.app" target="_blank" rel="noopener noreferrer" class="card-link" itemprop="url">View Project <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                     <div class="portfolio-card" itemscope itemtype="https://schema.org/CreativeWork">
-                        <img src="./images/cap1.JPG" alt="RutoMustGo Website by Jonathan Mwaniki" loading="lazy" width="400" height="200">
+                        <img src="/images/cap1.JPG" alt="RutoMustGo Website by Jonathan Mwaniki" loading="lazy" width="400" height="200">
                         <div class="card-content">
                             <h3 class="card-title" itemprop="name">RutoMustGo Website</h3>
                             <p class="card-description" itemprop="description">Political campaign website with responsive design.</p>
-                            <a href="https://rutomustgo.pages.dev" target="_blank" rel="noopener noreferrer" class="card-link" itemprop="url">
-                                View Project <i class="fas fa-arrow-right"></i>
-                            </a>
+                            <a href="https://rutomustgo.pages.dev" target="_blank" rel="noopener noreferrer" class="card-link" itemprop="url">View Project <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-<!-- Blog Section -->
-<section id="blog" class="blog-section">
-    <div class="blog-container">
-        <div class="section-header">
-            <h2 class="section-title">Latest <span class="gradient-text">Blog Posts</span></h2>
-            <p class="section-description">Insights and tutorials by Jonathan Mwaniki</p>
-        </div>
-        <div id="blog-list">
-            <div class="loading-posts"><i class="fas fa-spinner"></i> Loading posts...</div>
-        </div>
-        <div class="blog-actions" style="text-align: center; margin-top: 40px;">
-            <a href="/blogs.html" class="btn-primary" aria-label="View all blog posts">View All Posts</a>
-        </div>
-    </div>
-</section>
 
-<style>
-    /* Blog Section Styles */
-    .blog-section {
-        padding: 80px 20px;
-        background: var(--light-bg);
-    }
-
-    .blog-container {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 0 20px;
-    }
-
-    .blog-posts {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 30px;
-        margin-bottom: 40px;
-    }
-
-    .blog-post {
-        background: var(--white);
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: 1px solid var(--border-color);
-    }
-
-    .blog-post:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    }
-
-    .post-image {
-        height: 220px;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .post-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-    }
-
-    .blog-post:hover .post-image img {
-        transform: scale(1.05);
-    }
-
-    .post-content {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .post-meta {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 0.9rem;
-        color: var(--light-text);
-    }
-
-    .post-meta time {
-        position: relative;
-        padding-right: 12px;
-    }
-
-    .post-meta time::after {
-        content: '';
-        position: absolute;
-        right: 6px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 4px;
-        height: 4px;
-        background: var(--light-text);
-        border-radius: 50%;
-    }
-
-    .post-category {
-        font-weight: 600;
-        color: var(--primary-color);
-        text-transform: uppercase;
-        font-size: 0.85rem;
-    }
-
-    .post-title {
-        font-size: 1.6rem;
-        font-weight: 700;
-        line-height: 1.3;
-        color: var(--text-color);
-    }
-
-    .post-excerpt {
-        color: var(--light-text);
-        font-size: 0.95rem;
-        line-height: 1.5;
-        margin-bottom: 15px;
-    }
-
-    .post-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 15px;
-    }
-
-    .post-tag {
-        padding: 5px 12px;
-        background: var(--light-bg);
-        color: var(--primary-color);
-        border-radius: 15px;
-        font-size: 0.85rem;
-        text-decoration: none;
-        border: 1px solid var(--border-color);
-        transition: all 0.3s ease;
-    }
-
-    .post-tag:hover {
-        background: var(--primary-color);
-        color: white;
-        border-color: var(--primary-color);
-    }
-
-    .loading-posts, .no-posts, .error-message {
-        text-align: center;
-        padding: 40px 0;
-        color: var(--light-text);
-        font-size: 1.1rem;
-    }
-
-    .loading-posts i {
-        margin-right: 10px;
-        color: var(--primary-color);
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    @media (max-width: 768px) {
-        .post-image {
-            height: 200px;
-        }
-        .post-title {
-            font-size: 1.4rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .post-title {
-            font-size: 1.3rem;
-        }
-        .post-meta {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 5px;
-        }
-        .post-meta time::after {
-            display: none;
-        }
-    }
-</style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', async () => {
-        const postList = document.getElementById('blog-list');
-        let allPosts = [];
-
-        // Function to unescape HTML
-        function unescapeHTML(str) {
-            const textarea = document.createElement('textarea');
-            textarea.innerHTML = str || '';
-            return textarea.value;
-        }
-
-        // Function to extract first image from content
-        function getFirstImage(content) {
-            if (!content) return '/images/default-blog.jpg';
-            const imgRegex = /<img[^>]+src="([^">]+)"/i;
-            const match = content.match(imgRegex);
-            return match ? match[1] : '/images/default-blog.jpg';
-        }
-
-        // Function to create excerpt from content
-        function getExcerpt(content, maxLength = 150) {
-            if (!content) return '<p>No excerpt available</p>';
-            const div = document.createElement('div');
-            div.innerHTML = unescapeHTML(content);
-            const textOnly = div.textContent.replace(/\s+/g, ' ').trim();
-            if (textOnly.length <= maxLength) return textOnly;
-            let trimmed = textOnly.substr(0, maxLength);
-            trimmed = trimmed.substr(0, Math.min(trimmed.length, trimmed.lastIndexOf(' ')));
-            return `<p>${trimmed}...</p>`;
-        }
-
-        // Function to format date
-        function formatDate(dateString) {
-            if (!dateString) return 'No date';
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString('en-US', options);
-        }
-
-        // Function to render posts (showing only 2)
-        function renderPosts(posts) {
-            if (!posts || posts.length === 0) {
-                postList.innerHTML = '<div class="no-posts">No posts found matching your criteria.</div>';
-                return;
-            }
-
-            // Only show first 2 posts
-            const limitedPosts = posts.slice(0, 2);
-            
-            postList.innerHTML = '';
-            const postsContainer = document.createElement('div');
-            postsContainer.className = 'blog-posts';
-
-            limitedPosts.forEach(post => {
-                const postElement = document.createElement('article');
-                postElement.className = 'blog-post';
-                postElement.setAttribute('itemscope', '');
-                postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
-
-                const imageUrl = post.image || getFirstImage(post.content);
-                const excerpt = post.description || getExcerpt(post.content);
-                const formattedDate = formatDate(post.date);
-                const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
-
-                postElement.innerHTML = `
-                    <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug || 'post'}.html">
-                    <div class="post-image">
-                        <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+        <section id="blog" class="blog-section">
+            <div class="blog-container">
+                <div class="section-header">
+                    <h2 class="section-title">Latest <span class="gradient-text">Blog Posts</span></h2>
+                    <p class="section-description">Insights and tutorials by Jonathan Mwaniki</p>
+                </div>
+                <div id="blog-list">
+                    <div class="blog-posts">
+                        <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
+                            <meta itemprop="mainEntityOfPage" content="/blogs/seo-strategies-2025.html">
+                            <div class="post-image">
+                                <img src="https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="SEO strategies for 2025" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                            </div>
+                            <div class="post-content">
+                                <div class="post-meta">
+                                    <time datetime="2025-07-20" itemprop="datePublished">July 20, 2025</time>
+                                    <span class="post-category" itemprop="articleSection">Tech</span>
+                                </div>
+                                <h3 class="post-title" itemprop="headline">
+                                    <a href="/blogs/seo-strategies-2025.html" itemprop="url">Mastering SEO in 2025: Global Strategies for Maximum Visibility</a>
+                                </h3>
+                                <div class="post-excerpt" itemprop="description">
+                                    <p>Discover the top SEO strategies for 2025 to boost your website's ranking globally, from AI-driven optimization to structured data. Insights from Nairobi-based developer Jonathan Mwaniki (@maestropuns).</p>
+                                </div>
+                                <div class="post-tags">
+                                    <a href="/blogs.html?tag=SEO" class="post-tag" itemprop="keywords">SEO</a>
+                                    <a href="/blogs.html?tag=Digital%20Marketing" class="post-tag" itemprop="keywords">Digital Marketing</a>
+                                    <a href="/blogs.html?tag=AI%20in%20SEO" class="post-tag" itemprop="keywords">AI in SEO</a>
+                                </div>
+                                <a href="/blogs/seo-strategies-2025.html" class="btn-primary" itemprop="url">Continue Reading <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                            <meta itemprop="author" content="Jonathan Mwaniki">
+                            <meta itemprop="dateModified" content="2025-07-20">
+                            <meta itemprop="publisher" content="Mwaniki Reports">
+                        </article>
                     </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
-                            <span class="post-category" itemprop="articleSection">${post.category || 'Uncategorized'}</span>
-                        </div>
-                        <h3 class="post-title" itemprop="headline">
-                            <a href="/content/articles/${post.slug || 'post'}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
-                        </h3>
-                        <div class="post-excerpt" itemprop="description">${excerpt}</div>
-                        ${keywords.length > 0 ? `
-                        <div class="post-tags">
-                            ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
-                        </div>
-                        ` : ''}
-                        <a href="/content/articles/${post.slug || 'post'}.html" class="btn-primary" itemprop="url">
-                            Continue Reading <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                    <meta itemprop="author" content="Jonathan Mwaniki">
-                    <meta itemprop="dateModified" content="${post.date}">
-                    <meta itemprop="publisher" content="Mwaniki Reports">
-                `;
+                </div>
+                <div class="blog-actions" style="text-align: center; margin-top: 40px;">
+                    <a href="/blogs.html" class="btn-primary" aria-label="View all blog posts">View All Posts</a>
+                </div>
+            </div>
+        </section>
 
-                postsContainer.appendChild(postElement);
-            });
-
-            postList.appendChild(postsContainer);
-        }
-
-        // Load posts from API
-        async function loadPosts() {
-            postList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i>Loading posts...</div>';
-            try {
-                const response = await fetch('/api/list-posts?t=' + Date.now());
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const { data, error } = await response.json();
-                if (error) throw new Error(error);
-                allPosts = data.map(post => ({
-                    ...post,
-                    content: unescapeHTML(post.content)
-                }));
-                renderPosts(allPosts);
-            } catch (error) {
-                console.error('Error loading posts:', error);
-                postList.innerHTML = `
-                    <div class="error-message">
-                        Failed to load posts. <a href="javascript:location.reload()">Try again</a>
-                        <p><small>${error.message}</small></p>
-                    </div>
-                `;
-            }
-        }
-
-        // Initial load
-        loadPosts();
-
-        // Lazy load images
-        if ('IntersectionObserver' in window) {
-            const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.src = img.dataset.src || img.src;
-                        img.removeAttribute('loading');
-                        observer.unobserve(img);
-                    }
-                });
-            });
-
-            lazyImages.forEach(img => imageObserver.observe(img));
-        }
-    });
-</script>
-        <!-- About Section -->
         <section id="about" class="about-section">
             <div class="about-container">
                 <div class="about-image">
-                    <img src="./images/file.enc" alt="About Jonathan Mwaniki - Web Developer & Designer" loading="lazy" width="400" height="500">
+                    <img src="/images/file.enc" alt="About Jonathan Mwaniki - Web Developer & Designer" loading="lazy" width="400" height="500">
                 </div>
                 <div class="about-content">
                     <h2 class="section-title">About <span class="gradient-text">Jonathan Mwaniki</span></h2>
@@ -1444,13 +791,11 @@
                         <p>My approach combines technical expertise with creative problem-solving to deliver solutions that are not only visually appealing but also drive real business results.</p>
                         <p><strong>When I'm not working:</strong> You'll find me exploring new technologies, contributing to open-source projects, or enjoying the vibrant coffee shop scene while working on my latest web development project.</p>
                     </div>
-
-                    <!-- Education Section -->
                     <div class="education-section">
                         <h3>Education & Training</h3>
                         <div class="education-item">
                             <div class="edu-icon">
-                                <img src="images/FreeCodeCamo.webp" alt="freeCodeCamp Logo" width="40" height="40" loading="lazy">
+                                <img src="/images/FreeCodeCamo.webp" alt="freeCodeCamp Logo" width="40" height="40" loading="lazy">
                             </div>
                             <div>
                                 <h4>Full Stack Web Development</h4>
@@ -1460,7 +805,7 @@
                         </div>
                         <div class="education-item">
                             <div class="edu-icon">
-                                <img src="images/Egerton-University.webp" alt="Egerton University Logo" width="40" height="40" loading="lazy">
+                                <img src="/images/Egerton-University.webp" alt="Egerton University Logo" width="40" height="40" loading="lazy">
                             </div>
                             <div>
                                 <h4>Bachelor of Education (Arts)</h4>
@@ -1469,62 +814,34 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Tech Stack Section -->
                     <div class="tech-stack-section">
                         <h3>My Tech Stack</h3>
                         <div class="stack-categories">
                             <div class="stack-category">
                                 <h4>Core Technologies</h4>
                                 <div class="stack-items">
-                                    <div class="stack-item">
-                                        <i class="fab fa-html5"></i>
-                                        <span>HTML5</span>
-                                    </div>
-                                    <div class="stack-item">
-                                        <i class="fab fa-css3-alt"></i>
-                                        <span>CSS3</span>
-                                    </div>
-                                    <div class="stack-item">
-                                        <i class="fab fa-js"></i>
-                                        <span>JavaScript</span>
-                                    </div>
+                                    <div class="stack-item"><i class="fab fa-html5"></i><span>HTML5</span></div>
+                                    <div class="stack-item"><i class="fab fa-css3-alt"></i><span>CSS3</span></div>
+                                    <div class="stack-item"><i class="fab fa-js"></i><span>JavaScript</span></div>
                                 </div>
                             </div>
                             <div class="stack-category">
                                 <h4>Frameworks & Libraries</h4>
                                 <div class="stack-items">
-                                    <div class="stack-item">
-                                        <i class="fab fa-react"></i>
-                                        <span>React</span>
-                                    </div>
-                                    <div class="stack-item">
-                                        <i class="fab fa-node-js"></i>
-                                        <span>Node.js</span>
-                                    </div>
-                                    <div class="stack-item">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" alt="Tailwind CSS" width="24" height="24" loading="lazy">
-                                        <span>Tailwind CSS</span>
-                                    </div>
+                                    <div class="stack-item"><i class="fab fa-react"></i><span>React</span></div>
+                                    <div class="stack-item"><i class="fab fa-node-js"></i><span>Node.js</span></div>
+                                    <div class="stack-item"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" alt="Tailwind CSS" width="24" height="24" loading="lazy"><span>Tailwind CSS</span></div>
                                 </div>
                             </div>
                             <div class="stack-category">
                                 <h4>Currently Learning</h4>
                                 <div class="stack-items">
-                                    <div class="stack-item learning">
-                                        <i class="fas fa-mobile-alt"></i>
-                                        <span>App Development</span>
-                                    </div>
-                                    <div class="stack-item learning">
-                                        <i class="fas fa-laptop-code"></i>
-                                        <span>Software Engineering</span>
-                                    </div>
+                                    <div class="stack-item"><i class="fas fa-mobile-alt"></i><span>App Development</span></div>
+                                    <div class="stack-item"><i class="fas fa-laptop-code"></i><span>Software Engineering</span></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Hackathon Section -->
                     <div class="hackathon-section">
                         <h3>Hackathon & Tech Expo Experience</h3>
                         <div class="event-timeline">
@@ -1556,7 +873,6 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
         <section id="contact" class="contact-section">
             <div class="contact-container">
                 <div class="section-header">
@@ -1598,18 +914,14 @@
                             <h3 class="info-title">Contact Information</h3>
                             <div class="info-items">
                                 <div class="info-item">
-                                    <div class="info-icon">
-                                        <i class="fas fa-envelope"></i>
-                                    </div>
+                                    <div class="info-icon"><i class="fas fa-envelope"></i></div>
                                     <div>
                                         <h4 class="info-label">Email</h4>
                                         <a href="mailto:info@jonathanmwaniki.co.ke" class="info-value">info@jonathanmwaniki.co.ke</a>
                                     </div>
                                 </div>
                                 <div class="info-item">
-                                    <div class="info-icon">
-                                        <i class="fas fa-phone-alt"></i>
-                                    </div>
+                                    <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
                                     <div>
                                         <h4 class="info-label">Phone</h4>
                                         <a href="tel:+254706396305" class="info-value">+254 706 396 305</a>
@@ -1623,18 +935,10 @@
                                                 <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
                                             </svg>
                                         </a>
-                                        <a href="https://www.instagram.com/jonaahrojo" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
-                                            <i class="fab fa-instagram"></i>
-                                        </a>
-                                        <a href="https://www.linkedin.com/in/jonathan-mwaniki-324208374" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn">
-                                            <i class="fab fa-linkedin-in"></i>
-                                        </a>
-                                        <a href="https://github.com/DKTJONATHAN" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub">
-                                            <i class="fab fa-github"></i>
-                                        </a>
-                                        <a href="https://wa.me/+254706396305" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="WhatsApp">
-                                            <i class="fab fa-whatsapp"></i>
-                                        </a>
+                                        <a href="https://www.instagram.com/jonaahrojo" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                                        <a href="https://www.linkedin.com/in/jonathan-mwaniki-324208374" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                                        <a href="https://github.com/DKTJONATHAN" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                                        <a href="https://wa.me/+254706396305" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -1644,12 +948,11 @@
             </div>
         </section>
 
-        <!-- Footer -->
         <footer class="site-footer">
             <div class="footer-container">
                 <div class="footer-brand">
                     <div class="footer-logo">
-                        <img src="images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="lazy">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="lazy">
                     </div>
                     <div class="footer-info">
                         <span class="footer-name">Jonathan Mwaniki</span>
@@ -1668,60 +971,103 @@
         </footer>
     </div>
 
-    <!-- JavaScript -->
-    <script src="scripts/main.js" defer></script>
-
-    <!-- Performance Optimization Script -->
+    <script src="/scripts/main.js" defer></script>
     <script>
-        // Load non-critical CSS
-        function loadCSS(href) {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = href;
-            document.head.appendChild(link);
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const postList = document.getElementById('blog-list');
+            let allPosts = [
+                {
+                    slug: 'seo-strategies-2025',
+                    title: 'Mastering SEO in 2025: Global Strategies for Maximum Visibility',
+                    description: 'Discover the top SEO strategies for 2025 to boost your website\'s ranking globally, from AI-driven optimization to structured data. Insights from Nairobi-based developer Jonathan Mwaniki (@maestropuns).',
+                    image: 'https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                    date: '2025-07-20',
+                    category: 'Tech',
+                    tags: 'SEO, Digital Marketing, AI in SEO, Voice Search, Global SEO'
+                }
+            ];
 
-        // Load non-critical JS
-        function loadJS(src, cb) {
-            const script = document.createElement('script');
-            script.src = src;
-            script.defer = true;
-            if (cb) script.onload = cb;
-            document.body.appendChild(script);
-        }
+            function formatDate(dateString) {
+                if (!dateString) return 'No date';
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                return new Date(dateString).toLocaleDateString('en-US', options);
+            }
 
-        // Load Font Awesome after page load
-        window.addEventListener('load', function() {
-            loadCSS('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
-        });
+            function renderPosts(posts) {
+                if (!posts || posts.length === 0) {
+                    postList.innerHTML = '<div class="no-posts">No posts found.</div>';
+                    return;
+                }
 
-        // Splash screen animation
-        document.addEventListener('DOMContentLoaded', function() {
+                const limitedPosts = posts.slice(0, 2);
+                postList.innerHTML = '';
+                const postsContainer = document.createElement('div');
+                postsContainer.className = 'blog-posts';
+
+                limitedPosts.forEach(post => {
+                    const postElement = document.createElement('article');
+                    postElement.className = 'blog-post';
+                    postElement.setAttribute('itemscope', '');
+                    postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
+
+                    const imageUrl = post.image || '/images/default-blog.jpg';
+                    const excerpt = post.description || '<p>No excerpt available</p>';
+                    const formattedDate = formatDate(post.date);
+                    const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+
+                    postElement.innerHTML = `
+                        <meta itemprop="mainEntityOfPage" content="/blogs/${post.slug}.html">
+                        <div class="post-image">
+                            <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                        </div>
+                        <div class="post-content">
+                            <div class="post-meta">
+                                <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
+                                <span class="post-category" itemprop="articleSection">${post.category || 'Uncategorized'}</span>
+                            </div>
+                            <h3 class="post-title" itemprop="headline">
+                                <a href="/blogs/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
+                            </h3>
+                            <div class="post-excerpt" itemprop="description">${excerpt}</div>
+                            ${keywords.length > 0 ? `
+                            <div class="post-tags">
+                                ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
+                            </div>
+                            ` : ''}
+                            <a href="/blogs/${post.slug}.html" class="btn-primary" itemprop="url">Continue Reading <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <meta itemprop="author" content="Jonathan Mwaniki">
+                        <meta itemprop="dateModified" content="${post.date}">
+                        <meta itemprop="publisher" content="Mwaniki Reports">
+                    `;
+
+                    postsContainer.appendChild(postElement);
+                });
+
+                postList.appendChild(postsContainer);
+            }
+
+            renderPosts(allPosts);
+
             const progressBar = document.getElementById('progressBar');
             const splashScreen = document.getElementById('splashScreen');
             const mainContent = document.getElementById('mainContent');
             let progress = 0;
 
-            const interval = setInterval(function() {
+            const interval = setInterval(() => {
                 progress += 5;
                 progressBar.style.width = progress + '%';
-                
                 if (progress >= 100) {
                     clearInterval(interval);
                     splashScreen.style.opacity = '0';
                     splashScreen.style.transition = 'opacity 0.5s ease';
-                    
-                    setTimeout(function() {
+                    setTimeout(() => {
                         splashScreen.style.display = 'none';
                         mainContent.classList.remove('hidden');
-                        
-                        // Load remaining CSS and JS
-                        loadCSS('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
                     }, 500);
                 }
             }, 50);
 
-            // Lazy load images
             if ('IntersectionObserver' in window) {
                 const lazyImages = document.querySelectorAll('img[loading="lazy"]');
                 const imageObserver = new IntersectionObserver((entries, observer) => {
@@ -1735,9 +1081,7 @@
                     });
                 });
 
-                lazyImages.forEach(img => {
-                    imageObserver.observe(img);
-                });
+                lazyImages.forEach(img => imageObserver.observe(img));
             }
         });
     </script>
