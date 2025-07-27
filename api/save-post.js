@@ -9,8 +9,8 @@ export default async function handler(req, res) {
 
     // Extract and validate request body
     const { isUpdate, slug, title, description, image, date, category, tags, content } = req.body;
-    if (!slug || !title || !date || !content) {
-      return res.status(400).json({ error: 'Missing required fields: slug, title, date, or content' });
+    if (!slug || !title || !date || !content || !description || !tags) {
+      return res.status(400).json({ error: 'Missing required fields: slug, title, date, content, description, or tags' });
     }
 
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
@@ -20,7 +20,16 @@ export default async function handler(req, res) {
     // Validate image URLs (basic check for URL-like strings)
     const isUrlLike = (str) => str && /^https?:\/\/.+/i.test(str);
     const isValidImageUrl = (str) => isUrlLike(str) && /\.(?:png|jpg|jpeg|gif|webp|svg)$/i.test(str);
-    const placeholderImage = 'https://via.placeholder.com/800x400?text=Image+Not+Available';
+    const fallbackImage = 'https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png';
+    const placeholderImage = 'https://via.placeholder.com/1200x630?text=Image+Not+Available';
+
+    // Extract first image from content
+    const extractFirstImage = (content) => {
+      if (!content) return null;
+      const imgRegex = /<img[^>]+src=["'](.*?)["']/i;
+      const match = content.match(imgRegex);
+      return match && isValidImageUrl(match[1]) ? match[1] : null;
+    };
 
     // Process content to ensure image URLs are rendered as <img> tags
     const processContent = (content) => {
@@ -31,11 +40,17 @@ export default async function handler(req, res) {
       });
     };
 
-    // Process main image and content
-    const mainImageUrl = isUrlLike(image) ? (isValidImageUrl(image) ? image : placeholderImage) : null;
+    // Determine the social media preview image
+    const firstContentImage = extractFirstImage(content);
+    const mainImageUrl = isValidImageUrl(image) ? image : (firstContentImage || fallbackImage);
+
+    // Process content
     const processedContent = processContent(content);
 
-    // Generate HTML content with professional article layout
+    // Generate keywords from tags
+    const keywords = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag).join(', ') : '';
+
+    // Generate HTML content with professional article layout and SEO meta tags
     const htmlContent = `
       <!DOCTYPE html>
       <html lang="en">
@@ -43,6 +58,20 @@ export default async function handler(req, res) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${title} | Jonathan Mwaniki</title>
+        <meta name="description" content="${description}">
+        <meta name="keywords" content="${keywords}">
+        <meta name="author" content="Jonathan Mwaniki">
+        <meta property="og:title" content="${title}">
+        <meta property="og:description" content="${description}">
+        <meta property="og:image" content="${mainImageUrl}">
+        <meta property="og:url" content="https://www.jonathanmwaniki.co.ke/content/articles/${slug}.html">
+        <meta property="og:type" content="article">
+        <meta property="og:site_name" content="Jonathan Mwaniki">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="${title}">
+        <meta name="twitter:description" content="${description}">
+        <meta name="twitter:image" content="${mainImageUrl}">
+        <meta name="twitter:creator" content="@Maestropuns">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         <style>
@@ -257,7 +286,7 @@ export default async function handler(req, res) {
       slug,
       title,
       description: description || '',
-      image: isUrlLike(image) ? image : null,
+      image: mainImageUrl,
       date,
       category: category || 'Uncategorized',
       tags: tags || '',
@@ -297,7 +326,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       message: 'Post saved successfully',
-      url: `/content/articles/${slug}.html`,
+      url: `https://www.jonathanmwaniki.co.ke/content/articles/${slug}.html`,
     });
   } catch (error) {
     console.error('Error saving post:', error);
