@@ -73,7 +73,7 @@
             margin-top: 8px;
         }
         .notification {
-            animation: slideIn 0.3s forwards, fadeOut 0.5s forwards 3s;
+            animation: slideIn 0.3s forwards, fadeOut 0.5s forwards 5s;
         }
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
@@ -310,7 +310,7 @@
                 : 'bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3';
             
             icon.className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check';
-            msgElement.textContent = message;
+            msgElement.innerHTML = message; // Use innerHTML to allow links
             
             notification.classList.remove('hidden');
             notification.classList.add('notification');
@@ -318,7 +318,7 @@
             setTimeout(() => {
                 notification.classList.remove('notification');
                 notification.classList.add('hidden');
-            }, 3500);
+            }, 5000); // Extended to 5s for readability
         }
 
         // Login handler
@@ -385,7 +385,7 @@
 
             try {
                 const isUpdate = currentEditingSlug !== null;
-                const endpoint = '/api/save-post';
+                const endpoint = '/api/save-post.js'; // Updated to match your endpoint
                 
                 const response = await fetch(endpoint, {
                     method: 'POST',
@@ -398,9 +398,13 @@
                     throw new Error(errorData.error || 'Failed to save post');
                 }
 
+                const { message, url } = await response.json();
                 resetForm();
-                showNotification(isUpdate ? 'Post updated successfully!' : 'Post created successfully!');
+                // Show notification with link to the post
+                showNotification(`${message}! <a href="${url}" class="underline hover:text-blue-200" target="_blank">View post</a>`);
                 await loadPosts();
+                // Optional: Redirect to the post
+                // setTimeout(() => window.location.href = url, 2000);
             } catch (err) {
                 error.textContent = err.message;
                 error.classList.remove('hidden');
@@ -492,7 +496,7 @@
             error.classList.add('hidden');
 
             try {
-                const response = await fetch('/api/list-posts?t=' + Date.now());
+                const response = await fetch('/api/list-posts.js?t=' + Date.now());
                 if (!response.ok) {
                     throw new Error('Failed to fetch posts');
                 }
@@ -593,7 +597,7 @@
             error.classList.add('hidden');
 
             try {
-                const response = await fetch('/api/delete-post', {
+                const response = await fetch('/api/delete-post.js', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ slug })
