@@ -83,6 +83,42 @@
             from { opacity: 1; }
             to { opacity: 0; }
         }
+        .ql-floating-toolbar {
+            position: absolute;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            display: flex;
+            gap: 4px;
+            padding: 4px;
+            z-index: 100;
+        }
+        .ql-floating-toolbar button {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 4px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4b5563;
+            transition: all 0.2s ease;
+        }
+        .ql-floating-toolbar button:hover {
+            background: #e5e7eb;
+            border-color: #d1d5db;
+        }
+        .ql-floating-toolbar button.ql-active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .ql-floating-toolbar.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -132,19 +168,19 @@
                         <form id="post-form" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Title <span class="text-red-500">*</span></label>
                                     <input type="text" name="title" required
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Slug</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Slug <span class="text-red-500">*</span></label>
                                     <input type="text" name="slug" required
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Category <span class="text-red-500">*</span></label>
                                     <select name="category" required
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
                                         <option value="" disabled selected>Select a category</option>
@@ -158,8 +194,8 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tags (comma-separated)</label>
-                                    <input type="text" name="tags"
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tags (comma-separated) <span class="text-red-500">*</span></label>
+                                    <input type="text" name="tags" required
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
                                 </div>
                             </div>
@@ -170,18 +206,18 @@
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Date <span class="text-red-500">*</span></label>
                                     <input type="date" name="date" required
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                                <textarea name="description" rows="4"
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Description <span class="text-red-500">*</span></label>
+                                <textarea name="description" rows="4" required
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"></textarea>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Content <span class="text-red-500">*</span></label>
                                 <div id="content-editor" class="quill-editor"></div>
                                 <div id="word-count" class="word-count"></div>
                             </div>
@@ -250,400 +286,511 @@
         </div>
     </div>
 
-  <script>
-    let allPosts = [];
-    let filteredPosts = [];
-    let quill = null;
-    let currentEditingSlug = null;
+    <script>
+        let allPosts = [];
+        let filteredPosts = [];
+        let quill = null;
+        let currentEditingSlug = null;
 
-    // Initialize Quill editor
-    function initQuill() {
-        quill = new Quill('#content-editor', {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    ['blockquote', 'code-block', 'link', 'image'],
-                    [{ 'align': [] }],
-                    ['clean'],
-                    [{ 'color': [] }, { 'background': [] }],
-                ],
-                history: {
-                    delay: 1000,
-                    maxStack: 100,
-                    userOnly: true
+        // Initialize Quill editor with floating toolbar
+        function initQuill() {
+            quill = new Quill('#content-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        ['blockquote', 'code-block', 'link', 'image'],
+                        [{ 'align': [] }],
+                        ['clean'],
+                        [{ 'color': [] }, { 'background': [] }],
+                    ],
+                    history: {
+                        delay: 1000,
+                        maxStack: 100,
+                        userOnly: true
+                    }
+                },
+                placeholder: 'Type your content here...'
+            });
+
+            // Create floating toolbar
+            const floatingToolbar = document.createElement('div');
+            floatingToolbar.className = 'ql-floating-toolbar hidden';
+            floatingToolbar.innerHTML = `
+                <button class="ql-bold" title="Bold"><i class="fas fa-bold"></i></button>
+                <button class="ql-italic" title="Italic"><i class="fas fa-italic"></i></button>
+                <button class="ql-link" title="Link"><i class="fas fa-link"></i></button>
+            `;
+            document.querySelector('.quill-editor').appendChild(floatingToolbar);
+
+            // Handle text selection for floating toolbar
+            quill.on('selection-change', (range, oldRange, source) => {
+                if (range && range.length > 0) {
+                    const bounds = quill.getBounds(range);
+                    const editor = document.querySelector('.ql-container');
+                    const editorRect = editor.getBoundingClientRect();
+                    const toolbarWidth = 120; // Approximate width of toolbar
+                    const toolbarHeight = 40;
+
+                    // Position toolbar above selection
+                    let left = bounds.left + editorRect.left + (bounds.width - toolbarWidth) / 2;
+                    let top = bounds.top + editorRect.top - toolbarHeight - 10;
+
+                    // Ensure toolbar stays within editor bounds
+                    left = Math.max(10, Math.min(left, editorRect.width - toolbarWidth - 10));
+                    top = Math.max(10, Math.min(top, editorRect.height - toolbarHeight - 10));
+
+                    floatingToolbar.style.left = `${left}px`;
+                    floatingToolbar.style.top = `${top + window.scrollY}px`;
+                    floatingToolbar.classList.remove('hidden');
+                } else {
+                    floatingToolbar.classList.add('hidden');
                 }
-            },
-            placeholder: 'Type your content here...'
-        });
-
-        // Word count
-        function updateWordCount() {
-            const text = quill.getText().trim();
-            const words = text ? text.split(/\s+/).length : 0;
-            document.getElementById('word-count').textContent = `Word count: ${words}`;
-        }
-        quill.on('text-change', updateWordCount);
-        updateWordCount();
-    }
-
-    // Slugify function
-    function slugify(text) {
-        return text
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .trim();
-    }
-
-    // Show notification function
-    function showNotification(message, isError = false) {
-        const notification = document.getElementById('notification');
-        const icon = document.getElementById('notification-icon');
-        const msgElement = document.getElementById('notification-message');
-        
-        notification.firstElementChild.className = isError 
-            ? 'bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3'
-            : 'bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3';
-        
-        icon.className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check';
-        msgElement.innerHTML = message;
-        
-        notification.classList.remove('hidden');
-        notification.classList.add('notification');
-        
-        setTimeout(() => {
-            notification.classList.remove('notification');
-            notification.classList.add('hidden');
-        }, 5000);
-    }
-
-    // Login handler
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const password = document.getElementById('password').value;
-        const error = document.getElementById('login-error');
-        error.classList.add('hidden');
-
-        try {
-            const response = await fetch('/api/login.js', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password })
             });
 
-            const data = await response.json();
+            // Bind toolbar buttons to Quill actions
+            floatingToolbar.querySelector('.ql-bold').addEventListener('click', () => quill.format('bold', !quill.getFormat().bold));
+            floatingToolbar.querySelector('.ql-italic').addEventListener('click', () => quill.format('italic', !quill.getFormat().italic));
+            floatingToolbar.querySelector('.ql-link').addEventListener('click', () => {
+                const url = prompt('Enter the URL:');
+                if (url) quill.format('link', url);
+            });
 
-            if (!response.ok) {
-                throw new Error(data.error || 'Login failed');
+            // Word count
+            function updateWordCount() {
+                const text = quill.getText().trim();
+                const words = text ? text.split(/\s+/).length : 0;
+                document.getElementById('word-count').textContent = `Word count: ${words}`;
+                validateForm();
             }
-
-            document.getElementById('login-section').classList.add('hidden');
-            document.getElementById('admin-section').classList.remove('hidden');
-            await loadPosts();
-        } catch (err) {
-            error.textContent = err.message;
-            error.classList.remove('hidden');
+            quill.on('text-change', updateWordCount);
+            updateWordCount();
         }
-    });
 
-    // Logout handler
-    document.getElementById('logout-button').addEventListener('click', () => {
-        document.getElementById('admin-section').classList.add('hidden');
-        document.getElementById('login-section').classList.remove('hidden');
-        document.getElementById('login-form').reset();
-        showNotification('Logged out successfully');
-    });
+        // Validate form inputs
+        function validateForm() {
+            const form = document.getElementById('post-form');
+            const submitButton = document.getElementById('submit-post-button');
+            const title = form.querySelector('input[name="title"]').value.trim();
+            const slug = form.querySelector('input[name="slug"]').value.trim();
+            const category = form.querySelector('select[name="category"]').value;
+            const tags = form.querySelector('input[name="tags"]').value.trim();
+            const date = form.querySelector('input[name="date"]').value;
+            const description = form.querySelector('textarea[name="description"]').value.trim();
+            const content = quill.getText().trim();
 
-    // Form submission handler (create/update)
-    document.getElementById('post-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const loading = document.getElementById('loading');
-        const error = document.getElementById('error');
-        const submitButton = document.getElementById('submit-post-button');
-        
-        loading.classList.remove('hidden');
-        error.classList.add('hidden');
-        submitButton.disabled = true;
+            const isValid = title && slug && category && tags && date && description && content;
+            submitButton.disabled = !isValid;
+            return isValid;
+        }
 
-        const formData = new FormData(e.target);
-        const htmlContent = DOMPurify.sanitize(quill.root.innerHTML);
-        
-        const postData = {
-            title: formData.get('title') || 'Untitled',
-            slug: formData.get('slug') || slugify(formData.get('title') || 'untitled'),
-            category: formData.get('category') || 'Uncategorized',
-            tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
-            image: formData.get('image') || '',
-            date: formData.get('date') || new Date().toISOString().split('T')[0],
-            description: formData.get('description') || '',
-            content: htmlContent
-        };
+        // Slugify function
+        function slugify(text) {
+            return text
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .trim();
+        }
 
-        try {
-            const isUpdate = currentEditingSlug !== null;
-            const endpoint = '/api/save-post.js';
+        // Show notification function
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            const icon = document.getElementById('notification-icon');
+            const msgElement = document.getElementById('notification-message');
             
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...postData, isUpdate })
-            });
+            notification.firstElementChild.className = isError 
+                ? 'bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3'
+                : 'bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3';
+            
+            icon.className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check';
+            msgElement.innerHTML = message;
+            
+            notification.classList.remove('hidden');
+            notification.classList.add('notification');
+            
+            setTimeout(() => {
+                notification.classList.remove('notification');
+                notification.classList.add('hidden');
+            }, 5000);
+        }
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to save post');
+        // Update sitemap
+        async function updateSitemap(post) {
+            try {
+                const postUrl = `https://www.jonathanmwaniki.co.ke/content/articles/${post.slug}.html`;
+                const lastmod = new Date().toISOString().split('T')[0];
+                
+                const sitemapData = {
+                    url: postUrl,
+                    lastmod: lastmod,
+                    changefreq: 'daily',
+                    priority: '0.8'
+                };
+
+                const response = await fetch('/api/update-sitemap.js', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(sitemapData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to update sitemap');
+                }
+
+                console.log('Sitemap updated successfully');
+            } catch (err) {
+                console.error('Error updating sitemap:', err);
+                showNotification('Failed to update sitemap: ' + err.message, true);
             }
+        }
 
-            const { message, url } = await response.json();
-            resetForm();
-            showNotification(`${message}! <a href="${url}" class="underline hover:text-blue-200" target="_blank">View post</a>`);
-            await loadPosts();
-        } catch (err) {
-            error.textContent = err.message;
+        // Login handler
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const error = document.getElementById('login-error');
             error.classList.add('hidden');
-            showNotification('Failed to save post: ' + err.message, true);
-        } finally {
-            loading.classList.add('hidden');
-            submitButton.disabled = false;
-        }
-    });
 
-    // Reset form to create new post
-    function resetForm() {
-        document.getElementById('post-form').reset();
-        quill.setContents([]);
-        document.getElementById('form-title').textContent = 'Create Post';
-        document.getElementById('submit-post-button').textContent = 'Create Post';
-        document.getElementById('cancel-edit-button').classList.add('hidden');
-        currentEditingSlug = null;
-    }
+            try {
+                const response = await fetch('/api/login.js', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
 
-    // Cancel edit handler
-    document.getElementById('cancel-edit-button').addEventListener('click', resetForm);
+                const data = await response.json();
 
-    // Preview handler
-    document.getElementById('preview-button').addEventListener('click', () => {
-        const formData = new FormData(document.getElementById('post-form'));
-        const htmlContent = DOMPurify.sanitize(quill.root.innerHTML);
-        
-        const previewData = {
-            title: formData.get('title') || 'Untitled Post',
-            category: formData.get('category') || 'Uncategorized',
-            tags: formData.get('tags'),
-            image: formData.get('image') || '',
-            date: formData.get('date') || new Date().toISOString().split('T')[0],
-            description: formData.get('description') || '',
-            content: htmlContent || '<p class="text-gray-500 italic">No content available</p>'
-        };
-        
-        document.getElementById('preview-content').innerHTML = generatePreviewHTML(previewData);
-        document.getElementById('preview-modal').classList.remove('hidden');
-    });
+                if (!response.ok) {
+                    throw new Error(data.error || 'Login failed');
+                }
 
-    // Close preview handler
-    document.getElementById('close-preview').addEventListener('click', () => {
-        document.getElementById('preview-modal').classList.add('hidden');
-    });
-
-    // Generate preview HTML
-    function generatePreviewHTML(data) {
-        const formattedDate = new Date(data.date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-        
-        const tags = data.tags ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
-        
-        return `
-            <article class="prose prose-lg max-w-none">
-                ${data.image ? `<img src="${data.image}" alt="${data.title}" class="w-full h-64 object-cover rounded-lg mb-6">` : ''}
-                <header class="mb-8">
-                    <h1 class="text-4xl font-bold text-gray-900 mb-4">${data.title}</h1>
-                    ${data.description ? `<p class="text-gray-600 mb-4">${data.description}</p>` : ''}
-                    <div class="flex items-center space-x-4 text-gray-600 mb-4">
-                        <time datetime="${data.date}">${formattedDate}</time>
-                        ${data.category ? `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">${data.category}</span>` : ''}
-                    </div>
-                    ${tags.length > 0 ? `
-                        <div class="flex flex-wrap gap-2">
-                            ${tags.map(tag => `<span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm">#${tag}</span>`).join('')}
-                        </div>
-                    ` : ''}
-                </header>
-                <div class="prose prose-lg max-w-none">
-                    ${data.content}
-                </div>
-            </article>
-        `;
-    }
-
-    // Load posts from API
-    async function loadPosts() {
-        const postList = document.getElementById('post-list');
-        const loading = document.getElementById('loading');
-        const error = document.getElementById('error');
-        
-        postList.innerHTML = '<div class="text-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div></div>';
-        loading.classList.remove('hidden');
-        error.classList.add('hidden');
-
-        try {
-            const response = await fetch('/api/list-posts.js?t=' + Date.now());
-            if (!response.ok) {
-                throw new Error('Failed to fetch posts');
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('admin-section').classList.remove('hidden');
+                await loadPosts();
+            } catch (err) {
+                error.textContent = err.message;
+                error.classList.remove('hidden');
             }
-            
-            const { data, error: apiError } = await response.json();
-            if (apiError) throw new Error(apiError);
-            
-            allPosts = data;
-            filteredPosts = [...allPosts];
-            displayPosts(filteredPosts);
-        } catch (err) {
-            error.textContent = 'Failed to load posts: ' + err.message;
-            error.classList.remove('hidden');
-            postList.innerHTML = '<p class="text-red-500 text-center py-8">Failed to load posts</p>';
-            showNotification('Failed to load posts: ' + err.message, true);
-        } finally {
-            loading.classList.add('hidden');
-        }
-    }
-
-    // Display posts in the sidebar
-    function displayPosts(posts) {
-        const postList = document.getElementById('post-list');
-        const postsTitle = document.getElementById('posts-title');
-        
-        postsTitle.textContent = `Posts (${allPosts.length})`;
-
-        const displayPosts = document.getElementById('search-input').value.trim() ? posts : posts.slice(0, 5);
-        
-        if (displayPosts.length === 0) {
-            postList.innerHTML = '<p class="text-gray-500 text-center py-8">No posts found.</p>';
-        } else {
-            postList.innerHTML = displayPosts.map(post => `
-                <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition duration-200">
-                    <div class="flex items-start justify-between">
-                        <div class="flex-1 min-w-0">
-                            <a href="/content/articles/${post.slug}.html" class="font-medium text-gray-900 truncate hover:underline" target="_blank">${post.title || 'Untitled'}</a>
-                        </div>
-                        <div class="flex space-x-2 ml-4">
-                            <button class="edit-post bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
-                                Edit
-                            </button>
-                            <button class="delete-post bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        document.querySelectorAll('.edit-post').forEach(button => {
-            button.addEventListener('click', handleEdit);
         });
-        
-        document.querySelectorAll('.delete-post').forEach(button => {
-            button.addEventListener('click', handleDelete);
+
+        // Logout handler
+        document.getElementById('logout-button').addEventListener('click', () => {
+            document.getElementById('admin-section').classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('login-form').reset();
+            showNotification('Logged out successfully');
         });
-    }
 
-    // Edit post handler
-    function handleEdit(e) {
-        const slug = e.target.dataset.slug;
-        const post = allPosts.find(p => p.slug === slug);
-        
-        if (!post) return;
-
-        document.querySelector('input[name="title"]').value = post.title || '';
-        document.querySelector('input[name="slug"]').value = post.slug || '';
-        document.querySelector('select[name="category"]').value = post.category || 'Uncategorized';
-        document.querySelector('input[name="tags"]').value = post.tags ? post.tags.split(',').map(tag => tag.trim()).join(', ') : '';
-        document.querySelector('input[name="image"]').value = post.image || '';
-        document.querySelector('input[name="date"]').value = post.date || '';
-        document.querySelector('textarea[name="description"]').value = post.description || '';
-        quill.root.innerHTML = post.content || '';
-        
-        document.getElementById('form-title').textContent = 'Edit Post';
-        document.getElementById('submit-post-button').textContent = 'Update Post';
-        document.getElementById('cancel-edit-button').classList.remove('hidden');
-        currentEditingSlug = post.slug;
-        
-        showNotification(`Editing post: ${post.title}`);
-    }
-
-    // Delete post handler
-    async function handleDelete(e) {
-        const slug = e.target.dataset.slug;
-        if (!slug || !confirm('Are you sure you want to delete this post?')) return;
-
-        const loading = document.getElementById('loading');
-        const error = document.getElementById('error');
-        loading.classList.remove('hidden');
-        error.classList.add('hidden');
-
-        try {
-            const response = await fetch('/api/delete-post.js', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ slug })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to delete post');
+        // Form submission handler (create/update)
+        document.getElementById('post-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const submitButton = document.getElementById('submit-post-button');
+            
+            if (!validateForm()) {
+                showNotification('Please fill all required fields.', true);
+                return;
             }
 
-            if (currentEditingSlug === slug) {
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
+            submitButton.disabled = true;
+
+            const formData = new FormData(e.target);
+            const htmlContent = DOMPurify.sanitize(quill.root.innerHTML);
+            
+            const postData = {
+                title: formData.get('title').trim(),
+                slug: formData.get('slug').trim(),
+                category: formData.get('category'),
+                tags: formData.get('tags').split(',').map(tag => tag.trim()).filter(tag => tag).join(','),
+                image: formData.get('image').trim() || '',
+                date: formData.get('date'),
+                description: formData.get('description').trim(),
+                content: htmlContent
+            };
+
+            try {
+                const isUpdate = currentEditingSlug !== null;
+                const endpoint = '/api/save-post.js';
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ...postData, isUpdate })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to save post');
+                }
+
+                const { message, url } = await response.json();
+                
+                if (!isUpdate) {
+                    await updateSitemap(postData);
+                }
+
                 resetForm();
+                showNotification(`${message}! <a href="${url}" class="underline hover:text-blue-200" target="_blank">View post</a>`);
+                await loadPosts();
+            } catch (err) {
+                error.textContent = err.message;
+                error.classList.add('hidden');
+                showNotification('Failed to save post: ' + err.message, true);
+            } finally {
+                loading.classList.add('hidden');
+                submitButton.disabled = false;
+            }
+        });
+
+        // Reset form to create new post
+        function resetForm() {
+            document.getElementById('post-form').reset();
+            quill.setContents([]);
+            document.getElementById('form-title').textContent = 'Create Post';
+            document.getElementById('submit-post-button').textContent = 'Create Post';
+            document.getElementById('cancel-edit-button').classList.add('hidden');
+            currentEditingSlug = null;
+            validateForm();
+        }
+
+        // Cancel edit handler
+        document.getElementById('cancel-edit-button').addEventListener('click', resetForm);
+
+        // Preview handler
+        document.getElementById('preview-button').addEventListener('click', () => {
+            const formData = new FormData(document.getElementById('post-form'));
+            const htmlContent = DOMPurify.sanitize(quill.root.innerHTML);
+            
+            const previewData = {
+                title: formData.get('title') || 'Untitled Post',
+                category: formData.get('category') || 'Uncategorized',
+                tags: formData.get('tags'),
+                image: formData.get('image') || '',
+                date: formData.get('date') || new Date().toISOString().split('T')[0],
+                description: formData.get('description') || '',
+                content: htmlContent || '<p class="text-gray-500 italic">No content available</p>'
+            };
+            
+            document.getElementById('preview-content').innerHTML = generatePreviewHTML(previewData);
+            document.getElementById('preview-modal').classList.remove('hidden');
+        });
+
+        // Close preview handler
+        document.getElementById('close-preview').addEventListener('click', () => {
+            document.getElementById('preview-modal').classList.add('hidden');
+        });
+
+        // Generate preview HTML
+        function generatePreviewHTML(data) {
+            const formattedDate = new Date(data.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            const tags = data.tags ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+            
+            return `
+                <article class="prose prose-lg max-w-none">
+                    ${data.image ? `<img src="${data.image}" alt="${data.title}" class="w-full h-64 object-cover rounded-lg mb-6">` : ''}
+                    <header class="mb-8">
+                        <h1 class="text-4xl font-bold text-gray-900 mb-4">${data.title}</h1>
+                        ${data.description ? `<p class="text-gray-600 mb-4">${data.description}</p>` : ''}
+                        <div class="flex items-center space-x-4 text-gray-600 mb-4">
+                            <time datetime="${data.date}">${formattedDate}</time>
+                            ${data.category ? `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">${data.category}</span>` : ''}
+                        </div>
+                        ${tags.length > 0 ? `
+                            <div class="flex flex-wrap gap-2">
+                                ${tags.map(tag => `<span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm">#${tag}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </header>
+                    <div class="prose prose-lg max-w-none">
+                        ${data.content}
+                    </div>
+                </article>
+            `;
+        }
+
+        // Load posts from API
+        async function loadPosts() {
+            const postList = document.getElementById('post-list');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            
+            postList.innerHTML = '<div class="text-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div></div>';
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/list-posts.js?t=' + Date.now());
+                if (!response.ok) {
+                    throw new Error('Failed to fetch posts');
+                }
+                
+                const { data, error: apiError } = await response.json();
+                if (apiError) throw new Error(apiError);
+                
+                allPosts = data;
+                filteredPosts = [...allPosts];
+                displayPosts(filteredPosts);
+            } catch (err) {
+                error.textContent = 'Failed to load posts: ' + err.message;
+                error.classList.remove('hidden');
+                postList.innerHTML = '<p class="text-red-500 text-center py-8">Failed to load posts</p>';
+                showNotification('Failed to load posts: ' + err.message, true);
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        // Display posts in the sidebar
+        function displayPosts(posts) {
+            const postList = document.getElementById('post-list');
+            const postsTitle = document.getElementById('posts-title');
+            
+            postsTitle.textContent = `Posts (${allPosts.length})`;
+
+            const displayPosts = document.getElementById('search-input').value.trim() ? posts : posts.slice(0, 5);
+            
+            if (displayPosts.length === 0) {
+                postList.innerHTML = '<p class="text-gray-500 text-center py-8">No posts found.</p>';
+            } else {
+                postList.innerHTML = displayPosts.map(post => `
+                    <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition duration-200">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1 min-w-0">
+                                <a href="/content/articles/${post.slug}.html" class="font-medium text-gray-900 truncate hover:underline" target="_blank">${post.title || 'Untitled'}</a>
+                            </div>
+                            <div class="flex space-x-2 ml-4">
+                                <button class="edit-post bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
+                                    Edit
+                                </button>
+                                <button class="delete-post bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-md text-sm transition duration-200" data-slug="${post.slug || ''}">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
             }
 
-            showNotification('Post deleted successfully');
-            await loadPosts();
-        } catch (err) {
-            error.textContent = 'Failed to delete post: ' + err.message;
-            error.classList.remove('hidden');
-            showNotification('Failed to delete post: ' + err.message, true);
-        } finally {
-            loading.classList.add('hidden');
+            document.querySelectorAll('.edit-post').forEach(button => {
+                button.addEventListener('click', handleEdit);
+            });
+            
+            document.querySelectorAll('.delete-post').forEach(button => {
+                button.addEventListener('click', handleDelete);
+            });
         }
-    }
 
-    // Search functionality
-    document.getElementById('search-input').addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase().trim();
-        
-        if (searchTerm === '') {
-            filteredPosts = [...allPosts];
-        } else {
-            filteredPosts = allPosts.filter(post => 
-                (post.title && post.title.toLowerCase().includes(searchTerm)) ||
-                (post.category && post.category.toLowerCase().includes(searchTerm)) ||
-                (post.tags && post.tags.split(',').map(tag => tag.trim()).some(tag => tag.toLowerCase().includes(searchTerm))) ||
-                (post.description && post.description.toLowerCase().includes(searchTerm))
-            );
+        // Edit post handler
+        function handleEdit(e) {
+            const slug = e.target.dataset.slug;
+            const post = allPosts.find(p => p.slug === slug);
+            
+            if (!post) return;
+
+            document.querySelector('input[name="title"]').value = post.title || '';
+            document.querySelector('input[name="slug"]').value = post.slug || '';
+            document.querySelector('select[name="category"]').value = post.category || 'Uncategorized';
+            document.querySelector('input[name="tags"]').value = post.tags ? post.tags.split(',').map(tag => tag.trim()).join(', ') : '';
+            document.querySelector('input[name="image"]').value = post.image || '';
+            document.querySelector('input[name="date"]').value = post.date || '';
+            document.querySelector('textarea[name="description"]').value = post.description || '';
+            quill.root.innerHTML = post.content || '';
+            
+            document.getElementById('form-title').textContent = 'Edit Post';
+            document.getElementById('submit-post-button').textContent = 'Update Post';
+            document.getElementById('cancel-edit-button').classList.remove('hidden');
+            currentEditingSlug = post.slug;
+            
+            showNotification(`Editing post: ${post.title}`);
+            validateForm();
         }
-        
-        displayPosts(filteredPosts);
-    });
 
-    // Auto-generate slug from title
-    document.querySelector('input[name="title"]').addEventListener('input', (e) => {
-        if (!currentEditingSlug) {
-            document.querySelector('input[name="slug"]').value = slugify(e.target.value);
+        // Delete post handler
+        async function handleDelete(e) {
+            const slug = e.target.dataset.slug;
+            if (!slug || !confirm('Are you sure you want to delete this post?')) return;
+
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/delete-post.js', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ slug })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to delete post');
+                }
+
+                if (currentEditingSlug === slug) {
+                    resetForm();
+                }
+
+                showNotification('Post deleted successfully');
+                await loadPosts();
+            } catch (err) {
+                error.textContent = 'Failed to delete post: ' + err.message;
+                error.classList.remove('hidden');
+                showNotification('Failed to delete post: ' + err.message, true);
+            } finally {
+                loading.classList.add('hidden');
+            }
         }
-    });
 
-    // Initialize the editor when DOM is loaded
-    document.addEventListener('DOMContentLoaded', () => {
-        initQuill();
-    });
-</script>
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                filteredPosts = [...allPosts];
+            } else {
+                filteredPosts = allPosts.filter(post => 
+                    (post.title && post.title.toLowerCase().includes(searchTerm)) ||
+                    (post.category && post.category.toLowerCase().includes(searchTerm)) ||
+                    (post.tags && post.tags.split(',').map(tag => tag.trim()).some(tag => tag.toLowerCase().includes(searchTerm))) ||
+                    (post.description && post.description.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            displayPosts(filteredPosts);
+        });
+
+        // Auto-generate slug from title
+        document.querySelector('input[name="title"]').addEventListener('input', (e) => {
+            if (!currentEditingSlug) {
+                document.querySelector('input[name="slug"]').value = slugify(e.target.value);
+            }
+            validateForm();
+        });
+
+        // Validate form on input changes
+        document.getElementById('post-form').addEventListener('input', validateForm);
+        document.querySelector('select[name="category"]').addEventListener('change', validateForm);
+        document.querySelector('textarea[name="description"]').addEventListener('input', validateForm);
+
+        // Initialize the editor when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initQuill();
+            validateForm();
+        });
+    </script>
 </body>
 </html>
