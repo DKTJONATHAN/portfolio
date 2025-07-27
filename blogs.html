@@ -284,22 +284,21 @@
             }
 
             function renderCategories(posts) {
-                const tags = new Set();
+                const categories = new Set();
                 posts.forEach(post => {
-                    if (post.tags) {
-                        const firstTag = post.tags.split(',').map(tag => tag.trim()).filter(tag => tag)[0];
-                        if (firstTag) tags.add(firstTag);
+                    if (post.category) {
+                        categories.add(post.category);
                     }
                 });
                 categoryList.innerHTML = '<span class="category-tag active" data-category="all" role="button" tabindex="0">All</span>';
-                tags.forEach(tag => {
-                    const tagElement = document.createElement('span');
-                    tagElement.className = 'category-tag';
-                    tagElement.dataset.category = tag;
-                    tagElement.setAttribute('role', 'button');
-                    tagElement.setAttribute('tabindex', '0');
-                    tagElement.textContent = tag;
-                    categoryList.appendChild(tagElement);
+                categories.forEach(category => {
+                    const categoryElement = document.createElement('span');
+                    categoryElement.className = 'category-tag';
+                    categoryElement.dataset.category = category;
+                    categoryElement.setAttribute('role', 'button');
+                    categoryElement.setAttribute('tabindex', '0');
+                    categoryElement.textContent = category;
+                    categoryList.appendChild(categoryElement);
                 });
                 document.querySelectorAll('.category-tag').forEach(tag => {
                     tag.addEventListener('click', () => {
@@ -324,13 +323,11 @@
 
                 const postsByCategory = {};
                 posts.forEach(post => {
-                    if (!post.tags) return; // Skip posts without tags
-                    const category = post.tags.split(',').map(tag => tag.trim()).filter(tag => tag)[0];
-                    if (!category) return; // Skip if no valid tag
-                    if (!postsByCategory[category]) {
-                        postsByCategory[category] = [];
+                    if (!post.category) return; // Skip posts without a category
+                    if (!postsByCategory[post.category]) {
+                        postsByCategory[post.category] = [];
                     }
-                    postsByCategory[category].push(post);
+                    postsByCategory[post.category].push(post);
                 });
 
                 if (Object.keys(postsByCategory).length === 0) {
@@ -377,7 +374,7 @@
                             <div class="post-content">
                                 <div class="post-meta">
                                     <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
-                                    <span class="post-category" itemprop="articleSection">${keywords[0] || ''}</span>
+                                    <span class="post-category" itemprop="articleSection">${post.category || ''}</span>
                                 </div>
                                 <h3 class="post-title" itemprop="headline">
                                     <a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
@@ -434,7 +431,7 @@
                 const activeCategory = document.querySelector('.category-tag.active').dataset.category;
                 const allPosts = await fetchPosts();
 
-                let filtered = allPosts.filter(post => post.tags && post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).length > 0);
+                let filtered = allPosts.filter(post => post.category);
 
                 if (searchTerm) {
                     filtered = filtered.filter(post =>
@@ -445,9 +442,7 @@
                 }
 
                 if (activeCategory !== 'all') {
-                    filtered = filtered.filter(post =>
-                        post.tags && post.tags.split(',').map(tag => tag.trim()).includes(activeCategory)
-                    );
+                    filtered = filtered.filter(post => post.category === activeCategory);
                 }
 
                 renderPosts(filtered);
