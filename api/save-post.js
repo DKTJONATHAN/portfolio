@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
     const filePath = `content/articles/${slug}.html`;
-    const metadataPath = `content/articles/metadata.json`;
+    const metadataPath = `content/articles.json`;
 
     // Generate HTML content
     const htmlContent = `
@@ -121,7 +121,10 @@ export default async function handler(req, res) {
       sha: metadataSha || undefined,
     });
 
-    return res.status(200).json({ message: 'Post saved successfully' });
+    return res.status(200).json({
+      message: 'Post saved successfully',
+      url: `/content/articles/${slug}.html`
+    });
   } catch (error) {
     return res.status(500).json({ error: `Failed to save post: ${error.message}` });
   }
