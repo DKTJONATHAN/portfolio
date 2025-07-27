@@ -25,10 +25,9 @@ export default async function handler(req, res) {
     // Process content to ensure image URLs are rendered as <img> tags
     const processContent = (content) => {
       if (!content) return content;
-      // Regular expression to match standalone URLs that look like images
       const urlRegex = /(https?:\/\/[^\s<>"']+\.(?:png|jpg|jpeg|gif|webp|svg))/gi;
       return content.replace(urlRegex, (url) => {
-        return `<img src="${isValidImageUrl(url) ? url : placeholderImage}" alt="Embedded image" style="max-width: 100%; height: auto; border-radius: 8px; margin: 1em 0;" />`;
+        return `<img src="${isValidImageUrl(url) ? url : placeholderImage}" alt="Embedded image" class="content-image" />`;
       });
     };
 
@@ -43,21 +42,140 @@ export default async function handler(req, res) {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>${title} | Mwaniki Reports</title>
-        <link rel="stylesheet" href="/content/blog-style.css">
+        <title>${title} | Jonathan Mwaniki</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         <style>
-          .blog-container { max-width: 800px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; }
-          .post-title { font-size: 2.5em; margin-bottom: 0.5em; }
-          .post-meta { display: flex; gap: 15px; color: #666; margin-bottom: 1em; }
-          .post-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1.5em; }
-          .post-tag { background: #e0e0e0; padding: 5px 10px; border-radius: 5px; text-decoration: none; color: #333; }
-          .post-image img { max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 1.5em; }
-          .post-content { line-height: 1.6; font-size: 1.1em; }
-          .post-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 1em 0; }
-          .post-footer { margin-top: 2em; padding-top: 1em; border-top: 1px solid #e0e0e0; text-align: center; color: #666; }
-          .post-footer .social-links a { margin: 0 10px; color: #333; }
+          :root {
+            --primary-color: #1a73e8;
+            --text-color: #333;
+            --muted-color: #666;
+            --bg-color: #fff;
+            --border-color: #e0e0e0;
+          }
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            color: var(--text-color);
+            background: var(--bg-color);
+          }
+          .blog-container {
+            max-width: 800px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+          }
+          .post-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-color);
+          }
+          .post-meta {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--muted-color);
+            margin-bottom: 0.75rem;
+          }
+          .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+          }
+          .post-tag {
+            background: var(--border-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: background 0.2s;
+          }
+          .post-tag:hover {
+            background: var(--primary-color);
+            color: #fff;
+          }
+          .post-image img {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+          }
+          .post-content {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+          }
+          .post-content p {
+            margin-bottom: 0.75rem;
+          }
+          .post-content img.content-image {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 1rem 0;
+          }
+          .post-excerpt {
+            font-style: italic;
+            color: var(--muted-color);
+            margin-bottom: 1rem;
+          }
+          .post-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--muted-color);
+          }
+          .post-footer p {
+            margin-bottom: 0.5rem;
+          }
+          .post-footer .logo {
+            max-width: 150px;
+            margin: 1rem auto;
+            display: block;
+          }
+          .post-footer .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 0.75rem 0;
+          }
+          .post-footer .social-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.2s;
+          }
+          .post-footer .social-links a:hover {
+            color: #0d47a1;
+          }
+          @media (max-width: 600px) {
+            .post-title {
+              font-size: 1.5rem;
+            }
+            .blog-container {
+              margin: 1rem auto;
+              padding: 0 0.75rem;
+            }
+            .post-meta {
+              flex-direction: column;
+              gap: 0.5rem;
+            }
+            .post-image img,
+            .post-content img.content-image {
+              max-height: 300px;
+            }
+            .post-footer .logo {
+              max-width: 120px;
+            }
+          }
         </style>
       </head>
       <body>
@@ -80,14 +198,15 @@ export default async function handler(req, res) {
               ${processedContent}
             </div>
             <footer class="post-footer">
+              <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" class="logo">
               <p>Written by <span itemprop="author">Jonathan Mwaniki</span></p>
               <p>Published on <time datetime="${date}" itemprop="datePublished">${new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time></p>
               <p>Last updated on <time datetime="${date}" itemprop="dateModified">${new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time></p>
               <div class="social-links">
-                <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(`https://your-site.com/content/articles/${slug}.html`)}&text=${encodeURIComponent(title)}" target="_blank"><i class="fab fa-twitter"></i> Share on Twitter</a>
-                <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://your-site.com/content/articles/${slug}.html`)}" target="_blank"><i class="fab fa-linkedin"></i> Share on LinkedIn</a>
+                <a href="https://x.com/intent/tweet?url=${encodeURIComponent(`https://www.jonathanmwaniki.co.ke/content/articles/${slug}.html`)}&text=${encodeURIComponent(title)}&via=Maestropuns" target="_blank"><i class="fab fa-x-twitter"></i> Share on X</a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://www.jonathanmwaniki.co.ke/content/articles/${slug}.html`)}" target="_blank"><i class="fab fa-linkedin"></i> Share on LinkedIn</a>
               </div>
-              <p>&copy; ${new Date().getFullYear()} Mwaniki Reports. All rights reserved.</p>
+              <p>&copy; ${new Date().getFullYear()} Jonathan Mwaniki. All rights reserved.</p>
             </footer>
           </article>
         </main>
@@ -142,14 +261,12 @@ export default async function handler(req, res) {
       date,
       category: category || 'Uncategorized',
       tags: tags || '',
-      content, // Include raw content in metadata
+      content,
     };
 
     if (isUpdate) {
-      // Update existing post metadata
       metadata = metadata.map(post => (post.slug === slug ? postMetadata : post));
     } else {
-      // Check for duplicate slug
       if (metadata.some(post => post.slug === slug)) {
         return res.status(400).json({ error: 'Slug already exists' });
       }
@@ -169,7 +286,6 @@ export default async function handler(req, res) {
       if (error.status !== 404) throw error;
     }
 
-    // Save or update metadata file
     await octokit.repos.createOrUpdateFileContents({
       owner: process.env.GITHUB_OWNER,
       repo: process.env.GITHUB_REPO,
