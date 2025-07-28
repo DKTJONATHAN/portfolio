@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     
     <title>Jonathan Mwaniki | Professional Web Developer & Graphic Designer in Kenya</title>
@@ -42,79 +42,17 @@
     
     <link rel="canonical" href="https://www.jonathanmwaniki.co.ke">
     
-    <!-- Inline Critical Tailwind CSS -->
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        @media (max-width: 768px) { html { scroll-behavior: auto; } }
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: #1f2937;
-            background-color: #f9fafb;
-            line-height: 1.5;
-            overflow-x: hidden;
-            touch-action: manipulation;
-        }
-        .hidden { display: none !important; }
-        /* Splash Screen */
-        #splashScreen {
-            @apply fixed inset-0 z-50 bg-white flex flex-col items-center justify-center text-center;
-        }
-        #splashScreen h1 {
-            @apply text-3xl font-bold mb-2 text-gray-900;
-        }
-        #splashScreen p {
-            @apply text-gray-700 mb-8;
-        }
-        .progress-bar {
-            @apply w-full max-w-xs mx-auto mb-6;
-        }
-        .progress-bar-track {
-            @apply h-2 bg-gray-200 rounded-full overflow-hidden;
-        }
-        .progress-bar-fill {
-            @apply h-full bg-gradient-to-r from-primary to-secondary rounded-full w-0 transition-all duration-300;
-        }
-        /* Mobile Nav */
-        .mobile-nav {
-            @apply fixed bottom-0 left-0 w-full bg-white shadow-mobile-nav z-20 hidden md:hidden;
-        }
-        .mobile-nav-container {
-            @apply flex justify-around py-3;
-        }
-        .mobile-nav-link {
-            @apply flex flex-col items-center text-text text-xs gap-1 no-underline;
-        }
-        .mobile-nav-link i {
-            @apply text-lg;
-        }
-        @media (max-width: 768px) {
-            .mobile-nav { @apply block; }
-        }
-        /* Image Placeholders */
-        .image-wrapper {
-            @apply relative w-full bg-gray-200 overflow-hidden;
-        }
-        .lazy-image {
-            @apply block w-full h-full object-cover opacity-0 transition-opacity duration-300;
-        }
-        .lazy-image.loaded {
-            @apply opacity-100;
-        }
-    </style>
-    <!-- Defer non-critical Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="/styles.css" media="print" onload="this.media='all'">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/styles.css">
     <link rel="preload" href="/styles.css" as="style">
     <link rel="preload" href="/scripts/main.js" as="script">
     <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9291176772735390" crossorigin="anonymous"></script>
 
-    <!-- Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -166,10 +104,10 @@
     </script>
 </head>
 <body>
-    <div id="splashScreen" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center text-center">
-        <div class="splash-content">
+    <div id="splashScreen">
+        <div class="splash-content text-center">
             <div class="splash-logo">
-                <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="80" height="80" loading="eager" class="lazy-image">
+                <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="80" height="80" loading="eager">
             </div>
             <h1>Jonathan Mwaniki</h1>
             <p>Professional Web Developer & Graphic Designer</p>
@@ -181,166 +119,175 @@
         </div>
     </div>
 
-    <div id="mainContent" class="hidden">
-        <nav class="mobile-nav md:hidden">
-            <div class="mobile-nav-container">
-                <a href="#home" class="mobile-nav-link" aria-label="Home"><i class="fas fa-home"></i><span>Home</span></a>
-                <a href="#services" class="mobile-nav-link" aria-label="Services"><i class="fas fa-cogs"></i><span>Services</span></a>
-                <a href="#portfolio" class="mobile-nav-link" aria-label="Portfolio"><i class="fas fa-briefcase"></i><span>Portfolio</span></a>
-                <a href="#blog" class="mobile-nav-link" aria-label="Blog"><i class="fas fa-blog"></i><span>Blog</span></a>
-                <a href="#contact" class="mobile-nav-link" aria-label="Contact"><i class="fas fa-envelope"></i><span>Contact</span></a>
+    <div id="mainContent" style="display: none;">
+        <nav class="navbar fixed-bottom navbar-light bg-light d-md-none">
+            <div class="container-fluid justify-content-around">
+                <a class="nav-link text-center" href="#home" aria-label="Home"><i class="fas fa-home"></i><br>Home</a>
+                <a class="nav-link text-center" href="#services" aria-label="Services"><i class="fas fa-cogs"></i><br>Services</a>
+                <a class="nav-link text-center" href="#portfolio" aria-label="Portfolio"><i class="fas fa-briefcase"></i><br>Portfolio</a>
+                <a class="nav-link text-center" href="#blog" aria-label="Blog"><i class="fas fa-blog"></i><br>Blog</a>
+                <a class="nav-link text-center" href="#contact" aria-label="Contact"><i class="fas fa-envelope"></i><br>Contact</a>
             </div>
         </nav>
 
-        <nav class="desktop-nav fixed top-0 left-0 w-full bg-white bg-opacity-95 shadow-nav z-20 hidden md:block">
-            <div class="nav-container max-w-6xl mx-auto px-4 flex justify-between items-center">
-                <div class="nav-brand flex items-center gap-3">
-                    <div class="brand-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="eager" class="lazy-image">
-                    </div>
-                    <span class="brand-name font-semibold text-xl">Jonathan Mwaniki</span>
-                </div>
-                <div class="nav-links flex gap-6">
-                    <a href="#home" class="nav-link text-text font-medium hover:text-primary transition-colors duration-200 active:text-primary" aria-label="Home">Home</a>
-                    <a href="#services" class="nav-link text-text font-medium hover:text-primary transition-colors duration-200" aria-label="Services">Services</a>
-                    <a href="#portfolio" class="nav-link text-text font-medium hover:text-primary transition-colors duration-200" aria-label="Portfolio">Portfolio</a>
-                    <a href="#blog" class="nav-link text-text font-medium hover:text-primary transition-colors duration-200" aria-label="Blog">Blog</a>
-                    <a href="#about" class="nav-link text-text font-medium hover:text-primary transition-colors duration-200" aria-label="About">About</a>
-                    <a href="#contact" class="nav-link text-text font-medium hover:text-primary transition-colors duration-200" aria-label="Contact">Contact</a>
+        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top d-none d-md-block">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="eager">
+                    <span class="ms-2">Jonathan Mwaniki</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#blog">Blog</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    </ul>
                 </div>
             </div>
         </nav>
 
-        <section id="home" class="hero-section py-8 px-4 bg-gradient-to-br from-light-bg to-gray-200">
-            <div class="hero-container max-w-6xl mx-auto">
-                <div class="hero-content">
-                    <h1 class="hero-title text-5xl md:text-5xl font-bold leading-tight mb-4">
-                        <span class="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">Jonathan Mwaniki</span><br>
-                        Professional Web Developer & Designer
-                    </h1>
-                    <p class="hero-description text-lg text-gray-700 mb-8">
-                        I'm Jonathan Mwaniki, a passionate web developer and graphic designer with over 5 years of experience. 
-                        I create responsive websites and compelling designs to help businesses establish their online presence.
-                    </p>
-                    <div class="hero-actions flex flex-col md:flex-row gap-4 mb-8">
-                        <a href="#contact" class="btn-primary inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-md font-semibold hover:-translate-y-0.5 transition-transform duration-200" aria-label="Hire Jonathan Mwaniki">Hire Me</a>
-                        <a href="#portfolio" class="btn-outline inline-flex items-center gap-2 px-6 py-3 border-2 border-primary text-primary rounded-md font-semibold hover:bg-primary hover:text-white transition-all duration-200" aria-label="View Jonathan Mwaniki's Work">View My Portfolio</a>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <div class="image-wrapper h-64 md:h-96">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" data-src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki - Professional Web Developer & Designer in Kenya" loading="eager" width="600" height="400" class="lazy-image rounded-lg shadow-lg">
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="services" class="services-section py-20 px-5 bg-light-bg">
-            <div class="services-container max-w-6xl mx-auto">
-                <div class="section-header text-center mb-16">
-                    <h2 class="section-title text-4xl font-bold mb-4">Professional <span class="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">Services</span></h2>
-                    <p class="section-description text-lg text-gray-700 max-w-2xl mx-auto">Comprehensive digital solutions tailored for businesses</p>
-                </div>
-                <div class="services-grid grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="service-card bg-white p-8 rounded-lg shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300" itemscope itemtype="https://schema.org/Service">
-                        <div class="service-icon text-5xl text-primary mb-4">
-                            <i class="fas fa-code"></i>
+        <section id="home" class="hero-section py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center text-md-start">
+                        <h1 class="display-4 fw-bold mb-4">
+                            <span class="gradient-text">Jonathan Mwaniki</span><br>
+                            Professional Web Developer & Designer
+                        </h1>
+                        <p class="lead text-muted mb-4">
+                            I'm Jonathan Mwaniki, a passionate web developer and graphic designer with over 5 years of experience. 
+                            I create responsive websites and compelling designs to help businesses establish their online presence.
+                        </p>
+                        <div class="d-flex flex-column flex-md-row gap-3 mb-4">
+                            <a href="#contact" class="btn btn-primary">Hire Me</a>
+                            <a href="#portfolio" class="btn btn-outline-primary">View My Portfolio</a>
                         </div>
-                        <h3 class="service-title text-2xl font-semibold mb-4" itemprop="name">Web Development</h3>
-                        <p class="service-description text-gray-700 mb-6" itemprop="description">Custom websites and web applications built with modern technologies.</p>
-                        <ul class="service-features space-y-2">
-                            <li class="feature-item flex items-center gap-2"><i class="fas fa-check-circle text-primary"></i><span>Responsive Web Design</span></li>
-                            <li class="feature-item flex items-center gap-2"><i class="fas fa-check-circle text-primary"></i><span>SEO Optimized Websites</span></li>
-                            <li class="feature-item flex items-center gap-2"><i class="fas fa-check-circle text-primary"></i><span>E-commerce Development</span></li>
-                        </ul>
                     </div>
-                    <div class="service-card bg-white p-8 rounded-lg shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300" itemscope itemtype="https://schema.org/Service">
-                        <div class="service-icon text-5xl text-primary mb-4">
-                            <i class="fas fa-paint-brush"></i>
-                        </div>
-                        <h3 class="service-title text-2xl font-semibold mb-4" itemprop="name">Graphic Design</h3>
-                        <p class="service-description text-gray-700 mb-6" itemprop="description">Visually stunning designs that communicate your brand's message.</p>
-                        <ul class="service-features space-y-2">
-                            <li class="feature-item flex items-center gap-2"><i class="fas fa-check-circle text-primary"></i><span>Logo Design</span></li>
-                            <li class="feature-item flex items-center gap-2"><i class="fas fa-check-circle text-primary"></i><span>Brand Identity</span></li>
-                            <li class="feature-item flex items-center gap-2"><i class="fas fa-check-circle text-primary"></i><span>Marketing Materials</span></li>
-                        </ul>
-                    </div>
-                    <div class="service-card bg-white p-8 rounded-lg shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300" itemscope itemtype="https://schema.org/Service">
-                        <div class="service-icon text-5xl text-primary mb-4">
-                            <i class="fas fa-bullhorn"></i>
-                        </div>
-                        <h3 class="service-title text-2xl font-semibold mb-4" itemprop="name">Digital Marketing</h3>
-                        <p class="service-description text-gray-700 mb-6" itemprop="description">Strategic campaigns to grow your online presence.</p>
-                        <ul class="service-features space-y-2">
-                            <li class="feature-item flex items-center gap-2"><i class="fas fa-check-circle text-primary"></i><span>Social Media Management</span></li>
-                            <li class="feature-item flex items-center gap-2"><i class="fas fa-check-circle text-primary"></i><span>SEO Services</span></li>
-                            <li class="feature-item flex items-center gap-2"><i class="fas fa-check-circle text-primary"></i><span>Content Marketing</span></li>
-                        </ul>
+                    <div class="col-md-6">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki - Professional Web Developer & Designer in Kenya" class="img-fluid rounded shadow" width="600" height="400" loading="eager">
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="portfolio" class="portfolio-section py-20 px-5 bg-light-bg">
-            <div class="portfolio-container max-w-6xl mx-auto">
-                <div class="section-header text-center mb-16">
-                    <h2 class="section-title text-4xl font-bold mb-4">My <span class="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">Portfolio</span></h2>
-                    <p class="section-description text-lg text-gray-700 max-w-2xl mx-auto">Projects by Jonathan Mwaniki showcasing web development expertise</p>
+        <section id="services" class="py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold">Professional <span class="gradient-text">Services</span></h2>
+                    <p class="lead text-muted">Comprehensive digital solutions tailored for businesses</p>
                 </div>
-                <div class="portfolio-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="portfolio-card bg-white p-8 rounded-lg shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300" itemscope itemtype="https://schema.org/CreativeWork">
-                        <div class="image-wrapper h-48">
-                            <img src="/images/Screenshot 2025-05-17 17.19.07.png" data-src="/images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani - Rental Platform by Jonathan Mwaniki" loading="lazy" width="400" height="200" class="lazy-image rounded-lg">
-                        </div>
-                        <div class="card-content mt-4">
-                            <h3 class="card-title text-2xl font-semibold mb-4" itemprop="name">Nooki Mtaani</h3>
-                            <p class="card-description text-gray-700 mb-6" itemprop="description">Rental platform with secure payment integration.</p>
-                            <a href="https://nookimtaani.netlify.app" target="_blank" rel="noopener noreferrer" class="card-link inline-flex items-center gap-2 text-primary font-medium hover:underline" itemprop="url">View Project <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="portfolio-card bg-white p-8 rounded-lg shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300" itemscope itemtype="https://schema.org/CreativeWork">
-                        <div class="image-wrapper h-48">
-                            <img src="/images/3.PNG" data-src="/images/3.PNG" alt="Jamtech Electronics - E-commerce by Jonathan Mwaniki" loading="lazy" width="400" height="200" class="lazy-image rounded-lg">
-                        </div>
-                        <div class="card-content mt-4">
-                            <h3 class="card-title text-2xl font-semibold mb-4" itemprop="name">Jamtech Electronics</h3>
-                            <p class="card-description text-gray-700 mb-6" itemprop="description">E-commerce platform with product catalog.</p>
-                            <a href="https://jamtech.pages.dev" target="_blank" rel="noopener noreferrer" class="card-link inline-flex items-center gap-2 text-primary font-medium hover:underline" itemprop="url">View Project <i class="fas fa-arrow-right"></i></a>
+                <div class="row">
+                    <div class="col-md-4 mb-4" itemscope itemtype="https://schema.org/Service">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fas fa-code fa-3x text-primary mb-3"></i>
+                                <h3 class="card-title h4" itemprop="name">Web Development</h3>
+                                <p class="card-text text-muted" itemprop="description">Custom websites and web applications built with modern technologies.</p>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i>Responsive Web Design</li>
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i>SEO Optimized Websites</li>
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i>E-commerce Development</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    <div class="portfolio-card bg-white p-8 rounded-lg shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300" itemscope itemtype="https://schema.org/CreativeWork">
-                        <div class="image-wrapper h-48">
-                            <img src="/images/afri.png" data-src="/images/afri.png" alt="AfriChain WEB3 - Blockchain by Jonathan Mwaniki" loading="lazy" width="400" height="200" class="lazy-image rounded-lg">
-                        </div>
-                        <div class="card-content mt-4">
-                            <h3 class="card-title text-2xl font-semibold mb-4" itemprop="name">AfriChain WEB3</h3>
-                            <p class="card-description text-gray-700 mb-6" itemprop="description">Blockchain platform with cryptocurrency integration.</p>
-                            <a href="https://africhainke.netlify.app" target="_blank" rel="noopener noreferrer" class="card-link inline-flex items-center gap-2 text-primary font-medium hover:underline" itemprop="url">View Project <i class="fas fa-arrow-right"></i></a>
+                    <div class="col-md-4 mb-4" itemscope itemtype="https://schema.org/Service">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fas fa-paint-brush fa-3x text-primary mb-3"></i>
+                                <h3 class="card-title h4" itemprop="name">Graphic Design</h3>
+                                <p class="card-text text-muted" itemprop="description">Visually stunning designs that communicate your brand's message.</p>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i>Logo Design</li>
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i>Brand Identity</li>
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i>Marketing Materials</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    <div class="portfolio-card bg-white p-8 rounded-lg shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300" itemscope itemtype="https://schema.org/CreativeWork">
-                        <div class="image-wrapper h-48">
-                            <img src="/images/cap1.JPG" data-src="/images/cap1.JPG" alt="RutoMustGo Website by Jonathan Mwaniki" loading="lazy" width="400" height="200" class="lazy-image rounded-lg">
-                        </div>
-                        <div class="card-content mt-4">
-                            <h3 class="card-title text-2xl font-semibold mb-4" itemprop="name">RutoMustGo Website</h3>
-                            <p class="card-description text-gray-700 mb-6" itemprop="description">Political campaign website with responsive design.</p>
-                            <a href="https://rutomustgo.pages.dev" target="_blank" rel="noopener noreferrer" class="card-link inline-flex items-center gap-2 text-primary font-medium hover:underline" itemprop="url">View Project <i class="fas fa-arrow-right"></i></a>
+                    <div class="col-md-4 mb-4" itemscope itemtype="https://schema.org/Service">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="fas fa-bullhorn fa-3x text-primary mb-3"></i>
+                                <h3 class="card-title h4" itemprop="name">Digital Marketing</h3>
+                                <p class="card-text text-muted" itemprop="description">Strategic campaigns to grow your online presence.</p>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i>Social Media Management</li>
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i>SEO Services</li>
+                                    <li><i class="fas fa-check-circle text-primary me-2"></i>Content Marketing</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="blog" class="blog-section py-20 px-5 bg-light-bg">
-            <div class="blog-container max-w-6xl mx-auto">
-                <div class="section-header text-center mb-16">
-                    <h2 class="section-title text-4xl font-bold mb-4">Latest <span class="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">Blog Posts</span></h2>
-                    <p class="section-description text-lg text-gray-700 max-w-2xl mx-auto">Insights and tutorials by Jonathan Mwaniki</p>
+        <section id="portfolio" class="py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold">My <span class="gradient-text">Portfolio</span></h2>
+                    <p class="lead text-muted">Projects by Jonathan Mwaniki showcasing web development expertise</p>
                 </div>
-                <div id="blog-list" class="blog-posts grid grid-cols-1 sm:grid-cols-2 gap-8"></div>
-                <div class="ad-container my-8 text-center" style="min-height: 100px; min-width: 300px;">
+                <div class="row">
+                    <div class="col-md-4 mb-4" itemscope itemtype="https://schema.org/CreativeWork">
+                        <div class="card h-100 shadow-sm">
+                            <img src="/images/Screenshot 2025-05-17 17.19.07.png" alt="Nooki Mtaani - Rental Platform by Jonathan Mwaniki" class="card-img-top" loading="lazy" width="400" height="200">
+                            <div class="card-body">
+                                <h3 class="card-title h5" itemprop="name">Nooki Mtaani</h3>
+                                <p class="card-text text-muted" itemprop="description">Rental platform with secure payment integration.</p>
+                                <a href="https://nookimtaani.netlify.app" target="_blank" rel="noopener noreferrer" class="btn btn-primary" itemprop="url">View Project</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4" itemscope itemtype="https://schema.org/CreativeWork">
+                        <div class="card h-100 shadow-sm">
+                            <img src="/images/3.PNG" alt="Jamtech Electronics - E-commerce by Jonathan Mwaniki" class="card-img-top" loading="lazy" width="400" height="200">
+                            <div class="card-body">
+                                <h3 class="card-title h5" itemprop="name">Jamtech Electronics</h3>
+                                <p class="card-text text-muted" itemprop="description">E-commerce platform with product catalog.</p>
+                                <a href="https://jamtech.pages.dev" target="_blank" rel="noopener noreferrer" class="btn btn-primary" itemprop="url">View Project</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4" itemscope itemtype="https://schema.org/CreativeWork">
+                        <div class="card h-100 shadow-sm">
+                            <img src="/images/afri.png" alt="AfriChain WEB3 - Blockchain by Jonathan Mwaniki" class="card-img-top" loading="lazy" width="400" height="200">
+                            <div class="card-body">
+                                <h3 class="card-title h5" itemprop="name">AfriChain WEB3</h3>
+                                <p class="card-text text-muted" itemprop="description">Blockchain platform with cryptocurrency integration.</p>
+                                <a href="https://africhainke.netlify.app" target="_blank" rel="noopener noreferrer" class="btn btn-primary" itemprop="url">View Project</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4" itemscope itemtype="https://schema.org/CreativeWork">
+                        <div class="card h-100 shadow-sm">
+                            <img src="/images/cap1.JPG" alt="RutoMustGo Website by Jonathan Mwaniki" class="card-img-top" loading="lazy" width="400" height="200">
+                            <div class="card-body">
+                                <h3 class="card-title h5" itemprop="name">RutoMustGo Website</h3>
+                                <p class="card-text text-muted" itemprop="description">Political campaign website with responsive design.</p>
+                                <a href="https://rutomustgo.pages.dev" target="_blank" rel="noopener noreferrer" class="btn btn-primary" itemprop="url">View Project</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="blog" class="py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold">Latest <span class="gradient-text">Blog Posts</span></h2>
+                    <p class="lead text-muted">Insights and tutorials by Jonathan Mwaniki</p>
+                </div>
+                <div id="blog-list" class="row"></div>
+                <div class="ad-container text-center my-4" style="min-height: 100px; min-width: 300px;">
                     <ins class="adsbygoogle"
                          style="display:block; width:100%; min-height:100px;"
                          data-ad-client="ca-pub-9291176772735390"
@@ -348,116 +295,86 @@
                          data-ad-format="auto"
                          data-full-width-responsive="true"></ins>
                 </div>
-                <div class="blog-actions text-center mt-10">
-                    <a href="/blogs.html" class="btn-primary inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-md font-semibold hover:-translate-y-0.5 transition-transform duration-200" aria-label="Read more blog posts">Read More Blogs <i class="fas fa-arrow-right"></i></a>
+                <div class="text-center mt-4">
+                    <a href="/blogs.html" class="btn btn-primary">Read More Blogs</a>
                 </div>
             </div>
         </section>
 
-        <section id="about" class="about-section py-20 px-5 bg-light-bg">
-            <div class="about-container max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-                <div class="about-image">
-                    <div class="image-wrapper h-96">
-                        <img src="/images/file.enc" data-src="/images/file.enc" alt="About Jonathan Mwaniki - Web Developer & Designer" loading="lazy" width="400" height="500" class="lazy-image rounded-lg">
+        <section id="about" class="py-5 bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <img src="/images/file.enc" alt="About Jonathan Mwaniki - Web Developer & Designer" class="img-fluid rounded shadow" loading="lazy" width="400" height="500">
                     </div>
-                </div>
-                <div class="about-content md:col-span-2">
-                    <h2 class="section-title text-4xl font-bold mb-4">About <span class="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">Jonathan Mwaniki</span></h2>
-                    <div class="about-text space-y-4 text-gray-700">
-                        <p>I'm Jonathan Mwaniki, a passionate web developer and graphic designer with over 5 years of professional experience. I specialize in creating responsive websites, user-friendly interfaces, and compelling visual designs that help businesses establish their online presence.</p>
-                        <p>My approach combines technical expertise with creative problem-solving to deliver solutions that are not only visually appealing but also drive real business results.</p>
-                        <p><strong>When I'm not working:</strong> You'll find me exploring new technologies, contributing to open-source projects, or enjoying the vibrant coffee shop scene while working on my latest web development project.</p>
-                    </div>
-                    <div class="education-section mt-8">
-                        <h3 class="text-2xl font-semibold mb-4">Education & Training</h3>
-                        <div class="education-item flex gap-4 mb-6">
-                            <div class="edu-icon">
-                                <img src="/images/FreeCodeCamo.webp" data-src="/images/FreeCodeCamo.webp" alt="freeCodeCamp Logo" width="40" height="40" loading="lazy" class="lazy-image">
-                            </div>
-                            <div>
-                                <h4 class="text-xl font-semibold">Full Stack Web Development</h4>
-                                <p>freeCodeCamp | 2020-Present</p>
-                                <p class="edu-details text-gray-700">Completed 300+ hours of intensive coding curriculum</p>
-                            </div>
-                        </div>
-                        <div class="education-item flex gap-4 mb-6">
-                            <div class="edu-icon">
-                                <img src="/images/Egerton-University.webp" data-src="/images/Egerton-University.webp" alt="Egerton University Logo" width="40" height="40" loading="lazy" class="lazy-image">
-                            </div>
-                            <div>
-                                <h4 class="text-xl font-semibold">Bachelor of Education (Arts)</h4>
-                                <p>Egerton University | 2019-2023</p>
-                                <p class="edu-details text-gray-700">Developed strong communication and problem-solving skills</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tech-stack-section mt-8">
-                        <h3 class="text-2xl font-semibold mb-4">My Tech Stack</h3>
-                        <div class="stack-categories grid grid-cols-1 md:grid-cols-3 gap-5">
-                            <div class="stack-category">
-                                <h4 class="text-xl font-semibold mb-4">Core Technologies</h4>
-                                <div class="stack-items flex flex-wrap gap-2">
-                                    <div class="stack-item flex items-center gap-2 px-2 py-1 bg-gray-100 rounded">
-                                        <i class="fab fa-html5 text-primary"></i><span>HTML5</span>
-                                    </div>
-                                    <div class="stack-item flex items-center gap-2 px-2 py-1 bg-gray-100 rounded">
-                                        <i class="fab fa-css3-alt text-primary"></i><span>CSS3</span>
-                                    </div>
-                                    <div class="stack-item flex items-center gap-2 px-2 py-1 bg-gray-100 rounded">
-                                        <i class="fab fa-js text-primary"></i><span>JavaScript</span>
-                                    </div>
+                    <div class="col-md-8">
+                        <h2 class="display-5 fw-bold mb-4">About <span class="gradient-text">Jonathan Mwaniki</span></h2>
+                        <p class="text-muted mb-3">I'm Jonathan Mwaniki, a passionate web developer and graphic designer with over 5 years of professional experience. I specialize in creating responsive websites, user-friendly interfaces, and compelling visual designs that help businesses establish their online presence.</p>
+                        <p class="text-muted mb-3">My approach combines technical expertise with creative problem-solving to deliver solutions that are not only visually appealing but also drive real business results.</p>
+                        <p class="text-muted"><strong>When I'm not working:</strong> You'll find me exploring new technologies, contributing to open-source projects, or enjoying the vibrant coffee shop scene while working on my latest web development project.</p>
+                        <div class="mt-4">
+                            <h3 class="h4 fw-bold">Education & Training</h3>
+                            <div class="d-flex align-items-start mb-3">
+                                <img src="/images/FreeCodeCamo.webp" alt="freeCodeCamp Logo" width="40" height="40" loading="lazy" class="me-3">
+                                <div>
+                                    <h4 class="h5">Full Stack Web Development</h4>
+                                    <p>freeCodeCamp | 2020-Present<br>Completed 300+ hours of intensive coding curriculum</p>
                                 </div>
                             </div>
-                            <div class="stack-category">
-                                <h4 class="text-xl font-semibold mb-4">Frameworks & Libraries</h4>
-                                <div class="stack-items flex flex-wrap gap-2">
-                                    <div class="stack-item flex items-center gap-2 px-2 py-1 bg-gray-100 rounded">
-                                        <i class="fab fa-react text-primary"></i><span>React</span>
-                                    </div>
-                                    <div class="stack-item flex items-center gap-2 px-2 py-1 bg-gray-100 rounded">
-                                        <i class="fab fa-node-js text-primary"></i><span>Node.js</span>
-                                    </div>
-                                    <div class="stack-item flex items-center gap-2 px-2 py-1 bg-gray-100 rounded">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" alt="Tailwind CSS" width="24" height="24" loading="lazy" class="lazy-image"><span>Tailwind CSS</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="stack-category">
-                                <h4 class="text-xl font-semibold mb-4">Currently Learning</h4>
-                                <div class="stack-items flex flex-wrap gap-2">
-                                    <div class="stack-item flex items-center gap-2 px-2 py-1 bg-gray-100 rounded">
-                                        <i class="fas fa-mobile-alt text-primary"></i><span>App Development</span>
-                                    </div>
-                                    <div class="stack-item flex items-center gap-2 px-2 py-1 bg-gray-100 rounded">
-                                        <i class="fas fa-laptop-code text-primary"></i><span>Software Engineering</span>
-                                    </div>
+                            <div class="d-flex align-items-start mb-3">
+                                <img src="/images/Egerton-University.webp" alt="Egerton University Logo" width="40" height="40" loading="lazy" class="me-3">
+                                <div>
+                                    <h4 class="h5">Bachelor of Education (Arts)</h4>
+                                    <p>Egerton University | 2019-2023<br>Developed strong communication and problem-solving skills</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="hackathon-section mt-8">
-                        <h3 class="text-2xl font-semibold mb-4">Hackathon & Tech Expo Experience</h3>
-                        <div class="event-timeline">
-                            <div class="event-item flex gap-4 mb-6">
-                                <div class="event-date font-semibold text-primary">2023</div>
-                                <div class="event-content">
-                                    <h4 class="text-xl font-semibold">Nairobi Tech Week</h4>
-                                    <p class="text-gray-700">Participated in the annual tech conference with 1000+ attendees</p>
-                                    <div class="event-tags flex gap-2 mt-2">
-                                        <span class="tag bg-gray-200 px-2 py-1 rounded text-sm">Networking</span>
-                                        <span class="tag bg-gray-200 px-2 py-1 rounded text-sm">Emerging Tech</span>
-                                    </div>
+                        <div class="mt-4">
+                            <h3 class="h4 fw-bold">My Tech Stack</h3>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h4 class="h5">Core Technologies</h4>
+                                    <ul class="list-unstyled">
+                                        <li><i class="fab fa-html5 text-primary me-2"></i>HTML5</li>
+                                        <li><i class="fab fa-css3-alt text-primary me-2"></i>CSS3</li>
+                                        <li><i class="fab fa-js text-primary me-2"></i>JavaScript</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h4 class="h5">Frameworks & Libraries</h4>
+                                    <ul class="list-unstyled">
+                                        <li><i class="fab fa-react text-primary me-2"></i>React</li>
+                                        <li><i class="fab fa-node-js text-primary me-2"></i>Node.js</li>
+                                        <li><img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" alt="Tailwind CSS" width="24" height="24" loading="lazy" class="me-2">Tailwind CSS</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h4 class="h5">Currently Learning</h4>
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-mobile-alt text-primary me-2"></i>App Development</li>
+                                        <li><i class="fas fa-laptop-code text-primary me-2"></i>Software Engineering</li>
+                                    </ul>
                                 </div>
                             </div>
-                            <div class="event-item flex gap-4 mb-6">
-                                <div class="event-date font-semibold text-primary">2022</div>
-                                <div class="event-content">
-                                    <h4 class="text-xl font-semibold">Africa Hackathon</h4>
-                                    <p class="text-gray-700">Developed a community health app prototype in 48 hours</p>
-                                    <div class="event-tags flex gap-2 mt-2">
-                                        <span class="tag bg-gray-200 px-2 py-1 rounded text-sm">React Native</span>
-                                        <span class="tag bg-gray-200 px-2 py-1 rounded text-sm">Team Lead</span>
-                                    </div>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="h4 fw-bold">Hackathon & Tech Expo Experience</h3>
+                            <div class="d-flex mb-3">
+                                <div class="me-3 fw-bold text-primary">2023</div>
+                                <div>
+                                    <h4 class="h5">Nairobi Tech Week</h4>
+                                    <p class="text-muted">Participated in the annual tech conference with 1000+ attendees</p>
+                                    <span class="badge bg-light text-dark">Networking</span>
+                                    <span class="badge bg-light text-dark">Emerging Tech</span>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-3">
+                                <div class="me-3 fw-bold text-primary">2022</div>
+                                <div>
+                                    <h4 class="h5">Africa Hackathon</h4>
+                                    <p class="text-muted">Developed a community health app prototype in 48 hours</p>
+                                    <span class="badge bg-light text-dark">React Native</span>
+                                    <span class="badge bg-light text-dark">Team Lead</span>
                                 </div>
                             </div>
                         </div>
@@ -466,26 +383,26 @@
             </div>
         </section>
 
-        <section id="contact" class="contact-section py-20 px-5 bg-light-bg">
-            <div class="contact-container max-w-6xl mx-auto">
-                <div class="section-header text-center mb-16">
-                    <h2 class="section-title text-4xl font-bold mb-4">Contact <span class="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">Jonathan Mwaniki</span></h2>
-                    <p class="section-description text-lg text-gray-700 max-w-2xl mx-auto">Reach out to discuss your web development or design project</p>
+        <section id="contact" class="py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold">Contact <span class="gradient-text">Jonathan Mwaniki</span></h2>
+                    <p class="lead text-muted">Reach out to discuss your web development or design project</p>
                 </div>
-                <div class="contact-content grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <div class="contact-form-container">
-                        <form id="contactForm" class="contact-form grid gap-5">
-                            <div class="form-group flex flex-col">
-                                <label for="name" class="form-label font-medium mb-2">Name</label>
-                                <input type="text" id="name" name="name" required class="form-input px-4 py-3 border border-border-color rounded focus:outline-none focus:border-primary">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <form id="contactForm">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
                             </div>
-                            <div class="form-group flex flex-col">
-                                <label for="email" class="form-label font-medium mb-2">Email</label>
-                                <input type="email" id="email" name="email" required class="form-input px-4 py-3 border border-border-color rounded focus:outline-none focus:border-primary">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
                             </div>
-                            <div class="form-group flex flex-col">
-                                <label for="service" class="form-label font-medium mb-2">Service Needed</label>
-                                <select id="service" name="service" required class="form-select px-4 py-3 border border-border-color rounded focus:outline-none focus:border-primary">
+                            <div class="mb-3">
+                                <label for="service" class="form-label">Service Needed</label>
+                                <select class="form-select" id="service" name="service" required>
                                     <option value="">Select a Service</option>
                                     <option value="web">Web Development</option>
                                     <option value="design">Graphic Design</option>
@@ -493,45 +410,31 @@
                                     <option value="other">Other</option>
                                 </select>
                             </div>
-                            <div class="form-group flex flex-col">
-                                <label for="message" class="form-label font-medium mb-2">Message</label>
-                                <textarea id="message" name="message" required rows="5" class="form-textarea px-4 py-3 border border-border-color rounded focus:outline-none focus:border-primary"></textarea>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
                             </div>
-                            <button type="submit" class="btn-primary px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-md font-semibold hover:-translate-y-0.5 transition-transform duration-200">Send Message</button>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
                         </form>
                     </div>
-                    <div class="contact-info-container">
-                        <div class="contact-info">
-                            <h3 class="info-title text-2xl font-semibold mb-6">Contact Information</h3>
-                            <div class="info-items flex flex-col gap-6">
-                                <div class="info-item flex items-center gap-4">
-                                    <div class="info-icon text-2xl text-primary"><i class="fas fa-envelope"></i></div>
-                                    <div>
-                                        <h4 class="info-label font-medium">Email</h4>
-                                        <a href="mailto:info@jonathanmwaniki.co.ke" class="info-value text-text hover:text-primary no-underline">info@jonathanmwaniki.co.ke</a>
-                                    </div>
-                                </div>
-                                <div class="info-item flex items-center gap-4">
-                                    <div class="info-icon text-2xl text-primary"><i class="fas fa-phone-alt"></i></div>
-                                    <div>
-                                        <h4 class="info-label font-medium">Phone</h4>
-                                        <a href="tel:+254706396305" class="info-value text-text hover:text-primary no-underline">+254 706 396 305</a>
-                                    </div>
-                                </div>
-                                <div class="social-section">
-                                    <h4 class="social-title font-medium mb-4">Connect With Me</h4>
-                                    <div class="social-links flex gap-4">
-                                        <a href="https://twitter.com/maestropuns" target="_blank" rel="noopener noreferrer" class="social-link text-text hover:text-primary text-xl" aria-label="Twitter">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
-                                                <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
-                                            </svg>
-                                        </a>
-                                        <a href="https://www.instagram.com/jonaahrojo" target="_blank" rel="noopener noreferrer" class="social-link text-text hover:text-primary text-xl" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                                        <a href="https://www.linkedin.com/in/jonathan-mwaniki-324208374" target="_blank" rel="noopener noreferrer" class="social-link text-text hover:text-primary text-xl" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                                        <a href="https://github.com/DKTJONATHAN" target="_blank" rel="noopener noreferrer" class="social-link text-text hover:text-primary text-xl" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                                        <a href="https://wa.me/+254706396305" target="_blank" rel="noopener noreferrer" class="social-link text-text hover:text-primary text-xl" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                                    </div>
-                                </div>
+                    <div class="col-md-6">
+                        <h3 class="h4 fw-bold mb-4">Contact Information</h3>
+                        <div class="mb-3">
+                            <i class="fas fa-envelope me-2 text-primary"></i>
+                            <a href="mailto:info@jonathanmwaniki.co.ke" class="text-decoration-none">info@jonathanmwaniki.co.ke</a>
+                        </div>
+                        <div class="mb-3">
+                            <i class="fas fa-phone-alt me-2 text-primary"></i>
+                            <a href="tel:+254706396305" class="text-decoration-none">+254 706 396 305</a>
+                        </div>
+                        <div>
+                            <h4 class="h5 mb-3">Connect With Me</h4>
+                            <div class="d-flex gap-3">
+                                <a href="https://twitter.com/maestropuns" target="_blank" rel="noopener noreferrer" class="text-dark"><i class="fab fa-twitter"></i></a>
+                                <a href="https://www.instagram.com/jonaahrojo" target="_blank" rel="noopener noreferrer" class="text-dark"><i class="fab fa-instagram"></i></a>
+                                <a href="https://www.linkedin.com/in/jonathan-mwaniki-324208374" target="_blank" rel="noopener noreferrer" class="text-dark"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="https://github.com/DKTJONATHAN" target="_blank" rel="noopener noreferrer" class="text-dark"><i class="fab fa-github"></i></a>
+                                <a href="https://wa.me/+254706396305" target="_blank" rel="noopener noreferrer" class="text-dark"><i class="fab fa-whatsapp"></i></a>
                             </div>
                         </div>
                     </div>
@@ -539,33 +442,28 @@
             </div>
         </section>
 
-        <footer class="site-footer bg-white py-12 px-5 shadow-mobile-nav">
-            <div class="footer-container max-w-6xl mx-auto">
-                <div class="footer-brand flex flex-col md:flex-row items-center gap-5 mb-8">
-                    <div class="footer-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" data-src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="lazy" class="lazy-image">
+        <footer class="bg-light py-4">
+            <div class="container">
+                <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+                    <div class="d-flex align-items-center mb-3 mb-md-0">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="lazy" class="me-2">
+                        <div>
+                            <span class="fw-bold">Jonathan Mwaniki</span>
+                            <p class="text-muted mb-0">Professional web developer and graphic designer based in Kenya</p>
+                        </div>
                     </div>
-                    <div class="footer-info text-center md:text-left">
-                        <span class="footer-name font-semibold text-xl">Jonathan Mwaniki</span>
-                        <p class="footer-description text-gray-700">Professional web developer and graphic designer based in Kenya</p>
-                    </div>
-                </div>
-                <div class="footer-legal flex flex-col md:flex-row justify-between items-center border-t border-border-color pt-5">
-                    <p class="copyright text-gray-700">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
-                    <div class="legal-links flex flex-col md:flex-row gap-5">
-                        <a href="/privacy-policy" class="legal-link text-gray-700 hover:text-primary no-underline">Privacy Policy</a>
-                        <a href="/terms-of-service" class="legal-link text-gray-700 hover:text-primary no-underline">Terms of Service</a>
-                        <a href="/sitemap.xml" class="legal-link text-gray-700 hover:text-primary no-underline">Sitemap</a>
+                    <div class="d-flex flex-column flex-md-row gap-3">
+                        <a href="/privacy-policy" class="text-muted text-decoration-none">Privacy Policy</a>
+                        <a href="/terms-of-service" class="text-muted text-decoration-none">Terms of Service</a>
+                        <a href="/sitemap.xml" class="text-muted text-decoration-none">Sitemap</a>
                     </div>
                 </div>
             </div>
         </footer>
+
+        <div id="container-e9308078ac3ce510bb8658ccd1eab7e5"></div>
     </div>
 
-    <!-- External CSS for specific styles -->
-    <link rel="stylesheet" href="/styles.css">
-
-    <script src="/scripts/main.js" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const postList = document.getElementById('blog-list');
@@ -578,7 +476,7 @@
 
             async function fetchPosts() {
                 try {
-                    postList.innerHTML = '<div class="no-posts text-center py-10 text-gray-600 text-lg">Loading posts...</div>';
+                    postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">Loading posts...</div>';
                     const response = await fetch('/api/list-posts.js', {
                         method: 'GET',
                         headers: {
@@ -595,14 +493,14 @@
                     return data || [];
                 } catch (error) {
                     console.error('Error fetching posts:', error);
-                    postList.innerHTML = '<div class="error-message text-center py-10 text-gray-600 text-lg">Failed to load posts. Please try again later or <a href="#contact" class="text-primary underline">contact support</a>.</div>';
+                    postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">Failed to load posts. Please try again later or <a href="#contact" class="text-primary text-decoration-underline">contact support</a>.</div>';
                     return [];
                 }
             }
 
             function renderPosts(posts) {
                 if (!posts || posts.length === 0) {
-                    postList.innerHTML = '<div class="no-posts text-center py-10 text-gray-600 text-lg">No posts found.</div>';
+                    postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">No posts found.</div>';
                     return;
                 }
 
@@ -612,17 +510,14 @@
                     .slice(0, 2);
 
                 if (validPosts.length === 0) {
-                    postList.innerHTML = '<div class="no-posts text-center py-10 text-gray-600 text-lg">No posts with valid categories found.</div>';
+                    postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">No posts with valid categories found.</div>';
                     return;
                 }
 
-                const fragment = document.createDocumentFragment();
-                const postsContainer = document.createElement('div');
-                postsContainer.className = 'blog-posts grid grid-cols-1 sm:grid-cols-2 gap-8';
-
+                postList.innerHTML = '';
                 validPosts.forEach(post => {
-                    const postElement = document.createElement('article');
-                    postElement.className = 'blog-post bg-white p-6 rounded-lg shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300';
+                    const postElement = document.createElement('div');
+                    postElement.className = 'col-md-6 mb-4';
                     postElement.setAttribute('itemscope', '');
                     postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
 
@@ -632,37 +527,34 @@
                     const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
 
                     postElement.innerHTML = `
-                        <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
-                        <div class="post-image relative h-48 overflow-hidden rounded-lg">
-                            <img src="${imageUrl}" data-src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="800" height="450" class="lazy-image object-cover w-full h-full hover:scale-105 transition-transform duration-300" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
-                        </div>
-                        <div class="post-content pt-5 flex flex-col gap-3">
-                            <div class="post-meta flex items-center gap-3 text-sm text-light-text">
-                                <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
-                                <span class="post-category font-semibold text-primary uppercase text-xs" itemprop="articleSection">${post.category}</span>
+                        <div class="card h-100 shadow-sm">
+                            <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
+                            <img src="${imageUrl}" alt="${post.title || 'Post image'}" class="card-img-top" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-2 text-muted small">
+                                    <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
+                                    <span class="mx-2">•</span>
+                                    <span class="text-primary text-uppercase small" itemprop="articleSection">${post.category}</span>
+                                </div>
+                                <h3 class="card-title h5" itemprop="headline">
+                                    <a href="/content/articles/${post.slug}.html" class="text-dark text-decoration-none" itemprop="url">${post.title || 'Untitled Post'}</a>
+                                </h3>
+                                ${excerpt ? `<p class="card-text text-muted" itemprop="description">${excerpt}</p>` : ''}
+                                ${keywords.length > 0 ? `
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="badge bg-light text-primary text-decoration-none" itemprop="keywords">${keyword}</a>`).join('')}
+                                </div>
+                                ` : ''}
+                                <a href="/content/articles/${post.slug}.html" class="btn btn-primary" itemprop="url">Continue Reading</a>
                             </div>
-                            <h3 class="post-title text-xl font-semibold" itemprop="headline">
-                                <a href="/content/articles/${post.slug}.html" class="no-underline text-text hover:text-primary transition-colors duration-300" itemprop="url">${post.title || 'Untitled Post'}</a>
-                            </h3>
-                            ${excerpt ? `<div class="post-excerpt text-gray-700" itemprop="description">${excerpt}</div>` : ''}
-                            ${keywords.length > 0 ? `
-                            <div class="post-tags flex flex-wrap gap-2 mb-4">
-                                ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="post-tag px-3 py-1 bg-light-bg text-primary rounded-full text-sm border border-border-color hover:bg-primary hover:text-white hover:border-primary transition-all duration-300" itemprop="keywords">${keyword}</a>`).join('')}
-                            </div>
-                            ` : ''}
-                            <a href="/content/articles/${post.slug}.html" class="btn-primary inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-md font-semibold hover:-translate-y-0.5 transition-transform duration-200" itemprop="url">Continue Reading <i class="fas fa-arrow-right"></i></a>
+                            <meta itemprop="author" content="Jonathan Mwaniki">
+                            <meta itemprop="dateModified" content="${post.date}">
+                            <meta itemprop="publisher" content="Mwaniki Reports">
                         </div>
-                        <meta itemprop="author" content="Jonathan Mwaniki">
-                        <meta itemprop="dateModified" content="${post.date}">
-                        <meta itemprop="publisher" content="Mwaniki Reports">
                     `;
 
-                    postsContainer.appendChild(postElement);
+                    postList.appendChild(postElement);
                 });
-
-                fragment.appendChild(postsContainer);
-                postList.innerHTML = '';
-                postList.appendChild(fragment);
             }
 
             fetchPosts().then(posts => {
@@ -702,39 +594,15 @@
                     splashScreen.style.transition = 'opacity 0.5s ease';
                     setTimeout(() => {
                         splashScreen.style.display = 'none';
-                        mainContent.classList.remove('hidden');
+                        mainContent.style.display = 'block';
                     }, 500);
                 }
             }, 50);
-
-            if ('IntersectionObserver' in window) {
-                const lazyImages = document.querySelectorAll('img.lazy-image');
-                const imageObserver = new IntersectionObserver((entries, observer) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const img = entry.target;
-                            img.src = img.dataset.src || img.src;
-                            img.classList.add('loaded');
-                            img.removeAttribute('loading');
-                            observer.unobserve(img);
-                        }
-                    });
-                }, {
-                    rootMargin: '100px',
-                    threshold: 0.1
-                });
-
-                lazyImages.forEach(img => imageObserver.observe(img));
-            } else {
-                const lazyImages = document.querySelectorAll('img.lazy-image');
-                lazyImages.forEach(img => {
-                    img.src = img.dataset.src || img.src;
-                    img.classList.add('loaded');
-                    img.removeAttribute('loading');
-                });
-            }
         });
     </script>
+
+    <script src="/scripts/main.js" defer></script>
     <script async src='//pl27288319.profitableratecpm.com/e9/30/80/e9308078ac3ce510bb8658ccd1eab7e5.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
