@@ -234,12 +234,12 @@ export default async function handler(req, res) {
             ${mainImageUrl ? `<div class="post-image"><img src="${mainImageUrl}" alt="${title}" itemprop="image"></div>` : ''}
             <div class="post-content" itemprop="articleBody">
               ${description ? `<p class="post-excerpt" itemprop="description">${description}</p>` : ''}
-              <!-- AdSense Ad Unit -->
+              <!-- Jonathan Ads -->
               <div class="ad-container">
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="ca-pub-9291176772735390"
-                     data-ad-slot="YOUR_AD_SLOT_ID"
+                     data-ad-slot="1375283462"
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
                 <script>
