@@ -291,6 +291,9 @@
             const searchInput = document.getElementById('search-input');
             const categoryList = document.getElementById('category-list');
 
+            // Define allowed categories
+            const allowedCategories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
+
             function debounce(func, wait) {
                 let timeout;
                 return function executedFunction(...args) {
@@ -310,14 +313,9 @@
             }
 
             function renderCategories(posts) {
-                const categories = new Set();
-                posts.forEach(post => {
-                    if (post.category) {
-                        categories.add(post.category);
-                    }
-                });
+                // Use predefined categories instead of dynamic extraction
                 categoryList.innerHTML = '<span class="category-tag active" data-category="all" role="button" tabindex="0">All</span>';
-                categories.forEach(category => {
+                allowedCategories.forEach(category => {
                     const categoryElement = document.createElement('span');
                     categoryElement.className = 'category-tag';
                     categoryElement.dataset.category = category;
@@ -347,27 +345,21 @@
                     return;
                 }
 
+                // Group posts by category
                 const postsByCategory = {};
-                posts.forEach(post => {
-                    if (!post.category) return; // Skip posts without a category
-                    if (!postsByCategory[post.category]) {
-                        postsByCategory[post.category] = [];
-                    }
-                    postsByCategory[post.category].push(post);
-                });
-
-                if (Object.keys(postsByCategory).length === 0) {
-                    postList.innerHTML = '<div class="no-posts">No posts with valid categories found.</div>';
-                    return;
-                }
-
-                Object.keys(postsByCategory).forEach(category => {
-                    postsByCategory[category].sort((a, b) => new Date(b.date) - new Date(a.date));
+                allowedCategories.forEach(category => {
+                    postsByCategory[category] = posts.filter(post => post.category === category);
                 });
 
                 postList.innerHTML = '';
 
-                Object.keys(postsByCategory).forEach(category => {
+                // Render each category section
+                allowedCategories.forEach(category => {
+                    const categoryPosts = postsByCategory[category];
+                    if (categoryPosts.length === 0 && document.querySelector('.category-tag.active').dataset.category !== 'all') {
+                        return; // Skip empty categories unless "All" is selected
+                    }
+
                     const section = document.createElement('section');
                     section.className = 'category-section';
                     section.setAttribute('aria-labelledby', `category-${category.toLowerCase().replace(/\s+/g, '-')}`);
@@ -381,47 +373,54 @@
                     const postsContainer = document.createElement('div');
                     postsContainer.className = 'blog-posts';
 
-                    postsByCategory[category].forEach(post => {
-                        const postElement = document.createElement('article');
-                        postElement.className = 'blog-post';
-                        postElement.setAttribute('itemscope', '');
-                        postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
+                    if (categoryPosts.length === 0) {
+                        postsContainer.innerHTML = '<div class="no-posts">No posts available in this category.</div>';
+                    } else {
+                        // Sort posts by date (newest first)
+                        categoryPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-                        const imageUrl = post.image || '/images/default-blog.jpg';
-                        const excerpt = post.description || '';
-                        const formattedDate = formatDate(post.date);
-                        const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+                        categoryPosts.forEach(post => {
+                            const postElement = document.createElement('article');
+                            postElement.className = 'blog-post';
+                            postElement.setAttribute('itemscope', '');
+                            postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
 
-                        postElement.innerHTML = `
-                            <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
-                            <div class="post-image">
-                                <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
-                            </div>
-                            <div class="post-content">
-                                <div class="post-meta">
-                                    <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
-                                    <span class="post-category" itemprop="articleSection">${post.category || ''}</span>
+                            const imageUrl = post.image || '/images/default-blog.jpg';
+                            const excerpt = post.description || '';
+                            const formattedDate = formatDate(post.date);
+                            const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+
+                            postElement.innerHTML = `
+                                <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
+                                <div class="post-image">
+                                    <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
                                 </div>
-                                <h3 class="post-title" itemprop="headline">
-                                    <a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
-                                </h3>
-                                ${excerpt ? `<div class="post-excerpt" itemprop="description">${excerpt}</div>` : ''}
-                                ${keywords.length > 0 ? `
-                                <div class="post-tags">
-                                    ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
+                                <div class="post-content">
+                                    <div class="post-meta">
+                                        <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
+                                        <span class="post-category" itemprop="articleSection">${post.category}</span>
+                                    </div>
+                                    <h3 class="post-title" itemprop="headline">
+                                        <a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
+                                    </h3>
+                                    ${excerpt ? `<div class="post-excerpt" itemprop="description">${excerpt}</div>` : ''}
+                                    ${keywords.length > 0 ? `
+                                    <div class="post-tags">
+                                        ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
+                                    </div>
+                                    ` : ''}
+                                    <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">
+                                        Continue Reading <i class="fas fa-arrow-right"></i>
+                                    </a>
                                 </div>
-                                ` : ''}
-                                <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">
-                                    Continue Reading <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </div>
-                            <meta itemprop="author" content="Jonathan Mwaniki">
-                            <meta itemprop="dateModified" content="${post.date}">
-                            <meta itemprop="publisher" content="Jonathan Mwaniki">
-                        `;
+                                <meta itemprop="author" content="Jonathan Mwaniki">
+                                <meta itemprop="dateModified" content="${post.date}">
+                                <meta itemprop="publisher" content="Jonathan Mwaniki">
+                            `;
 
-                        postsContainer.appendChild(postElement);
-                    });
+                            postsContainer.appendChild(postElement);
+                        });
+                    }
 
                     section.appendChild(postsContainer);
                     postList.appendChild(section);
@@ -444,7 +443,8 @@
                     if (error) {
                         throw new Error(error);
                     }
-                    return data || [];
+                    // Filter out any posts without a valid category
+                    return data.filter(post => allowedCategories.includes(post.category)) || [];
                 } catch (error) {
                     console.error('Error fetching posts:', error);
                     postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/index.html#contact">contact support</a>.</div>';
@@ -457,7 +457,7 @@
                 const activeCategory = document.querySelector('.category-tag.active').dataset.category;
                 const allPosts = await fetchPosts();
 
-                let filtered = allPosts.filter(post => post.category);
+                let filtered = allPosts;
 
                 if (searchTerm) {
                     filtered = filtered.filter(post =>
