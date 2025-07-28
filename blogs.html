@@ -42,6 +42,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="/styles.css">
     <link rel="preload" href="/styles.css" as="style">
+    <link rel="preload" href="/scripts/main.js" as="script">
     <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,6 +50,38 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9291176772735390" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-dark: #3b82f6;
+            --secondary-color: #10b981;
+            --text-color: #1f2937;
+            --light-text: #6b7280;
+            --background-color: #ffffff;
+            --light-bg: #f9fafb;
+            --border-color: #e5e7eb;
+            --font-main: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        body { font-family: var(--font-main); }
+        .gradient-text { background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .category-title::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 60%; height: 3px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); }
+        .blog-post:hover .post-image img { transform: scale(1.05); }
+        .post-meta time::after { content: ''; position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 4px; height: 4px; background: var(--light-text); border-radius: 50%; }
+        .ad-container {
+            visibility: hidden;
+            height: auto;
+            min-height: 0;
+        }
+        .ad-container.loaded {
+            visibility: visible;
+            min-height: 100px;
+        }
+        .ad-container.empty {
+            height: 0;
+            overflow: hidden;
+        }
+    </style>
 
     <script type="application/ld+json">
     {
@@ -78,79 +111,75 @@
 </head>
 <body>
     <div id="mainContent">
-        <nav class="navbar fixed-bottom navbar-light bg-light d-md-none">
-            <div class="container-fluid justify-content-around">
-                <a class="nav-link text-center" href="/index.html" aria-label="Home"><i class="fas fa-home"></i><br>Home</a>
-                <a class="nav-link text-center" href="/index.html#services" aria-label="Services"><i class="fas fa-cogs"></i><br>Services</a>
-                <a class="nav-link text-center" href="/index.html#portfolio" aria-label="Portfolio"><i class="fas fa-briefcase"></i><br>Portfolio</a>
-                <a class="nav-link text-center active" href="/blogs.html" aria-label="Blog"><i class="fas fa-blog"></i><br>Blog</a>
-                <a class="nav-link text-center" href="/index.html#contact" aria-label="Contact"><i class="fas fa-envelope"></i><br>Contact</a>
-            </div>
-        </nav>
-
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top d-none d-md-block">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" href="/index.html">
-                    <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" loading="eager" width="40" height="40">
-                    <span class="ms-2">Jonathan Mwaniki</span>
+                    <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" loading="eager" width="40" height="40" class="rounded">
+                    <span class="ms-2">Mwaniki Reports</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/index.html#services">Services</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/index.html#portfolio">Portfolio</a></li>
-                        <li class="nav-item"><a class="nav-link active" href="/blogs.html">Blog</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/index.html#about">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/index.html#contact">Contact</a></li>
+                        <li class="nav-item"><a href="/index.html" class="nav-link" aria-label="Home">Home</a></li>
+                        <li class="nav-item"><a href="/index.html#services" class="nav-link" aria-label="Services">Services</a></li>
+                        <li class="nav-item"><a href="/index.html#portfolio" class="nav-link" aria-label="Portfolio">Portfolio</a></li>
+                        <li class="nav-item"><a href="/blogs.html" class="nav-link active" aria-label="Blog">Blog</a></li>
+                        <li class="nav-item"><a href="/index.html#about" class="nav-link" aria-label="About">About</a></li>
+                        <li class="nav-item"><a href="/index.html#contact" class="nav-link" aria-label="Contact">Contact</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
 
-        <main class="container py-5 mt-5">
+        <nav class="navbar fixed-bottom navbar-light bg-white shadow-sm d-md-none">
+            <div class="container-fluid justify-content-around">
+                <a href="/index.html" class="nav-link text-center" aria-label="Home"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="/index.html#services" class="nav-link text-center" aria-label="Services"><i class="fas fa-cogs"></i><span>Services</span></a>
+                <a href="/index.html#portfolio" class="nav-link text-center" aria-label="Portfolio"><i class="fas fa-briefcase"></i><span>Portfolio</span></a>
+                <a href="/blogs.html" class="nav-link text-center active" aria-label="Blog"><i class="fas fa-blog"></i><span>Blog</span></a>
+                <a href="/index.html#contact" class="nav-link text-center" aria-label="Contact"><i class="fas fa-envelope"></i><span>Contact</span></a>
+            </div>
+        </nav>
+
+        <main class="container py-5 mt-md-5">
             <div class="text-center mb-5">
                 <h1 class="display-5 fw-bold">Mwaniki <span class="gradient-text">Reports</span></h1>
                 <p class="lead text-muted">Your trusted source for news, sports, tech, and entertainment.</p>
             </div>
-            <div class="input-group mb-4">
+            <div class="input-group mb-4" style="max-width: 600px; margin-left: auto; margin-right: auto;">
                 <input type="text" id="search-input" class="form-control" placeholder="Search posts..." aria-label="Search blog posts">
                 <span class="input-group-text"><i class="fas fa-search"></i></span>
             </div>
-            <div class="ad-container text-center mb-4" style="min-height: 100px; min-width: 300px;">
+            <div class="ad-container text-center mb-4">
                 <ins class="adsbygoogle"
-                     style="display:block; width:100%; min-height:100px;"
+                     style="display:block"
                      data-ad-client="ca-pub-9291176772735390"
                      data-ad-slot="1375283462"
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
             </div>
             <section class="mb-4">
-                <h2 class="h4 fw-bold mb-3">Browse by Category</h2>
-                <div class="d-flex flex-wrap gap-2" id="category-list">
+                <h2 class="h4 fw-bold mb-3 category-title">Browse by Category</h2>
+                <div class="d-flex justify-content-center flex-wrap gap-2" id="category-list">
                     <span class="badge bg-light text-primary active" data-category="all" role="button" tabindex="0">All</span>
                 </div>
             </section>
-            <div id="post-list" class="row">
-                <div class="col-12 text-center py-5 text-muted">
-                    <i class="fas fa-spinner fa-spin me-2"></i>Loading posts...
-                </div>
-            </div>
-            <div class="text-center mt-4" id="see-more-container" style="display: none;">
-                <button class="btn btn-primary" id="see-more-btn">See More</button>
+            <div id="post-list"></div>
+            <div class="see-more-container text-center mt-4" id="see-more-container" style="display: none;">
+                <button class="btn btn-primary btn-see-more" id="see-more-btn">See More</button>
             </div>
         </main>
 
-        <footer class="bg-light py-4">
+        <footer class="bg-white py-4 shadow-sm">
             <div class="container">
                 <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
                     <div class="d-flex align-items-center mb-3 mb-md-0">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" width="40" height="40" loading="lazy" class="me-2">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" loading="lazy" width="40" height="40" class="rounded me-2">
                         <div>
                             <span class="fw-bold">Jonathan Mwaniki</span>
-                            <p class="text-muted mb-0">Professional web developer and graphic designer based in Kenya</p>
+                            <p class="text-muted mb-0">Your trusted source for news, sports, tech, and entertainment.</p>
                         </div>
                     </div>
                     <div class="d-flex flex-column flex-md-row gap-3">
@@ -161,293 +190,284 @@
                 </div>
             </div>
         </footer>
-
-        <div id="container-927f8295f7ba678ecee95c1d48ab905a"></div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            try {
-                const postList = document.getElementById('post-list');
-                const searchInput = document.getElementById('search-input');
-                const categoryList = document.getElementById('category-list');
-                const seeMoreContainer = document.getElementById('see-more-container');
-                const seeMoreBtn = document.getElementById('see-more-btn');
+            const postList = document.getElementById('post-list');
+            const searchInput = document.getElementById('search-input');
+            const categoryList = document.getElementById('category-list');
+            const seeMoreContainer = document.getElementById('see-more-container');
+            const seeMoreBtn = document.getElementById('see-more-btn');
 
-                const allowedCategories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
-                const postsPerPage = 5;
-                let currentPage = 1;
-                let allPosts = [];
+            const allowedCategories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
+            const postsPerPage = 5;
+            let currentPage = 1;
+            let allPosts = [];
 
-                function debounce(func, wait) {
-                    let timeout;
-                    return function executedFunction(...args) {
-                        const later = () => {
-                            clearTimeout(timeout);
-                            func(...args);
-                        };
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
                         clearTimeout(timeout);
-                        timeout = setTimeout(later, wait);
+                        func(...args);
                     };
-                }
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
 
-                function formatDate(dateString) {
-                    if (!dateString) return 'No date';
-                    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                    return new Date(dateString).toLocaleDateString('en-US', options);
-                }
+            function formatDate(dateString) {
+                if (!dateString) return 'No date';
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                return new Date(dateString).toLocaleDateString('en-US', options);
+            }
 
-                function renderCategories(posts) {
-                    try {
-                        const categoriesWithPosts = [...new Set(posts.map(post => post.category))].filter(category => allowedCategories.includes(category));
-                        categoryList.innerHTML = '<span class="badge bg-light text-primary active" data-category="all" role="button" tabindex="0">All</span>';
-                        categoriesWithPosts.forEach(category => {
-                            const categoryElement = document.createElement('span');
-                            categoryElement.className = 'badge bg-light text-primary';
-                            categoryElement.dataset.category = category;
-                            categoryElement.setAttribute('role', 'button');
-                            categoryElement.setAttribute('tabindex', '0');
-                            categoryElement.textContent = category;
-                            categoryList.appendChild(categoryElement);
-                        });
-                        document.querySelectorAll('#category-list .badge').forEach(tag => {
-                            tag.addEventListener('click', () => {
-                                document.querySelectorAll('#category-list .badge').forEach(t => t.classList.remove('active'));
-                                tag.classList.add('active');
-                                currentPage = 1;
-                                filterPosts();
-                            });
-                            tag.addEventListener('keydown', (e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    e.preventDefault();
-                                    tag.click();
-                                }
-                            });
-                        });
-                    } catch (e) {
-                        console.error('Error rendering categories:', e);
-                        categoryList.innerHTML = '<span class="badge bg-light text-primary active" data-category="all" role="button" tabindex="0">All</span>';
-                    }
-                }
-
-                function renderPost(post) {
-                    const postElement = document.createElement('div');
-                    postElement.className = 'col-md-6 col-lg-4 mb-4';
-                    postElement.setAttribute('itemscope', '');
-                    postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
-
-                    const imageUrl = post.image || '/images/default-blog.jpg';
-                    const excerpt = post.description || '';
-                    const formattedDate = formatDate(post.date);
-                    const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
-
-                    postElement.innerHTML = `
-                        <div class="card h-100 shadow-sm">
-                            <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
-                            <img src="${imageUrl}" alt="${post.title || 'Post image'}" class="card-img-top" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-2 text-muted small">
-                                    <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
-                                    <span class="mx-2">•</span>
-                                    <span class="text-primary text-uppercase small" itemprop="articleSection">${post.category}</span>
-                                </div>
-                                <h3 class="card-title h5" itemprop="headline">
-                                    <a href="/content/articles/${post.slug}.html" class="text-dark text-decoration-none" itemprop="url">${post.title || 'Untitled Post'}</a>
-                                </h3>
-                                ${excerpt ? `<p class="card-text text-muted" itemprop="description">${excerpt}</p>` : ''}
-                                ${keywords.length > 0 ? `
-                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                    ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="badge bg-light text-primary text-decoration-none" itemprop="keywords">${keyword}</a>`).join('')}
-                                </div>
-                                ` : ''}
-                                <a href="/content/articles/${post.slug}.html" class="btn btn-primary" itemprop="url">Continue Reading</a>
-                            </div>
-                            <meta itemprop="author" content="Jonathan Mwaniki">
-                            <meta itemprop="dateModified" content="${post.date}">
-                            <meta itemprop="publisher" content="Jonathan Mwaniki">
-                        </div>
-                    `;
-
-                    return postElement;
-                }
-
-                function renderPosts(posts, append = false) {
-                    try {
-                        if (!append) {
-                            postList.innerHTML = '';
+            function renderCategories(posts) {
+                const categoriesWithPosts = [...new Set(posts.map(post => post.category))].filter(category => allowedCategories.includes(category));
+                categoryList.innerHTML = '<span class="category-tag active" data-category="all" role="button" tabindex="0">All</span>';
+                categoriesWithPosts.forEach(category => {
+                    const categoryElement = document.createElement('span');
+                    categoryElement.className = 'category-tag';
+                    categoryElement.dataset.category = category;
+                    categoryElement.setAttribute('role', 'button');
+                    categoryElement.setAttribute('tabindex', '0');
+                    categoryElement.textContent = category;
+                    categoryList.appendChild(categoryElement);
+                });
+                document.querySelectorAll('.category-tag').forEach(tag => {
+                    tag.addEventListener('click', () => {
+                        document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
+                        tag.classList.add('active');
+                        currentPage = 1;
+                        filterPosts();
+                    });
+                    tag.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            tag.click();
                         }
+                    });
+                });
+            }
 
-                        if (!posts || posts.length === 0) {
-                            postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">No posts available at the moment. Please try again later.</div>';
-                            seeMoreContainer.style.display = 'none';
+            function renderPost(post) {
+                const postElement = document.createElement('article');
+                postElement.className = 'blog-post';
+                postElement.setAttribute('itemscope', '');
+                postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
+
+                const imageUrl = post.image || '/images/default-blog.jpg';
+                const excerpt = post.description || '';
+                const formattedDate = formatDate(post.date);
+                const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+
+                postElement.innerHTML = `
+                    <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
+                    <div class="post-image">
+                        <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
+                            <span class="post-category" itemprop="articleSection">${post.category}</span>
+                        </div>
+                        <h3 class="post-title" itemprop="headline">
+                            <a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
+                        </h3>
+                        ${excerpt ? `<div class="post-excerpt" itemprop="description">${excerpt}</div>` : ''}
+                        ${keywords.length > 0 ? `
+                        <div class="post-tags">
+                            ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
+                        </div>
+                        ` : ''}
+                        <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">
+                            Continue Reading <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <meta itemprop="author" content="Jonathan Mwaniki">
+                    <meta itemprop="dateModified" content="${post.date}">
+                    <meta itemprop="publisher" content="Jonathan Mwaniki">
+                `;
+
+                return postElement;
+            }
+
+            function renderPosts(posts, append = false) {
+                if (!posts || posts.length === 0) {
+                    postList.innerHTML = '<div class="no-posts">No posts found matching your criteria.</div>';
+                    seeMoreContainer.style.display = 'none';
+                    return;
+                }
+
+                const activeCategory = document.querySelector('.category-tag.active').dataset.category;
+
+                if (!append) {
+                    postList.innerHTML = '';
+                }
+
+                if (activeCategory === 'all') {
+                    const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+                    const startIndex = (currentPage - 1) * postsPerPage;
+                    const endIndex = startIndex + postsPerPage;
+                    const postsToShow = sortedPosts.slice(startIndex, endIndex);
+
+                    const postsContainer = document.createElement('div');
+                    postsContainer.className = 'blog-posts';
+
+                    postsToShow.forEach(post => {
+                        postsContainer.appendChild(renderPost(post));
+                    });
+
+                    postList.appendChild(postsContainer);
+
+                    seeMoreContainer.style.display = endIndex < sortedPosts.length ? 'block' : 'none';
+                    seeMoreBtn.disabled = endIndex >= sortedPosts.length;
+                } else {
+                    const postsByCategory = {};
+                    allowedCategories.forEach(category => {
+                        postsByCategory[category] = posts.filter(post => post.category === category);
+                    });
+
+                    allowedCategories.forEach(category => {
+                        const categoryPosts = postsByCategory[category];
+                        if (categoryPosts.length === 0 && activeCategory !== category) {
                             return;
                         }
 
-                        const activeCategory = document.querySelector('#category-list .badge.active').dataset.category;
+                        const section = document.createElement('section');
+                        section.className = 'category-section';
+                        section.setAttribute('aria-labelledby', `category-${category.toLowerCase().replace(/\s+/g, '-')}`);
 
-                        if (activeCategory === 'all') {
-                            const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
-                            const startIndex = (currentPage - 1) * postsPerPage;
-                            const endIndex = startIndex + postsPerPage;
-                            const postsToShow = sortedPosts.slice(startIndex, endIndex);
+                        const title = document.createElement('h2');
+                        title.className = 'category-title';
+                        title.id = `category-${category.toLowerCase().replace(/\s+/g, '-')}`;
+                        title.textContent = category;
+                        section.appendChild(title);
 
-                            postsToShow.forEach(post => {
-                                postList.appendChild(renderPost(post));
-                            });
+                        const postsContainer = document.createElement('div');
+                        postsContainer.className = 'blog-posts';
 
-                            seeMoreContainer.style.display = endIndex < sortedPosts.length ? 'block' : 'none';
-                            seeMoreBtn.disabled = endIndex >= sortedPosts.length;
+                        if (categoryPosts.length === 0) {
+                            postsContainer.innerHTML = '<div class="no-posts">No posts available in this category.</div>';
                         } else {
-                            const postsByCategory = {};
-                            allowedCategories.forEach(category => {
-                                postsByCategory[category] = posts.filter(post => post.category === category);
+                            categoryPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                            categoryPosts.forEach(post => {
+                                postsContainer.appendChild(renderPost(post));
                             });
-
-                            allowedCategories.forEach(category => {
-                                const categoryPosts = postsByCategory[category];
-                                if (categoryPosts.length === 0 && activeCategory !== category) {
-                                    return;
-                                }
-
-                                const section = document.createElement('section');
-                                section.className = 'mb-4';
-                                section.setAttribute('aria-labelledby', `category-${category.toLowerCase().replace(/\s+/g, '-')}`);
-
-                                const title = document.createElement('h2');
-                                title.className = 'h4 fw-bold mb-3';
-                                title.id = `category-${category.toLowerCase().replace(/\s+/g, '-')}`;
-                                title.textContent = category;
-                                section.appendChild(title);
-
-                                const postsContainer = document.createElement('div');
-                                postsContainer.className = 'row';
-
-                                if (categoryPosts.length === 0) {
-                                    postsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted">No posts available in this category.</div>';
-                                } else {
-                                    categoryPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-                                    categoryPosts.forEach(post => {
-                                        postsContainer.appendChild(renderPost(post));
-                                    });
-                                }
-
-                                section.appendChild(postsContainer);
-                                postList.appendChild(section);
-                            });
-
-                            seeMoreContainer.style.display = 'none';
                         }
-                    } catch (e) {
-                        console.error('Error rendering posts:', e);
-                        postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">Error loading posts. Please try again later or <a href="/index.html#contact" class="text-primary text-decoration-underline">contact support</a>.</div>';
+
+                        section.appendChild(postsContainer);
+                        postList.appendChild(section);
+                    });
+
+                    seeMoreContainer.style.display = 'none';
+                }
+            }
+
+            async function fetchPosts() {
+                try {
+                    postList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i>Loading posts...</div>';
+                    const response = await fetch('/api/list-posts.js', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
+                    const { data, error } = await response.json();
+                    if (error) {
+                        throw new Error(error);
+                    }
+                    return data.filter(post => allowedCategories.includes(post.category)) || [];
+                } catch (error) {
+                    console.error('Error fetching posts:', error);
+                    postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/index.html#contact">contact support</a>.</div>';
+                    return [];
+                }
+            }
+
+            const filterPosts = debounce(async () => {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const activeCategory = document.querySelector('.category-tag.active').dataset.category;
+                allPosts = await fetchPosts();
+
+                let filtered = allPosts;
+
+                if (searchTerm) {
+                    filtered = filtered.filter(post =>
+                        (post.title && post.title.toLowerCase().includes(searchTerm)) ||
+                        (post.description && post.description.toLowerCase().includes(searchTerm)) ||
+                        (post.tags && post.tags.split(',').map(tag => tag.trim()).some(tag => tag.toLowerCase().includes(searchTerm)))
+                    );
                 }
 
-                async function fetchPosts() {
-                    try {
-                        const response = await fetch('/api/list-posts.js', {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        });
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        const { data, error } = await response.json();
-                        if (error) {
-                            throw new Error(error);
-                        }
-                        return data.filter(post => allowedCategories.includes(post.category)) || [];
-                    } catch (error) {
-                        console.error('Error fetching posts:', error);
-                        return [];
-                    }
+                if (activeCategory !== 'all') {
+                    filtered = filtered.filter(post => post.category === activeCategory);
                 }
 
-                const filterPosts = debounce(async () => {
-                    try {
-                        const searchTerm = searchInput.value.toLowerCase().trim();
-                        const activeCategory = document.querySelector('#category-list .badge.active').dataset.category;
-                        allPosts = await fetchPosts();
+                renderPosts(filtered);
+            }, 300);
 
-                        let filtered = allPosts;
+            seeMoreBtn.addEventListener('click', () => {
+                currentPage++;
+                renderPosts(allPosts, true);
+            });
 
-                        if (searchTerm) {
-                            filtered = filtered.filter(post =>
-                                (post.title && post.title.toLowerCase().includes(searchTerm)) ||
-                                (post.description && post.description.toLowerCase().includes(searchTerm)) ||
-                                (post.tags && post.tags.split(',').map(tag => tag.trim()).some(tag => tag.toLowerCase().includes(searchTerm)))
-                            );
-                        }
+            fetchPosts().then(posts => {
+                allPosts = posts;
+                renderCategories(posts);
+                renderPosts(posts);
+            });
 
-                        if (activeCategory !== 'all') {
-                            filtered = filtered.filter(post => post.category === activeCategory);
-                        }
+            searchInput.addEventListener('input', filterPosts);
 
-                        renderPosts(filtered);
-                    } catch (e) {
-                        console.error('Error filtering posts:', e);
-                        postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">Error loading posts. Please try again later or <a href="/index.html#contact" class="text-primary text-decoration-underline">contact support</a>.</div>';
-                    }
-                }, 300);
-
-                seeMoreBtn.addEventListener('click', () => {
-                    try {
-                        currentPage++;
-                        renderPosts(allPosts, true);
-                    } catch (e) {
-                        console.error('Error on see more:', e);
-                    }
-                });
-
-                searchInput.addEventListener('input', filterPosts);
-
-                fetchPosts().then(posts => {
-                    allPosts = posts;
-                    renderCategories(posts);
-                    renderPosts(posts);
-                }).catch(() => {
-                    postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">Error loading posts. Please try again later or <a href="/index.html#contact" class="text-primary text-decoration-underline">contact support</a>.</div>';
-                });
-
-                const adContainer = document.querySelector('.ad-container');
-                const adElement = adContainer.querySelector('ins.adsbygoogle');
-                if (adElement) {
-                    try {
-                        (adsbygoogle = window.adsbygoogle || []).push({
-                            google_ad_client: "ca-pub-9291176772735390",
-                            enable_page_level_ads: false,
-                            onrendered: function(event) {
-                                if (event && event.slot && adElement.getAttribute('data-ad-status') === 'filled') {
-                                    adContainer.classList.add('loaded');
-                                    adContainer.classList.remove('empty');
-                                } else {
-                                    adContainer.classList.remove('loaded');
-                                    adContainer.classList.add('empty');
-                                }
-                            }
-                        });
-                    } catch (e) {
-                        console.error('AdSense error:', e);
-                        adContainer.classList.remove('loaded');
-                        adContainer.classList.add('empty');
-                    }
-
-                    setTimeout(() => {
-                        if (adElement.getAttribute('data-ad-status') !== 'filled') {
+            // AdSense ad visibility handler
+            const adContainer = document.querySelector('.ad-container');
+            const adElement = adContainer.querySelector('ins.adsbygoogle');
+            if (adElement) {
+                (adsbygoogle = window.adsbygoogle || []).push({
+                    google_ad_client: "ca-pub-9291176772735390",
+                    enable_page_level_ads: false,
+                    onrendered: function(event) {
+                        if (event && event.slot && adElement.getAttribute('data-ad-status') === 'filled') {
+                            adContainer.classList.add('loaded');
+                            adContainer.classList.remove('empty');
+                        } else {
                             adContainer.classList.remove('loaded');
                             adContainer.classList.add('empty');
                         }
-                    }, 3000);
-                }
-            } catch (e) {
-                console.error('Script error:', e);
-                document.getElementById('post-list').innerHTML = '<div class="col-12 text-center py-5 text-muted">Error loading posts. Please try again later or <a href="/index.html#contact" class="text-primary text-decoration-underline">contact support</a>.</div>';
+                    }
+                });
+
+                // Fallback to collapse container if no ad loads
+                setTimeout(() => {
+                    if (adElement.getAttribute('data-ad-status') !== 'filled') {
+                        adContainer.classList.remove('loaded');
+                        adContainer.classList.add('empty');
+                    }
+                }, 3000);
             }
         });
+
+        if ('IntersectionObserver' in window) {
+            const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src || img.src;
+                        img.removeAttribute('loading');
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            lazyImages.forEach(img => imageObserver.observe(img));
+        }
     </script>
-    <script async="async" data-cfasync="false" src="//pl27288128.profitableratecpm.com/927f8295f7ba678ecee95c1d48ab905a/invoke.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
