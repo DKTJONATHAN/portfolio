@@ -139,14 +139,17 @@
         .ad-container {
             margin: 2rem 0;
             text-align: center;
-            display: none;
+            visibility: hidden; /* Hide visually but keep layout space */
+            min-height: 100px; /* Ensure minimum height for ad slot */
+            min-width: 300px; /* Ensure minimum width for ad slot */
         }
         .ad-container ins {
             display: block;
             margin: 0 auto;
+            width: 100%;
         }
         .ad-container.loaded {
-            display: block;
+            visibility: visible; /* Show when ad is loaded */
         }
         .see-more-container { text-align: center; margin: 40px 0; }
         .btn-see-more { padding: 12px 24px; background: var(--primary-color); color: white; border-radius: 25px; font-weight: 500; text-decoration: none; transition: all 0.3s ease; cursor: pointer; border: none; font-size: 1rem; }
@@ -249,9 +252,6 @@
                      data-ad-slot="1375283462"
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
             </div>
             <section class="blog-categories">
                 <h2 class="section-subtitle">Browse by Category</h2>
@@ -510,24 +510,6 @@
                 renderPosts(filtered);
             }, 300);
 
-            function checkAdStatus() {
-                const adContainer = document.querySelector('.ad-container');
-                const adElement = adContainer.querySelector('ins.adsbygoogle');
-                if (adElement) {
-                    const isAdLoaded = adElement.offsetHeight > 0 || adElement.getAttribute('data-ad-status') === 'filled';
-                    if (isAdLoaded) {
-                        adContainer.classList.add('loaded');
-                    } else {
-                        adContainer.classList.remove('loaded');
-                    }
-                }
-            }
-
-            window.addEventListener('load', () => {
-                checkAdStatus();
-                setTimeout(checkAdStatus, 2000);
-            });
-
             seeMoreBtn.addEventListener('click', () => {
                 currentPage++;
                 renderPosts(allPosts, true);
@@ -540,6 +522,28 @@
             });
 
             searchInput.addEventListener('input', filterPosts);
+
+            // AdSense ad visibility handler
+            const adContainer = document.querySelector('.ad-container');
+            const adElement = adContainer.querySelector('ins.adsbygoogle');
+
+            // Initialize ad
+            (adsbygoogle = window.adsbygoogle || []).push({
+                onrendered: function(event) {
+                    if (event && event.slot && adElement.getAttribute('data-ad-status') === 'filled') {
+                        adContainer.classList.add('loaded');
+                    } else {
+                        adContainer.classList.remove('loaded');
+                    }
+                }
+            });
+
+            // Fallback check
+            setTimeout(() => {
+                if (adElement.getAttribute('data-ad-status') !== 'filled') {
+                    adContainer.classList.remove('loaded');
+                }
+            }, 3000);
         });
 
         if ('IntersectionObserver' in window) {
