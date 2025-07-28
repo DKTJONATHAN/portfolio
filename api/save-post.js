@@ -9,8 +9,16 @@ export default async function handler(req, res) {
 
     // Extract and validate request body
     const { isUpdate, slug, title, description, image, date, category, tags, content } = req.body;
-    if (!slug || !title || !date || !content || !description || !tags) {
-      return res.status(400).json({ error: 'Missing required fields: slug, title, date, content, description, or tags' });
+    if (!slug || !title || !date || !content || !description || !tags || !category) {
+      return res.status(400).json({ error: 'Missing required fields: slug, title, date, content, description, tags, or category' });
+    }
+
+    // Define allowed categories from the admin panel dropdown
+    const allowedCategories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
+    
+    // Validate category
+    if (!allowedCategories.includes(category)) {
+      return res.status(400).json({ error: `Invalid category. Must be one of: ${allowedCategories.join(', ')}` });
     }
 
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
@@ -228,7 +236,7 @@ export default async function handler(req, res) {
             <h1 class="post-title" itemprop="headline">${title}</h1>
             <div class="post-meta">
               <time datetime="${date}" itemprop="datePublished">${new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
-              <span class="post-category" itemprop="articleSection">${category || 'Uncategorized'}</span>
+              <span class="post-category" itemprop="articleSection">${category}</span>
             </div>
             ${tags ? `
               <div class="post-tags">
@@ -337,7 +345,7 @@ export default async function handler(req, res) {
       description: description || '',
       image: mainImageUrl,
       date,
-      category: category || 'Uncategorized',
+      category, // No default, as category is validated above
       tags: tags || '',
       content,
     };
