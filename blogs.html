@@ -134,7 +134,11 @@
                     <span class="badge bg-light text-primary active" data-category="all" role="button" tabindex="0">All</span>
                 </div>
             </section>
-            <div id="post-list" class="row"></div>
+            <div id="post-list" class="row">
+                <div class="col-12 text-center py-5 text-muted">
+                    <i class="fas fa-spinner fa-spin me-2"></i>Loading posts...
+                </div>
+            </div>
             <div class="text-center mt-4" id="see-more-container" style="display: none;">
                 <button class="btn btn-primary" id="see-more-btn">See More</button>
             </div>
@@ -164,253 +168,283 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const postList = document.getElementById('post-list');
-            const searchInput = document.getElementById('search-input');
-            const categoryList = document.getElementById('category-list');
-            const seeMoreContainer = document.getElementById('see-more-container');
-            const seeMoreBtn = document.getElementById('see-more-btn');
+            try {
+                const postList = document.getElementById('post-list');
+                const searchInput = document.getElementById('search-input');
+                const categoryList = document.getElementById('category-list');
+                const seeMoreContainer = document.getElementById('see-more-container');
+                const seeMoreBtn = document.getElementById('see-more-btn');
 
-            const allowedCategories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
-            const postsPerPage = 5;
-            let currentPage = 1;
-            let allPosts = [];
+                const allowedCategories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
+                const postsPerPage = 5;
+                let currentPage = 1;
+                let allPosts = [];
 
-            function debounce(func, wait) {
-                let timeout;
-                return function executedFunction(...args) {
-                    const later = () => {
+                function debounce(func, wait) {
+                    let timeout;
+                    return function executedFunction(...args) {
+                        const later = () => {
+                            clearTimeout(timeout);
+                            func(...args);
+                        };
                         clearTimeout(timeout);
-                        func(...args);
+                        timeout = setTimeout(later, wait);
                     };
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                };
-            }
+                }
 
-            function formatDate(dateString) {
-                if (!dateString) return 'No date';
-                const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                return new Date(dateString).toLocaleDateString('en-US', options);
-            }
+                function formatDate(dateString) {
+                    if (!dateString) return 'No date';
+                    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                    return new Date(dateString).toLocaleDateString('en-US', options);
+                }
 
-            function renderCategories(posts) {
-                const categoriesWithPosts = [...new Set(posts.map(post => post.category))].filter(category => allowedCategories.includes(category));
-                categoryList.innerHTML = '<span class="badge bg-light text-primary active" data-category="all" role="button" tabindex="0">All</span>';
-                categoriesWithPosts.forEach(category => {
-                    const categoryElement = document.createElement('span');
-                    categoryElement.className = 'badge bg-light text-primary';
-                    categoryElement.dataset.category = category;
-                    categoryElement.setAttribute('role', 'button');
-                    categoryElement.setAttribute('tabindex', '0');
-                    categoryElement.textContent = category;
-                    categoryList.appendChild(categoryElement);
-                });
-                document.querySelectorAll('#category-list .badge').forEach(tag => {
-                    tag.addEventListener('click', () => {
-                        document.querySelectorAll('#category-list .badge').forEach(t => t.classList.remove('active'));
-                        tag.classList.add('active');
-                        currentPage = 1;
-                        filterPosts();
-                    });
-                    tag.addEventListener('keydown', (e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            tag.click();
-                        }
-                    });
-                });
-            }
+                function renderCategories(posts) {
+                    try {
+                        const categoriesWithPosts = [...new Set(posts.map(post => post.category))].filter(category => allowedCategories.includes(category));
+                        categoryList.innerHTML = '<span class="badge bg-light text-primary active" data-category="all" role="button" tabindex="0">All</span>';
+                        categoriesWithPosts.forEach(category => {
+                            const categoryElement = document.createElement('span');
+                            categoryElement.className = 'badge bg-light text-primary';
+                            categoryElement.dataset.category = category;
+                            categoryElement.setAttribute('role', 'button');
+                            categoryElement.setAttribute('tabindex', '0');
+                            categoryElement.textContent = category;
+                            categoryList.appendChild(categoryElement);
+                        });
+                        document.querySelectorAll('#category-list .badge').forEach(tag => {
+                            tag.addEventListener('click', () => {
+                                document.querySelectorAll('#category-list .badge').forEach(t => t.classList.remove('active'));
+                                tag.classList.add('active');
+                                currentPage = 1;
+                                filterPosts();
+                            });
+                            tag.addEventListener('keydown', (e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    tag.click();
+                                }
+                            });
+                        });
+                    } catch (e) {
+                        console.error('Error rendering categories:', e);
+                        categoryList.innerHTML = '<span class="badge bg-light text-primary active" data-category="all" role="button" tabindex="0">All</span>';
+                    }
+                }
 
-            function renderPost(post) {
-                const postElement = document.createElement('div');
-                postElement.className = 'col-md-6 col-lg-4 mb-4';
-                postElement.setAttribute('itemscope', '');
-                postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
+                function renderPost(post) {
+                    const postElement = document.createElement('div');
+                    postElement.className = 'col-md-6 col-lg-4 mb-4';
+                    postElement.setAttribute('itemscope', '');
+                    postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
 
-                const imageUrl = post.image || '/images/default-blog.jpg';
-                const excerpt = post.description || '';
-                const formattedDate = formatDate(post.date);
-                const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+                    const imageUrl = post.image || '/images/default-blog.jpg';
+                    const excerpt = post.description || '';
+                    const formattedDate = formatDate(post.date);
+                    const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
 
-                postElement.innerHTML = `
-                    <div class="card h-100 shadow-sm">
-                        <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
-                        <img src="${imageUrl}" alt="${post.title || 'Post image'}" class="card-img-top" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-2 text-muted small">
-                                <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
-                                <span class="mx-2">•</span>
-                                <span class="text-primary text-uppercase small" itemprop="articleSection">${post.category}</span>
+                    postElement.innerHTML = `
+                        <div class="card h-100 shadow-sm">
+                            <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
+                            <img src="${imageUrl}" alt="${post.title || 'Post image'}" class="card-img-top" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-2 text-muted small">
+                                    <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
+                                    <span class="mx-2">•</span>
+                                    <span class="text-primary text-uppercase small" itemprop="articleSection">${post.category}</span>
+                                </div>
+                                <h3 class="card-title h5" itemprop="headline">
+                                    <a href="/content/articles/${post.slug}.html" class="text-dark text-decoration-none" itemprop="url">${post.title || 'Untitled Post'}</a>
+                                </h3>
+                                ${excerpt ? `<p class="card-text text-muted" itemprop="description">${excerpt}</p>` : ''}
+                                ${keywords.length > 0 ? `
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="badge bg-light text-primary text-decoration-none" itemprop="keywords">${keyword}</a>`).join('')}
+                                </div>
+                                ` : ''}
+                                <a href="/content/articles/${post.slug}.html" class="btn btn-primary" itemprop="url">Continue Reading</a>
                             </div>
-                            <h3 class="card-title h5" itemprop="headline">
-                                <a href="/content/articles/${post.slug}.html" class="text-dark text-decoration-none" itemprop="url">${post.title || 'Untitled Post'}</a>
-                            </h3>
-                            ${excerpt ? `<p class="card-text text-muted" itemprop="description">${excerpt}</p>` : ''}
-                            ${keywords.length > 0 ? `
-                            <div class="d-flex flex-wrap gap-2 mb-3">
-                                ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="badge bg-light text-primary text-decoration-none" itemprop="keywords">${keyword}</a>`).join('')}
-                            </div>
-                            ` : ''}
-                            <a href="/content/articles/${post.slug}.html" class="btn btn-primary" itemprop="url">Continue Reading</a>
+                            <meta itemprop="author" content="Jonathan Mwaniki">
+                            <meta itemprop="dateModified" content="${post.date}">
+                            <meta itemprop="publisher" content="Jonathan Mwaniki">
                         </div>
-                        <meta itemprop="author" content="Jonathan Mwaniki">
-                        <meta itemprop="dateModified" content="${post.date}">
-                        <meta itemprop="publisher" content="Jonathan Mwaniki">
-                    </div>
-                `;
+                    `;
 
-                return postElement;
-            }
-
-            function renderPosts(posts, append = false) {
-                if (!posts || posts.length === 0) {
-                    postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">No posts found matching your criteria.</div>';
-                    seeMoreContainer.style.display = 'none';
-                    return;
+                    return postElement;
                 }
 
-                const activeCategory = document.querySelector('#category-list .badge.active').dataset.category;
+                function renderPosts(posts, append = false) {
+                    try {
+                        if (!append) {
+                            postList.innerHTML = '';
+                        }
 
-                if (!append) {
-                    postList.innerHTML = '';
-                }
-
-                if (activeCategory === 'all') {
-                    const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
-                    const startIndex = (currentPage - 1) * postsPerPage;
-                    const endIndex = startIndex + postsPerPage;
-                    const postsToShow = sortedPosts.slice(startIndex, endIndex);
-
-                    postsToShow.forEach(post => {
-                        postList.appendChild(renderPost(post));
-                    });
-
-                    seeMoreContainer.style.display = endIndex < sortedPosts.length ? 'block' : 'none';
-                    seeMoreBtn.disabled = endIndex >= sortedPosts.length;
-                } else {
-                    const postsByCategory = {};
-                    allowedCategories.forEach(category => {
-                        postsByCategory[category] = posts.filter(post => post.category === category);
-                    });
-
-                    allowedCategories.forEach(category => {
-                        const categoryPosts = postsByCategory[category];
-                        if (categoryPosts.length === 0 && activeCategory !== category) {
+                        if (!posts || posts.length === 0) {
+                            postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">No posts available at the moment. Please try again later.</div>';
+                            seeMoreContainer.style.display = 'none';
                             return;
                         }
 
-                        const section = document.createElement('section');
-                        section.className = 'mb-4';
-                        section.setAttribute('aria-labelledby', `category-${category.toLowerCase().replace(/\s+/g, '-')}`);
+                        const activeCategory = document.querySelector('#category-list .badge.active').dataset.category;
 
-                        const title = document.createElement('h2');
-                        title.className = 'h4 fw-bold mb-3';
-                        title.id = `category-${category.toLowerCase().replace(/\s+/g, '-')}`;
-                        title.textContent = category;
-                        section.appendChild(title);
+                        if (activeCategory === 'all') {
+                            const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+                            const startIndex = (currentPage - 1) * postsPerPage;
+                            const endIndex = startIndex + postsPerPage;
+                            const postsToShow = sortedPosts.slice(startIndex, endIndex);
 
-                        const postsContainer = document.createElement('div');
-                        postsContainer.className = 'row';
-
-                        if (categoryPosts.length === 0) {
-                            postsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted">No posts available in this category.</div>';
-                        } else {
-                            categoryPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-                            categoryPosts.forEach(post => {
-                                postsContainer.appendChild(renderPost(post));
+                            postsToShow.forEach(post => {
+                                postList.appendChild(renderPost(post));
                             });
-                        }
 
-                        section.appendChild(postsContainer);
-                        postList.appendChild(section);
-                    });
-
-                    seeMoreContainer.style.display = 'none';
-                }
-            }
-
-            async function fetchPosts() {
-                try {
-                    postList.innerHTML = '<div class="col-12 text-center py-5 text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Loading posts...</div>';
-                    const response = await fetch('/api/list-posts.js', {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const { data, error } = await response.json();
-                    if (error) {
-                        throw new Error(error);
-                    }
-                    return data.filter(post => allowedCategories.includes(post.category)) || [];
-                } catch (error) {
-                    console.error('Error fetching posts:', error);
-                    postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">Failed to load posts. Please try again later or <a href="/index.html#contact" class="text-primary text-decoration-underline">contact support</a>.</div>';
-                    return [];
-                }
-            }
-
-            const filterPosts = debounce(async () => {
-                const searchTerm = searchInput.value.toLowerCase().trim();
-                const activeCategory = document.querySelector('#category-list .badge.active').dataset.category;
-                allPosts = await fetchPosts();
-
-                let filtered = allPosts;
-
-                if (searchTerm) {
-                    filtered = filtered.filter(post =>
-                        (post.title && post.title.toLowerCase().includes(searchTerm)) ||
-                        (post.description && post.description.toLowerCase().includes(searchTerm)) ||
-                        (post.tags && post.tags.split(',').map(tag => tag.trim()).some(tag => tag.toLowerCase().includes(searchTerm)))
-                    );
-                }
-
-                if (activeCategory !== 'all') {
-                    filtered = filtered.filter(post => post.category === activeCategory);
-                }
-
-                renderPosts(filtered);
-            }, 300);
-
-            seeMoreBtn.addEventListener('click', () => {
-                currentPage++;
-                renderPosts(allPosts, true);
-            });
-
-            fetchPosts().then(posts => {
-                allPosts = posts;
-                renderCategories(posts);
-                renderPosts(posts);
-            });
-
-            searchInput.addEventListener('input', filterPosts);
-
-            const adContainer = document.querySelector('.ad-container');
-            const adElement = adContainer.querySelector('ins.adsbygoogle');
-            if (adElement) {
-                (adsbygoogle = window.adsbygoogle || []).push({
-                    google_ad_client: "ca-pub-9291176772735390",
-                    enable_page_level_ads: false,
-                    onrendered: function(event) {
-                        if (event && event.slot && adElement.getAttribute('data-ad-status') === 'filled') {
-                            adContainer.classList.add('loaded');
-                            adContainer.classList.remove('empty');
+                            seeMoreContainer.style.display = endIndex < sortedPosts.length ? 'block' : 'none';
+                            seeMoreBtn.disabled = endIndex >= sortedPosts.length;
                         } else {
-                            adContainer.classList.remove('loaded');
-                            adContainer.classList.add('empty');
+                            const postsByCategory = {};
+                            allowedCategories.forEach(category => {
+                                postsByCategory[category] = posts.filter(post => post.category === category);
+                            });
+
+                            allowedCategories.forEach(category => {
+                                const categoryPosts = postsByCategory[category];
+                                if (categoryPosts.length === 0 && activeCategory !== category) {
+                                    return;
+                                }
+
+                                const section = document.createElement('section');
+                                section.className = 'mb-4';
+                                section.setAttribute('aria-labelledby', `category-${category.toLowerCase().replace(/\s+/g, '-')}`);
+
+                                const title = document.createElement('h2');
+                                title.className = 'h4 fw-bold mb-3';
+                                title.id = `category-${category.toLowerCase().replace(/\s+/g, '-')}`;
+                                title.textContent = category;
+                                section.appendChild(title);
+
+                                const postsContainer = document.createElement('div');
+                                postsContainer.className = 'row';
+
+                                if (categoryPosts.length === 0) {
+                                    postsContainer.innerHTML = '<div class="col-12 text-center py-5 text-muted">No posts available in this category.</div>';
+                                } else {
+                                    categoryPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                                    categoryPosts.forEach(post => {
+                                        postsContainer.appendChild(renderPost(post));
+                                    });
+                                }
+
+                                section.appendChild(postsContainer);
+                                postList.appendChild(section);
+                            });
+
+                            seeMoreContainer.style.display = 'none';
                         }
+                    } catch (e) {
+                        console.error('Error rendering posts:', e);
+                        postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">Error loading posts. Please try again later or <a href="/index.html#contact" class="text-primary text-decoration-underline">contact support</a>.</div>';
+                    }
+                }
+
+                async function fetchPosts() {
+                    try {
+                        const response = await fetch('/api/list-posts.js', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        const { data, error } = await response.json();
+                        if (error) {
+                            throw new Error(error);
+                        }
+                        return data.filter(post => allowedCategories.includes(post.category)) || [];
+                    } catch (error) {
+                        console.error('Error fetching posts:', error);
+                        return [];
+                    }
+                }
+
+                const filterPosts = debounce(async () => {
+                    try {
+                        const searchTerm = searchInput.value.toLowerCase().trim();
+                        const activeCategory = document.querySelector('#category-list .badge.active').dataset.category;
+                        allPosts = await fetchPosts();
+
+                        let filtered = allPosts;
+
+                        if (searchTerm) {
+                            filtered = filtered.filter(post =>
+                                (post.title && post.title.toLowerCase().includes(searchTerm)) ||
+                                (post.description && post.description.toLowerCase().includes(searchTerm)) ||
+                                (post.tags && post.tags.split(',').map(tag => tag.trim()).some(tag => tag.toLowerCase().includes(searchTerm)))
+                            );
+                        }
+
+                        if (activeCategory !== 'all') {
+                            filtered = filtered.filter(post => post.category === activeCategory);
+                        }
+
+                        renderPosts(filtered);
+                    } catch (e) {
+                        console.error('Error filtering posts:', e);
+                        postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">Error loading posts. Please try again later or <a href="/index.html#contact" class="text-primary text-decoration-underline">contact support</a>.</div>';
+                    }
+                }, 300);
+
+                seeMoreBtn.addEventListener('click', () => {
+                    try {
+                        currentPage++;
+                        renderPosts(allPosts, true);
+                    } catch (e) {
+                        console.error('Error on see more:', e);
                     }
                 });
 
-                setTimeout(() => {
-                    if (adElement.getAttribute('data-ad-status') !== 'filled') {
+                searchInput.addEventListener('input', filterPosts);
+
+                fetchPosts().then(posts => {
+                    allPosts = posts;
+                    renderCategories(posts);
+                    renderPosts(posts);
+                }).catch(() => {
+                    postList.innerHTML = '<div class="col-12 text-center py-5 text-muted">Error loading posts. Please try again later or <a href="/index.html#contact" class="text-primary text-decoration-underline">contact support</a>.</div>';
+                });
+
+                const adContainer = document.querySelector('.ad-container');
+                const adElement = adContainer.querySelector('ins.adsbygoogle');
+                if (adElement) {
+                    try {
+                        (adsbygoogle = window.adsbygoogle || []).push({
+                            google_ad_client: "ca-pub-9291176772735390",
+                            enable_page_level_ads: false,
+                            onrendered: function(event) {
+                                if (event && event.slot && adElement.getAttribute('data-ad-status') === 'filled') {
+                                    adContainer.classList.add('loaded');
+                                    adContainer.classList.remove('empty');
+                                } else {
+                                    adContainer.classList.remove('loaded');
+                                    adContainer.classList.add('empty');
+                                }
+                            }
+                        });
+                    } catch (e) {
+                        console.error('AdSense error:', e);
                         adContainer.classList.remove('loaded');
                         adContainer.classList.add('empty');
                     }
-                }, 3000);
+
+                    setTimeout(() => {
+                        if (adElement.getAttribute('data-ad-status') !== 'filled') {
+                            adContainer.classList.remove('loaded');
+                            adContainer.classList.add('empty');
+                        }
+                    }, 3000);
+                }
+            } catch (e) {
+                console.error('Script error:', e);
+                document.getElementById('post-list').innerHTML = '<div class="col-12 text-center py-5 text-muted">Error loading posts. Please try again later or <a href="/index.html#contact" class="text-primary text-decoration-underline">contact support</a>.</div>';
             }
         });
     </script>
