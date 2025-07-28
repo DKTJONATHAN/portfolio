@@ -198,14 +198,17 @@ export default async function handler(req, res) {
           .ad-container {
             margin: 2rem 0;
             text-align: center;
-            display: none; /* Hide by default */
+            visibility: hidden; /* Hide visually but keep layout space */
+            min-height: 100px; /* Ensure minimum height for ad slot */
+            min-width: 300px; /* Ensure minimum width for ad slot */
           }
           .ad-container ins {
             display: block;
             margin: 0 auto;
+            width: 100%;
           }
           .ad-container.loaded {
-            display: block; /* Show when ad is loaded */
+            visibility: visible; /* Show when ad is loaded */
           }
           @media (max-width: 600px) {
             .post-title {
@@ -255,7 +258,25 @@ export default async function handler(req, res) {
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
                 <script>
-                  (adsbygoogle = window.adsbygoogle || []).push({});
+                  (adsbygoogle = window.adsbygoogle || []).push({
+                    onrendered: function(event) {
+                      const adContainer = document.querySelector('.ad-container');
+                      const adElement = adContainer.querySelector('ins.adsbygoogle');
+                      if (event && event.slot && adElement.getAttribute('data-ad-status') === 'filled') {
+                        adContainer.classList.add('loaded');
+                      } else {
+                        adContainer.classList.remove('loaded');
+                      }
+                    }
+                  });
+                  // Fallback check
+                  setTimeout(() => {
+                    const adContainer = document.querySelector('.ad-container');
+                    const adElement = adContainer.querySelector('ins.adsbygoogle');
+                    if (adElement.getAttribute('data-ad-status') !== 'filled') {
+                      adContainer.classList.remove('loaded');
+                    }
+                  }, 3000);
                 </script>
               </div>
               ${processedContent}
@@ -273,29 +294,6 @@ export default async function handler(req, res) {
             </footer>
           </article>
         </main>
-        <script>
-          // AdSense ad visibility handler
-          function checkAdStatus() {
-            const adContainer = document.querySelector('.ad-container');
-            const adElement = adContainer.querySelector('ins.adsbygoogle');
-            if (adElement) {
-              // Check if the ad has content by inspecting its height or data-ad-status
-              const isAdLoaded = adElement.offsetHeight > 0 || adElement.getAttribute('data-ad-status') === 'filled';
-              if (isAdLoaded) {
-                adContainer.classList.add('loaded');
-              } else {
-                adContainer.classList.remove('loaded');
-              }
-            }
-          }
-
-          // Run ad status check after AdSense script attempts to load ads
-          window.addEventListener('load', () => {
-            checkAdStatus();
-            // Retry after a delay to account for slow ad loading
-            setTimeout(checkAdStatus, 2000);
-          });
-        </script>
       </body>
       </html>
     `;
@@ -345,7 +343,7 @@ export default async function handler(req, res) {
       description: description || '',
       image: mainImageUrl,
       date,
-      category, // No default, as category is validated above
+      category,
       tags: tags || '',
       content,
     };
