@@ -1,4 +1,4 @@
-/* Progress Bar */
+/* Progress Bar (for index.html splash screen) */
 .progress-bar-track {
     height: 0.5rem;
     background-color: #e5e7eb;
@@ -13,7 +13,7 @@
     transition: width 0.3s ease;
 }
 
-/* Post Meta Dot */
+/* Post Meta Dot (for index.html and blogs.html blog posts) */
 .post-meta time::after {
     content: '';
     position: absolute;
@@ -27,19 +27,4 @@
 }
 @media (max-width: 480px) {
     .post-meta time::after { display: none; }
-}
-
-/* Ad Container */
-.ad-container {
-    visibility: hidden;
-    min-height: 100px;
-    min-width: 300px;
-}
-.ad-container ins {
-    display: block;
-    margin: 0 auto;
-    width: 100%;
-}
-.ad-container.loaded {
-    visibility: visible;
 }
