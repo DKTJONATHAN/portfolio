@@ -7,8 +7,8 @@
     
     <title>Jonathan Mwaniki | Professional Web Developer & Graphic Designer in Kenya</title>
     <meta name="description" content="Jonathan Mwaniki - Kenya's leading web developer & graphic designer with 5+ years experience. Custom websites, UI/UX design, and digital solutions.">
-<meta name="ezoic-site-verification" content="nwDD3fukmzhpvOCwZFAJA8byGHkQXs" />    
-<meta name="keywords" content="Jonathan Mwaniki, web developer Kenya, graphic designer Nairobi, professional web developer Kenya, UI/UX designer Kenya">
+    <meta name="ezoic-site-verification" content="nwDD3fukmzhpvOCwZFAJA8byGHkQXs" />    
+    <meta name="keywords" content="Jonathan Mwaniki, web developer Kenya, graphic designer Nairobi, professional web developer Kenya, UI/UX designer Kenya">
     <meta name="author" content="Jonathan Mwaniki">
     <meta name="robots" content="index, follow">
     
@@ -40,7 +40,7 @@
     <meta property="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
     <meta name="twitter:image:alt" content="Jonathan Mwaniki Professional Logo">
     
-    <link rel="canonical" href="https://jonathanmwaniki.co.ke">
+    <link rel="canonical" href="https://www.jonathanmwaniki.co.ke">
     
     <link rel="stylesheet" href="/styles.css">
     <link rel="preload" href="/styles.css" as="style">
@@ -604,6 +604,19 @@
             text-decoration: underline;
         }
 
+        .ad-container {
+            margin: 2rem 0;
+            text-align: center;
+            display: none; /* Hide by default */
+        }
+        .ad-container ins {
+            display: block;
+            margin: 0 auto;
+        }
+        .ad-container.loaded {
+            display: block; /* Show when ad is loaded */
+        }
+
         @media (max-width: 1024px) {
             .blog-posts {
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -850,6 +863,18 @@
                 <div id="blog-list" class="blog-posts">
                     <!-- Posts will be dynamically inserted here -->
                 </div>
+                <!-- Jonathan Ads -->
+                <div class="ad-container">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-9291176772735390"
+                         data-ad-slot="1375283462"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
                 <div class="blog-actions" style="text-align: center; margin-top: 40px;">
                     <a href="/blogs.html" class="btn-primary" aria-label="Read more blog posts">Read More Blogs <i class="fas fa-arrow-right"></i></a>
                 </div>
@@ -859,7 +884,7 @@
         <section id="about" class="about-section">
             <div class="about-container">
                 <div class="about-image">
-                    <img src="/images/file.enc" alt="About Jonathan Mwaniki - Web Developer & Designer" loading="lazy" width="400" height="500">
+                    <img src="/images/jonathan-mwaniki.jpg" alt="About Jonathan Mwaniki - Web Developer & Designer" loading="lazy" width="400" height="500">
                 </div>
                 <div class="about-content">
                     <h2 class="section-title">About <span class="gradient-text">Jonathan Mwaniki</span></h2>
@@ -1150,6 +1175,28 @@
             // Fetch and render posts
             fetchPosts().then(posts => {
                 renderPosts(posts);
+            });
+
+            // AdSense ad visibility handler
+            function checkAdStatus() {
+                const adContainer = document.querySelector('.ad-container');
+                const adElement = adContainer.querySelector('ins.adsbygoogle');
+                if (adElement) {
+                    // Check if the ad has content by inspecting its height or data-ad-status
+                    const isAdLoaded = adElement.offsetHeight > 0 || adElement.getAttribute('data-ad-status') === 'filled';
+                    if (isAdLoaded) {
+                        adContainer.classList.add('loaded');
+                    } else {
+                        adContainer.classList.remove('loaded');
+                    }
+                }
+            }
+
+            // Run ad status check after AdSense script attempts to load ads
+            window.addEventListener('load', () => {
+                checkAdStatus();
+                // Retry after a delay to account for slow ad loading
+                setTimeout(checkAdStatus, 2000);
             });
 
             const progressBar = document.getElementById('progressBar');
