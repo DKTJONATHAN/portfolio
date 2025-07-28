@@ -190,10 +190,14 @@ export default async function handler(req, res) {
           .ad-container {
             margin: 2rem 0;
             text-align: center;
+            display: none; /* Hide by default */
           }
           .ad-container ins {
             display: block;
             margin: 0 auto;
+          }
+          .ad-container.loaded {
+            display: block; /* Show when ad is loaded */
           }
           @media (max-width: 600px) {
             .post-title {
@@ -261,6 +265,29 @@ export default async function handler(req, res) {
             </footer>
           </article>
         </main>
+        <script>
+          // AdSense ad visibility handler
+          function checkAdStatus() {
+            const adContainer = document.querySelector('.ad-container');
+            const adElement = adContainer.querySelector('ins.adsbygoogle');
+            if (adElement) {
+              // Check if the ad has content by inspecting its height or data-ad-status
+              const isAdLoaded = adElement.offsetHeight > 0 || adElement.getAttribute('data-ad-status') === 'filled';
+              if (isAdLoaded) {
+                adContainer.classList.add('loaded');
+              } else {
+                adContainer.classList.remove('loaded');
+              }
+            }
+          }
+
+          // Run ad status check after AdSense script attempts to load ads
+          window.addEventListener('load', () => {
+            checkAdStatus();
+            // Retry after a delay to account for slow ad loading
+            setTimeout(checkAdStatus, 2000);
+          });
+        </script>
       </body>
       </html>
     `;
