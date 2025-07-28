@@ -139,10 +139,14 @@
         .ad-container {
             margin: 2rem 0;
             text-align: center;
+            display: none; /* Hide by default */
         }
         .ad-container ins {
             display: block;
             margin: 0 auto;
+        }
+        .ad-container.loaded {
+            display: block; /* Show when ad is loaded */
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @media (max-width: 1024px) { .blog-posts { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); } }
@@ -443,7 +447,7 @@
                     return data || [];
                 } catch (error) {
                     console.error('Error fetching posts:', error);
-                    postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/contact">contact support</a>.</div>';
+                    postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/index.html#contact">contact support</a>.</div>';
                     return [];
                 }
             }
@@ -469,6 +473,28 @@
 
                 renderPosts(filtered);
             }, 300);
+
+            // AdSense ad visibility handler
+            function checkAdStatus() {
+                const adContainer = document.querySelector('.ad-container');
+                const adElement = adContainer.querySelector('ins.adsbygoogle');
+                if (adElement) {
+                    // Check if the ad has content by inspecting its height or data-ad-status
+                    const isAdLoaded = adElement.offsetHeight > 0 || adElement.getAttribute('data-ad-status') === 'filled';
+                    if (isAdLoaded) {
+                        adContainer.classList.add('loaded');
+                    } else {
+                        adContainer.classList.remove('loaded');
+                    }
+                }
+            }
+
+            // Run ad status check after AdSense script attempts to load ads
+            window.addEventListener('load', () => {
+                checkAdStatus();
+                // Retry after a delay to account for slow ad loading
+                setTimeout(checkAdStatus, 2000);
+            });
 
             // Initial load
             fetchPosts().then(posts => {
