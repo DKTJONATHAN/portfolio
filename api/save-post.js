@@ -58,7 +58,7 @@ export default async function handler(req, res) {
     // Generate keywords from tags
     const keywords = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag).join(', ') : '';
 
-    // Generate HTML content with professional article layout, SEO meta tags, and AdSense snippet
+    // Generate HTML content with professional article layout, SEO meta tags, and new ad snippet
     const htmlContent = `
       <!DOCTYPE html>
       <html lang="en">
@@ -294,6 +294,7 @@ export default async function handler(req, res) {
             </footer>
           </article>
         </main>
+        <script type='text/javascript' src='//pl27288319.profitableratecpm.com/e9/30/80/e9308078ac3ce510bb8658ccd1eab7e5.js'></script>
       </body>
       </html>
     `;
