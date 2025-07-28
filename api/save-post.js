@@ -50,7 +50,7 @@ export default async function handler(req, res) {
     // Generate keywords from tags
     const keywords = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag).join(', ') : '';
 
-    // Generate HTML content with professional article layout and SEO meta tags
+    // Generate HTML content with professional article layout, SEO meta tags, and AdSense snippet
     const htmlContent = `
       <!DOCTYPE html>
       <html lang="en">
@@ -74,6 +74,8 @@ export default async function handler(req, res) {
         <meta name="twitter:creator" content="@Maestropuns">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <!-- Google AdSense Script -->
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9291176772735390" crossorigin="anonymous"></script>
         <style>
           :root {
             --primary-color: #1a73e8;
@@ -185,6 +187,14 @@ export default async function handler(req, res) {
           .post-footer .social-links a:hover {
             color: #0d47a1;
           }
+          .ad-container {
+            margin: 2rem 0;
+            text-align: center;
+          }
+          .ad-container ins {
+            display: block;
+            margin: 0 auto;
+          }
           @media (max-width: 600px) {
             .post-title {
               font-size: 1.5rem;
@@ -224,6 +234,18 @@ export default async function handler(req, res) {
             ${mainImageUrl ? `<div class="post-image"><img src="${mainImageUrl}" alt="${title}" itemprop="image"></div>` : ''}
             <div class="post-content" itemprop="articleBody">
               ${description ? `<p class="post-excerpt" itemprop="description">${description}</p>` : ''}
+              <!-- AdSense Ad Unit -->
+              <div class="ad-container">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-9291176772735390"
+                     data-ad-slot="YOUR_AD_SLOT_ID"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                  (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+              </div>
               ${processedContent}
             </div>
             <footer class="post-footer">
