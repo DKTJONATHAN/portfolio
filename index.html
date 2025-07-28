@@ -111,11 +111,6 @@
             </div>
             <h1>Jonathan Mwaniki</h1>
             <p>Professional Web Developer & Graphic Designer</p>
-            <div class="progress-bar">
-                <div class="progress-bar-track">
-                    <div id="progressBar" class="progress-bar-fill"></div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -467,6 +462,21 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const postList = document.getElementById('blog-list');
+            const splashScreen = document.getElementById('splashScreen');
+            const mainContent = document.getElementById('mainContent');
+
+            // Splash screen transition
+            setTimeout(() => {
+                splashScreen.style.opacity = '0';
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    mainContent.style.opacity = '0';
+                    setTimeout(() => {
+                        mainContent.style.opacity = '1';
+                    }, 50);
+                }, 500);
+            }, 3000);
 
             function formatDate(dateString) {
                 if (!dateString) return 'No date';
@@ -579,25 +589,6 @@
                     adContainer.classList.remove('loaded');
                 }
             }, 3000);
-
-            const progressBar = document.getElementById('progressBar');
-            const splashScreen = document.getElementById('splashScreen');
-            const mainContent = document.getElementById('mainContent');
-            let progress = 0;
-
-            const interval = setInterval(() => {
-                progress += 5;
-                progressBar.style.width = progress + '%';
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    splashScreen.style.opacity = '0';
-                    splashScreen.style.transition = 'opacity 0.5s ease';
-                    setTimeout(() => {
-                        splashScreen.style.display = 'none';
-                        mainContent.style.display = 'block';
-                    }, 500);
-                }
-            }, 50);
         });
     </script>
 
