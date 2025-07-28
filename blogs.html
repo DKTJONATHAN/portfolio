@@ -42,7 +42,7 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="preload" href="/styles.css" as="style">
     <link rel="preload" href="/scripts/main.js" as="script">
-    <link rel="preload" href="/images/Jonathan-Mayaniki.jpg" as="image" type="image/jpeg">
+    <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
@@ -139,9 +139,9 @@
         .ad-container {
             margin: 2rem 0;
             text-align: center;
-            visibility: hidden; /* Hide visually but keep layout space */
-            min-height: 100px; /* Ensure minimum height for ad slot */
-            min-width: 300px; /* Ensure minimum width for ad slot */
+            visibility: hidden; /* Hide visually but keep layout space for AdSense */
+            height: auto; /* Allow collapse when empty */
+            min-height: 0; /* No space reserved initially */
         }
         .ad-container ins {
             display: block;
@@ -150,6 +150,11 @@
         }
         .ad-container.loaded {
             visibility: visible; /* Show when ad is loaded */
+            min-height: 100px; /* Reserve space for loaded ad */
+        }
+        .ad-container.empty {
+            height: 0; /* Collapse completely if no ad */
+            overflow: hidden;
         }
         .see-more-container { text-align: center; margin: 40px 0; }
         .btn-see-more { padding: 12px 24px; background: var(--primary-color); color: white; border-radius: 25px; font-weight: 500; text-decoration: none; transition: all 0.3s ease; cursor: pointer; border: none; font-size: 1rem; }
@@ -403,7 +408,6 @@
                 }
 
                 if (activeCategory === 'all') {
-                    // For "All" category, show flat list of posts sorted by date
                     const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
                     const startIndex = (currentPage - 1) * postsPerPage;
                     const endIndex = startIndex + postsPerPage;
@@ -418,11 +422,9 @@
 
                     postList.appendChild(postsContainer);
 
-                    // Show/hide "See More" button
                     seeMoreContainer.style.display = endIndex < sortedPosts.length ? 'block' : 'none';
                     seeMoreBtn.disabled = endIndex >= sortedPosts.length;
                 } else {
-                    // For specific categories, group by category
                     const postsByCategory = {};
                     allowedCategories.forEach(category => {
                         postsByCategory[category] = posts.filter(post => post.category === category);
@@ -526,24 +528,29 @@
             // AdSense ad visibility handler
             const adContainer = document.querySelector('.ad-container');
             const adElement = adContainer.querySelector('ins.adsbygoogle');
-
-            // Initialize ad
-            (adsbygoogle = window.adsbygoogle || []).push({
-                onrendered: function(event) {
-                    if (event && event.slot && adElement.getAttribute('data-ad-status') === 'filled') {
-                        adContainer.classList.add('loaded');
-                    } else {
-                        adContainer.classList.remove('loaded');
+            if (adElement) {
+                (adsbygoogle = window.adsbygoogle || []).push({
+                    google_ad_client: "ca-pub-9291176772735390",
+                    enable_page_level_ads: false,
+                    onrendered: function(event) {
+                        if (event && event.slot && adElement.getAttribute('data-ad-status') === 'filled') {
+                            adContainer.classList.add('loaded');
+                            adContainer.classList.remove('empty');
+                        } else {
+                            adContainer.classList.remove('loaded');
+                            adContainer.classList.add('empty');
+                        }
                     }
-                }
-            });
+                });
 
-            // Fallback check
-            setTimeout(() => {
-                if (adElement.getAttribute('data-ad-status') !== 'filled') {
-                    adContainer.classList.remove('loaded');
-                }
-            }, 3000);
+                // Fallback to collapse container if no ad loads
+                setTimeout(() => {
+                    if (adElement.getAttribute('data-ad-status') !== 'filled') {
+                        adContainer.classList.remove('loaded');
+                        adContainer.classList.add('empty');
+                    }
+                }, 3000);
+            }
         });
 
         if ('IntersectionObserver' in window) {
