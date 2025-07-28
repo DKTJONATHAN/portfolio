@@ -607,14 +607,17 @@
         .ad-container {
             margin: 2rem 0;
             text-align: center;
-            display: none; /* Hide by default */
+            visibility: hidden; /* Hide visually but keep layout space */
+            min-height: 100px; /* Ensure minimum height for ad slot */
+            min-width: 300px; /* Ensure minimum width for ad slot */
         }
         .ad-container ins {
             display: block;
             margin: 0 auto;
+            width: 100%;
         }
         .ad-container.loaded {
-            display: block; /* Show when ad is loaded */
+            visibility: visible; /* Show when ad is loaded */
         }
 
         @media (max-width: 1024px) {
@@ -871,9 +874,6 @@
                          data-ad-slot="1375283462"
                          data-ad-format="auto"
                          data-full-width-responsive="true"></ins>
-                    <script>
-                         (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
                 </div>
                 <div class="blog-actions" style="text-align: center; margin-top: 40px;">
                     <a href="/blogs.html" class="btn-primary" aria-label="Read more blog posts">Read More Blogs <i class="fas fa-arrow-right"></i></a>
@@ -1114,11 +1114,10 @@
                     return;
                 }
 
-                // Filter posts with a valid category and sort by date (newest first)
                 const validPosts = posts
                     .filter(post => post.category)
                     .sort((a, b) => new Date(b.date) - new Date(a.date))
-                    .slice(0, 2); // Limit to 2 latest posts
+                    .slice(0, 2);
 
                 if (validPosts.length === 0) {
                     postList.innerHTML = '<div class="no-posts">No posts with valid categories found.</div>';
@@ -1178,26 +1177,26 @@
             });
 
             // AdSense ad visibility handler
-            function checkAdStatus() {
-                const adContainer = document.querySelector('.ad-container');
-                const adElement = adContainer.querySelector('ins.adsbygoogle');
-                if (adElement) {
-                    // Check if the ad has content by inspecting its height or data-ad-status
-                    const isAdLoaded = adElement.offsetHeight > 0 || adElement.getAttribute('data-ad-status') === 'filled';
-                    if (isAdLoaded) {
+            const adContainer = document.querySelector('.ad-container');
+            const adElement = adContainer.querySelector('ins.adsbygoogle');
+
+            // Initialize ad
+            (adsbygoogle = window.adsbygoogle || []).push({
+                onrendered: function(event) {
+                    if (event && event.slot && adElement.getAttribute('data-ad-status') === 'filled') {
                         adContainer.classList.add('loaded');
                     } else {
                         adContainer.classList.remove('loaded');
                     }
                 }
-            }
-
-            // Run ad status check after AdSense script attempts to load ads
-            window.addEventListener('load', () => {
-                checkAdStatus();
-                // Retry after a delay to account for slow ad loading
-                setTimeout(checkAdStatus, 2000);
             });
+
+            // Fallback check
+            setTimeout(() => {
+                if (adElement.getAttribute('data-ad-status') !== 'filled') {
+                    adContainer.classList.remove('loaded');
+                }
+            }, 3000);
 
             const progressBar = document.getElementById('progressBar');
             const splashScreen = document.getElementById('splashScreen');
