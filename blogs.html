@@ -33,7 +33,7 @@
     <meta name="twitter:title" content="Mwaniki Reports | News, Sports, Tech & Entertainment">
     <meta name="twitter:description" content="Stay updated with the latest news, sports, tech, and entertainment from Mwaniki Reports, Kenya.">
     <meta property="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
-    <meta name="twitter:image:alt" content="Jonathan Mwaniki Logo">
+    <meta name="twitter:image:alt" content="Jonathan Mwaniki News">
     
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16 32x32">
     <link rel="icon" href="/images/favicon-96x96.png" type="image/png" sizes="96x96">
@@ -42,7 +42,7 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="preload" href="/styles.css" as="style">
     <link rel="preload" href="/scripts/main.js" as="script">
-    <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
+    <link rel="preload" href="/images/Jonathan-Mayaniki.jpg" as="image" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
@@ -139,15 +139,19 @@
         .ad-container {
             margin: 2rem 0;
             text-align: center;
-            display: none; /* Hide by default */
+            display: none;
         }
         .ad-container ins {
             display: block;
             margin: 0 auto;
         }
         .ad-container.loaded {
-            display: block; /* Show when ad is loaded */
+            display: block;
         }
+        .see-more-container { text-align: center; margin: 40px 0; }
+        .btn-see-more { padding: 12px 24px; background: var(--primary-color); color: white; border-radius: 25px; font-weight: 500; text-decoration: none; transition: all 0.3s ease; cursor: pointer; border: none; font-size: 1rem; }
+        .btn-see-more:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3); }
+        .btn-see-more:disabled { background: var(--light-text); cursor: not-allowed; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @media (max-width: 1024px) { .blog-posts { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); } }
         @media (max-width: 768px) {
@@ -238,7 +242,6 @@
                 <input type="text" id="search-input" placeholder="Search posts..." aria-label="Search blog posts">
                 <i class="fas fa-search"></i>
             </div>
-            <!-- Jonathan Ads -->
             <div class="ad-container">
                 <ins class="adsbygoogle"
                      style="display:block"
@@ -254,11 +257,11 @@
                 <h2 class="section-subtitle">Browse by Category</h2>
                 <div class="category-list" id="category-list">
                     <span class="category-tag active" data-category="all" role="button" tabindex="0">All</span>
-                    <!-- Dynamic categories will be inserted here -->
                 </div>
             </section>
-            <div id="post-list">
-                <!-- Posts will be dynamically inserted here -->
+            <div id="post-list"></div>
+            <div class="see-more-container" id="see-more-container" style="display: none;">
+                <button class="btn-see-more" id="see-more-btn">See More</button>
             </div>
         </main>
 
@@ -290,9 +293,13 @@
             const postList = document.getElementById('post-list');
             const searchInput = document.getElementById('search-input');
             const categoryList = document.getElementById('category-list');
+            const seeMoreContainer = document.getElementById('see-more-container');
+            const seeMoreBtn = document.getElementById('see-more-btn');
 
-            // Define allowed categories
             const allowedCategories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
+            const postsPerPage = 5;
+            let currentPage = 1;
+            let allPosts = [];
 
             function debounce(func, wait) {
                 let timeout;
@@ -313,9 +320,9 @@
             }
 
             function renderCategories(posts) {
-                // Use predefined categories instead of dynamic extraction
+                const categoriesWithPosts = [...new Set(posts.map(post => post.category))].filter(category => allowedCategories.includes(category));
                 categoryList.innerHTML = '<span class="category-tag active" data-category="all" role="button" tabindex="0">All</span>';
-                allowedCategories.forEach(category => {
+                categoriesWithPosts.forEach(category => {
                     const categoryElement = document.createElement('span');
                     categoryElement.className = 'category-tag';
                     categoryElement.dataset.category = category;
@@ -328,6 +335,7 @@
                     tag.addEventListener('click', () => {
                         document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
                         tag.classList.add('active');
+                        currentPage = 1;
                         filterPosts();
                     });
                     tag.addEventListener('keydown', (e) => {
@@ -339,92 +347,121 @@
                 });
             }
 
-            function renderPosts(posts) {
+            function renderPost(post) {
+                const postElement = document.createElement('article');
+                postElement.className = 'blog-post';
+                postElement.setAttribute('itemscope', '');
+                postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
+
+                const imageUrl = post.image || '/images/default-blog.jpg';
+                const excerpt = post.description || '';
+                const formattedDate = formatDate(post.date);
+                const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+
+                postElement.innerHTML = `
+                    <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
+                    <div class="post-image">
+                        <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                    </div>
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
+                            <span class="post-category" itemprop="articleSection">${post.category}</span>
+                        </div>
+                        <h3 class="post-title" itemprop="headline">
+                            <a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
+                        </h3>
+                        ${excerpt ? `<div class="post-excerpt" itemprop="description">${excerpt}</div>` : ''}
+                        ${keywords.length > 0 ? `
+                        <div class="post-tags">
+                            ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
+                        </div>
+                        ` : ''}
+                        <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">
+                            Continue Reading <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <meta itemprop="author" content="Jonathan Mwaniki">
+                    <meta itemprop="dateModified" content="${post.date}">
+                    <meta itemprop="publisher" content="Jonathan Mwaniki">
+                `;
+
+                return postElement;
+            }
+
+            function renderPosts(posts, append = false) {
                 if (!posts || posts.length === 0) {
                     postList.innerHTML = '<div class="no-posts">No posts found matching your criteria.</div>';
+                    seeMoreContainer.style.display = 'none';
                     return;
                 }
 
-                // Group posts by category
-                const postsByCategory = {};
-                allowedCategories.forEach(category => {
-                    postsByCategory[category] = posts.filter(post => post.category === category);
-                });
+                const activeCategory = document.querySelector('.category-tag.active').dataset.category;
 
-                postList.innerHTML = '';
+                if (!append) {
+                    postList.innerHTML = '';
+                }
 
-                // Render each category section
-                allowedCategories.forEach(category => {
-                    const categoryPosts = postsByCategory[category];
-                    if (categoryPosts.length === 0 && document.querySelector('.category-tag.active').dataset.category !== 'all') {
-                        return; // Skip empty categories unless "All" is selected
-                    }
-
-                    const section = document.createElement('section');
-                    section.className = 'category-section';
-                    section.setAttribute('aria-labelledby', `category-${category.toLowerCase().replace(/\s+/g, '-')}`);
-
-                    const title = document.createElement('h2');
-                    title.className = 'category-title';
-                    title.id = `category-${category.toLowerCase().replace(/\s+/g, '-')}`;
-                    title.textContent = category;
-                    section.appendChild(title);
+                if (activeCategory === 'all') {
+                    // For "All" category, show flat list of posts sorted by date
+                    const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+                    const startIndex = (currentPage - 1) * postsPerPage;
+                    const endIndex = startIndex + postsPerPage;
+                    const postsToShow = sortedPosts.slice(startIndex, endIndex);
 
                     const postsContainer = document.createElement('div');
                     postsContainer.className = 'blog-posts';
 
-                    if (categoryPosts.length === 0) {
-                        postsContainer.innerHTML = '<div class="no-posts">No posts available in this category.</div>';
-                    } else {
-                        // Sort posts by date (newest first)
-                        categoryPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    postsToShow.forEach(post => {
+                        postsContainer.appendChild(renderPost(post));
+                    });
 
-                        categoryPosts.forEach(post => {
-                            const postElement = document.createElement('article');
-                            postElement.className = 'blog-post';
-                            postElement.setAttribute('itemscope', '');
-                            postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
+                    postList.appendChild(postsContainer);
 
-                            const imageUrl = post.image || '/images/default-blog.jpg';
-                            const excerpt = post.description || '';
-                            const formattedDate = formatDate(post.date);
-                            const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+                    // Show/hide "See More" button
+                    seeMoreContainer.style.display = endIndex < sortedPosts.length ? 'block' : 'none';
+                    seeMoreBtn.disabled = endIndex >= sortedPosts.length;
+                } else {
+                    // For specific categories, group by category
+                    const postsByCategory = {};
+                    allowedCategories.forEach(category => {
+                        postsByCategory[category] = posts.filter(post => post.category === category);
+                    });
 
-                            postElement.innerHTML = `
-                                <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
-                                <div class="post-image">
-                                    <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
-                                </div>
-                                <div class="post-content">
-                                    <div class="post-meta">
-                                        <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
-                                        <span class="post-category" itemprop="articleSection">${post.category}</span>
-                                    </div>
-                                    <h3 class="post-title" itemprop="headline">
-                                        <a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
-                                    </h3>
-                                    ${excerpt ? `<div class="post-excerpt" itemprop="description">${excerpt}</div>` : ''}
-                                    ${keywords.length > 0 ? `
-                                    <div class="post-tags">
-                                        ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
-                                    </div>
-                                    ` : ''}
-                                    <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">
-                                        Continue Reading <i class="fas fa-arrow-right"></i>
-                                    </a>
-                                </div>
-                                <meta itemprop="author" content="Jonathan Mwaniki">
-                                <meta itemprop="dateModified" content="${post.date}">
-                                <meta itemprop="publisher" content="Jonathan Mwaniki">
-                            `;
+                    allowedCategories.forEach(category => {
+                        const categoryPosts = postsByCategory[category];
+                        if (categoryPosts.length === 0 && activeCategory !== category) {
+                            return;
+                        }
 
-                            postsContainer.appendChild(postElement);
-                        });
-                    }
+                        const section = document.createElement('section');
+                        section.className = 'category-section';
+                        section.setAttribute('aria-labelledby', `category-${category.toLowerCase().replace(/\s+/g, '-')}`);
 
-                    section.appendChild(postsContainer);
-                    postList.appendChild(section);
-                });
+                        const title = document.createElement('h2');
+                        title.className = 'category-title';
+                        title.id = `category-${category.toLowerCase().replace(/\s+/g, '-')}`;
+                        title.textContent = category;
+                        section.appendChild(title);
+
+                        const postsContainer = document.createElement('div');
+                        postsContainer.className = 'blog-posts';
+
+                        if (categoryPosts.length === 0) {
+                            postsContainer.innerHTML = '<div class="no-posts">No posts available in this category.</div>';
+                        } else {
+                            categoryPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                            categoryPosts.forEach(post => {
+                                postsContainer.appendChild(renderPost(post));
+                            });
+                        }
+
+                        section.appendChild(postsContainer);
+                        postList.appendChild(section);
+                    });
+
+                    seeMoreContainer.style.display = 'none';
+                }
             }
 
             async function fetchPosts() {
@@ -443,7 +480,6 @@
                     if (error) {
                         throw new Error(error);
                     }
-                    // Filter out any posts without a valid category
                     return data.filter(post => allowedCategories.includes(post.category)) || [];
                 } catch (error) {
                     console.error('Error fetching posts:', error);
@@ -455,7 +491,7 @@
             const filterPosts = debounce(async () => {
                 const searchTerm = searchInput.value.toLowerCase().trim();
                 const activeCategory = document.querySelector('.category-tag.active').dataset.category;
-                const allPosts = await fetchPosts();
+                allPosts = await fetchPosts();
 
                 let filtered = allPosts;
 
@@ -474,12 +510,10 @@
                 renderPosts(filtered);
             }, 300);
 
-            // AdSense ad visibility handler
             function checkAdStatus() {
                 const adContainer = document.querySelector('.ad-container');
                 const adElement = adContainer.querySelector('ins.adsbygoogle');
                 if (adElement) {
-                    // Check if the ad has content by inspecting its height or data-ad-status
                     const isAdLoaded = adElement.offsetHeight > 0 || adElement.getAttribute('data-ad-status') === 'filled';
                     if (isAdLoaded) {
                         adContainer.classList.add('loaded');
@@ -489,15 +523,18 @@
                 }
             }
 
-            // Run ad status check after AdSense script attempts to load ads
             window.addEventListener('load', () => {
                 checkAdStatus();
-                // Retry after a delay to account for slow ad loading
                 setTimeout(checkAdStatus, 2000);
             });
 
-            // Initial load
+            seeMoreBtn.addEventListener('click', () => {
+                currentPage++;
+                renderPosts(allPosts, true);
+            });
+
             fetchPosts().then(posts => {
+                allPosts = posts;
                 renderCategories(posts);
                 renderPosts(posts);
             });
