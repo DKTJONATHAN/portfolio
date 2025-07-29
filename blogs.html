@@ -42,8 +42,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9291176772735390" crossorigin="anonymous"></script>
-    
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -108,20 +106,6 @@
                 <input type="text" id="search-input" class="form-control" placeholder="Search posts..." aria-label="Search blog posts" style="padding: 12px 40px 12px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 1rem; transition: all 0.3s ease;" onfocus="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79, 70, 229, 0.1);'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
                 <i class="fas fa-search position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); color: #6b7280; font-size: 1.1rem;"></i>
             </div>
-            <div class="ad-container text-center my-4" style="visibility: hidden; height: auto; min-height: 0;">
-                <ins class="adsbygoogle" style="display: block; margin: 0 auto; width: 100%;" data-ad-client="ca-pub-9291176772735390" data-ad-slot="1375283462" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            </div>
-<script type="text/javascript">
-	atOptions = {
-		'key' : 'b7acda18897588246cb826b00f3b129d',
-		'format' : 'iframe',
-		'height' : 90,
-		'width' : 728,
-		'params' : {}
-	};
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/b7acda18897588246cb826b00f3b129d/invoke.js"></script>
-<script type="text/javascript" src="//www.highperformanceformat.com/5cf1277d01015881537a2aa9d7df0502/invoke.js"></script>
             <section class="mb-5 text-center">
                 <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 20px; color: #1f2937;">Browse by Category</h2>
                 <div class="d-flex justify-content-center gap-2 flex-wrap" id="category-list">
@@ -129,6 +113,19 @@
                 </div>
             </section>
             <div id="post-list"></div>
+            <div class="ad-container text-center my-4" style="visibility: hidden; height: auto; min-height: 0;">
+                <div id="ad-content"></div>
+                <script type="text/javascript">
+                    atOptions = {
+                        'key': '5cf1277d01015881537a2aa9d7df0502',
+                        'format': 'iframe',
+                        'height': 160,
+                        'width': 300,
+                        'params': {}
+                    };
+                </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/5cf1277d01015881537a2aa9d7df0502/invoke.js"></script>
+            </div>
             <div class="see-more-container text-center my-5" id="see-more-container" style="display: none;">
                 <button class="btn btn-primary" id="see-more-btn" style="padding: 12px 24px; background: #4f46e5; border-radius: 25px; font-weight: 500; font-size: 1rem; border: none; transition: all 0.3s ease;" onmouseover="this.style.background='#3b82f6'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(79, 70, 229, 0.3);'" onmouseout="this.style.background='#4f46e5'; this.style.transform='none'; this.style.boxShadow='none';" disabled>See More</button>
             </div>
@@ -157,9 +154,9 @@
 
     <style>
         .ad-container { visibility: hidden; height: auto; min-height: 0; text-align: center; margin: 2rem 0; }
-        .ad-container ins { display: block; margin: 0 auto; width: 100%; }
-        .ad-container.loaded { visibility: visible; min-height: 100px; }
+        .ad-container.loaded { visibility: visible; min-height: 160px; }
         .ad-container.empty { height: 0; overflow: hidden; }
+        .post-meta time::after { content: ''; position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 4px; height: 4px; background: #6b7280; border-radius: 50%; }
         @media (max-width: 768px) {
             main { padding-top: 60px; padding-bottom: 100px; }
             h1 { font-size: 2rem !important; }
@@ -184,6 +181,8 @@
             const categoryList = document.getElementById('category-list');
             const seeMoreContainer = document.getElementById('see-more-container');
             const seeMoreBtn = document.getElementById('see-more-btn');
+            const adContainer = document.querySelector('.ad-container');
+            const adContent = document.getElementById('ad-content');
 
             const allowedCategories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
             const postsPerPage = 5;
@@ -270,7 +269,7 @@
                         <img src="${imageUrl}" alt="${post.title || 'Post image'}" class="card-img-top" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='none';">
                     </div>
                     <div class="card-body post-content" style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
-                        <div class="d-flex align-items-center gap-2" style="font-size: 0.9rem; color: #6b7280;">
+                        <div class="d-flex align-items-center gap-2 post-meta" style="font-size: 0.9rem; color: #6b7280;">
                             <time datetime="${post.date}" itemprop="datePublished" style="position: relative; padding-right: 12px;">${formattedDate}</time>
                             <span class="post-category text-uppercase" style="font-weight: 600; color: #4f46e5; font-size: 0.85rem;" itemprop="articleSection">${post.category}</span>
                         </div>
@@ -383,24 +382,63 @@
             async function fetchPosts() {
                 try {
                     postList.innerHTML = '<div class="text-center py-5" style="color: #6b7280; font-size: 1.1rem;"><i class="fas fa-spinner fa-spin" style="margin-right: 10px; color: #4f46e5;"></i>Loading posts...</div>';
+                    
+                    // Add timeout to prevent hanging
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
                     const response = await fetch('/api/list-posts.js', {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
-                        }
+                        },
+                        signal: controller.signal
                     });
+
+                    clearTimeout(timeoutId);
+
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        throw new Error(`HTTP error! Status: ${response.status}, URL: /api/list-posts.js`);
                     }
+
                     const { data, error } = await response.json();
                     if (error) {
-                        throw new Error(error);
+                        throw new Error(`API error: ${error}`);
                     }
-                    return data.filter(post => allowedCategories.includes(post.category)) || [];
+
+                    if (!Array.isArray(data)) {
+                        throw new Error('Invalid response: Data is not an array');
+                    }
+
+                    const filteredPosts = data.filter(post => 
+                        post && post.category && allowedCategories.includes(post.category)
+                    );
+
+                    if (filteredPosts.length === 0) {
+                        throw new Error('No valid posts found after filtering');
+                    }
+
+                    return filteredPosts;
                 } catch (error) {
                     console.error('Error fetching posts:', error);
-                    postList.innerHTML = '<div class="text-center py-5" style="color: #6b7280; font-size: 1.1rem;">Failed to load posts. Please try again later or <a href="/index.html#contact" style="color: #4f46e5; text-decoration: underline;">contact support</a>.</div>';
+                    postList.innerHTML = `
+                        <div class="text-center py-5" style="color: #6b7280; font-size: 1.1rem;">
+                            Failed to load posts: ${error.message}. 
+                            <a href="#" onclick="window.location.reload()" style="color: #4f46e5; text-decoration: underline;">Retry</a> or 
+                            <a href="/index.html#contact" style="color: #4f46e5; text-decoration: underline;">contact support</a>.
+                        </div>`;
                     return [];
+                } finally {
+                    // Ensure ad container is marked as loaded after DOM is ready
+                    setTimeout(() => {
+                        if (adContent.children.length > 0) {
+                            adContainer.classList.add('loaded');
+                            adContainer.classList.remove('empty');
+                        } else {
+                            adContainer.classList.remove('loaded');
+                            adContainer.classList.add('empty');
+                        }
+                    }, 3000);
                 }
             }
 
@@ -438,31 +476,6 @@
             });
 
             searchInput.addEventListener('input', filterPosts);
-
-            const adContainer = document.querySelector('.ad-container');
-            const adElement = adContainer.querySelector('ins.adsbygoogle');
-            if (adElement) {
-                (adsbygoogle = window.adsbygoogle || []).push({
-                    google_ad_client: "ca-pub-9291176772735390",
-                    enable_page_level_ads: false,
-                    onrendered: function(event) {
-                        if (event && event.slot && adElement.getAttribute('data-ad-status') === 'filled') {
-                            adContainer.classList.add('loaded');
-                            adContainer.classList.remove('empty');
-                        } else {
-                            adContainer.classList.remove('loaded');
-                            adContainer.classList.add('empty');
-                        }
-                    }
-                });
-
-                setTimeout(() => {
-                    if (adElement.getAttribute('data-ad-status') !== 'filled') {
-                        adContainer.classList.remove('loaded');
-                        adContainer.classList.add('empty');
-                    }
-                }, 3000);
-            }
         });
 
         if ('IntersectionObserver' in window) {
@@ -481,15 +494,5 @@
             lazyImages.forEach(img => imageObserver.observe(img));
         }
     </script>
-    <script type="text/javascript">
-        atOptions = {
-            'key': '5cf1277d01015881537a2aa9d7df0502',
-            'format': 'iframe',
-            'height': 300,
-            'width': 160,
-            'params': {}
-        };
-    </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/5cf1277d01015881537a2aa9d7df0502/invoke.js"></script>
 </body>
 </html>
