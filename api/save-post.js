@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     const filePath = `content/articles/${slug}.html`;
     const metadataPath = `content/articles.json`;
 
-    // Validate image URLs (basic check for URL-like strings)
+    // Validate image URLs
     const isUrlLike = (str) => str && /^https?:\/\/.+/i.test(str);
     const isValidImageUrl = (str) => isUrlLike(str) && /\.(?:png|jpg|jpeg|gif|webp|svg)$/i.test(str);
     const fallbackImage = 'https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png';
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       return match && isValidImageUrl(match[1]) ? match[1] : null;
     };
 
-    // Process content to ensure image URLs are rendered as <img> tags
+    // Process content to ensure image URLs are rendered as <img> tags (copied from provided code)
     const processContent = (content) => {
       if (!content) return content;
       const urlRegex = /(https?:\/\/[^\s<>"']+\.(?:png|jpg|jpeg|gif|webp|svg))/gi;
@@ -48,42 +48,91 @@ export default async function handler(req, res) {
       });
     };
 
+    // Ad snippet as raw script, matching provided HTML
+    const adSnippet = `
+<script type='text/javascript' src='//pl27288319.profitableratecpm.com/e9/30/80/e9308078ac3ce510bb8658ccd1eab7e5.js'></script>
+`;
+
+    // Split content into first three paragraphs and remaining content, inserting ads
+    const splitContent = (content) => {
+      if (!content) return { firstThree: '', remaining: '' };
+      const parts = content.split(/(<p[^>]*>.*?<\/p>)/);
+      let paragraphCount = 0;
+      let firstThree = [];
+      let remaining = [];
+      let inFirstThree = true;
+
+      parts.forEach((part) => {
+        if (part.match(/<p[^>]*>.*?<\/p>/) && !part.includes('class="post-excerpt"')) {
+          paragraphCount++;
+          if (paragraphCount <= 3) {
+            firstThree.push(part);
+            if (paragraphCount === 2) {
+              firstThree.push(adSnippet); // Insert ad after second paragraph
+            }
+          } else {
+            inFirstThree = false;
+            remaining.push(part);
+            if (paragraphCount % 2 === 0) {
+              remaining.push(adSnippet); // Insert ad after every other paragraph
+            }
+          }
+        } else {
+          (inFirstThree ? firstThree : remaining).push(part);
+        }
+      });
+
+      return {
+        firstThree: firstThree.join(''),
+        remaining: remaining.join('')
+      };
+    };
+
     // Determine the social media preview image
     const firstContentImage = extractFirstImage(content);
     const mainImageUrl = isValidImageUrl(image) ? image : (firstContentImage || fallbackImage);
 
-    // Process content
+    // Process content for rendering
     const processedContent = processContent(content);
+    const { firstThree, remaining } = splitContent(processedContent);
+
+    // Use original content for storage (no conversion of <img> tags to URLs)
+    const contentForStorage = content;
 
     // Generate keywords from tags
     const keywords = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag).join(', ') : '';
 
-    // Generate HTML content with professional article layout, SEO meta tags, and AdSense snippet
+    // Generate HTML content, matching provided HTML structure
     const htmlContent = `
       <!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>${title} | Jonathan Mwaniki</title>
         <meta name="description" content="${description}">
         <meta name="keywords" content="${keywords}">
         <meta name="author" content="Jonathan Mwaniki">
+        <meta name="robots" content="index, follow">
+        <meta name="geo.region" content="KE">
+        <meta name="geo.placename" content="Nairobi">
+        <meta name="geo.position" content="-1.286389;36.817223">
+        <title>${title} | Mwaniki Reports</title>
+        <link rel="canonical" href="https://www.jonathanmwaniki.co.ke/content/articles/${slug}.html">
+        <meta property="og:type" content="article">
+        <meta property="og:url" content="https://www.jonathanmwaniki.co.ke/content/articles/${slug}.html">
         <meta property="og:title" content="${title}">
         <meta property="og:description" content="${description}">
         <meta property="og:image" content="${mainImageUrl}">
-        <meta property="og:url" content="https://www.jonathanmwaniki.co.ke/content/articles/${slug}.html">
-        <meta property="og:type" content="article">
-        <meta property="og:site_name" content="Jonathan Mwaniki">
+        <meta property="og:site_name" content="Mwaniki Reports">
         <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@maestropuns">
+        <meta name="twitter:creator" content="@maestropuns">
+        <meta name="twitter:url" content="https://www.jonathanmwaniki.co.ke/content/articles/${slug}.html">
         <meta name="twitter:title" content="${title}">
         <meta name="twitter:description" content="${description}">
-        <meta name="twitter:image" content="${mainImageUrl}">
-        <meta name="twitter:creator" content="@Maestropuns">
+        <meta property="twitter:image" content="${mainImageUrl}">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        <!-- Google AdSense Script -->
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9291176772735390" crossorigin="anonymous"></script>
         <style>
           :root {
             --primary-color: #1a73e8;
@@ -91,6 +140,8 @@ export default async function handler(req, res) {
             --muted-color: #666;
             --bg-color: #fff;
             --border-color: #e0e0e0;
+            --primary-dark: #3b82f6;
+            --font-main: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           }
           * {
             margin: 0;
@@ -98,7 +149,7 @@ export default async function handler(req, res) {
             box-sizing: border-box;
           }
           body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: var(--font-main);
             line-height: 1.5;
             color: var(--text-color);
             background: var(--bg-color);
@@ -107,6 +158,26 @@ export default async function handler(req, res) {
             max-width: 800px;
             margin: 1.5rem auto;
             padding: 0 1rem;
+          }
+          .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+          }
+          .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+          }
+          .section-description {
+            font-size: 1.1rem;
+            color: var(--muted-color);
+            max-width: 800px;
+            margin: 0 auto;
+          }
+          .gradient-text {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: var(--primary-dark);
+            font-weight: 700;
           }
           .post-title {
             font-size: 2rem;
@@ -195,21 +266,6 @@ export default async function handler(req, res) {
           .post-footer .social-links a:hover {
             color: #0d47a1;
           }
-          .ad-container {
-            margin: 2rem 0;
-            text-align: center;
-            visibility: hidden; /* Hide visually but keep layout space */
-            min-height: 100px; /* Ensure minimum height for ad slot */
-            min-width: 300px; /* Ensure minimum width for ad slot */
-          }
-          .ad-container ins {
-            display: block;
-            margin: 0 auto;
-            width: 100%;
-          }
-          .ad-container.loaded {
-            visibility: visible; /* Show when ad is loaded */
-          }
           @media (max-width: 600px) {
             .post-title {
               font-size: 1.5rem;
@@ -231,9 +287,41 @@ export default async function handler(req, res) {
             }
           }
         </style>
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "headline": "${title}",
+          "image": "${mainImageUrl}",
+          "datePublished": "${date}",
+          "dateModified": "${date}",
+          "author": {
+            "@type": "Person",
+            "name": "Jonathan Mwaniki"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Mwaniki Reports",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png"
+            }
+          },
+          "description": "${description}",
+          "keywords": "${keywords}",
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://www.jonathanmwaniki.co.ke/content/articles/${slug}.html"
+          }
+        }
+        </script>
       </head>
       <body>
         <main class="blog-container">
+          <div class="section-header">
+            <h1 class="section-title">Mwaniki <span class="gradient-text">Reports</span></h1>
+            <p class="section-description">Your trusted source for news, sports, tech, and entertainment.</p>
+          </div>
           <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
             <meta itemprop="mainEntityOfPage" content="/content/articles/${slug}.html">
             <h1 class="post-title" itemprop="headline">${title}</h1>
@@ -241,45 +329,22 @@ export default async function handler(req, res) {
               <time datetime="${date}" itemprop="datePublished">${new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
               <span class="post-category" itemprop="articleSection">${category}</span>
             </div>
-            ${tags ? `
-              <div class="post-tags">
-                ${tags.split(',').map(tag => tag.trim()).filter(tag => tag).map(tag => `<a href="/blogs.html?tag=${encodeURIComponent(tag)}" class="post-tag" itemprop="keywords">${tag}</a>`).join('')}
-              </div>
+            <div class="post-tags">
+              ${tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag).map(tag => `<a href="/blogs.html?tag=${encodeURIComponent(tag)}" class="post-tag" itemprop="keywords">${tag}</a>`).join('') : ''}
+            </div>
+            ${mainImageUrl ? `
+            <div class="post-image">
+              <img src="${mainImageUrl}" alt="${title}" itemprop="image">
+            </div>
             ` : ''}
-            ${mainImageUrl ? `<div class="post-image"><img src="${mainImageUrl}" alt="${title}" itemprop="image"></div>` : ''}
             <div class="post-content" itemprop="articleBody">
               ${description ? `<p class="post-excerpt" itemprop="description">${description}</p>` : ''}
-              <!-- Jonathan Ads -->
-              <div class="ad-container">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-9291176772735390"
-                     data-ad-slot="1375283462"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                  (adsbygoogle = window.adsbygoogle || []).push({
-                    onrendered: function(event) {
-                      const adContainer = document.querySelector('.ad-container');
-                      const adElement = adContainer.querySelector('ins.adsbygoogle');
-                      if (event && event.slot && adElement.getAttribute('data-ad-status') === 'filled') {
-                        adContainer.classList.add('loaded');
-                      } else {
-                        adContainer.classList.remove('loaded');
-                      }
-                    }
-                  });
-                  // Fallback check
-                  setTimeout(() => {
-                    const adContainer = document.querySelector('.ad-container');
-                    const adElement = adContainer.querySelector('ins.adsbygoogle');
-                    if (adElement.getAttribute('data-ad-status') !== 'filled') {
-                      adContainer.classList.remove('loaded');
-                    }
-                  }, 3000);
-                </script>
+              ${firstThree}
+            </div>
+            <div class="post-content-remaining">
+              <div class="post-content" itemprop="articleBody">
+                ${remaining}
               </div>
-              ${processedContent}
             </div>
             <footer class="post-footer">
               <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" class="logo">
@@ -287,13 +352,14 @@ export default async function handler(req, res) {
               <p>Published on <time datetime="${date}" itemprop="datePublished">${new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time></p>
               <p>Last updated on <time datetime="${date}" itemprop="dateModified">${new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time></p>
               <div class="social-links">
-                <a href="https://x.com/intent/tweet?url=${encodeURIComponent(`https://www.jonathanmwaniki.co.ke/content/articles/${slug}.html`)}&text=${encodeURIComponent(title)}&via=Maestropuns" target="_blank"><i class="fab fa-x-twitter"></i> Share on X</a>
-                <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://www.jonathanmwaniki.co.ke/content/articles/${slug}.html`)}" target="_blank"><i class="fab fa-linkedin"></i> Share on LinkedIn</a>
+                <a href="https://x.com/intent/tweet?url=https%3A%2F%2Fwww.jonathanmwaniki.co.ke%2Fcontent%2Farticles%2F${encodeURIComponent(slug)}.html&text=${encodeURIComponent(title)}&via=Maestropuns" target="_blank"><i class="fab fa-x-twitter"></i> Share on X</a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.jonathanmwaniki.co.ke%2Fcontent%2Farticles%2F${encodeURIComponent(slug)}.html" target="_blank"><i class="fab fa-linkedin"></i> Share on LinkedIn</a>
               </div>
               <p>&copy; ${new Date().getFullYear()} Jonathan Mwaniki. All rights reserved.</p>
             </footer>
           </article>
         </main>
+        ${adSnippet}
       </body>
       </html>
     `;
@@ -345,7 +411,7 @@ export default async function handler(req, res) {
       date,
       category,
       tags: tags || '',
-      content,
+      content: contentForStorage,
     };
 
     if (isUpdate) {
