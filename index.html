@@ -42,14 +42,13 @@
     
     <link rel="canonical" href="https://www.jonathanmwaniki.co.ke">
     
-    <link rel="stylesheet" href="/styles.css">
-    <link rel="preload" href="/styles.css" as="style">
+    <link rel="stylesheet" href="/styles.css" media="print" onload="this.media='all'">
     <link rel="preload" href="/scripts/main.js" as="script">
     <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9291176772735390" crossorigin="anonymous"></script>
 
@@ -136,7 +135,7 @@
         }
 
         .hero-section {
-            padding: 100px 1rem 2rem; /* Fixed navbar overlap */
+            padding: 100px 1rem 2rem;
             background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
         }
         .hero-container {
@@ -281,7 +280,8 @@
         .mobile-nav-container {
             display: flex;
             justify-content: center;
-            padding: 0.75rem 0;
+            padding: 1rem 0;
+            gap: 1.5rem;
         }
         .mobile-nav-link {
             display: flex;
@@ -291,6 +291,7 @@
             color: var(--text-color);
             font-size: 0.75rem;
             gap: 0.25rem;
+            padding: 0.5rem;
         }
         .mobile-nav-link i {
             font-size: 1.25rem;
@@ -591,6 +592,7 @@
             padding: 0.75rem;
             border: 1px solid #e5e7eb;
             border-radius: 4px;
+cbf4
             font-size: 1rem;
         }
         .form-input:focus, .form-select:focus, .form-textarea:focus {
@@ -731,12 +733,12 @@
             .desktop-nav { display: none; }
             .mobile-nav { display: block; }
             .hero-section { padding: 20px 1rem; }
-            .hero-title { font-size: 2.5rem; }
-            .hero-tagline { font-size: 1rem; }
+            .hero-title { font-size: 2rem; }
+            .hero-tagline { font-size: 0.9rem; }
             .hero-actions { flex-direction: column; gap: 0.75rem; }
             .about-container, .contact-content { grid-template-columns: 1fr; }
             .blog-posts { grid-template-columns: 1fr; }
-            .post-image { height: 200px; }
+            .post-image { height: 150px; }
             .post-title { font-size: 1.4rem; }
             .nav-container {
                 flex-direction: column;
@@ -750,6 +752,10 @@
                 grid-template-columns: 1fr;
                 padding: 0 15px;
             }
+            .service-card:hover, .portfolio-card:hover, .blog-post:hover {
+                transform: none;
+                box-shadow: none;
+            }
             .service-card, .portfolio-card {
                 max-width: 100%;
             }
@@ -759,7 +765,7 @@
         }
 
         @media (max-width: 480px) {
-            .section-title { font-size: 2rem; }
+            .section-title { font-size: 1.8rem; }
             .hero-title { font-size: 2rem; }
             .hero-tagline { font-size: 0.9rem; }
             .post-title { font-size: 1.3rem; }
@@ -888,7 +894,13 @@
                     </div>
                 </div>
                 <div class="hero-image">
-                    <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki - Professional Web Developer & Designer in Kenya" loading="eager" width="600" height="400">
+                    <img src="/images/Jonathan-Mwaniki-logo.png" 
+                         srcset="/images/Jonathan-Mwaniki-logo-300.png 300w, /images/Jonathan-Mwaniki-logo.png 600w" 
+                         sizes="(max-width: 768px) 300px, 600px" 
+                         alt="Jonathan Mwaniki - Professional Web Developer & Designer in Kenya" 
+                         loading="eager" 
+                         width="600" 
+                         height="400">
                 </div>
             </div>
         </section>
@@ -1052,7 +1064,7 @@
         <section id="about" class="about-section">
             <div class="about-container">
                 <div class="about-image">
-                    <img src="/images/jonathan-mwaniki.jpg" alt="About Jonathan Mwaniki - Web Developer & Designer" loading="lazy" width="400" height="500">
+                    <img src="/images/file.enc" alt="About Jonathan Mwaniki - Web Developer & Designer" loading="lazy" width="400" height="500">
                 </div>
                 <div class="about-content">
                     <h2 class="section-title">About <span class="gradient-text">Jonathan Mwaniki</span></h2>
@@ -1305,7 +1317,7 @@
                 const validPosts = posts
                     .filter(post => post.category)
                     .sort((a, b) => new Date(b.date) - new Date(a.date))
-                    .slice(0, 2);
+                    .slice(0, window.innerWidth <= 768 ? 1 : 2);
 
                 if (validPosts.length === 0) {
                     postList.innerHTML = '<div class="no-posts">No posts with valid categories found.</div>';
@@ -1386,11 +1398,12 @@
             const mainContent = document.getElementById('mainContent');
             let progress = 0;
 
-            const interval = setInterval(() => {
+            function updateProgress() {
                 progress += 5;
                 progressBar.style.width = progress + '%';
-                if (progress >= 100) {
-                    clearInterval(interval);
+                if (progress < 100) {
+                    requestAnimationFrame(updateProgress);
+                } else {
                     splashScreen.style.opacity = '0';
                     splashScreen.style.transition = 'opacity 0.5s ease';
                     setTimeout(() => {
@@ -1398,7 +1411,8 @@
                         mainContent.classList.remove('hidden');
                     }, 500);
                 }
-            }, 50);
+            }
+            requestAnimationFrame(updateProgress);
 
             if ('IntersectionObserver' in window) {
                 const lazyImages = document.querySelectorAll('img[loading="lazy"]');
