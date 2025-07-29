@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       return match && isValidImageUrl(match[1]) ? match[1] : null;
     };
 
-    // Process content to ensure image URLs are rendered as <img> tags (copied from provided code)
+    // Process content to ensure image URLs are rendered as <img> tags (from provided code)
     const processContent = (content) => {
       if (!content) return content;
       const urlRegex = /(https?:\/\/[^\s<>"']+\.(?:png|jpg|jpeg|gif|webp|svg))/gi;
@@ -48,37 +48,42 @@ export default async function handler(req, res) {
       });
     };
 
-    // Ad snippet as raw script, matching provided HTML
+    // Ad snippet as raw script, matching provided ad
     const adSnippet = `
-<script type='text/javascript' src='//pl27288319.profitableratecpm.com/e9/30/80/e9308078ac3ce510bb8658ccd1eab7e5.js'></script>
+<script type="text/javascript">
+	atOptions = {
+		'key' : '1610960d9ced232cc76d8f5510ee4608',
+		'format' : 'iframe',
+		'height' : 60,
+		'width' : 468,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
 `;
 
-    // Split content into first three paragraphs and remaining content, inserting ads
+    // Split content into first three paragraphs and remaining content
     const splitContent = (content) => {
       if (!content) return { firstThree: '', remaining: '' };
       const parts = content.split(/(<p[^>]*>.*?<\/p>)/);
       let paragraphCount = 0;
       let firstThree = [];
       let remaining = [];
-      let inFirstThree = true;
 
       parts.forEach((part) => {
         if (part.match(/<p[^>]*>.*?<\/p>/) && !part.includes('class="post-excerpt"')) {
           paragraphCount++;
           if (paragraphCount <= 3) {
             firstThree.push(part);
-            if (paragraphCount === 2) {
-              firstThree.push(adSnippet); // Insert ad after second paragraph
-            }
           } else {
-            inFirstThree = false;
             remaining.push(part);
-            if (paragraphCount % 2 === 0) {
-              remaining.push(adSnippet); // Insert ad after every other paragraph
-            }
           }
         } else {
-          (inFirstThree ? firstThree : remaining).push(part);
+          if (paragraphCount <= 3) {
+            firstThree.push(part);
+          } else {
+            remaining.push(part);
+          }
         }
       });
 
@@ -96,7 +101,7 @@ export default async function handler(req, res) {
     const processedContent = processContent(content);
     const { firstThree, remaining } = splitContent(processedContent);
 
-    // Use original content for storage (no conversion of <img> tags to URLs)
+    // Use original content for storage
     const contentForStorage = content;
 
     // Generate keywords from tags
@@ -175,8 +180,7 @@ export default async function handler(req, res) {
             margin: 0 auto;
           }
           .gradient-text {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: var(--primary-dark);
+            color: var(--text-color); /* Remove gradient background, use solid text color */
             font-weight: 700;
           }
           .post-title {
@@ -266,6 +270,12 @@ export default async function handler(req, res) {
           .post-footer .social-links a:hover {
             color: #0d47a1;
           }
+          .ad-space {
+            width: 468px;
+            height: 60px;
+            display: block;
+            margin: 1rem auto;
+          }
           @media (max-width: 600px) {
             .post-title {
               font-size: 1.5rem;
@@ -284,6 +294,10 @@ export default async function handler(req, res) {
             }
             .post-footer .logo {
               max-width: 120px;
+            }
+            .ad-space {
+              width: 100%;
+              max-width: 468px;
             }
           }
         </style>
@@ -322,6 +336,7 @@ export default async function handler(req, res) {
             <h1 class="section-title">Mwaniki <span class="gradient-text">Reports</span></h1>
             <p class="section-description">Your trusted source for news, sports, tech, and entertainment.</p>
           </div>
+          <div class="ad-space">${adSnippet}</div>
           <article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
             <meta itemprop="mainEntityOfPage" content="/content/articles/${slug}.html">
             <h1 class="post-title" itemprop="headline">${title}</h1>
@@ -332,6 +347,7 @@ export default async function handler(req, res) {
             <div class="post-tags">
               ${tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag).map(tag => `<a href="/blogs.html?tag=${encodeURIComponent(tag)}" class="post-tag" itemprop="keywords">${tag}</a>`).join('') : ''}
             </div>
+            <div class="ad-space">${adSnippet}</div>
             ${mainImageUrl ? `
             <div class="post-image">
               <img src="${mainImageUrl}" alt="${title}" itemprop="image">
@@ -341,11 +357,15 @@ export default async function handler(req, res) {
               ${description ? `<p class="post-excerpt" itemprop="description">${description}</p>` : ''}
               ${firstThree}
             </div>
+            ${remaining ? `
+            <div class="ad-space">${adSnippet}</div>
             <div class="post-content-remaining">
               <div class="post-content" itemprop="articleBody">
                 ${remaining}
               </div>
             </div>
+            <div class="ad-space">${adSnippet}</div>
+            ` : ''}
             <footer class="post-footer">
               <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" class="logo">
               <p>Written by <span itemprop="author">Jonathan Mwaniki</span></p>
@@ -359,7 +379,6 @@ export default async function handler(req, res) {
             </footer>
           </article>
         </main>
-        ${adSnippet}
       </body>
       </html>
     `;
