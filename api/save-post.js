@@ -61,6 +61,7 @@ export default async function handler(req, res) {
 
     // Ad snippet to be used exactly as provided
     const adSnippet = `
+<div class="ad-container">
 <script type="text/javascript">
     atOptions = {
         'key' : '1610960d9ced232cc76d8f5510ee4608',
@@ -71,6 +72,7 @@ export default async function handler(req, res) {
     };
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
+</div>
 `;
 
     // Split content into first three paragraphs and remaining content
@@ -88,13 +90,13 @@ export default async function handler(req, res) {
           if (paragraphCount <= 3) {
             firstThree.push(part);
             if (paragraphCount === 2) {
-              firstThree.push(adSnippet);
+              firstThree.push(adSnippet); // Insert ad in a div after second paragraph
             }
           } else {
             inFirstThree = false;
             remaining.push(part);
             if (paragraphCount % 2 === 0) {
-              remaining.push(adSnippet);
+              remaining.push(adSnippet); // Insert ad in a div after every other paragraph
             }
           }
         } else {
