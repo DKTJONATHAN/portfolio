@@ -48,8 +48,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9291176772735390" crossorigin="anonymous"></script>
-
     <style>
         :root {
             --primary-color: #4f46e5;
@@ -137,16 +135,15 @@
         .loading-posts i { margin-right: 10px; color: var(--primary-color); animation: spin 1s linear infinite; }
         .error-message a { color: var(--primary-color); text-decoration: underline; }
         .ad-container {
-            margin: 2rem 0;
+            margin: 2rem auto;
             text-align: center;
-            display: none; /* Hide by default */
+            max-width: 468px;
+            min-height: 60px;
         }
-        .ad-container ins {
+        .ad-container iframe {
             display: block;
             margin: 0 auto;
-        }
-        .ad-container.loaded {
-            display: block; /* Show when ad is loaded */
+            border: none;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @media (max-width: 1024px) { .blog-posts { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); } }
@@ -158,6 +155,8 @@
             .blog-posts { grid-template-columns: 1fr; }
             .post-image { height: 200px; }
             .post-title { font-size: 1.4rem; }
+            .ad-container { max-width: 100%; }
+            .ad-container iframe { width: 100%; max-width: 468px; }
         }
         @media (max-width: 480px) {
             .section-title { font-size: 1.8rem; }
@@ -229,6 +228,20 @@
             </div>
         </nav>
 
+        <!-- Header Ad -->
+        <div class="ad-container">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '1610960d9ced232cc76d8f5510ee4608',
+                    'format' : 'iframe',
+                    'height' : 60,
+                    'width' : 468,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
+        </div>
+
         <main class="blog-container">
             <div class="section-header">
                 <h1 class="section-title">Mwaniki <span class="gradient-text">Reports</span></h1>
@@ -238,17 +251,18 @@
                 <input type="text" id="search-input" placeholder="Search posts..." aria-label="Search blog posts">
                 <i class="fas fa-search"></i>
             </div>
-            <!-- Jonathan Ads -->
+            <!-- Main Content Ad (Replaces Original AdSense) -->
             <div class="ad-container">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-9291176772735390"
-                     data-ad-slot="1375283462"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '1610960d9ced232cc76d8f5510ee4608',
+                        'format' : 'iframe',
+                        'height' : 60,
+                        'width' : 468,
+                        'params' : {}
+                    };
                 </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
             </div>
             <section class="blog-categories">
                 <h2 class="section-subtitle">Browse by Category</h2>
@@ -257,6 +271,19 @@
                     <!-- Dynamic categories will be inserted here -->
                 </div>
             </section>
+            <!-- Mid-Content Ad -->
+            <div class="ad-container">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '1610960d9ced232cc76d8f5510ee4608',
+                        'format' : 'iframe',
+                        'height' : 60,
+                        'width' : 468,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
+            </div>
             <div id="post-list">
                 <!-- Posts will be dynamically inserted here -->
             </div>
@@ -272,6 +299,19 @@
                         <span class="footer-name">Jonathan Mwaniki</span>
                         <p class="footer-description">Your trusted source for news, sports, tech, and entertainment.</p>
                     </div>
+                </div>
+                <!-- Footer Ad -->
+                <div class="ad-container">
+                    <script type="text/javascript">
+                        atOptions = {
+                            'key' : '1610960d9ced232cc76d8f5510ee4608',
+                            'format' : 'iframe',
+                            'height' : 60,
+                            'width' : 468,
+                            'params' : {}
+                        };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
                 </div>
                 <div class="footer-legal">
                     <p class="copyright">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
@@ -474,28 +514,6 @@
                 renderPosts(filtered);
             }, 300);
 
-            // AdSense ad visibility handler
-            function checkAdStatus() {
-                const adContainer = document.querySelector('.ad-container');
-                const adElement = adContainer.querySelector('ins.adsbygoogle');
-                if (adElement) {
-                    // Check if the ad has content by inspecting its height or data-ad-status
-                    const isAdLoaded = adElement.offsetHeight > 0 || adElement.getAttribute('data-ad-status') === 'filled';
-                    if (isAdLoaded) {
-                        adContainer.classList.add('loaded');
-                    } else {
-                        adContainer.classList.remove('loaded');
-                    }
-                }
-            }
-
-            // Run ad status check after AdSense script attempts to load ads
-            window.addEventListener('load', () => {
-                checkAdStatus();
-                // Retry after a delay to account for slow ad loading
-                setTimeout(checkAdStatus, 2000);
-            });
-
             // Initial load
             fetchPosts().then(posts => {
                 renderCategories(posts);
@@ -521,15 +539,5 @@
             lazyImages.forEach(img => imageObserver.observe(img));
         }
     </script>
-<script type="text/javascript">
-	atOptions = {
-		'key' : '1610960d9ced232cc76d8f5510ee4608',
-		'format' : 'iframe',
-		'height' : 60,
-		'width' : 468,
-		'params' : {}
-	};
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
 </body>
 </html>
