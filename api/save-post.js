@@ -39,6 +39,26 @@ export default async function handler(req, res) {
       return match && isValidImageUrl(match[1]) ? match[1] : null;
     };
 
+    // Function to convert image URLs to <img> tags for rendering
+    const convertImageLinksToImgTags = (content) => {
+      if (!content) return content;
+      // Regex to match standalone URLs with image extensions
+      const imageUrlRegex = /(^|\s)(https?:\/\/[^\s<]+?\.(?:png|jpg|jpeg|gif|webp|svg))(\s|$)/gi;
+      return content.replace(imageUrlRegex, (match, prefix, url, suffix) => {
+        return `${prefix}<img src="${url}" alt="Article image" class="content-image" loading="lazy" width="800" height="450">${suffix}`;
+      });
+    };
+
+    // Function to convert <img> tags back to URLs for updates
+    const convertImgTagsToLinks = (content) => {
+      if (!content) return content;
+      // Regex to match <img> tags with src attributes pointing to image URLs
+      const imgTagRegex = /<img[^>]+src=["'](https?:\/\/[^\s"]+?\.(?:png|jpg|jpeg|gif|webp|svg))["'][^>]*>/gi;
+      return content.replace(imgTagRegex, (match, url) => {
+        return url;
+      });
+    };
+
     // Ad snippet to be used exactly as provided
     const adSnippet = `
 <script type="text/javascript">
@@ -92,8 +112,12 @@ export default async function handler(req, res) {
     const firstContentImage = extractFirstImage(content);
     const mainImageUrl = isValidImageUrl(image) ? image : (firstContentImage || fallbackImage);
 
-    // Process content
-    const { firstThree, remaining } = splitContent(content);
+    // Process content for rendering
+    const processedContent = convertImageLinksToImgTags(content);
+    const { firstThree, remaining } = splitContent(processedContent);
+
+    // Prepare content for storage (convert <img> tags back to URLs if updating)
+    const contentForStorage = isUpdate ? convertImgTagsToLinks(content) : content;
 
     // Generate keywords from tags
     const keywords = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag).join(', ') : '';
@@ -801,7 +825,7 @@ export default async function handler(req, res) {
       date,
       category,
       tags: tags || '',
-      content,
+      content: contentForStorage, // Use content with <img> tags converted back to URLs for updates
     };
 
     if (isUpdate) {
