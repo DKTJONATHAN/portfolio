@@ -39,13 +39,24 @@ export default async function handler(req, res) {
       return match && isValidImageUrl(match[1]) ? match[1] : null;
     };
 
-    // Function to convert image URLs to <img> tags for rendering
+    // Function to convert image URLs to <img> tags for rendering, matching main image format
     const convertImageLinksToImgTags = (content) => {
       if (!content) return content;
-      // Regex to match standalone URLs with image extensions
-      const imageUrlRegex = /(^|\s)(https?:\/\/[^\s<]+?\.(?:png|jpg|jpeg|gif|webp|svg))(\s|$)/gi;
-      return content.replace(imageUrlRegex, (match, prefix, url, suffix) => {
-        return `${prefix}<img src="${url}" alt="Article image" class="content-image" loading="lazy" width="800" height="450">${suffix}`;
+      // Updated regex to match image URLs more flexibly, even without strict whitespace
+      const imageUrlRegex = /(https?:\/\/[^\s<>"']+?\.(?:png|jpg|jpeg|gif|webp|svg))(?![\w\/])(?=\s|$|[.,!?])/gi;
+      return content.replace(imageUrlRegex, (url) => {
+        const lowResUrl = url.replace(/\.(png|jpg|jpeg|gif|webp|svg)$/i, '-300.$1');
+        return `
+          <div class="post-image">
+            <img src="${url}" 
+                 srcset="${lowResUrl} 300w, ${url} 800w" 
+                 sizes="(max-width: 768px) 300px, 800px" 
+                 alt="Article image" 
+                 loading="lazy" 
+                 width="800" 
+                 height="450">
+          </div>
+        `;
       });
     };
 
@@ -53,7 +64,7 @@ export default async function handler(req, res) {
     const convertImgTagsToLinks = (content) => {
       if (!content) return content;
       // Regex to match <img> tags with src attributes pointing to image URLs
-      const imgTagRegex = /<img[^>]+src=["'](https?:\/\/[^\s"]+?\.(?:png|jpg|jpeg|gif|webp|svg))["'][^>]*>/gi;
+      const imgTagRegex = /<div class="post-image">\s*<img[^>]+src=["'](https?:\/\/[^\s"]+?\.(?:png|jpg|jpeg|gif|webp|svg))["'][^>]*>\s*<\/div>/gi;
       return content.replace(imgTagRegex, (match, url) => {
         return url;
       });
@@ -198,9 +209,8 @@ export default async function handler(req, res) {
           .text-center { text-align: center; }
           .gradient-text {
             background: linear-gradient(135deg, var(--primary-color) 0%, --primary-dark 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--primary-dark); /* Fallback color for compatibility */
+            font-weight: 700;
           }
           .blog-container {
             max-width: 1280px;
