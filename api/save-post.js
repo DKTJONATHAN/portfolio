@@ -13,16 +13,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required fields: slug, title, date, content, description, tags, or category' });
     }
 
-    // Define allowed categories from the admin panel dropdown
+    // Define allowed categories
     const allowedCategories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
-    
-    // Validate category
     if (!allowedCategories.includes(category)) {
       return res.status(400).json({ error: `Invalid category. Must be one of: ${allowedCategories.join(', ')}` });
     }
 
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-    const filePath = `content/articles/${slug}.html`;
+    const filePath = `content/articles/${slug}.html`.toLowerCase(); // Ensure lowercase for consistency
     const metadataPath = `content/articles.json`;
 
     // Validate image URLs
@@ -39,7 +37,7 @@ export default async function handler(req, res) {
       return match && isValidImageUrl(match[1]) ? match[1] : null;
     };
 
-    // Process content to ensure image URLs are rendered as <img> tags
+    // Process content to convert image URLs to <img> tags
     const processContent = (content) => {
       if (!content) return content;
       const urlRegex = /(https?:\/\/[^\s<>"']+\.(?:png|jpg|jpeg|gif|webp|svg))/gi;
@@ -48,7 +46,7 @@ export default async function handler(req, res) {
       });
     };
 
-    // Ad snippet as raw script
+    // Ad snippet
     const adSnippet = `
 <script type="text/javascript">
   atOptions = {
@@ -65,13 +63,13 @@ export default async function handler(req, res) {
     // Split content into first three paragraphs and remaining content
     const splitContent = (content) => {
       if (!content) return { firstThree: '', remaining: '' };
-      const parts = content.split(/(<p[^>]*>.*?<\/p>)/);
+      const parts = content.split(/(<p[^>]*>.*?(?:[^>]+>|<\/p>))/);
       let paragraphCount = 0;
       let firstThree = [];
       let remaining = [];
 
       parts.forEach((part) => {
-        if (part.match(/<p[^>]*>.*?<\/p>/) && !part.includes('class="post-excerpt"')) {
+        if (part.match(/<p[^>]*>.*?(?:[^>]+>|<\/p>)/) && !part.includes('class="post-excerpt"')) {
           paragraphCount++;
           if (paragraphCount <= 3) {
             firstThree.push(part);
@@ -93,7 +91,7 @@ export default async function handler(req, res) {
       };
     };
 
-    // Determine the social media preview image
+    // Determine social media preview image
     const firstContentImage = extractFirstImage(content);
     const mainImageUrl = isValidImageUrl(image) ? image : (firstContentImage || fallbackImage);
 
@@ -428,6 +426,12 @@ export default async function handler(req, res) {
       category,
       tags: tags || '',
     };
+
+    // Remove content field from existing metadata entries
+    metadata = metadata.map(post => {
+      const { content, ...rest } = post;
+      return rest;
+    });
 
     if (isUpdate) {
       metadata = metadata.map(post => (post.slug === slug ? postMetadata : post));
