@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       return match && isValidImageUrl(match[1]) ? match[1] : null;
     };
 
-    // Process content to ensure image URLs are rendered as <img> tags (from provided code)
+    // Process content to ensure image URLs are rendered as <img> tags
     const processContent = (content) => {
       if (!content) return content;
       const urlRegex = /(https?:\/\/[^\s<>"']+\.(?:png|jpg|jpeg|gif|webp|svg))/gi;
@@ -48,16 +48,16 @@ export default async function handler(req, res) {
       });
     };
 
-    // Ad snippet as raw script, matching provided ad
+    // Ad snippet as raw script
     const adSnippet = `
 <script type="text/javascript">
-	atOptions = {
-		'key' : '1610960d9ced232cc76d8f5510ee4608',
-		'format' : 'iframe',
-		'height' : 60,
-		'width' : 468,
-		'params' : {}
-	};
+  atOptions = {
+    'key' : '1610960d9ced232cc76d8f5510ee4608',
+    'format' : 'iframe',
+    'height' : 60,
+    'width' : 468,
+    'params' : {}
+  };
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
 `;
@@ -101,13 +101,10 @@ export default async function handler(req, res) {
     const processedContent = processContent(content);
     const { firstThree, remaining } = splitContent(processedContent);
 
-    // Use original content for storage
-    const contentForStorage = content;
-
     // Generate keywords from tags
     const keywords = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag).join(', ') : '';
 
-    // Generate HTML content, matching provided HTML structure
+    // Generate full HTML content
     const htmlContent = `
       <!DOCTYPE html>
       <html lang="en">
@@ -180,7 +177,7 @@ export default async function handler(req, res) {
             margin: 0 auto;
           }
           .gradient-text {
-            color: var(--text-color); /* Remove gradient background, use solid text color */
+            color: var(--text-color);
             font-weight: 700;
           }
           .post-title {
@@ -385,7 +382,7 @@ export default async function handler(req, res) {
 
     const contentBase64 = Buffer.from(htmlContent).toString('base64');
 
-    // Check if the file exists to get its SHA (for updates)
+    // Check if the HTML file exists to get its SHA (for updates)
     let sha;
     try {
       const { data } = await octokit.repos.getContent({
@@ -408,7 +405,7 @@ export default async function handler(req, res) {
       sha: sha || undefined,
     });
 
-    // Update metadata.json
+    // Update metadata.json (without content field)
     let metadata = [];
     try {
       const { data } = await octokit.repos.getContent({
@@ -421,7 +418,7 @@ export default async function handler(req, res) {
       if (error.status !== 404) throw error;
     }
 
-    // Prepare metadata object with all fields
+    // Prepare metadata object without content
     const postMetadata = {
       slug,
       title,
@@ -430,7 +427,6 @@ export default async function handler(req, res) {
       date,
       category,
       tags: tags || '',
-      content: contentForStorage,
     };
 
     if (isUpdate) {
