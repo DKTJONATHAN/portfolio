@@ -33,15 +33,145 @@
     <meta name="twitter:title" content="Mwaniki Reports | News, Sports, Tech & Entertainment">
     <meta name="twitter:description" content="Stay updated with the latest news, sports, tech, and entertainment from Mwaniki Reports, Kenya.">
     <meta property="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
-    <meta name="twitter:image:alt" content="Jonathan Mwaniki News">
+    <meta name="twitter:image:alt" content="Jonathan Mwaniki Logo">
     
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16 32x32">
     <link rel="icon" href="/images/favicon-96x96.png" type="image/png" sizes="96x96">
     <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
     
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preload" href="/styles.css" as="style">
+    <link rel="preload" href="/scripts/main.js" as="script">
+    <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9291176772735390" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-dark: #3b82f6;
+            --secondary-color: #10b981;
+            --text-color: #1f2937;
+            --light-text: #6b7280;
+            --background-color: #ffffff;
+            --light-bg: #f9fafb;
+            --border-color: #e5e7eb;
+            --font-main: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-main); line-height: 1.6; color: var(--text-color); background-color: var(--light-bg); overflow-x: hidden; }
+        .bg-white { background-color: var(--background-color); }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .text-center { text-align: center; }
+        .gradient-text { background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .desktop-nav { background: var(--background-color); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        .nav-container { max-width: 1280px; margin: 0 auto; padding: 1rem 20px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; }
+        .brand-logo img { border-radius: 8px; width: 40px; height: auto; }
+        .brand-name { font-size: 1.25rem; font-weight: 700; color: var(--text-color); }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-link { color: var(--light-text); font-weight: 500; text-decoration: none; transition: color 0.3s ease; }
+        .nav-link:hover, .nav-link.active { color: var(--primary-color); }
+        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--background-color); box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); z-index: 90; }
+        .mobile-nav-container { display: flex; justify-content: space-around; padding: 12px 0; }
+        .mobile-nav-link { display: flex; flex-direction: column; align-items: center; color: var(--light-text); font-size: 0.85rem; text-decoration: none; transition: color 0.3s ease; }
+        .mobile-nav-link i { font-size: 1.3rem; margin-bottom: 4px; }
+        .mobile-nav-link:hover, .mobile-nav-link.active { color: var(--primary-color); }
+        .blog-container { max-width: 1280px; margin: 0 auto; padding: 100px 20px 80px; }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; }
+        .section-description { font-size: 1.1rem; color: var(--light-text); max-width: 800px; margin: 0 auto; }
+        .search-bar { margin: 0 auto 40px; max-width: 600px; position: relative; }
+        .search-bar input { width: 100%; padding: 12px 40px 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; transition: all 0.3s ease; }
+        .search-bar input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        .search-bar i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--light-text); font-size: 1.1rem; }
+        .category-section { margin-bottom: 60px; }
+        .category-title { font-size: 1.8rem; font-weight: 600; margin-bottom: 20px; color: var(--text-color); position: relative; display: inline-block; }
+        .category-title::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 60%; height: 3px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); }
+        .blog-posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; margin-bottom: 40px; }
+        .blog-post { background: var(--background-color); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); transition: transform 0.3s ease, box-shadow 0.3s ease; border: 1px solid var(--border-color); }
+        .blog-post:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); }
+        .post-image { height: 220px; overflow: hidden; position: relative; }
+        .post-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .blog-post:hover .post-image img { transform: scale(1.05); }
+        .post-content { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .post-meta { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--light-text); }
+        .post-meta time { position: relative; padding-right: 12px; }
+        .post-meta time::after { content: ''; position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 4px; height: 4px; background: var(--light-text); border-radius: 50%; }
+        .post-category { font-weight: 600; color: var(--primary-color); text-transform: uppercase; font-size: 0.85rem; }
+        .post-title { font-size: 1.6rem; font-weight: 700; line-height: 1.3; color: var(--text-color); }
+        .post-title a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
+        .post-title a:hover { color: var(--primary-color); }
+        .post-excerpt { color: var(--light-text); font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px; }
+        .post-excerpt p { margin: 0; }
+        .post-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+        .post-tag { padding: 5px 12px; background: var(--light-bg); color: var(--primary-color); border-radius: 15px; font-size: 0.85rem; text-decoration: none; border: 1px solid var(--border-color); transition: all 0.3s ease; }
+        .post-tag:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); color: white; border-radius: 25px; font-weight: 500; text-decoration: none; transition: all 0.3s ease; align-self: flex-start; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3); }
+        .blog-categories { margin: 40px 0; text-align: center; }
+        .section-subtitle { font-size: 1.5rem; font-weight: 600; margin-bottom: 20px; color: var(--text-color); }
+        .category-list { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .category-tag { padding: 8px 16px; background: var(--light-bg); color: var(--primary-color); border-radius: 20px; font-weight: 500; font-size: 0.9rem; text-decoration: none; border: 1px solid var(--border-color); transition: all 0.3s ease; cursor: pointer; }
+        .category-tag:hover, .category-tag.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .site-footer { background: var(--background-color); padding: 40px 0; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); }
+        .footer-container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+        .footer-brand { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .footer-logo img { border-radius: 8px; width: 40px; height: 40px; }
+        .footer-name { font-weight: 600; font-size: 1.2rem; color: var(--text-color); }
+        .footer-description { color: var(--light-text); font-size: 0.95rem; }
+        .footer-legal { border-top: 1px solid var(--border-color); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .copyright { color: var(--light-text); font-size: 0.9rem; }
+        .legal-links { display: flex; gap: 20px; }
+        .legal-link { color: var(--light-text); font-size: 0.9rem; text-decoration: none; transition: color 0.3s ease; }
+        .legal-link:hover { color: var(--primary-color); }
+        .loading-posts, .no-posts, .error-message { text-align: center; padding: 40px 0; color: var(--light-text); font-size: 1.1rem; }
+        .loading-posts i { margin-right: 10px; color: var(--primary-color); animation: spin 1s linear infinite; }
+        .error-message a { color: var(--primary-color); text-decoration: underline; }
+        .ad-container {
+            margin: 2rem 0;
+            text-align: center;
+            display: none; /* Hide by default */
+        }
+        .ad-container ins {
+            display: block;
+            margin: 0 auto;
+        }
+        .ad-container.loaded {
+            display: block; /* Show when ad is loaded */
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @media (max-width: 1024px) { .blog-posts { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); } }
+        @media (max-width: 768px) {
+            .desktop-nav { display: none; }
+            .mobile-nav { display: block; }
+            .blog-container { padding-top: 80px; padding-bottom: 100px; }
+            .section-title { font-size: 2rem; }
+            .blog-posts { grid-template-columns: 1fr; }
+            .post-image { height: 200px; }
+            .post-title { font-size: 1.4rem; }
+        }
+        @media (max-width: 480px) {
+            .section-title { font-size: 1.8rem; }
+            .section-description { font-size: 1rem; }
+            .post-title { font-size: 1.3rem; }
+            .post-meta { flex-direction: column; align-items: flex-start; gap: 5px; }
+            .post-meta time::after { display: none; }
+            .category-list { gap: 8px; }
+            .category-tag { padding: 6px 12px; font-size: 0.8rem; }
+            .footer-brand { flex-direction: column; text-align: center; }
+            .footer-legal { flex-direction: column; gap: 10px; text-align: center; }
+        }
+    </style>
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -68,126 +198,98 @@
     }
     </script>
 </head>
-<body style="font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1f2937; background-color: #f9fafb; overflow-x: hidden; scroll-behavior: smooth;">
+<body>
     <div id="mainContent">
-        <nav class="d-none d-md-block fixed-top bg-white shadow-sm" style="z-index: 100;">
-            <div class="container d-flex justify-content-between align-items-center py-3">
-                <div class="d-flex align-items-center gap-2">
-                    <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" loading="eager" style="border-radius: 8px; width: 40px; height: auto;">
-                    <span style="font-size: 1.25rem; font-weight: 700; color: #1f2937;">Mwaniki Reports</span>
+        <nav class="mobile-nav">
+            <div class="mobile-nav-container">
+                <a href="/index.html" class="mobile-nav-link" aria-label="Home"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="/index.html#services" class="mobile-nav-link" aria-label="Services"><i class="fas fa-cogs"></i><span>Services</span></a>
+                <a href="/index.html#portfolio" class="mobile-nav-link" aria-label="Portfolio"><i class="fas fa-briefcase"></i><span>Portfolio</span></a>
+                <a href="/blogs.html" class="mobile-nav-link active" aria-label="Blog"><i class="fas fa-blog"></i><span>Blog</span></a>
+                <a href="/index.html#contact" class="mobile-nav-link" aria-label="Contact"><i class="fas fa-envelope"></i><span>Contact</span></a>
+            </div>
+        </nav>
+
+        <nav class="desktop-nav">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <div class="brand-logo">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" loading="eager" width="40" height="40">
+                    </div>
+                    <span class="brand-name">Mwaniki Reports</span>
                 </div>
-                <div class="nav d-flex gap-4">
-                    <a href="/index.html" class="nav-link" style="color: #6b7280; font-weight: 500; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#6b7280'">Home</a>
-                    <a href="/index.html#services" class="nav-link" style="color: #6b7280; font-weight: 500; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#6b7280'">Services</a>
-                    <a href="/index.html#portfolio" class="nav-link" style="color: #6b7280; font-weight: 500; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#6b7280'">Portfolio</a>
-                    <a href="/blogs.html" class="nav-link active" style="color: #4f46e5; font-weight: 500; text-decoration: none;">Blog</a>
-                    <a href="/index.html#about" class="nav-link" style="color: #6b7280; font-weight: 500; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#6b7280'">About</a>
-                    <a href="/index.html#contact" class="nav-link" style="color: #6b7280; font-weight: 500; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#6b7280'">Contact</a>
+                <div class="nav-links">
+                    <a href="/index.html" class="nav-link" aria-label="Home">Home</a>
+                    <a href="/index.html#services" class="nav-link" aria-label="Services">Services</a>
+                    <a href="/index.html#portfolio" class="nav-link" aria-label="Portfolio">Portfolio</a>
+                    <a href="/blogs.html" class="nav-link active" aria-label="Blog">Blog</a>
+                    <a href="/index.html#about" class="nav-link" aria-label="About">About</a>
+                    <a href="/index.html#contact" class="nav-link" aria-label="Contact">Contact</a>
                 </div>
             </div>
         </nav>
 
-        <nav class="d-md-none fixed-bottom bg-white shadow" style="z-index: 90;">
-            <div class="d-flex justify-content-around py-2">
-                <a href="/index.html" class="d-flex flex-column align-items-center text-decoration-none" style="color: #6b7280; font-size: 0.85rem; transition: color 0.3s ease;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#6b7280'"><i class="fas fa-home" style="font-size: 1.3rem; margin-bottom: 4px;"></i>Home</a>
-                <a href="/index.html#services" class="d-flex flex-column align-items-center text-decoration-none" style="color: #6b7280; font-size: 0.85rem; transition: color 0.3s ease;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#6b7280'"><i class="fas fa-cogs" style="font-size: 1.3rem; margin-bottom: 4px;"></i>Services</a>
-                <a href="/index.html#portfolio" class="d-flex flex-column align-items-center text-decoration-none" style="color: #6b7280; font-size: 0.85rem; transition: color 0.3s ease;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#6b7280'"><i class="fas fa-briefcase" style="font-size: 1.3rem; margin-bottom: 4px;"></i>Portfolio</a>
-                <a href="/blogs.html" class="d-flex flex-column align-items-center text-decoration-none active" style="color: #4f46e5; font-size: 0.85rem;"><i class="fas fa-blog" style="font-size: 1.3rem; margin-bottom: 4px;"></i>Blog</a>
-                <a href="/index.html#contact" class="d-flex flex-column align-items-center text-decoration-none" style="color: #6b7280; font-size: 0.85rem; transition: color 0.3s ease;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#6b7280'"><i class="fas fa-envelope" style="font-size: 1.3rem; margin-bottom: 4px;"></i>Contact</a>
+        <main class="blog-container">
+            <div class="section-header">
+                <h1 class="section-title">Mwaniki <span class="gradient-text">Reports</span></h1>
+                <p class="section-description">Your trusted source for news, sports, tech, and entertainment.</p>
             </div>
-        </nav>
-
-        <main class="container" style="padding-top: 80px; padding-bottom: 80px;">
-            <div class="text-center mb-5">
-                <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">Mwaniki <span style="background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Reports</span></h1>
-                <p style="font-size: 1.1rem; color: #6b7280; max-width: 800px; margin: 0 auto;">Your trusted source for news, sports, tech, and entertainment.</p>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search posts..." aria-label="Search blog posts">
+                <i class="fas fa-search"></i>
             </div>
-            <div class="position-relative mb-5 mx-auto" style="max-width: 600px;">
-                <input type="text" id="search-input" class="form-control" placeholder="Search posts..." aria-label="Search blog posts" style="padding: 12px 40px 12px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 1rem; transition: all 0.3s ease;" onfocus="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79, 70, 229, 0.1);'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
-                <i class="fas fa-search position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); color: #6b7280; font-size: 1.1rem;"></i>
+            <!-- Jonathan Ads -->
+            <div class="ad-container">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-9291176772735390"
+                     data-ad-slot="1375283462"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
-            <section class="mb-5 text-center">
-                <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 20px; color: #1f2937;">Browse by Category</h2>
-                <div class="d-flex justify-content-center gap-2 flex-wrap" id="category-list">
-                    <span class="btn btn-outline-primary active" data-category="all" role="button" tabindex="0" style="padding: 8px 16px; border-radius: 20px; font-weight: 500; font-size: 0.9rem; border: 1px solid #4f46e5; color: #4f46e5; background: #f9fafb; transition: all 0.3s ease;" onmouseover="this.style.background='#4f46e5'; this.style.color='white';" onmouseout="if (!this.classList.contains('active')) {this.style.background='#f9fafb'; this.style.color='#4f46e5';}">All</span>
+            <section class="blog-categories">
+                <h2 class="section-subtitle">Browse by Category</h2>
+                <div class="category-list" id="category-list">
+                    <span class="category-tag active" data-category="all" role="button" tabindex="0">All</span>
+                    <!-- Dynamic categories will be inserted here -->
                 </div>
             </section>
-            <div id="post-list"></div>
-            <div class="ad-container text-center my-4" style="visibility: hidden; height: auto; min-height: 0;">
-                <div id="ad-content"></div>
-                <script type="text/javascript">
-                    atOptions = {
-                        'key': '5cf1277d01015881537a2aa9d7df0502',
-                        'format': 'iframe',
-                        'height': 160,
-                        'width': 300,
-                        'params': {}
-                    };
-                </script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/5cf1277d01015881537a2aa9d7df0502/invoke.js"></script>
-            </div>
-            <div class="see-more-container text-center my-5" id="see-more-container" style="display: none;">
-                <button class="btn btn-primary" id="see-more-btn" style="padding: 12px 24px; background: #4f46e5; border-radius: 25px; font-weight: 500; font-size: 1rem; border: none; transition: all 0.3s ease;" onmouseover="this.style.background='#3b82f6'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(79, 70, 229, 0.3);'" onmouseout="this.style.background='#4f46e5'; this.style.transform='none'; this.style.boxShadow='none';" disabled>See More</button>
+            <div id="post-list">
+                <!-- Posts will be dynamically inserted here -->
             </div>
         </main>
 
-        <footer class="bg-white py-5 shadow" style="box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);">
-            <div class="container">
-                <div class="d-flex align-items-center gap-3 mb-3">
-                    <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" loading="lazy" style="border-radius: 8px; width: 40px; height: 40px;">
-                    <div>
-                        <span style="font-weight: 600; font-size: 1.2rem; color: #1f2937;">Jonathan Mwaniki</span>
-                        <p style="color: #6b7280; font-size: 0.95rem; margin: 0;">Your trusted source for news, sports, tech, and entertainment.</p>
+        <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" loading="lazy" width="40" height="40">
+                    </div>
+                    <div class="footer-info">
+                        <span class="footer-name">Jonathan Mwaniki</span>
+                        <p class="footer-description">Your trusted source for news, sports, tech, and entertainment.</p>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-center pt-3" style="border-top: 1px solid #e5e7eb;">
-                    <p style="color: #6b7280; font-size: 0.9rem; margin: 0;">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
-                    <div class="d-flex gap-3">
-                        <a href="/privacy-policy" style="color: #6b7280; font-size: 0.9rem; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#6b7280'">Privacy Policy</a>
-                        <a href="/terms-of-service" style="color: #6b7280; font-size: 0.9rem; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#6b7280'">Terms of Service</a>
-                        <a href="/sitemap.xml" style="color: #6b7280; font-size: 0.9rem; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#6b7280'">Sitemap</a>
+                <div class="footer-legal">
+                    <p class="copyright">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
+                    <div class="legal-links">
+                        <a href="/privacy-policy" class="legal-link">Privacy Policy</a>
+                        <a href="/terms-of-service" class="legal-link">Terms of Service</a>
+                        <a href="/sitemap.xml" class="legal-link">Sitemap</a>
                     </div>
                 </div>
             </div>
         </footer>
     </div>
 
-    <style>
-        .ad-container { visibility: hidden; height: auto; min-height: 0; text-align: center; margin: 2rem 0; }
-        .ad-container.loaded { visibility: visible; min-height: 160px; }
-        .ad-container.empty { height: 0; overflow: hidden; }
-        .post-meta time::after { content: ''; position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 4px; height: 4px; background: #6b7280; border-radius: 50%; }
-        @media (max-width: 768px) {
-            main { padding-top: 60px; padding-bottom: 100px; }
-            h1 { font-size: 2rem !important; }
-            .post-image { height: 200px !important; }
-            .post-title { font-size: 1.4rem !important; }
-        }
-        @media (max-width: 576px) {
-            h1 { font-size: 1.8rem !important; }
-            p { font-size: 1rem !important; }
-            .post-title { font-size: 1.3rem !important; }
-            .post-meta { flex-direction: column; align-items: flex-start; gap: 5px; }
-            .post-meta time::after { display: none; }
-            .category-list .btn { padding: 6px 12px !important; font-size: 0.8rem !important; }
-            footer .d-flex { flex-direction: column !important; text-align: center; gap: 10px; }
-        }
-    </style>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const postList = document.getElementById('post-list');
             const searchInput = document.getElementById('search-input');
             const categoryList = document.getElementById('category-list');
-            const seeMoreContainer = document.getElementById('see-more-container');
-            const seeMoreBtn = document.getElementById('see-more-btn');
-            const adContainer = document.querySelector('.ad-container');
-            const adContent = document.getElementById('ad-content');
-
-            const allowedCategories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
-            const postsPerPage = 5;
-            let currentPage = 1;
-            let allPosts = [];
 
             function debounce(func, wait) {
                 let timeout;
@@ -208,32 +310,26 @@
             }
 
             function renderCategories(posts) {
-                const categoriesWithPosts = [...new Set(posts.map(post => post.category))].filter(category => allowedCategories.includes(category));
-                categoryList.innerHTML = '<span class="btn btn-outline-primary active" data-category="all" role="button" tabindex="0" style="padding: 8px 16px; border-radius: 20px; font-weight: 500; font-size: 0.9rem; border: 1px solid #4f46e5; color: #4f46e5; background: #f9fafb; transition: all 0.3s ease;" onmouseover="this.style.background=\'#4f46e5\'; this.style.color=\'white\';" onmouseout="if (!this.classList.contains(\'active\')) {this.style.background=\'#f9fafb\'; this.style.color=\'#4f46e5\';}">All</span>';
-                categoriesWithPosts.forEach(category => {
+                const categories = new Set();
+                posts.forEach(post => {
+                    if (post.category) {
+                        categories.add(post.category);
+                    }
+                });
+                categoryList.innerHTML = '<span class="category-tag active" data-category="all" role="button" tabindex="0">All</span>';
+                categories.forEach(category => {
                     const categoryElement = document.createElement('span');
-                    categoryElement.className = 'btn btn-outline-primary';
+                    categoryElement.className = 'category-tag';
                     categoryElement.dataset.category = category;
                     categoryElement.setAttribute('role', 'button');
                     categoryElement.setAttribute('tabindex', '0');
                     categoryElement.textContent = category;
-                    categoryElement.style.padding = '8px 16px';
-                    categoryElement.style.borderRadius = '20px';
-                    categoryElement.style.fontWeight = '500';
-                    categoryElement.style.fontSize = '0.9rem';
-                    categoryElement.style.border = '1px solid #4f46e5';
-                    categoryElement.style.color = '#4f46e5';
-                    categoryElement.style.background = '#f9fafb';
-                    categoryElement.style.transition = 'all 0.3s ease';
-                    categoryElement.onmouseover = function() { this.style.background='#4f46e5'; this.style.color='white'; };
-                    categoryElement.onmouseout = function() { if (!this.classList.contains('active')) { this.style.background='#f9fafb'; this.style.color='#4f46e5'; } };
                     categoryList.appendChild(categoryElement);
                 });
                 document.querySelectorAll('.category-tag').forEach(tag => {
                     tag.addEventListener('click', () => {
                         document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
                         tag.classList.add('active');
-                        currentPage = 1;
                         filterPosts();
                     });
                     tag.addEventListener('keydown', (e) => {
@@ -245,209 +341,123 @@
                 });
             }
 
-            function renderPost(post) {
-                const postElement = document.createElement('article');
-                postElement.className = 'card blog-post mb-4';
-                postElement.setAttribute('itemscope', '');
-                postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
-                postElement.style.border = '1px solid #e5e7eb';
-                postElement.style.borderRadius = '12px';
-                postElement.style.overflow = 'hidden';
-                postElement.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)';
-                postElement.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
-                postElement.onmouseover = function() { this.style.transform = 'translateY(-5px)'; this.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.15)'; };
-                postElement.onmouseout = function() { this.style.transform = 'none'; this.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)'; };
-
-                const imageUrl = post.image || '/images/default-blog.jpg';
-                const excerpt = post.description || '';
-                const formattedDate = formatDate(post.date);
-                const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
-
-                postElement.innerHTML = `
-                    <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
-                    <div class="post-image" style="height: 220px; overflow: hidden; position: relative;">
-                        <img src="${imageUrl}" alt="${post.title || 'Post image'}" class="card-img-top" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='none';">
-                    </div>
-                    <div class="card-body post-content" style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
-                        <div class="d-flex align-items-center gap-2 post-meta" style="font-size: 0.9rem; color: #6b7280;">
-                            <time datetime="${post.date}" itemprop="datePublished" style="position: relative; padding-right: 12px;">${formattedDate}</time>
-                            <span class="post-category text-uppercase" style="font-weight: 600; color: #4f46e5; font-size: 0.85rem;" itemprop="articleSection">${post.category}</span>
-                        </div>
-                        <h3 class="card-title post-title" style="font-size: 1.6rem; font-weight: 700; line-height: 1.3; color: #1f2937;" itemprop="headline">
-                            <a href="/content/articles/${post.slug}.html" style="text-decoration: none; color: inherit; transition: color 0.3s ease;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#1f2937'" itemprop="url">${post.title || 'Untitled Post'}</a>
-                        </h3>
-                        ${excerpt ? `<div class="post-excerpt" style="color: #6b7280; font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px;" itemprop="description">${excerpt}</div>` : ''}
-                        ${keywords.length > 0 ? `
-                        <div class="post-tags d-flex flex-wrap gap-2" style="margin-bottom: 15px;">
-                            ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="post-tag btn btn-outline-primary btn-sm" style="padding: 5px 12px; border-radius: 15px; font-size: 0.85rem; border: 1px solid #e5e7eb; color: #4f46e5; background: #f9fafb; transition: all 0.3s ease;" onmouseover="this.style.background='#4f46e5'; this.style.color='white'; this.style.borderColor='#4f46e5';" onmouseout="this.style.background='#f9fafb'; this.style.color='#4f46e5'; this.style.borderColor='#e5e7eb';" itemprop="keywords">${keyword}</a>`).join('')}
-                        </div>
-                        ` : ''}
-                        <a href="/content/articles/${post.slug}.html" class="btn btn-primary align-self-start" style="padding: 10px 20px; background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); border-radius: 25px; font-weight: 500; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(79, 70, 229, 0.3);'" onmouseout="this.style.transform='none'; this.style.boxShadow='none';" itemprop="url">
-                            Continue Reading <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                    <meta itemprop="author" content="Jonathan Mwaniki">
-                    <meta itemprop="dateModified" content="${post.date}">
-                    <meta itemprop="publisher" content="Jonathan Mwaniki">
-                `;
-
-                return postElement;
-            }
-
-            function renderPosts(posts, append = false) {
+            function renderPosts(posts) {
                 if (!posts || posts.length === 0) {
-                    postList.innerHTML = '<div class="text-center py-5" style="color: #6b7280; font-size: 1.1rem;">No posts found matching your criteria.</div>';
-                    seeMoreContainer.style.display = 'none';
+                    postList.innerHTML = '<div class="no-posts">No posts found matching your criteria.</div>';
                     return;
                 }
 
-                const activeCategory = document.querySelector('.category-tag.active').dataset.category;
+                const postsByCategory = {};
+                posts.forEach(post => {
+                    if (!post.category) return; // Skip posts without a category
+                    if (!postsByCategory[post.category]) {
+                        postsByCategory[post.category] = [];
+                    }
+                    postsByCategory[post.category].push(post);
+                });
 
-                if (!append) {
-                    postList.innerHTML = '';
+                if (Object.keys(postsByCategory).length === 0) {
+                    postList.innerHTML = '<div class="no-posts">No posts with valid categories found.</div>';
+                    return;
                 }
 
-                if (activeCategory === 'all') {
-                    const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
-                    const startIndex = (currentPage - 1) * postsPerPage;
-                    const endIndex = startIndex + postsPerPage;
-                    const postsToShow = sortedPosts.slice(startIndex, endIndex);
+                Object.keys(postsByCategory).forEach(category => {
+                    postsByCategory[category].sort((a, b) => new Date(b.date) - new Date(a.date));
+                });
+
+                postList.innerHTML = '';
+
+                Object.keys(postsByCategory).forEach(category => {
+                    const section = document.createElement('section');
+                    section.className = 'category-section';
+                    section.setAttribute('aria-labelledby', `category-${category.toLowerCase().replace(/\s+/g, '-')}`);
+
+                    const title = document.createElement('h2');
+                    title.className = 'category-title';
+                    title.id = `category-${category.toLowerCase().replace(/\s+/g, '-')}`;
+                    title.textContent = category;
+                    section.appendChild(title);
 
                     const postsContainer = document.createElement('div');
-                    postsContainer.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4';
+                    postsContainer.className = 'blog-posts';
 
-                    postsToShow.forEach(post => {
-                        const col = document.createElement('div');
-                        col.className = 'col';
-                        col.appendChild(renderPost(post));
-                        postsContainer.appendChild(col);
+                    postsByCategory[category].forEach(post => {
+                        const postElement = document.createElement('article');
+                        postElement.className = 'blog-post';
+                        postElement.setAttribute('itemscope', '');
+                        postElement.setAttribute('itemtype', 'https://schema.org/BlogPosting');
+
+                        const imageUrl = post.image || '/images/default-blog.jpg';
+                        const excerpt = post.description || '';
+                        const formattedDate = formatDate(post.date);
+                        const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+
+                        postElement.innerHTML = `
+                            <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
+                            <div class="post-image">
+                                <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                            </div>
+                            <div class="post-content">
+                                <div class="post-meta">
+                                    <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
+                                    <span class="post-category" itemprop="articleSection">${post.category || ''}</span>
+                                </div>
+                                <h3 class="post-title" itemprop="headline">
+                                    <a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
+                                </h3>
+                                ${excerpt ? `<div class="post-excerpt" itemprop="description">${excerpt}</div>` : ''}
+                                ${keywords.length > 0 ? `
+                                <div class="post-tags">
+                                    ${keywords.map(keyword => `<a href="/blogs.html?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
+                                </div>
+                                ` : ''}
+                                <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">
+                                    Continue Reading <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                            <meta itemprop="author" content="Jonathan Mwaniki">
+                            <meta itemprop="dateModified" content="${post.date}">
+                            <meta itemprop="publisher" content="Jonathan Mwaniki">
+                        `;
+
+                        postsContainer.appendChild(postElement);
                     });
 
-                    postList.appendChild(postsContainer);
-
-                    seeMoreContainer.style.display = endIndex < sortedPosts.length ? 'block' : 'none';
-                    seeMoreBtn.disabled = endIndex >= sortedPosts.length;
-                } else {
-                    const postsByCategory = {};
-                    allowedCategories.forEach(category => {
-                        postsByCategory[category] = posts.filter(post => post.category === category);
-                    });
-
-                    allowedCategories.forEach(category => {
-                        const categoryPosts = postsByCategory[category];
-                        if (categoryPosts.length === 0 && activeCategory !== category) {
-                            return;
-                        }
-
-                        const section = document.createElement('section');
-                        section.className = 'category-section mb-5';
-                        section.setAttribute('aria-labelledby', `category-${category.toLowerCase().replace(/\s+/g, '-')}`);
-
-                        const title = document.createElement('h2');
-                        title.className = 'h4';
-                        title.id = `category-${category.toLowerCase().replace(/\s+/g, '-')}`;
-                        title.textContent = category;
-                        title.style.fontSize = '1.8rem';
-                        title.style.fontWeight = '600';
-                        title.style.color = '#1f2937';
-                        title.style.position = 'relative';
-                        title.style.display = 'inline-block';
-                        title.style.marginBottom = '20px';
-                        title.innerHTML += '<span style="position: absolute; bottom: -5px; left: 0; width: 60%; height: 3px; background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);"></span>';
-                        section.appendChild(title);
-
-                        const postsContainer = document.createElement('div');
-                        postsContainer.className = 'row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4';
-
-                        if (categoryPosts.length === 0) {
-                            postsContainer.innerHTML = '<div class="text-center py-5" style="color: #6b7280; font-size: 1.1rem;">No posts available in this category.</div>';
-                        } else {
-                            categoryPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-                            categoryPosts.forEach(post => {
-                                const col = document.createElement('div');
-                                col.className = 'col';
-                                col.appendChild(renderPost(post));
-                                postsContainer.appendChild(col);
-                            });
-                        }
-
-                        section.appendChild(postsContainer);
-                        postList.appendChild(section);
-                    });
-
-                    seeMoreContainer.style.display = 'none';
-                }
+                    section.appendChild(postsContainer);
+                    postList.appendChild(section);
+                });
             }
 
             async function fetchPosts() {
                 try {
-                    postList.innerHTML = '<div class="text-center py-5" style="color: #6b7280; font-size: 1.1rem;"><i class="fas fa-spinner fa-spin" style="margin-right: 10px; color: #4f46e5;"></i>Loading posts...</div>';
-                    
-                    // Add timeout to prevent hanging
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
-
+                    postList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i>Loading posts...</div>';
                     const response = await fetch('/api/list-posts.js', {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
-                        },
-                        signal: controller.signal
+                        }
                     });
-
-                    clearTimeout(timeoutId);
-
                     if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}, URL: /api/list-posts.js`);
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
-
                     const { data, error } = await response.json();
                     if (error) {
-                        throw new Error(`API error: ${error}`);
+                        throw new Error(error);
                     }
-
-                    if (!Array.isArray(data)) {
-                        throw new Error('Invalid response: Data is not an array');
-                    }
-
-                    const filteredPosts = data.filter(post => 
-                        post && post.category && allowedCategories.includes(post.category)
-                    );
-
-                    if (filteredPosts.length === 0) {
-                        throw new Error('No valid posts found after filtering');
-                    }
-
-                    return filteredPosts;
+                    return data || [];
                 } catch (error) {
                     console.error('Error fetching posts:', error);
-                    postList.innerHTML = `
-                        <div class="text-center py-5" style="color: #6b7280; font-size: 1.1rem;">
-                            Failed to load posts: ${error.message}. 
-                            <a href="#" onclick="window.location.reload()" style="color: #4f46e5; text-decoration: underline;">Retry</a> or 
-                            <a href="/index.html#contact" style="color: #4f46e5; text-decoration: underline;">contact support</a>.
-                        </div>`;
+                    postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/index.html#contact">contact support</a>.</div>';
                     return [];
-                } finally {
-                    // Ensure ad container is marked as loaded after DOM is ready
-                    setTimeout(() => {
-                        if (adContent.children.length > 0) {
-                            adContainer.classList.add('loaded');
-                            adContainer.classList.remove('empty');
-                        } else {
-                            adContainer.classList.remove('loaded');
-                            adContainer.classList.add('empty');
-                        }
-                    }, 3000);
                 }
             }
 
             const filterPosts = debounce(async () => {
                 const searchTerm = searchInput.value.toLowerCase().trim();
                 const activeCategory = document.querySelector('.category-tag.active').dataset.category;
-                allPosts = await fetchPosts();
+                const allPosts = await fetchPosts();
 
-                let filtered = allPosts;
+                let filtered = allPosts.filter(post => post.category);
 
                 if (searchTerm) {
                     filtered = filtered.filter(post =>
@@ -464,13 +474,30 @@
                 renderPosts(filtered);
             }, 300);
 
-            seeMoreBtn.addEventListener('click', () => {
-                currentPage++;
-                renderPosts(allPosts, true);
+            // AdSense ad visibility handler
+            function checkAdStatus() {
+                const adContainer = document.querySelector('.ad-container');
+                const adElement = adContainer.querySelector('ins.adsbygoogle');
+                if (adElement) {
+                    // Check if the ad has content by inspecting its height or data-ad-status
+                    const isAdLoaded = adElement.offsetHeight > 0 || adElement.getAttribute('data-ad-status') === 'filled';
+                    if (isAdLoaded) {
+                        adContainer.classList.add('loaded');
+                    } else {
+                        adContainer.classList.remove('loaded');
+                    }
+                }
+            }
+
+            // Run ad status check after AdSense script attempts to load ads
+            window.addEventListener('load', () => {
+                checkAdStatus();
+                // Retry after a delay to account for slow ad loading
+                setTimeout(checkAdStatus, 2000);
             });
 
+            // Initial load
             fetchPosts().then(posts => {
-                allPosts = posts;
                 renderCategories(posts);
                 renderPosts(posts);
             });
