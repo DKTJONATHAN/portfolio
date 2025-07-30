@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Mwaniki Reports - Your trusted source for news, breaking news, opinions, business, sports, tech, and entertainment in Kenya.">
+    <meta name="description" content="Mwaniki Reports delivers the latest news, breaking news, opinions, business, sports, tech, and entertainment in Kenya.">
     <meta name="keywords" content="news, breaking news, opinions, business, sports, tech, entertainment, Mwaniki Reports, Kenya news, Nairobi news">
     <meta name="author" content="Jonathan Mwaniki">
     <meta name="robots" content="index, follow">
@@ -19,7 +19,7 @@
     <meta property="og:url" content="https://www.jonathanmwaniki.co.ke">
     <meta property="og:title" content="Mwaniki Reports | News, Sports, Tech & More">
     <meta property="og:description" content="Stay updated with the latest news, breaking news, opinions, business, sports, tech, and entertainment from Mwaniki Reports, Kenya.">
-    <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.webp">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Mwaniki Reports Logo">
@@ -32,21 +32,20 @@
     <meta name="twitter:url" content="https://www.jonathanmwaniki.co.ke">
     <meta name="twitter:title" content="Mwaniki Reports | News, Sports, Tech & More">
     <meta name="twitter:description" content="Stay updated with the latest news, breaking news, opinions, business, sports, tech, and entertainment from Mwaniki Reports, Kenya.">
-    <meta property="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    <meta property="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.webp">
     <meta name="twitter:image:alt" content="Mwaniki Reports Logo">
     
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16 32x32">
-    <link rel="icon" href="/images/favicon-96x96.png" type="image/png" sizes="96x96">
-    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="icon" href="/images/favicon-96x96.webp" type="image/webp" sizes="96x96">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.webp">
     
     <link rel="stylesheet" href="/styles.css">
     <link rel="preload" href="/styles.css" as="style">
     <link rel="preload" href="/scripts/news-script.js" as="script">
-    <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
+    <link rel="preload" href="/images/Jonathan-Mwaniki-logo.webp" as="image" type="image/webp">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
 
     <style>
         :root {
@@ -64,7 +63,7 @@
         html { scroll-behavior: smooth; }
         body { 
             font-family: var(--font-main); 
-            line-height: 1.6; 
+            line-height: 1.5; 
             color: var(--text-color); 
             background-color: var(--background-color); 
             overflow-x: hidden; 
@@ -75,7 +74,6 @@
             max-width: 100vw;
             overflow-x: hidden;
         }
-        .bg-white { background-color: var(--background-color); }
         .flex { display: flex; }
         .flex-col { flex-direction: column; }
         .items-center { align-items: center; }
@@ -86,7 +84,7 @@
         /* Navigation */
         .desktop-nav { 
             background: var(--background-color); 
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); 
             position: fixed; 
             top: 0; 
             left: 0; 
@@ -96,9 +94,9 @@
             overflow: hidden;
         }
         .nav-container { 
-            max-width: 1440px; 
+            max-width: 1200px; 
             margin: 0 auto; 
-            padding: 1rem 1.5rem; 
+            padding: 0.75rem 1rem; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
@@ -107,43 +105,45 @@
         .nav-brand { 
             display: flex; 
             align-items: center; 
-            gap: 0.75rem; 
+            gap: 1rem; 
             flex-shrink: 0;
         }
         .brand-logo img { 
             border-radius: 0.5rem; 
-            width: 48px; 
+            width: 64px; 
             height: auto; 
         }
         .brand-name { 
-            font-size: 1.5rem; 
+            font-size: 1.75rem; 
             font-weight: 700; 
             color: var(--text-color); 
             white-space: nowrap;
         }
         .nav-links { 
             display: flex; 
-            gap: 1.5rem; 
+            gap: 2rem; 
             flex-wrap: nowrap; 
-            overflow-x: auto; 
-            -webkit-overflow-scrolling: touch;
         }
         .nav-link { 
             color: var(--light-text); 
-            font-weight: 500; 
+            font-weight: 600; 
+            font-size: 1rem;
             text-decoration: none; 
-            transition: color 0.2s ease; 
+            transition: color 0.2s ease, transform 0.2s ease; 
             display: flex; 
             align-items: center; 
             gap: 0.5rem; 
             white-space: nowrap;
             cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
         }
         .nav-link:hover, .nav-link.active { 
             color: var(--primary-color); 
+            background: var(--light-bg);
         }
         .nav-link i { 
-            font-size: 1.1rem; 
+            font-size: 1.2rem; 
         }
         
         .mobile-nav { 
@@ -153,7 +153,7 @@
             left: 0; 
             right: 0; 
             background: var(--background-color); 
-            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05); 
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05); 
             z-index: 90; 
             max-width: 100vw;
             overflow: hidden;
@@ -161,7 +161,7 @@
         .mobile-nav-container { 
             display: flex; 
             justify-content: space-around; 
-            padding: 0.75rem 0; 
+            padding: 0.5rem 0; 
             overflow-x: auto;
         }
         .mobile-nav-link { 
@@ -169,15 +169,17 @@
             flex-direction: column; 
             align-items: center; 
             color: var(--light-text); 
-            font-size: 0.75rem; 
+            font-size: 0.8rem; 
+            font-weight: 600;
             text-decoration: none; 
             transition: color 0.2s ease; 
             flex: 1;
             min-width: 60px;
             cursor: pointer;
+            padding: 0.5rem;
         }
         .mobile-nav-link i { 
-            font-size: 1.25rem; 
+            font-size: 1.3rem; 
             margin-bottom: 0.25rem; 
         }
         .mobile-nav-link:hover, .mobile-nav-link.active { 
@@ -186,25 +188,25 @@
         
         /* Main Content */
         .blog-container { 
-            max-width: 1440px; 
+            max-width: 1200px; 
             margin: 0 auto; 
-            padding: 5rem 1rem 3rem; 
+            padding: 4rem 1rem 2rem; 
             width: 100%;
             box-sizing: border-box;
         }
         .section-header { 
             text-align: center; 
-            margin-bottom: 1rem; 
+            margin-bottom: 1.5rem; 
         }
         .section-title { 
-            font-size: 2.5rem; 
+            font-size: 2.25rem; 
             font-weight: 700; 
             margin-bottom: 0.5rem; 
         }
         .section-description { 
             font-size: 1rem; 
             color: var(--light-text); 
-            max-width: 700px; 
+            max-width: 600px; 
             margin: 0 auto; 
         }
         .header-logo-container { 
@@ -212,24 +214,25 @@
             align-items: center; 
             justify-content: center; 
             gap: 1rem; 
-            margin-bottom: 1rem; 
+            margin-bottom: 1.5rem; 
             flex-wrap: wrap;
         }
         .header-logo img { 
-            width: 64px; 
+            width: 80px; 
             height: auto; 
             border-radius: 0.5rem; 
         }
         .header-buttons { 
             display: flex; 
-            gap: 0.5rem; 
+            gap: 0.75rem; 
         }
         .header-btn { 
-            padding: 0.5rem 1rem; 
+            padding: 0.5rem 1.25rem; 
             background: var(--primary-color); 
             color: white; 
             border-radius: 1rem; 
             font-size: 0.9rem; 
+            font-weight: 600;
             text-decoration: none; 
             transition: all 0.2s ease; 
             cursor: pointer; 
@@ -294,7 +297,7 @@
         
         .blog-posts { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); 
             gap: 1.5rem; 
             width: 100%; 
             padding: 0 1rem; 
@@ -307,50 +310,56 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
             transition: transform 0.3s ease, box-shadow 0.3s ease; 
             width: 100%;
+            aspect-ratio: 4 / 3;
+            display: flex;
+            flex-direction: column;
         }
         .blog-post:hover { 
             transform: translateY(-0.25rem); 
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); 
         }
         .post-image { 
-            height: 200px; 
+            height: 180px; 
             overflow: hidden; 
             position: relative; 
+            flex-shrink: 0;
         }
         .post-image img { 
             width: 100%; 
             height: 100%; 
             object-fit: cover; 
-            transition: transform 0.4s ease; 
+            transition: transform 0.3s ease; 
         }
         .blog-post:hover .post-image img { 
             transform: scale(1.03); 
         }
         .post-content { 
             padding: 1rem; 
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .post-meta { 
-            display: flex; 
-            align-items: center; 
-            gap: 0.5rem; 
-            font-size: 0.85rem; 
+            font-size: 0.8rem; 
             color: var(--light-text); 
             margin-bottom: 0.5rem; 
         }
-        .post-meta time::after { 
-            content: '•'; 
-            margin: 0 0.25rem; 
-        }
         .post-category { 
-            font-weight: 500; 
+            font-weight: 600; 
             color: var(--primary-color); 
             text-transform: uppercase; 
         }
         .post-title { 
-            font-size: 1.25rem; 
+            font-size: 1.1rem; 
             font-weight: 600; 
-            line-height: 1.4; 
+            line-height: 1.3; 
             margin-bottom: 0.5rem; 
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .post-title a { 
             text-decoration: none; 
@@ -362,9 +371,14 @@
         }
         .post-excerpt { 
             color: var(--light-text); 
-            font-size: 0.9rem; 
-            line-height: 1.5; 
+            font-size: 0.85rem; 
+            line-height: 1.4; 
             margin-bottom: 0.75rem; 
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .post-tags { 
             display: flex; 
@@ -377,7 +391,7 @@
             background: var(--light-bg); 
             color: var(--primary-color); 
             border-radius: 1rem; 
-            font-size: 0.8rem; 
+            font-size: 0.75rem; 
             text-decoration: none; 
             transition: all 0.2s ease; 
             cursor: pointer;
@@ -394,7 +408,8 @@
             background: var(--primary-color); 
             color: white; 
             border-radius: 1.5rem; 
-            font-weight: 500; 
+            font-weight: 600; 
+            font-size: 0.85rem;
             text-decoration: none; 
             transition: all 0.2s ease; 
         }
@@ -406,12 +421,12 @@
         /* Footer */
         .site-footer { 
             background: var(--light-bg); 
-            padding: 2rem 1rem; 
+            padding: 1.5rem 1rem; 
             width: 100%; 
             box-sizing: border-box;
         }
         .footer-container { 
-            max-width: 1440px; 
+            max-width: 1200px; 
             margin: 0 auto; 
             padding: 0 1rem; 
             width: 100%;
@@ -420,12 +435,12 @@
             display: flex; 
             align-items: center; 
             gap: 1rem; 
-            margin-bottom: 1.5rem; 
+            margin-bottom: 1rem; 
         }
         .footer-logo img { 
             border-radius: 0.5rem; 
-            width: 48px; 
-            height: 48px; 
+            width: 64px; 
+            height: auto; 
         }
         .footer-name { 
             font-weight: 600; 
@@ -445,7 +460,7 @@
         }
         .copyright { 
             color: var(--light-text); 
-            font-size: 0.85rem; 
+            font-size: 0.8rem; 
         }
         .legal-links { 
             display: flex; 
@@ -453,7 +468,7 @@
         }
         .legal-link { 
             color: var(--light-text); 
-            font-size: 0.85rem; 
+            font-size: 0.8rem; 
             text-decoration: none; 
             transition: color 0.2s ease; 
         }
@@ -466,7 +481,7 @@
             text-align: center; 
             padding: 2rem 0; 
             color: var(--light-text); 
-            font-size: 1rem; 
+            font-size: 0.9rem; 
             width: 100%;
         }
         .loading-posts i { 
@@ -487,10 +502,10 @@
         /* Media Queries */
         @media (max-width: 1024px) {
             .blog-posts { 
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
             }
             .nav-links { 
-                gap: 1rem; 
+                gap: 1.5rem; 
             }
         }
         @media (max-width: 768px) {
@@ -501,49 +516,48 @@
                 display: block; 
             }
             .blog-container { 
-                padding-top: 4rem; 
-                padding-bottom: 5rem; 
+                padding-top: 3.5rem; 
+                padding-bottom: 4rem; 
             }
             .section-title { 
-                font-size: 2rem; 
+                font-size: 1.75rem; 
             }
             .blog-posts { 
                 grid-template-columns: 1fr; 
             }
             .post-image { 
-                height: 180px; 
-            }
-            .post-title { 
-                font-size: 1.1rem; 
-            }
-            .header-logo img { 
-                width: 48px; 
-            }
-            .mobile-nav-container {
-                justify-content: flex-start;
-                padding: 0.75rem 0.5rem;
-            }
-            .mobile-nav-link {
-                min-width: 50px;
-            }
-        }
-        @media (max-width: 480px) {
-            .section-title { 
-                font-size: 1.75rem; 
-            }
-            .section-description { 
-                font-size: 0.9rem; 
+                height: 160px; 
             }
             .post-title { 
                 font-size: 1rem; 
             }
-            .post-meta { 
-                flex-direction: column; 
-                align-items: flex-start; 
-                gap: 0.25rem; 
+            .header-logo img { 
+                width: 64px; 
             }
-            .post-meta time::after { 
-                display: none; 
+            .mobile-nav-container {
+                padding: 0.5rem;
+            }
+            .mobile-nav-link {
+                min-width: 50px;
+                font-size: 0.75rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .section-title { 
+                font-size: 1.5rem; 
+            }
+            .section-description { 
+                font-size: 0.85rem; 
+            }
+            .post-title { 
+                font-size: 0.95rem; 
+            }
+            .post-excerpt {
+                font-size: 0.8rem;
+                -webkit-line-clamp: 2;
+            }
+            .post-meta { 
+                font-size: 0.75rem; 
             }
             .header-logo-container { 
                 flex-direction: column; 
@@ -554,7 +568,7 @@
             }
             .header-btn { 
                 font-size: 0.8rem; 
-                padding: 0.4rem 0.8rem; 
+                padding: 0.4rem 1rem; 
             }
             .footer-brand { 
                 flex-direction: column; 
@@ -569,7 +583,13 @@
                 padding: 0 0.5rem;
             }
             .nav-links {
-                gap: 0.8rem;
+                gap: 1rem;
+            }
+            .brand-logo img {
+                width: 48px;
+            }
+            .brand-name {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -586,7 +606,7 @@
         "name": "Mwaniki Reports",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png"
+          "url": "https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.webp"
         },
         "sameAs": [
           "https://twitter.com/maestropuns",
@@ -622,7 +642,7 @@
             <div class="nav-container">
                 <div class="nav-brand">
                     <div class="brand-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="eager" width="48" height="48">
+                        <img src="/images/Jonathan-Mwaniki-logo.webp" alt="Mwaniki Reports Logo" loading="eager" width="64" height="64">
                     </div>
                     <span class="brand-name">Mwaniki Reports</span>
                 </div>
@@ -644,7 +664,7 @@
                 <p class="section-description">Your trusted source for news, breaking news, opinions, business, sports, tech, and entertainment.</p>
                 <div class="header-logo-container">
                     <div class="header-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="lazy">
+                        <img src="/images/Jonathan-Mwaniki-logo.webp" alt="Mwaniki Reports Logo" loading="lazy" width="80" height="80">
                     </div>
                     <div class="header-buttons">
                         <button class="header-btn" onclick="window.location.reload()">Refresh <i class="fas fa-sync-alt"></i></button>
@@ -656,18 +676,6 @@
                 <input type="text" id="search-input" placeholder="Search posts..." aria-label="Search news articles">
                 <i class="fas fa-search"></i>
             </div>
-
-            <!-- Ad after search bar -->
-            <script type="text/javascript">
-                atOptions = {
-                    'key': '1610960d9ced232cc76d8f5510ee4608',
-                    'format': 'iframe',
-                    'height': 60,
-                    'width': 468,
-                    'params': {}
-                };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
 
             <div id="post-list">
                 <!-- Posts will be dynamically inserted here -->
@@ -683,14 +691,14 @@
                     'params': {}
                 };
             </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" defer></script>
         </main>
 
         <footer class="site-footer">
             <div class="footer-container">
                 <div class="footer-brand">
                     <div class="footer-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="lazy" width="48" height="48">
+                        <img src="/images/Jonathan-Mwaniki-logo.webp" alt="Mwaniki Reports Logo" loading="lazy" width="64" height="64">
                     </div>
                     <div class="footer-info">
                         <span class="footer-name">Mwaniki Reports</span>
@@ -718,9 +726,9 @@
                 'params': {}
             };
         </script>
-        <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" defer></script>
     </div>
 
-    <script src="/scripts/news-script.js"></script>
+    <script src="/scripts/news-script.js" defer></script>
 </body>
 </html>
