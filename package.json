@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "dependencies": {
     "@octokit/rest": "^20.0.0",
     "cheerio": "^1.0.0",
