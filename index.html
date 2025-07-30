@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Mwaniki Reports - Your trusted source for news, sports, tech, gossip, opinions, and entertainment in Kenya.">
-    <meta name="keywords" content="news, sports, tech, gossip, opinions, entertainment, Mwaniki Reports, Kenya news, Nairobi news">
+    <meta name="description" content="Mwaniki Reports - Your trusted source for news, sports, tech, opinions, and entertainment in Kenya.">
+    <meta name="keywords" content="news, sports, tech, opinions, entertainment, Mwaniki Reports, Kenya news, Nairobi news">
     <meta name="author" content="Jonathan Mwaniki">
     <meta name="robots" content="index, follow">
-    <title>Mwaniki Reports | News, Sports, Tech, Gossip & More</title>
+    <title>Mwaniki Reports | News, Sports, Tech & More</title>
     
     <meta name="geo.region" content="KE">
     <meta name="geo.placename" content="Nairobi">
@@ -17,8 +17,8 @@
     
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.jonathanmwaniki.co.ke">
-    <meta property="og:title" content="Mwaniki Reports | News, Sports, Tech, Gossip & More">
-    <meta property="og:description" content="Stay updated with the latest news, sports, tech, gossip, opinions, and entertainment from Mwaniki Reports, Kenya.">
+    <meta property="og:title" content="Mwaniki Reports | News, Sports, Tech & More">
+    <meta property="og:description" content="Stay updated with the latest news, sports, tech, opinions, and entertainment from Mwaniki Reports, Kenya.">
     <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -30,8 +30,8 @@
     <meta name="twitter:site" content="@maestropuns">
     <meta name="twitter:creator" content="@maestropuns">
     <meta name="twitter:url" content="https://www.jonathanmwaniki.co.ke">
-    <meta name="twitter:title" content="Mwaniki Reports | News, Sports, Tech, Gossip & More">
-    <meta name="twitter:description" content="Stay updated with the latest news, sports, tech, gossip, opinions, and entertainment from Mwaniki Reports, Kenya.">
+    <meta name="twitter:title" content="Mwaniki Reports | News, Sports, Tech & More">
+    <meta name="twitter:description" content="Stay updated with the latest news, sports, tech, opinions, and entertainment from Mwaniki Reports, Kenya.">
     <meta property="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
     <meta name="twitter:image:alt" content="Mwaniki Reports Logo">
     
@@ -90,9 +90,14 @@
         
         /* Main Content */
         .blog-container { max-width: 1440px; margin: 0 auto; padding: 5rem 1.5rem 3rem; }
-        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-header { text-align: center; margin-bottom: 1rem; }
         .section-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
         .section-description { font-size: 1rem; color: var(--light-text); max-width: 700px; margin: 0 auto; }
+        .header-logo-container { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1rem; }
+        .header-logo img { width: 64px; height: auto; border-radius: 0.5rem; }
+        .header-buttons { display: flex; gap: 0.5rem; }
+        .header-btn { padding: 0.5rem 1rem; background: var(--primary-color); color: white; border-radius: 1rem; font-size: 0.9rem; text-decoration: none; transition: all 0.2s ease; }
+        .header-btn:hover { background: var(--primary-dark); }
         
         .search-bar { margin: 0 auto 2.5rem; max-width: 500px; position: relative; }
         .search-bar input { width: 100%; padding: 0.75rem 2.5rem 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 2rem; font-size: 0.95rem; transition: all 0.2s ease; }
@@ -123,12 +128,6 @@
         .btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: var(--primary-color); color: white; border-radius: 1.5rem; font-weight: 500; text-decoration: none; transition: all 0.2s ease; }
         .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
         
-        .blog-categories { margin: 2rem 0; text-align: center; }
-        .section-subtitle { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
-        .category-list { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
-        .category-tag { padding: 0.5rem 1rem; background: var(--light-bg); color: var(--primary-color); border-radius: 1.5rem; font-weight: 500; font-size: 0.85rem; text-decoration: none; transition: all 0.2s ease; cursor: pointer; }
-        .category-tag:hover, .category-tag.active { background: var(--primary-color); color: white; }
-        
         /* Footer */
         .site-footer { background: var(--light-bg); padding: 2rem 0; }
         .footer-container { max-width: 1440px; margin: 0 auto; padding: 0 1.5rem; }
@@ -141,9 +140,6 @@
         .legal-links { display: flex; gap: 1rem; }
         .legal-link { color: var(--light-text); font-size: 0.85rem; text-decoration: none; transition: color 0.2s ease; }
         .legal-link:hover { color: var(--primary-color); }
-        
-        /* Ads */
-        .ad { margin: 2rem auto; text-align: center; }
         
         /* Loading and Error States */
         .loading-posts, .no-posts, .error-message { text-align: center; padding: 2rem 0; color: var(--light-text); font-size: 1rem; }
@@ -164,6 +160,7 @@
             .blog-posts { grid-template-columns: 1fr; }
             .post-image { height: 180px; }
             .post-title { font-size: 1.1rem; }
+            .header-logo img { width: 48px; }
         }
         @media (max-width: 480px) {
             .section-title { font-size: 1.75rem; }
@@ -171,8 +168,9 @@
             .post-title { font-size: 1rem; }
             .post-meta { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
             .post-meta time::after { display: none; }
-            .category-list { gap: 0.25rem; }
-            .category-tag { padding: 0.4rem 0.8rem; font-size: 0.75rem; }
+            .header-logo-container { flex-direction: column; gap: 0.5rem; }
+            .header-buttons { justify-content: center; }
+            .header-btn { font-size: 0.8rem; padding: 0.4rem 0.8rem; }
             .footer-brand { flex-direction: column; text-align: center; }
             .footer-legal { flex-direction: column; gap: 0.5rem; text-align: center; }
         }
@@ -183,7 +181,7 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "Mwaniki Reports",
-      "description": "Your trusted source for news, sports, tech, gossip, opinions, and entertainment in Kenya.",
+      "description": "Your trusted source for news, sports, tech, opinions, and entertainment in Kenya.",
       "url": "https://www.jonathanmwaniki.co.ke",
       "publisher": {
         "@type": "Organization",
@@ -212,14 +210,11 @@
     <div id="mainContent">
         <nav class="mobile-nav">
             <div class="mobile-nav-container">
-                <a href="/" class="mobile-nav-link active" aria-label="Home"><i class="fas fa-home"></i><span>Home</span></a>
-                <a href="/news" class="mobile-nav-link" aria-label="News"><i class="fas fa-newspaper"></i><span>News</span></a>
+                <a href="/news" class="mobile-nav-link active" aria-label="News"><i class="fas fa-newspaper"></i><span>News</span></a>
                 <a href="/tech" class="mobile-nav-link" aria-label="Tech"><i class="fas fa-microchip"></i><span>Tech</span></a>
-                <a href="/gossip" class="mobile-nav-link" aria-label="Gossip"><i class="fas fa-comment-dots"></i><span>Gossip</span></a>
                 <a href="/opinions" class="mobile-nav-link" aria-label="Opinions"><i class="fas fa-comment"></i><span>Opinions</span></a>
                 <a href="/sports" class="mobile-nav-link" aria-label="Sports"><i class="fas fa-futbol"></i><span>Sports</span></a>
                 <a href="/entertainment" class="mobile-nav-link" aria-label="Entertainment"><i class="fas fa-film"></i><span>Entertainment</span></a>
-                <a href="/portfolio.html" class="mobile-nav-link" aria-label="About"><i class="fas fa-user"></i><span>About</span></a>
             </div>
         </nav>
 
@@ -232,50 +227,61 @@
                     <span class="brand-name">Mwaniki Reports</span>
                 </div>
                 <div class="nav-links">
-                    <a href="/" class="nav-link active" aria-label="Home"><i class="fas fa-home"></i>Home</a>
-                    <a href="/news" class="nav-link" aria-label="News"><i class="fas fa-newspaper"></i>News</a>
+                    <a href="/news" class="nav-link active" aria-label="News"><i class="fas fa-newspaper"></i>News</a>
                     <a href="/tech" class="nav-link" aria-label="Tech"><i class="fas fa-microchip"></i>Tech</a>
-                    <a href="/gossip" class="nav-link" aria-label="Gossip"><i class="fas fa-comment-dots"></i>Gossip</a>
                     <a href="/opinions" class="nav-link" aria-label="Opinions"><i class="fas fa-comment"></i>Opinions</a>
                     <a href="/sports" class="nav-link" aria-label="Sports"><i class="fas fa-futbol"></i>Sports</a>
                     <a href="/entertainment" class="nav-link" aria-label="Entertainment"><i class="fas fa-film"></i>Entertainment</a>
-                    <a href="/portfolio.html" class="nav-link" aria-label="About"><i class="fas fa-user"></i>About</a>
                 </div>
             </div>
         </nav>
 
-        <!-- Header Ad -->
-        <div class="ad">
-            <script type="text/javascript">
-                atOptions = {
-                    'key' : '1610960d9ced232cc76d8f5510ee4608',
-                    'format' : 'iframe',
-                    'height' : 60,
-                    'width' : 468,
-                    'params' : {}
-                };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
-        </div>
-
         <main class="blog-container">
             <div class="section-header">
                 <h1 class="section-title">Mwaniki <span class="gradient-text">Reports</span></h1>
-                <p class="section-description">Your trusted source for news, sports, tech, gossip, opinions, and entertainment.</p>
+                <p class="section-description">Your trusted source for news, sports, tech, opinions, and entertainment.</p>
+                <div class="header-logo-container">
+                    <div class="header-logo">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="lazy">
+                    </div>
+                    <div class="header-buttons">
+                        <button class="header-btn" onclick="window.location.reload()">Refresh <i class="fas fa-sync-alt"></i></button>
+                        <a href="/portfolio.html" class="header-btn">About <i class="fas fa-user"></i></a>
+                    </div>
+                </div>
             </div>
             <div class="search-bar">
                 <input type="text" id="search-input" placeholder="Search posts..." aria-label="Search news articles">
                 <i class="fas fa-search"></i>
             </div>
-            <section class="blog-categories">
-                <h2 class="section-subtitle">Browse by Category</h2>
-                <div class="category-list" id="category-list">
-                    <span class="category-tag active" data-category="all" role="button" tabindex="0">All</span>
-                </div>
-            </section>
+
+            <!-- Ad after search bar -->
+            <script type="text/javascript">
+                atOptions = {
+                    'key': '1610960d9ced232cc76d8f5510ee4608',
+                    'format': 'iframe',
+                    'height': 60,
+                    'width': 468,
+                    'params': {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
+
             <div id="post-list">
                 <!-- Posts will be dynamically inserted here -->
             </div>
+
+            <!-- Ad after posts -->
+            <script type="text/javascript">
+                atOptions = {
+                    'key': '1610960d9ced232cc76d8f5510ee4608',
+                    'format': 'iframe',
+                    'height': 60,
+                    'width': 468,
+                    'params': {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
         </main>
 
         <footer class="site-footer">
@@ -286,7 +292,7 @@
                     </div>
                     <div class="footer-info">
                         <span class="footer-name">Mwaniki Reports</span>
-                        <p class="footer-description">Your trusted source for news, sports, tech, gossip, opinions, and entertainment.</p>
+                        <p class="footer-description">Your trusted source for news, sports, tech, opinions, and entertainment.</p>
                     </div>
                 </div>
                 <div class="footer-legal">
@@ -299,6 +305,18 @@
                 </div>
             </div>
         </footer>
+
+        <!-- Ad at the bottom -->
+        <script type="text/javascript">
+            atOptions = {
+                'key': '1610960d9ced232cc76d8f5510ee4608',
+                'format': 'iframe',
+                'height': 60,
+                'width': 468,
+                'params': {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
     </div>
 
     <script src="/scripts/news-script.js"></script>
