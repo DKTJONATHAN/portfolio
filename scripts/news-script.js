@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
 
+    let currentCategory = 'News'; // Default category
+
     function debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -21,17 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return new Date(dateString).toLocaleDateString('en-US', options);
     }
 
-    function getCurrentCategory() {
-        const path = window.location.pathname;
-        const categories = ['news', 'breaking-news', 'opinions', 'business', 'sports', 'tech', 'entertainment'];
-        const category = categories.find(cat => path.includes(cat));
-        return category ? category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'News';
-    }
-
     function setActiveNavLink(category) {
         navLinks.forEach(link => {
             link.classList.remove('active');
-            if (link.getAttribute('href').includes(category.toLowerCase().replace(' ', '-'))) {
+            if (link.dataset.category === category) {
                 link.classList.add('active');
             }
         });
@@ -99,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${excerpt ? `<div class="post-excerpt" itemprop="description">${excerpt}</div>` : ''}
                     ${keywords.length > 0 ? `
                     <div class="post-tags">
-                        ${keywords.map(keyword => `<a href="/${category.toLowerCase().replace(' ', '-')}/?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
+                        ${keywords.map(keyword => `<a class="post-tag" data-tag="${encodeURIComponent(keyword)}" itemprop="keywords">${keyword}</a>`).join('')}
                     </div>
                     ` : ''}
                     <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">
@@ -157,10 +152,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const filterPosts = debounce(async () => {
         const searchTerm = searchInput.value.toLowerCase().trim();
-        const category = getCurrentCategory();
         let posts = await fetchPosts();
 
-        posts = posts.filter(post => post.category && post.category.toLowerCase() === category.toLowerCase());
+        posts = posts.filter(post => post.category && post.category.toLowerCase() === currentCategory.toLowerCase());
 
         if (searchTerm) {
             posts = posts.filter(post =>
@@ -170,21 +164,42 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         }
 
-        renderPosts(posts, category);
-        setActiveNavLink(category);
+        renderPosts(posts, currentCategory);
+        setActiveNavLink(currentCategory);
     }, 300);
 
+    // Initial load
     filterPosts();
 
-    searchInput.addEventListener('input', filterPosts);
-
+    // Navigation link click handlers
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            window.location.href = link.href;
+            currentCategory = link.dataset.category;
+            filterPosts();
+        });
+        link.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                currentCategory = link.dataset.category;
+                filterPosts();
+            }
         });
     });
 
+    // Tag click handlers
+    postList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('post-tag')) {
+            e.preventDefault();
+            searchInput.value = e.target.dataset.tag;
+            filterPosts();
+        }
+    });
+
+    // Search input handler
+    searchInput.addEventListener('input', filterPosts);
+
+    // Lazy loading images
     if ('IntersectionObserver' in window) {
         const lazyImages = document.querySelectorAll('img[loading="lazy"]');
         const imageObserver = new IntersectionObserver((entries, observer) => {
