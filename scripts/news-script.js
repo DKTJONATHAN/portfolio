@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             postElement.setAttribute('itemscope', '');
             postElement.setAttribute('itemtype', 'https://schema.org/NewsArticle');
 
-            const imageUrl = post.image || '/images/default-blog.webp';
+            const imageUrl = post.image || '/images/default-blog.jpg';
             const excerpt = post.description || '';
             const formattedDate = formatDate(post.date);
             const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             postElement.innerHTML = `
                 <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
                 <div class="post-image">
-                    <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="360" height="180" onerror="this.src='/images/default-blog.webp'" itemprop="image">
+                    <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="360" height="180" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
                 </div>
                 <div class="post-content">
                     <div class="post-meta">
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             postsContainer.appendChild(postElement);
 
-            // Insert ad after every 4 posts (instead of 3 for better spacing)
+            // Insert ad after every 4 posts
             if ((index + 1) % 4 === 0) {
                 const adScript = document.createElement('script');
                 adScript.type = 'text/javascript';
