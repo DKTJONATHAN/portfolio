@@ -19,7 +19,7 @@
     <meta property="og:url" content="https://www.jonathanmwaniki.co.ke">
     <meta property="og:title" content="Mwaniki Reports | News, Sports, Tech & More">
     <meta property="og:description" content="Stay updated with the latest news, breaking news, opinions, business, sports, tech, and entertainment from Mwaniki Reports, Kenya.">
-    <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.webp">
+    <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Mwaniki Reports Logo">
@@ -32,20 +32,21 @@
     <meta name="twitter:url" content="https://www.jonathanmwaniki.co.ke">
     <meta name="twitter:title" content="Mwaniki Reports | News, Sports, Tech & More">
     <meta name="twitter:description" content="Stay updated with the latest news, breaking news, opinions, business, sports, tech, and entertainment from Mwaniki Reports, Kenya.">
-    <meta property="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.webp">
+    <meta property="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
     <meta name="twitter:image:alt" content="Mwaniki Reports Logo">
     
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16 32x32">
-    <link rel="icon" href="/images/favicon-96x96.webp" type="image/webp" sizes="96x96">
-    <link rel="apple-touch-icon" href="/images/apple-touch-icon.webp">
+    <link rel="icon" href="/images/favicon-96x96.png" type="image/png" sizes="96x96">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
     
     <link rel="stylesheet" href="/styles.css">
     <link rel="preload" href="/styles.css" as="style">
     <link rel="preload" href="/scripts/news-script.js" as="script">
-    <link rel="preload" href="/images/Jonathan-Mwaniki-logo.webp" as="image" type="image/webp">
+    <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
 
     <style>
         :root {
@@ -85,10 +86,6 @@
         .desktop-nav { 
             background: var(--background-color); 
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            right: 0; 
             z-index: 100; 
             max-width: 100vw;
             overflow: hidden;
@@ -98,7 +95,7 @@
             margin: 0 auto; 
             padding: 0.75rem 1rem; 
             display: flex; 
-            justify-content: space-between; 
+            flex-direction: column; 
             align-items: center; 
             width: 100%;
         }
@@ -106,7 +103,7 @@
             display: flex; 
             align-items: center; 
             gap: 1rem; 
-            flex-shrink: 0;
+            margin-bottom: 1rem;
         }
         .brand-logo img { 
             border-radius: 0.5rem; 
@@ -122,14 +119,15 @@
         .nav-links { 
             display: flex; 
             gap: 2rem; 
-            flex-wrap: nowrap; 
+            flex-wrap: wrap; 
+            justify-content: center;
         }
         .nav-link { 
             color: var(--light-text); 
             font-weight: 600; 
             font-size: 1rem;
             text-decoration: none; 
-            transition: color 0.2s ease, transform 0.2s ease; 
+            transition: color 0.2s ease, background 0.2s ease; 
             display: flex; 
             align-items: center; 
             gap: 0.5rem; 
@@ -190,7 +188,7 @@
         .blog-container { 
             max-width: 1200px; 
             margin: 0 auto; 
-            padding: 4rem 1rem 2rem; 
+            padding: 2rem 1rem; 
             width: 100%;
             box-sizing: border-box;
         }
@@ -256,7 +254,7 @@
             border: 1px solid var(--border-color); 
             border-radius: 2rem; 
             font-size: 0.95rem; 
-            transition: all 0.2s ease; 
+            transition: border-color 0.2s ease; 
             box-sizing: border-box;
         }
         .search-bar input:focus { 
@@ -516,7 +514,7 @@
                 display: block; 
             }
             .blog-container { 
-                padding-top: 3.5rem; 
+                padding-top: 1.5rem; 
                 padding-bottom: 4rem; 
             }
             .section-title { 
@@ -606,7 +604,7 @@
         "name": "Mwaniki Reports",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.webp"
+          "url": "https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png"
         },
         "sameAs": [
           "https://twitter.com/maestropuns",
@@ -638,33 +636,13 @@
             </div>
         </nav>
 
-        <nav class="desktop-nav">
-            <div class="nav-container">
-                <div class="nav-brand">
-                    <div class="brand-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.webp" alt="Mwaniki Reports Logo" loading="eager" width="64" height="64">
-                    </div>
-                    <span class="brand-name">Mwaniki Reports</span>
-                </div>
-                <div class="nav-links">
-                    <a class="nav-link active" data-category="News" aria-label="News"><i class="fas fa-newspaper"></i>News</a>
-                    <a class="nav-link" data-category="Breaking News" aria-label="Breaking News"><i class="fas fa-bolt"></i>Breaking News</a>
-                    <a class="nav-link" data-category="Opinions" aria-label="Opinions"><i class="fas fa-comment"></i>Opinions</a>
-                    <a class="nav-link" data-category="Business" aria-label="Business"><i class="fas fa-briefcase"></i>Business</a>
-                    <a class="nav-link" data-category="Sports" aria-label="Sports"><i class="fas fa-futbol"></i>Sports</a>
-                    <a class="nav-link" data-category="Tech" aria-label="Tech"><i class="fas fa-microchip"></i>Tech</a>
-                    <a class="nav-link" data-category="Entertainment" aria-label="Entertainment"><i class="fas fa-film"></i>Entertainment</a>
-                </div>
-            </div>
-        </nav>
-
         <main class="blog-container">
             <div class="section-header">
                 <h1 class="section-title">Mwaniki <span class="gradient-text">Reports</span></h1>
                 <p class="section-description">Your trusted source for news, breaking news, opinions, business, sports, tech, and entertainment.</p>
                 <div class="header-logo-container">
                     <div class="header-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.webp" alt="Mwaniki Reports Logo" loading="lazy" width="80" height="80">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="lazy" width="80" height="80">
                     </div>
                     <div class="header-buttons">
                         <button class="header-btn" onclick="window.location.reload()">Refresh <i class="fas fa-sync-alt"></i></button>
@@ -672,6 +650,25 @@
                     </div>
                 </div>
             </div>
+            <nav class="desktop-nav">
+                <div class="nav-container">
+                    <div class="nav-brand">
+                        <div class="brand-logo">
+                            <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="eager" width="64" height="64">
+                        </div>
+                        <span class="brand-name">Mwaniki Reports</span>
+                    </div>
+                    <div class="nav-links">
+                        <a class="nav-link active" data-category="News" aria-label="News"><i class="fas fa-newspaper"></i>News</a>
+                        <a class="nav-link" data-category="Breaking News" aria-label="Breaking News"><i class="fas fa-bolt"></i>Breaking News</a>
+                        <a class="nav-link" data-category="Opinions" aria-label="Opinions"><i class="fas fa-comment"></i>Opinions</a>
+                        <a class="nav-link" data-category="Business" aria-label="Business"><i class="fas fa-briefcase"></i>Business</a>
+                        <a class="nav-link" data-category="Sports" aria-label="Sports"><i class="fas fa-futbol"></i>Sports</a>
+                        <a class="nav-link" data-category="Tech" aria-label="Tech"><i class="fas fa-microchip"></i>Tech</a>
+                        <a class="nav-link" data-category="Entertainment" aria-label="Entertainment"><i class="fas fa-film"></i>Entertainment</a>
+                    </div>
+                </div>
+            </nav>
             <div class="search-bar">
                 <input type="text" id="search-input" placeholder="Search posts..." aria-label="Search news articles">
                 <i class="fas fa-search"></i>
@@ -698,7 +695,7 @@
             <div class="footer-container">
                 <div class="footer-brand">
                     <div class="footer-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.webp" alt="Mwaniki Reports Logo" loading="lazy" width="64" height="64">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="lazy" width="64" height="64">
                     </div>
                     <div class="footer-info">
                         <span class="footer-name">Mwaniki Reports</span>
