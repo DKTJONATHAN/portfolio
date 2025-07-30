@@ -29,7 +29,13 @@ export default async function handler(req, res) {
         });
         metadata = JSON.parse(Buffer.from(data.content, 'base64').toString('utf-8'));
       } catch (error) {
-        if (error.status !== 404) throw error;
+        if (error.status === 404) {
+          console.log('articles.json not found, returning empty metadata');
+          metadata = [];
+        } else {
+          console.error('Error fetching articles.json:', error);
+          return res.status(500).json({ error: `Failed to fetch metadata: ${error.message}` });
+        }
       }
 
       const postMetadata = metadata.find(post => post.slug === slug);
@@ -50,22 +56,24 @@ export default async function handler(req, res) {
         if (error.status === 404) {
           return res.status(404).json({ error: 'HTML file not found' });
         }
-        throw error;
+        console.error('Error fetching HTML file:', error);
+        return res.status(500).json({ error: `Failed to fetch HTML file: ${error.message}` });
       }
 
-      const $ = cheerio.load(htmlContent);
-      const firstContent = $('.post-content').first().html() || '';
-      const remainingContent = $('.post-content-remaining .post-content').html() || '';
-      const content = (firstContent + remainingContent).trim();
+      try {
+        const $ = cheerio.load(htmlContent);
+        const firstContent = $('.post-content').first().html() || '';
+        const remainingContent = $('.post-content-remaining .post-content').html() || '';
+        const content = (firstContent + remainingContent).trim() || '<p>No content available</p>';
 
-      if (!content) {
-        console.warn(`No content found in HTML for slug: ${slug}`);
+        return res.status(200).json({
+          ...postMetadata,
+          content,
+        });
+      } catch (error) {
+        console.error('Error parsing HTML with cheerio:', error);
+        return res.status(500).json({ error: `Failed to parse HTML content: ${error.message}` });
       }
-
-      return res.status(200).json({
-        ...postMetadata,
-        content: content || '',
-      });
     }
 
     if (req.method === 'POST') {
