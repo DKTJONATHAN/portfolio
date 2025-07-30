@@ -23,15 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getCurrentCategory() {
         const path = window.location.pathname;
-        const categories = ['news', 'tech', 'opinions', 'sports', 'entertainment'];
+        const categories = ['news', 'breaking-news', 'opinions', 'business', 'sports', 'tech', 'entertainment'];
         const category = categories.find(cat => path.includes(cat));
-        return category ? category.charAt(0).toUpperCase() + category.slice(1) : 'News';
+        return category ? category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'News';
     }
 
     function setActiveNavLink(category) {
         navLinks.forEach(link => {
             link.classList.remove('active');
-            if (link.getAttribute('href').includes(category.toLowerCase())) {
+            if (link.getAttribute('href').includes(category.toLowerCase().replace(' ', '-'))) {
                 link.classList.add('active');
             }
         });
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${excerpt ? `<div class="post-excerpt" itemprop="description">${excerpt}</div>` : ''}
                     ${keywords.length > 0 ? `
                     <div class="post-tags">
-                        ${keywords.map(keyword => `<a href="/${category.toLowerCase()}?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
+                        ${keywords.map(keyword => `<a href="/${category.toLowerCase().replace(' ', '-')}/?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
                     </div>
                     ` : ''}
                     <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">
