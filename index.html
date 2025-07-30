@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Mwaniki Reports - Your trusted source for news, sports, tech, and entertainment in Kenya.">
-    <meta name="keywords" content="news, sports, tech, entertainment, Mwaniki Reports, Kenya news, Nairobi news">
+    <meta name="description" content="Mwaniki Reports - Your trusted source for news, sports, tech, gossip, opinions, and entertainment in Kenya.">
+    <meta name="keywords" content="news, sports, tech, gossip, opinions, entertainment, Mwaniki Reports, Kenya news, Nairobi news">
     <meta name="author" content="Jonathan Mwaniki">
     <meta name="robots" content="index, follow">
-    <title>Mwaniki Reports | News, Sports, Tech & Entertainment</title>
+    <title>Mwaniki Reports | News, Sports, Tech, Gossip & More</title>
     
     <meta name="geo.region" content="KE">
     <meta name="geo.placename" content="Nairobi">
@@ -17,8 +17,8 @@
     
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.jonathanmwaniki.co.ke">
-    <meta property="og:title" content="Mwaniki Reports | News, Sports, Tech & Entertainment">
-    <meta property="og:description" content="Stay updated with the latest news, sports, tech, and entertainment from Mwaniki Reports, Kenya.">
+    <meta property="og:title" content="Mwaniki Reports | News, Sports, Tech, Gossip & More">
+    <meta property="og:description" content="Stay updated with the latest news, sports, tech, gossip, opinions, and entertainment from Mwaniki Reports, Kenya.">
     <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -30,8 +30,8 @@
     <meta name="twitter:site" content="@maestropuns">
     <meta name="twitter:creator" content="@maestropuns">
     <meta name="twitter:url" content="https://www.jonathanmwaniki.co.ke">
-    <meta name="twitter:title" content="Mwaniki Reports | News, Sports, Tech & Entertainment">
-    <meta name="twitter:description" content="Stay updated with the latest news, sports, tech, and entertainment from Mwaniki Reports, Kenya.">
+    <meta name="twitter:title" content="Mwaniki Reports | News, Sports, Tech, Gossip & More">
+    <meta name="twitter:description" content="Stay updated with the latest news, sports, tech, gossip, opinions, and entertainment from Mwaniki Reports, Kenya.">
     <meta property="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
     <meta name="twitter:image:alt" content="Mwaniki Reports Logo">
     
@@ -41,11 +41,11 @@
     
     <link rel="stylesheet" href="/styles.css">
     <link rel="preload" href="/styles.css" as="style">
-    <link rel="preload" href="/scripts/main.js" as="script">
+    <link rel="preload" href="/scripts/news-script.js" as="script">
     <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -53,16 +53,16 @@
             --primary-color: #4f46e5;
             --primary-dark: #3b82f6;
             --secondary-color: #10b981;
-            --text-color: #1f2937;
+            --text-color: #111827;
             --light-text: #6b7280;
             --background-color: #ffffff;
-            --light-bg: #f9fafb;
+            --light-bg: #f3f4f6;
             --border-color: #e5e7eb;
-            --font-main: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { font-family: var(--font-main); line-height: 1.6; color: var(--text-color); background-color: var(--light-bg); overflow-x: hidden; }
+        body { font-family: var(--font-main); line-height: 1.6; color: var(--text-color); background-color: var(--background-color); overflow-x: hidden; }
         .bg-white { background-color: var(--background-color); }
         .flex { display: flex; }
         .flex-col { flex-direction: column; }
@@ -70,104 +70,111 @@
         .justify-center { justify-content: center; }
         .text-center { text-align: center; }
         .gradient-text { background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .desktop-nav { background: var(--background-color); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
-        .nav-container { max-width: 1280px; margin: 0 auto; padding: 1rem 20px; display: flex; justify-content: space-between; align-items: center; }
-        .nav-brand { display: flex; align-items: center; gap: 12px; }
-        .brand-logo img { border-radius: 8px; width: 40px; height: auto; }
-        .brand-name { font-size: 1.25rem; font-weight: 700; color: var(--text-color); }
-        .nav-links { display: flex; gap: 30px; }
-        .nav-link { color: var(--light-text); font-weight: 500; text-decoration: none; transition: color 0.3s ease; }
+        
+        /* Navigation */
+        .desktop-nav { background: var(--background-color); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        .nav-container { max-width: 1440px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { display: flex; align-items: center; gap: 0.75rem; }
+        .brand-logo img { border-radius: 0.5rem; width: 48px; height: auto; }
+        .brand-name { font-size: 1.5rem; font-weight: 700; color: var(--text-color); }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-link { color: var(--light-text); font-weight: 500; text-decoration: none; transition: color 0.2s ease; display: flex; align-items: center; gap: 0.5rem; }
         .nav-link:hover, .nav-link.active { color: var(--primary-color); }
-        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--background-color); box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); z-index: 90; }
-        .mobile-nav-container { display: flex; justify-content: space-around; padding: 12px 0; }
-        .mobile-nav-link { display: flex; flex-direction: column; align-items: center; color: var(--light-text); font-size: 0.85rem; text-decoration: none; transition: color 0.3s ease; }
-        .mobile-nav-link i { font-size: 1.3rem; margin-bottom: 4px; }
+        .nav-link i { font-size: 1.1rem; }
+        
+        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--background-color); box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05); z-index: 90; }
+        .mobile-nav-container { display: flex; justify-content: space-around; padding: 0.75rem 0; }
+        .mobile-nav-link { display: flex; flex-direction: column; align-items: center; color: var(--light-text); font-size: 0.75rem; text-decoration: none; transition: color 0.2s ease; }
+        .mobile-nav-link i { font-size: 1.25rem; margin-bottom: 0.25rem; }
         .mobile-nav-link:hover, .mobile-nav-link.active { color: var(--primary-color); }
-        .blog-container { max-width: 1280px; margin: 0 auto; padding: 100px 20px 80px; }
-        .section-header { text-align: center; margin-bottom: 50px; }
-        .section-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; }
-        .section-description { font-size: 1.1rem; color: var(--light-text); max-width: 800px; margin: 0 auto; }
-        .search-bar { margin: 0 auto 40px; max-width: 600px; position: relative; }
-        .search-bar input { width: 100%; padding: 12px 40px 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; transition: all 0.3s ease; }
+        
+        /* Main Content */
+        .blog-container { max-width: 1440px; margin: 0 auto; padding: 5rem 1.5rem 3rem; }
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .section-description { font-size: 1rem; color: var(--light-text); max-width: 700px; margin: 0 auto; }
+        
+        .search-bar { margin: 0 auto 2.5rem; max-width: 500px; position: relative; }
+        .search-bar input { width: 100%; padding: 0.75rem 2.5rem 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 2rem; font-size: 0.95rem; transition: all 0.2s ease; }
         .search-bar input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
-        .search-bar i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--light-text); font-size: 1.1rem; }
-        .category-section { margin-bottom: 60px; }
-        .category-title { font-size: 1.8rem; font-weight: 600; margin-bottom: 20px; color: var(--text-color); position: relative; display: inline-block; }
-        .category-title::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 60%; height: 3px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); }
-        .blog-posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; margin-bottom: 40px; }
-        .blog-post { background: var(--background-color); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); transition: transform 0.3s ease, box-shadow 0.3s ease; border: 1px solid var(--border-color); }
-        .blog-post:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); }
-        .post-image { height: 220px; overflow: hidden; position: relative; }
-        .post-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-        .blog-post:hover .post-image img { transform: scale(1.05); }
-        .post-content { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .post-meta { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--light-text); }
-        .post-meta time { position: relative; padding-right: 12px; }
-        .post-meta time::after { content: ''; position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 4px; height: 4px; background: var(--light-text); border-radius: 50%; }
-        .post-category { font-weight: 600; color: var(--primary-color); text-transform: uppercase; font-size: 0.85rem; }
-        .post-title { font-size: 1.6rem; font-weight: 700; line-height: 1.3; color: var(--text-color); }
-        .post-title a { text-decoration: none; color: inherit; transition: color 0.3s ease; }
+        .search-bar i { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--light-text); font-size: 1rem; }
+        
+        .category-section { margin-bottom: 3rem; }
+        .category-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-color); position: relative; display: inline-block; }
+        .category-title::after { content: ''; position: absolute; bottom: -0.25rem; left: 0; width: 50%; height: 2px; background: var(--primary-color); }
+        
+        .blog-posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .blog-post { background: var(--background-color); border-radius: 0.75rem; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .blog-post:hover { transform: translateY(-0.25rem); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); }
+        .post-image { height: 200px; overflow: hidden; position: relative; }
+        .post-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+        .blog-post:hover .post-image img { transform: scale(1.03); }
+        .post-content { padding: 1rem; }
+        .post-meta { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--light-text); margin-bottom: 0.5rem; }
+        .post-meta time::after { content: '•'; margin: 0 0.25rem; }
+        .post-category { font-weight: 500; color: var(--primary-color); text-transform: uppercase; }
+        .post-title { font-size: 1.25rem; font-weight: 600; line-height: 1.4; margin-bottom: 0.5rem; }
+        .post-title a { text-decoration: none; color: var(--text-color); transition: color 0.2s ease; }
         .post-title a:hover { color: var(--primary-color); }
-        .post-excerpt { color: var(--light-text); font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px; }
-        .post-excerpt p { margin: 0; }
-        .post-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
-        .post-tag { padding: 5px 12px; background: var(--light-bg); color: var(--primary-color); border-radius: 15px; font-size: 0.85rem; text-decoration: none; border: 1px solid var(--border-color); transition: all 0.3s ease; }
-        .post-tag:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
-        .btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); color: white; border-radius: 25px; font-weight: 500; text-decoration: none; transition: all 0.3s ease; align-self: flex-start; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3); }
-        .blog-categories { margin: 40px 0; text-align: center; }
-        .section-subtitle { font-size: 1.5rem; font-weight: 600; margin-bottom: 20px; color: var(--text-color); }
-        .category-list { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        .category-tag { padding: 8px 16px; background: var(--light-bg); color: var(--primary-color); border-radius: 20px; font-weight: 500; font-size: 0.9rem; text-decoration: none; border: 1px solid var(--border-color); transition: all 0.3s ease; cursor: pointer; }
-        .category-tag:hover, .category-tag.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
-        .site-footer { background: var(--background-color); padding: 40px 0; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); }
-        .footer-container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
-        .footer-brand { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .footer-logo img { border-radius: 8px; width: 40px; height: 40px; }
-        .footer-name { font-weight: 600; font-size: 1.2rem; color: var(--text-color); }
-        .footer-description { color: var(--light-text); font-size: 0.95rem; }
-        .footer-legal { border-top: 1px solid var(--border-color); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .copyright { color: var(--light-text); font-size: 0.9rem; }
-        .legal-links { display: flex; gap: 20px; }
-        .legal-link { color: var(--light-text); font-size: 0.9rem; text-decoration: none; transition: color 0.3s ease; }
+        .post-excerpt { color: var(--light-text); font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.75rem; }
+        .post-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+        .post-tag { padding: 0.25rem 0.75rem; background: var(--light-bg); color: var(--primary-color); border-radius: 1rem; font-size: 0.8rem; text-decoration: none; transition: all 0.2s ease; }
+        .post-tag:hover { background: var(--primary-color); color: white; }
+        .btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: var(--primary-color); color: white; border-radius: 1.5rem; font-weight: 500; text-decoration: none; transition: all 0.2s ease; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        
+        .blog-categories { margin: 2rem 0; text-align: center; }
+        .section-subtitle { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
+        .category-list { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
+        .category-tag { padding: 0.5rem 1rem; background: var(--light-bg); color: var(--primary-color); border-radius: 1.5rem; font-weight: 500; font-size: 0.85rem; text-decoration: none; transition: all 0.2s ease; cursor: pointer; }
+        .category-tag:hover, .category-tag.active { background: var(--primary-color); color: white; }
+        
+        /* Footer */
+        .site-footer { background: var(--light-bg); padding: 2rem 0; }
+        .footer-container { max-width: 1440px; margin: 0 auto; padding: 0 1.5rem; }
+        .footer-brand { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .footer-logo img { border-radius: 0.5rem; width: 48px; height: 48px; }
+        .footer-name { font-weight: 600; font-size: 1.25rem; }
+        .footer-description { color: var(--light-text); font-size: 0.9rem; }
+        .footer-legal { border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .copyright { color: var(--light-text); font-size: 0.85rem; }
+        .legal-links { display: flex; gap: 1rem; }
+        .legal-link { color: var(--light-text); font-size: 0.85rem; text-decoration: none; transition: color 0.2s ease; }
         .legal-link:hover { color: var(--primary-color); }
-        .loading-posts, .no-posts, .error-message { text-align: center; padding: 40px 0; color: var(--light-text); font-size: 1.1rem; }
-        .loading-posts i { margin-right: 10px; color: var(--primary-color); animation: spin 1s linear infinite; }
+        
+        /* Ads */
+        .ad { margin: 2rem auto; text-align: center; }
+        
+        /* Loading and Error States */
+        .loading-posts, .no-posts, .error-message { text-align: center; padding: 2rem 0; color: var(--light-text); font-size: 1rem; }
+        .loading-posts i { margin-right: 0.5rem; color: var(--primary-color); animation: spin 1s linear infinite; }
         .error-message a { color: var(--primary-color); text-decoration: underline; }
-        .ad-container {
-            margin: 2rem auto;
-            text-align: center;
-            max-width: 468px;
-            min-height: 60px;
-        }
-        .ad-container iframe {
-            display: block;
-            margin: 0 auto;
-            border: none;
-        }
+        
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @media (max-width: 1024px) { .blog-posts { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); } }
+        
+        /* Media Queries */
+        @media (max-width: 1024px) {
+            .blog-posts { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+        }
         @media (max-width: 768px) {
             .desktop-nav { display: none; }
             .mobile-nav { display: block; }
-            .blog-container { padding-top: 80px; padding-bottom: 100px; }
+            .blog-container { padding-top: 4rem; padding-bottom: 5rem; }
             .section-title { font-size: 2rem; }
             .blog-posts { grid-template-columns: 1fr; }
-            .post-image { height: 200px; }
-            .post-title { font-size: 1.4rem; }
-            .ad-container { max-width: 100%; }
-            .ad-container iframe { width: 100%; max-width: 468px; }
+            .post-image { height: 180px; }
+            .post-title { font-size: 1.1rem; }
         }
         @media (max-width: 480px) {
-            .section-title { font-size: 1.8rem; }
-            .section-description { font-size: 1rem; }
-            .post-title { font-size: 1.3rem; }
-            .post-meta { flex-direction: column; align-items: flex-start; gap: 5px; }
+            .section-title { font-size: 1.75rem; }
+            .section-description { font-size: 0.9rem; }
+            .post-title { font-size: 1rem; }
+            .post-meta { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
             .post-meta time::after { display: none; }
-            .category-list { gap: 8px; }
-            .category-tag { padding: 6px 12px; font-size: 0.8rem; }
+            .category-list { gap: 0.25rem; }
+            .category-tag { padding: 0.4rem 0.8rem; font-size: 0.75rem; }
             .footer-brand { flex-direction: column; text-align: center; }
-            .footer-legal { flex-direction: column; gap: 10px; text-align: center; }
+            .footer-legal { flex-direction: column; gap: 0.5rem; text-align: center; }
         }
     </style>
 
@@ -176,7 +183,7 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "Mwaniki Reports",
-      "description": "Your trusted source for news, sports, tech, and entertainment in Kenya.",
+      "description": "Your trusted source for news, sports, tech, gossip, opinions, and entertainment in Kenya.",
       "url": "https://www.jonathanmwaniki.co.ke",
       "publisher": {
         "@type": "Organization",
@@ -205,11 +212,14 @@
     <div id="mainContent">
         <nav class="mobile-nav">
             <div class="mobile-nav-container">
-                <a href="/portfolio.html" class="mobile-nav-link" aria-label="Portfolio"><i class="fas fa-briefcase"></i><span>Portfolio</span></a>
-                <a href="/portfolio.html#services" class="mobile-nav-link" aria-label="Services"><i class="fas fa-cogs"></i><span>Services</span></a>
-                <a href="/" class="mobile-nav-link active" aria-label="Blog"><i class="fas fa-blog"></i><span>News</span></a>
-                <a href="/portfolio.html#about" class="mobile-nav-link" aria-label="About"><i class="fas fa-user"></i><span>About</span></a>
-                <a href="/portfolio.html#contact" class="mobile-nav-link" aria-label="Contact"><i class="fas fa-envelope"></i><span>Contact</span></a>
+                <a href="/" class="mobile-nav-link active" aria-label="Home"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="/news" class="mobile-nav-link" aria-label="News"><i class="fas fa-newspaper"></i><span>News</span></a>
+                <a href="/tech" class="mobile-nav-link" aria-label="Tech"><i class="fas fa-microchip"></i><span>Tech</span></a>
+                <a href="/gossip" class="mobile-nav-link" aria-label="Gossip"><i class="fas fa-comment-dots"></i><span>Gossip</span></a>
+                <a href="/opinions" class="mobile-nav-link" aria-label="Opinions"><i class="fas fa-comment"></i><span>Opinions</span></a>
+                <a href="/sports" class="mobile-nav-link" aria-label="Sports"><i class="fas fa-futbol"></i><span>Sports</span></a>
+                <a href="/entertainment" class="mobile-nav-link" aria-label="Entertainment"><i class="fas fa-film"></i><span>Entertainment</span></a>
+                <a href="/portfolio.html" class="mobile-nav-link" aria-label="About"><i class="fas fa-user"></i><span>About</span></a>
             </div>
         </nav>
 
@@ -217,22 +227,25 @@
             <div class="nav-container">
                 <div class="nav-brand">
                     <div class="brand-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="eager" width="40" height="40">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="eager" width="48" height="48">
                     </div>
                     <span class="brand-name">Mwaniki Reports</span>
                 </div>
                 <div class="nav-links">
-                    <a href="/portfolio.html" class="nav-link" aria-label="Portfolio">Portfolio</a>
-                    <a href="/portfolio.html#services" class="nav-link" aria-label="Services">Services</a>
-                    <a href="/" class="nav-link active" aria-label="News">News</a>
-                    <a href="/portfolio.html#about" class="nav-link" aria-label="About">About</a>
-                    <a href="/portfolio.html#contact" class="nav-link" aria-label="Contact">Contact</a>
+                    <a href="/" class="nav-link active" aria-label="Home"><i class="fas fa-home"></i>Home</a>
+                    <a href="/news" class="nav-link" aria-label="News"><i class="fas fa-newspaper"></i>News</a>
+                    <a href="/tech" class="nav-link" aria-label="Tech"><i class="fas fa-microchip"></i>Tech</a>
+                    <a href="/gossip" class="nav-link" aria-label="Gossip"><i class="fas fa-comment-dots"></i>Gossip</a>
+                    <a href="/opinions" class="nav-link" aria-label="Opinions"><i class="fas fa-comment"></i>Opinions</a>
+                    <a href="/sports" class="nav-link" aria-label="Sports"><i class="fas fa-futbol"></i>Sports</a>
+                    <a href="/entertainment" class="nav-link" aria-label="Entertainment"><i class="fas fa-film"></i>Entertainment</a>
+                    <a href="/portfolio.html" class="nav-link" aria-label="About"><i class="fas fa-user"></i>About</a>
                 </div>
             </div>
         </nav>
 
         <!-- Header Ad -->
-        <div class="ad-container">
+        <div class="ad">
             <script type="text/javascript">
                 atOptions = {
                     'key' : '1610960d9ced232cc76d8f5510ee4608',
@@ -248,24 +261,11 @@
         <main class="blog-container">
             <div class="section-header">
                 <h1 class="section-title">Mwaniki <span class="gradient-text">Reports</span></h1>
-                <p class="section-description">Your trusted source for news, sports, tech, and entertainment.</p>
+                <p class="section-description">Your trusted source for news, sports, tech, gossip, opinions, and entertainment.</p>
             </div>
             <div class="search-bar">
                 <input type="text" id="search-input" placeholder="Search posts..." aria-label="Search news articles">
                 <i class="fas fa-search"></i>
-            </div>
-            <!-- Main Content Ad -->
-            <div class="ad-container">
-                <script type="text/javascript">
-                    atOptions = {
-                        'key' : '1610960d9ced232cc76d8f5510ee4608',
-                        'format' : 'iframe',
-                        'height' : 60,
-                        'width' : 468,
-                        'params' : {}
-                    };
-                </script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
             </div>
             <section class="blog-categories">
                 <h2 class="section-subtitle">Browse by Category</h2>
@@ -273,19 +273,6 @@
                     <span class="category-tag active" data-category="all" role="button" tabindex="0">All</span>
                 </div>
             </section>
-            <!-- Mid-Content Ad -->
-            <div class="ad-container">
-                <script type="text/javascript">
-                    atOptions = {
-                        'key' : '1610960d9ced232cc76d8f5510ee4608',
-                        'format' : 'iframe',
-                        'height' : 60,
-                        'width' : 468,
-                        'params' : {}
-                    };
-                </script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
-            </div>
             <div id="post-list">
                 <!-- Posts will be dynamically inserted here -->
             </div>
@@ -295,25 +282,12 @@
             <div class="footer-container">
                 <div class="footer-brand">
                     <div class="footer-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="lazy" width="40" height="40">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="lazy" width="48" height="48">
                     </div>
                     <div class="footer-info">
                         <span class="footer-name">Mwaniki Reports</span>
-                        <p class="footer-description">Your trusted source for news, sports, tech, and entertainment.</p>
+                        <p class="footer-description">Your trusted source for news, sports, tech, gossip, opinions, and entertainment.</p>
                     </div>
-                </div>
-                <!-- Footer Ad -->
-                <div class="ad-container">
-                    <script type="text/javascript">
-                        atOptions = {
-                            'key' : '1610960d9ced232cc76d8f5510ee4608',
-                            'format' : 'iframe',
-                            'height' : 60,
-                            'width' : 468,
-                            'params' : {}
-                        };
-                    </script>
-                    <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js"></script>
                 </div>
                 <div class="footer-legal">
                     <p class="copyright">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
@@ -327,219 +301,6 @@
         </footer>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const postList = document.getElementById('post-list');
-            const searchInput = document.getElementById('search-input');
-            const categoryList = document.getElementById('category-list');
-
-            function debounce(func, wait) {
-                let timeout;
-                return function executedFunction(...args) {
-                    const later = () => {
-                        clearTimeout(timeout);
-                        func(...args);
-                    };
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                };
-            }
-
-            function formatDate(dateString) {
-                if (!dateString) return 'No date';
-                const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                return new Date(dateString).toLocaleDateString('en-US', options);
-            }
-
-            function renderCategories(posts) {
-                const categories = new Set();
-                posts.forEach(post => {
-                    if (post.category) {
-                        categories.add(post.category);
-                    }
-                });
-                categoryList.innerHTML = '<span class="category-tag active" data-category="all" role="button" tabindex="0">All</span>';
-                categories.forEach(category => {
-                    const categoryElement = document.createElement('span');
-                    categoryElement.className = 'category-tag';
-                    categoryElement.dataset.category = category;
-                    categoryElement.setAttribute('role', 'button');
-                    categoryElement.setAttribute('tabindex', '0');
-                    categoryElement.textContent = category;
-                    categoryList.appendChild(categoryElement);
-                });
-                document.querySelectorAll('.category-tag').forEach(tag => {
-                    tag.addEventListener('click', () => {
-                        document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
-                        tag.classList.add('active');
-                        filterPosts();
-                    });
-                    tag.addEventListener('keydown', (e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            tag.click();
-                        }
-                    });
-                });
-            }
-
-            function renderPosts(posts) {
-                if (!posts || posts.length === 0) {
-                    postList.innerHTML = '<div class="no-posts">No posts found matching your criteria.</div>';
-                    return;
-                }
-
-                const postsByCategory = {};
-                posts.forEach(post => {
-                    if (!post.category) return; // Skip posts without a category
-                    if (!postsByCategory[post.category]) {
-                        postsByCategory[post.category] = [];
-                    }
-                    postsByCategory[post.category].push(post);
-                });
-
-                if (Object.keys(postsByCategory).length === 0) {
-                    postList.innerHTML = '<div class="no-posts">No posts with valid categories found.</div>';
-                    return;
-                }
-
-                Object.keys(postsByCategory).forEach(category => {
-                    postsByCategory[category].sort((a, b) => new Date(b.date) - new Date(a.date));
-                });
-
-                postList.innerHTML = '';
-
-                Object.keys(postsByCategory).forEach(category => {
-                    const section = document.createElement('section');
-                    section.className = 'category-section';
-                    section.setAttribute('aria-labelledby', `category-${category.toLowerCase().replace(/\s+/g, '-')}`);
-
-                    const title = document.createElement('h2');
-                    title.className = 'category-title';
-                    title.id = `category-${category.toLowerCase().replace(/\s+/g, '-')}`;
-                    title.textContent = category;
-                    section.appendChild(title);
-
-                    const postsContainer = document.createElement('div');
-                    postsContainer.className = 'blog-posts';
-
-                    postsByCategory[category].forEach(post => {
-                        const postElement = document.createElement('article');
-                        postElement.className = 'blog-post';
-                        postElement.setAttribute('itemscope', '');
-                        postElement.setAttribute('itemtype', 'https://schema.org/NewsArticle');
-
-                        const imageUrl = post.image || '/images/default-blog.jpg';
-                        const excerpt = post.description || '';
-                        const formattedDate = formatDate(post.date);
-                        const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
-
-                        postElement.innerHTML = `
-                            <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
-                            <div class="post-image">
-                                <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
-                            </div>
-                            <div class="post-content">
-                                <div class="post-meta">
-                                    <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
-                                    <span class="post-category" itemprop="articleSection">${post.category || ''}</span>
-                                </div>
-                                <h3 class="post-title" itemprop="headline">
-                                    <a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
-                                </h3>
-                                ${excerpt ? `<div class="post-excerpt" itemprop="description">${excerpt}</div>` : ''}
-                                ${keywords.length > 0 ? `
-                                <div class="post-tags">
-                                    ${keywords.map(keyword => `<a href="/?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
-                                </div>
-                                ` : ''}
-                                <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">
-                                    Continue Reading <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </div>
-                            <meta itemprop="author" content="Jonathan Mwaniki">
-                            <meta itemprop="dateModified" content="${post.date}">
-                            <meta itemprop="publisher" content="Mwaniki Reports">
-                        `;
-
-                        postsContainer.appendChild(postElement);
-                    });
-
-                    section.appendChild(postsContainer);
-                    postList.appendChild(section);
-                });
-            }
-
-            async function fetchPosts() {
-                try {
-                    postList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i>Loading posts...</div>';
-                    const response = await fetch('/api/list-posts.js', {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const { data, error } = await response.json();
-                    if (error) {
-                        throw new Error(error);
-                    }
-                    return data || [];
-                } catch (error) {
-                    console.error('Error fetching posts:', error);
-                    postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/portfolio.html#contact">contact support</a>.</div>';
-                    return [];
-                }
-            }
-
-            const filterPosts = debounce(async () => {
-                const searchTerm = searchInput.value.toLowerCase().trim();
-                const activeCategory = document.querySelector('.category-tag.active').dataset.category;
-                const allPosts = await fetchPosts();
-
-                let filtered = allPosts.filter(post => post.category);
-
-                if (searchTerm) {
-                    filtered = filtered.filter(post =>
-                        (post.title && post.title.toLowerCase().includes(searchTerm)) ||
-                        (post.description && post.description.toLowerCase().includes(searchTerm)) ||
-                        (post.tags && post.tags.split(',').map(tag => tag.trim()).some(tag => tag.toLowerCase().includes(searchTerm)))
-                    );
-                }
-
-                if (activeCategory !== 'all') {
-                    filtered = filtered.filter(post => post.category === activeCategory);
-                }
-
-                renderPosts(filtered);
-            }, 300);
-
-            // Initial load
-            fetchPosts().then(posts => {
-                renderCategories(posts);
-                renderPosts(posts);
-            });
-
-            searchInput.addEventListener('input', filterPosts);
-        });
-
-        if ('IntersectionObserver' in window) {
-            const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.src = img.dataset.src || img.src;
-                        img.removeAttribute('loading');
-                        observer.unobserve(img);
-                    }
-                });
-            });
-
-            lazyImages.forEach(img => imageObserver.observe(img));
-        }
-    </script>
+    <script src="/scripts/news-script.js"></script>
 </body>
 </html>
