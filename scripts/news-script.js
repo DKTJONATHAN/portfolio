@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const postList = document.getElementById('post-list');
     const searchInput = document.getElementById('search-input');
-    const categoryList = document.getElementById('category-list');
+    const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
 
     function debounce(func, wait) {
         let timeout;
@@ -15,66 +15,63 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    }
-
     function formatDate(dateString) {
         if (!dateString) return 'No date';
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
         return new Date(dateString).toLocaleDateString('en-US', options);
     }
 
-    function renderCategories(posts) {
-        const categories = new Set(['News', 'Tech', 'Gossip', 'Opinions', 'Sports', 'Entertainment']);
-        posts.forEach(post => {
-            if (post.category) categories.add(post.category);
-        });
-        categoryList.innerHTML = '<span class="category-tag active" data-category="all" role="button" tabindex="0">All</span>';
-        categories.forEach(category => {
-            const categoryElement = document.createElement('span');
-            categoryElement.className = 'category-tag';
-            categoryElement.dataset.category = category;
-            categoryElement.setAttribute('role', 'button');
-            categoryElement.setAttribute('tabindex', '0');
-            categoryElement.textContent = category;
-            categoryList.appendChild(categoryElement);
-        });
-        document.querySelectorAll('.category-tag').forEach(tag => {
-            tag.addEventListener('click', () => {
-                document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
-                tag.classList.add('active');
-                filterPosts();
-            });
-            tag.addEventListener('keydown', e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    tag.click();
-                }
-            });
+    function getCurrentCategory() {
+        const path = window.location.pathname;
+        const categories = ['news', 'tech', 'opinions', 'sports', 'entertainment'];
+        const category = categories.find(cat => path.includes(cat));
+        return category ? category.charAt(0).toUpperCase() + category.slice(1) : 'News';
+    }
+
+    function setActiveNavLink(category) {
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').includes(category.toLowerCase())) {
+                link.classList.add('active');
+            }
         });
     }
 
-    function renderPosts(posts) {
+    function renderPosts(posts, category) {
+        postList.innerHTML = '';
         if (!posts || posts.length === 0) {
-            postList.innerHTML = '<div class="no-posts">No posts found.</div>';
+            postList.innerHTML = `<div class="no-posts">No ${category} posts found.</div>`;
             return;
         }
 
-        const isHomePage = window.location.pathname === '/';
-        const postsToRender = isHomePage ? shuffleArray([...posts]) : posts;
-
-        postList.innerHTML = '';
         const section = document.createElement('section');
         section.className = 'category-section';
+        const title = document.createElement('h2');
+        title.className = 'category-title';
+        title.textContent = category;
+        section.appendChild(title);
+
+        // Ad after category title
+        const adScript = document.createElement('script');
+        adScript.type = 'text/javascript';
+        adScript.textContent = `
+            atOptions = {
+                'key': '1610960d9ced232cc76d8f5510ee4608',
+                'format': 'iframe',
+                'height': 60,
+                'width': 468,
+                'params': {}
+            };
+        `;
+        const adInvoke = document.createElement('script');
+        adInvoke.src = '//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js';
+        section.appendChild(adScript);
+        section.appendChild(adInvoke);
+
         const postsContainer = document.createElement('div');
         postsContainer.className = 'blog-posts';
 
-        postsToRender.forEach(post => {
+        posts.forEach((post, index) => {
             if (!post.category) return;
             const postElement = document.createElement('article');
             postElement.className = 'blog-post';
@@ -102,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${excerpt ? `<div class="post-excerpt" itemprop="description">${excerpt}</div>` : ''}
                     ${keywords.length > 0 ? `
                     <div class="post-tags">
-                        ${keywords.map(keyword => `<a href="/?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
+                        ${keywords.map(keyword => `<a href="/${category.toLowerCase()}?tag=${encodeURIComponent(keyword)}" class="post-tag" itemprop="keywords">${keyword}</a>`).join('')}
                     </div>
                     ` : ''}
                     <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">
@@ -115,6 +112,25 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             postsContainer.appendChild(postElement);
+
+            // Insert ad after every 3 posts
+            if ((index + 1) % 3 === 0) {
+                const adScript = document.createElement('script');
+                adScript.type = 'text/javascript';
+                adScript.textContent = `
+                    atOptions = {
+                        'key': '1610960d9ced232cc76d8f5510ee4608',
+                        'format': 'iframe',
+                        'height': 60,
+                        'width': 468,
+                        'params': {}
+                    };
+                `;
+                const adInvoke = document.createElement('script');
+                adInvoke.src = '//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js';
+                postsContainer.appendChild(adScript);
+                postsContainer.appendChild(adInvoke);
+            }
         });
 
         section.appendChild(postsContainer);
@@ -141,8 +157,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const filterPosts = debounce(async () => {
         const searchTerm = searchInput.value.toLowerCase().trim();
-        const activeCategory = document.querySelector('.category-tag.active').dataset.category;
+        const category = getCurrentCategory();
         let posts = await fetchPosts();
+
+        posts = posts.filter(post => post.category && post.category.toLowerCase() === category.toLowerCase());
 
         if (searchTerm) {
             posts = posts.filter(post =>
@@ -152,19 +170,20 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         }
 
-        if (activeCategory !== 'all') {
-            posts = posts.filter(post => post.category.toLowerCase() === activeCategory.toLowerCase());
-        }
-
-        renderPosts(posts);
+        renderPosts(posts, category);
+        setActiveNavLink(category);
     }, 300);
 
-    fetchPosts().then(posts => {
-        renderCategories(posts);
-        renderPosts(posts);
-    });
+    filterPosts();
 
     searchInput.addEventListener('input', filterPosts);
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = link.href;
+        });
+    });
 
     if ('IntersectionObserver' in window) {
         const lazyImages = document.querySelectorAll('img[loading="lazy"]');
@@ -179,12 +198,5 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         lazyImages.forEach(img => imageObserver.observe(img));
-    }
-
-    // Refresh posts every 60 seconds on homepage
-    if (window.location.pathname === '/') {
-        setInterval(() => {
-            fetchPosts().then(posts => renderPosts(posts));
-        }, 60000);
     }
 });
