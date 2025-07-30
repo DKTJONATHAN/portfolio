@@ -119,6 +119,53 @@
         .ql-floating-toolbar.hidden {
             display: none;
         }
+        .find-replace-modal {
+            position: absolute;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            padding: 12px;
+            z-index: 101;
+            width: 300px;
+            display: none;
+        }
+        .find-replace-modal input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .find-replace-modal button {
+            background: #3b82f6;
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 8px;
+            transition: background 0.2s ease;
+        }
+        .find-replace-modal button:hover {
+            background: #2563eb;
+        }
+        .find-replace-modal .close {
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+        .find-replace-modal .close:hover {
+            background: #d1d5db;
+        }
+        .find-replace-modal label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            color: #4b5563;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -287,19 +334,22 @@
         let filteredPosts = [];
         let quill = null;
         let currentEditingSlug = null;
+        let sessionTimeout = null;
 
         function initQuill() {
             quill = new Quill('#content-editor', {
                 theme: 'snow',
                 modules: {
                     toolbar: [
-                        ['bold', 'italic', 'underline', 'strike'],
+                        ['bold', 'italic', 'underline', 'strike', 'superscript', 'subscript'],
                         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
                         ['blockquote', 'code-block', 'link', 'image'],
-                        [{ 'align': [] }],
-                        ['clean'],
+                        [{ 'align': [] }, { 'direction': 'rtl' }],
+                        [{ 'size': ['small', false, 'large', 'huge'] }],
                         [{ 'color': [] }, { 'background': [] }],
+                        ['clean'],
+                        [{ 'find-replace': true }],
                     ],
                     history: {
                         delay: 1000,
@@ -310,21 +360,48 @@
                 placeholder: 'Type your content here...'
             });
 
+            // Register custom find-replace module
+            Quill.register('modules/find-replace', function(quill) {
+                const toolbar = quill.getModule('toolbar');
+                toolbar.addHandler('find-replace', function() {
+                    showFindReplaceModal();
+                });
+            });
+
+            // Create floating toolbar
             const floatingToolbar = document.createElement('div');
             floatingToolbar.className = 'ql-floating-toolbar hidden';
             floatingToolbar.innerHTML = `
                 <button class="ql-bold" title="Bold"><i class="fas fa-bold"></i></button>
                 <button class="ql-italic" title="Italic"><i class="fas fa-italic"></i></button>
+                <button class="ql-underline" title="Underline"><i class="fas fa-underline"></i></button>
+                <button class="ql-strike" title="Strike"><i class="fas fa-strikethrough"></i></button>
                 <button class="ql-link" title="Link"><i class="fas fa-link"></i></button>
             `;
             document.querySelector('.quill-editor').appendChild(floatingToolbar);
 
+            // Create find and replace modal
+            const findReplaceModal = document.createElement('div');
+            findReplaceModal.className = 'find-replace-modal hidden';
+            findReplaceModal.innerHTML = `
+                <input type="text" id="find-input" placeholder="Find text" />
+                <input type="text" id="replace-input" placeholder="Replace with" />
+                <label><input type="checkbox" id="case-insensitive"> Case insensitive</label>
+                <label><input type="checkbox" id="whole-word"> Whole word</label>
+                <div class="flex justify-end mt-4">
+                    <button id="find-replace-button">Replace All</button>
+                    <button id="find-replace-close" class="close">Close</button>
+                </div>
+            `;
+            document.querySelector('.quill-editor').appendChild(findReplaceModal);
+
+            // Floating toolbar positioning
             quill.on('selection-change', (range, oldRange, source) => {
                 if (range && range.length > 0) {
                     const bounds = quill.getBounds(range);
                     const editor = document.querySelector('.ql-container');
                     const editorRect = editor.getBoundingClientRect();
-                    const toolbarWidth = 120;
+                    const toolbarWidth = 150;
                     const toolbarHeight = 40;
 
                     let left = bounds.left + editorRect.left + (bounds.width - toolbarWidth) / 2;
@@ -336,16 +413,108 @@
                     floatingToolbar.style.left = `${left}px`;
                     floatingToolbar.style.top = `${top + window.scrollY}px`;
                     floatingToolbar.classList.remove('hidden');
+
+                    // Position find and replace modal near selection
+                    if (!findReplaceModal.classList.contains('hidden')) {
+                        findReplaceModal.style.left = `${left}px`;
+                        findReplaceModal.style.top = `${top + toolbarHeight + 10 + window.scrollY}px`;
+                    }
                 } else {
                     floatingToolbar.classList.add('hidden');
+                    findReplaceModal.classList.add('hidden');
                 }
             });
 
+            // Floating toolbar event listeners
             floatingToolbar.querySelector('.ql-bold').addEventListener('click', () => quill.format('bold', !quill.getFormat().bold));
             floatingToolbar.querySelector('.ql-italic').addEventListener('click', () => quill.format('italic', !quill.getFormat().italic));
+            floatingToolbar.querySelector('.ql-underline').addEventListener('click', () => quill.format('underline', !quill.getFormat().underline));
+            floatingToolbar.querySelector('.ql-strike').addEventListener('click', () => quill.format('strike', !quill.getFormat().strike));
             floatingToolbar.querySelector('.ql-link').addEventListener('click', () => {
                 const url = prompt('Enter the URL:');
                 if (url) quill.format('link', url);
+            });
+
+            // Find and replace functionality
+            function showFindReplaceModal() {
+                const range = quill.getSelection();
+                if (range && range.length > 0) {
+                    const bounds = quill.getBounds(range);
+                    const editor = document.querySelector('.ql-container');
+                    const editorRect = editor.getBoundingClientRect();
+                    const modalWidth = 300;
+                    const modalHeight = 200;
+
+                    let left = bounds.left + editorRect.left + (bounds.width - modalWidth) / 2;
+                    let top = bounds.top + editorRect.top + bounds.height + 10;
+
+                    left = Math.max(10, Math.min(left, editorRect.width - modalWidth - 10));
+                    top = Math.max(10, Math.min(top, editorRect.height - modalHeight - 10));
+
+                    findReplaceModal.style.left = `${left}px`;
+                    findReplaceModal.style.top = `${top + window.scrollY}px`;
+                    findReplaceModal.classList.remove('hidden');
+                } else {
+                    findReplaceModal.style.left = '50%';
+                    findReplaceModal.style.top = '50%';
+                    findReplaceModal.style.transform = 'translate(-50%, -50%)';
+                    findReplaceModal.classList.remove('hidden');
+                }
+            }
+
+            document.getElementById('find-replace-button').addEventListener('click', () => {
+                const findText = document.getElementById('find-input').value;
+                const replaceText = document.getElementById('replace-input').value;
+                const caseInsensitive = document.getElementById('case-insensitive').checked;
+                const wholeWord = document.getElementById('whole-word').checked;
+
+                if (!findText) {
+                    showNotification('Please enter text to find.', true);
+                    return;
+                }
+
+                const text = quill.getText();
+                let regexFlags = caseInsensitive ? 'gi' : 'g';
+                let regexPattern = wholeWord ? `\\b${findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b` : findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(regexPattern, regexFlags);
+
+                const delta = quill.getContents();
+                let newDelta = new Quill.Delta();
+                let index = 0;
+
+                delta.ops.forEach(op => {
+                    if (typeof op.insert === 'string') {
+                        let text = op.insert;
+                        let match;
+                        let lastIndex = 0;
+
+                        while ((match = regex.exec(text)) !== null) {
+                            const matchIndex = match.index;
+                            const matchLength = match[0].length;
+
+                            if (matchIndex > lastIndex) {
+                                newDelta.insert(text.slice(lastIndex, matchIndex), op.attributes);
+                            }
+                            newDelta.insert(replaceText, op.attributes);
+                            lastIndex = matchIndex + matchLength;
+                            regex.lastIndex = lastIndex;
+                        }
+
+                        if (lastIndex < text.length) {
+                            newDelta.insert(text.slice(lastIndex), op.attributes);
+                        }
+                    } else {
+                        newDelta.push(op);
+                    }
+                });
+
+                quill.setContents(newDelta);
+                findReplaceModal.classList.add('hidden');
+                showNotification('Text replaced successfully.');
+            });
+
+            document.getElementById('find-replace-close').addEventListener('click', () => {
+                findReplaceModal.classList.add('hidden');
             });
 
             function updateWordCount() {
@@ -353,6 +522,7 @@
                 const words = text ? text.split(/\s+/).length : 0;
                 document.getElementById('word-count').textContent = `Word count: ${words}`;
                 validateForm();
+                saveFormData();
             }
             quill.on('text-change', updateWordCount);
             updateWordCount();
@@ -372,6 +542,42 @@
             const isValid = title && slug && category && tags && date && description && content;
             submitButton.disabled = !isValid;
             return isValid;
+        }
+
+        function saveFormData() {
+            const form = document.getElementById('post-form');
+            const formData = {
+                title: form.querySelector('input[name="title"]').value.trim(),
+                slug: form.querySelector('input[name="slug"]').value.trim(),
+                category: form.querySelector('select[name="category"]').value,
+                tags: form.querySelector('input[name="tags"]').value.trim(),
+                image: form.querySelector('input[name="image"]').value.trim(),
+                date: form.querySelector('input[name="date"]').value,
+                description: form.querySelector('textarea[name="description"]').value.trim(),
+                content: DOMPurify.sanitize(quill.root.innerHTML)
+            };
+            if (Object.values(formData).some(value => value)) {
+                localStorage.setItem('postFormData', JSON.stringify(formData));
+            } else {
+                localStorage.removeItem('postFormData');
+            }
+        }
+
+        function restoreFormData() {
+            const savedData = localStorage.getItem('postFormData');
+            if (savedData) {
+                const formData = JSON.parse(savedData);
+                const form = document.getElementById('post-form');
+                form.querySelector('input[name="title"]').value = formData.title || '';
+                form.querySelector('input[name="slug"]').value = formData.slug || '';
+                form.querySelector('select[name="category"]').value = formData.category || '';
+                form.querySelector('input[name="tags"]').value = formData.tags || '';
+                form.querySelector('input[name="image"]').value = formData.image || '';
+                form.querySelector('input[name="date"]').value = formData.date || '';
+                form.querySelector('textarea[name="description"]').value = formData.description || '';
+                quill.root.innerHTML = formData.content || '';
+                validateForm();
+            }
         }
 
         function slugify(text) {
@@ -456,16 +662,36 @@
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('admin-section').classList.remove('hidden');
                 await loadPosts();
+                restoreFormData();
+
+                // Set session timeout for 1 hour
+                sessionTimeout = setTimeout(() => {
+                    logout();
+                    showNotification('Session expired. Please log in again.', true);
+                }, 3600 * 1000);
+
+                // Show warning 1 minute before timeout
+                setTimeout(() => {
+                    showNotification('Session will expire in 1 minute.', true);
+                }, (3600 - 60) * 1000);
             } catch (err) {
                 error.textContent = err.message;
                 error.classList.remove('hidden');
             }
         });
 
-        document.getElementById('logout-button').addEventListener('click', () => {
+        function logout() {
             document.getElementById('admin-section').classList.add('hidden');
             document.getElementById('login-section').classList.remove('hidden');
             document.getElementById('login-form').reset();
+            if (sessionTimeout) {
+                clearTimeout(sessionTimeout);
+                sessionTimeout = null;
+            }
+        }
+
+        document.getElementById('logout-button').addEventListener('click', () => {
+            logout();
             showNotification('Logged out successfully');
         });
 
@@ -520,6 +746,7 @@
                 }
 
                 resetForm();
+                localStorage.removeItem('postFormData');
                 showNotification(`${message}! <a href="${url}" class="underline hover:text-blue-200" target="_blank">View post</a>`);
                 await loadPosts();
             } catch (err) {
@@ -539,6 +766,7 @@
             document.getElementById('submit-post-button').textContent = 'Create Post';
             document.getElementById('cancel-edit-button').classList.add('hidden');
             currentEditingSlug = null;
+            localStorage.removeItem('postFormData');
             validateForm();
         }
 
@@ -705,6 +933,7 @@
                 document.getElementById('cancel-edit-button').classList.remove('hidden');
                 currentEditingSlug = post.slug;
 
+                localStorage.removeItem('postFormData');
                 showNotification(`Editing post: ${post.title}`);
                 validateForm();
             } catch (err) {
@@ -774,15 +1003,44 @@
                 document.querySelector('input[name="slug"]').value = slugify(e.target.value);
             }
             validateForm();
+            saveFormData();
         });
 
-        document.getElementById('post-form').addEventListener('input', validateForm);
-        document.querySelector('select[name="category"]').addEventListener('change', validateForm);
-        document.querySelector('textarea[name="description"]').addEventListener('input', validateForm);
+        document.getElementById('post-form').addEventListener('input', () => {
+            validateForm();
+            saveFormData();
+        });
+        document.querySelector('select[name="category"]').addEventListener('change', () => {
+            validateForm();
+            saveFormData();
+        });
+        document.querySelector('textarea[name="description"]').addEventListener('input', () => {
+            validateForm();
+            saveFormData();
+        });
+
+        // Prevent accidental page refresh
+        window.addEventListener('beforeunload', (e) => {
+            const form = document.getElementById('post-form');
+            const title = form.querySelector('input[name="title"]').value.trim();
+            const slug = form.querySelector('input[name="slug"]').value.trim();
+            const category = form.querySelector('select[name="category"]').value;
+            const tags = form.querySelector('input[name="tags"]').value.trim();
+            const image = form.querySelector('input[name="image"]').value.trim();
+            const date = form.querySelector('input[name="date"]').value;
+            const description = form.querySelector('textarea[name="description"]').value.trim();
+            const content = quill.getText().trim();
+
+            if (title || slug || category || tags || image || date || description || content) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             initQuill();
             validateForm();
+            restoreFormData();
         });
     </script>
 <script type='text/javascript' src='//pl27288319.profitableratecpm.com/e9/30/80/e9308078ac3ce510bb8658ccd1eab7e5.js'></script>
