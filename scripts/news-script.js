@@ -19,8 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function formatDate(dateString) {
         if (!dateString) return 'No date';
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return new Date(dateString).toLocaleDateString('en-US', options);
+        return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
     }
 
     function setActiveNavLink(category) {
@@ -46,23 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
         title.textContent = category;
         section.appendChild(title);
 
-        // Ad after category title
-        const adScript = document.createElement('script');
-        adScript.type = 'text/javascript';
-        adScript.textContent = `
-            atOptions = {
-                'key': '1610960d9ced232cc76d8f5510ee4608',
-                'format': 'iframe',
-                'height': 60,
-                'width': 468,
-                'params': {}
-            };
-        `;
-        const adInvoke = document.createElement('script');
-        adInvoke.src = '//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js';
-        section.appendChild(adScript);
-        section.appendChild(adInvoke);
-
         const postsContainer = document.createElement('div');
         postsContainer.className = 'blog-posts';
 
@@ -73,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             postElement.setAttribute('itemscope', '');
             postElement.setAttribute('itemtype', 'https://schema.org/NewsArticle');
 
-            const imageUrl = post.image || '/images/default-blog.jpg';
+            const imageUrl = post.image || '/images/default-blog.webp';
             const excerpt = post.description || '';
             const formattedDate = formatDate(post.date);
             const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
@@ -81,11 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
             postElement.innerHTML = `
                 <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
                 <div class="post-image">
-                    <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="800" height="450" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                    <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="360" height="180" onerror="this.src='/images/default-blog.webp'" itemprop="image">
                 </div>
                 <div class="post-content">
                     <div class="post-meta">
-                        <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time>
+                        <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time> • 
                         <span class="post-category" itemprop="articleSection">${post.category || ''}</span>
                     </div>
                     <h3 class="post-title" itemprop="headline">
@@ -97,9 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${keywords.map(keyword => `<a class="post-tag" data-tag="${encodeURIComponent(keyword)}" itemprop="keywords">${keyword}</a>`).join('')}
                     </div>
                     ` : ''}
-                    <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">
-                        Read More <i class="fas fa-arrow-right"></i>
-                    </a>
+                    <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">Read More</a>
                 </div>
                 <meta itemprop="author" content="Jonathan Mwaniki">
                 <meta itemprop="dateModified" content="${post.date}">
@@ -108,8 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             postsContainer.appendChild(postElement);
 
-            // Insert ad after every 3 posts
-            if ((index + 1) % 3 === 0) {
+            // Insert ad after every 4 posts (instead of 3 for better spacing)
+            if ((index + 1) % 4 === 0) {
                 const adScript = document.createElement('script');
                 adScript.type = 'text/javascript';
                 adScript.textContent = `
@@ -123,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 const adInvoke = document.createElement('script');
                 adInvoke.src = '//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js';
+                adInvoke.setAttribute('defer', '');
                 postsContainer.appendChild(adScript);
                 postsContainer.appendChild(adInvoke);
             }
@@ -137,7 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
             postList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i>Loading posts...</div>';
             const response = await fetch('/api/list-posts.js', {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json' },
+                cache: 'no-store'
             });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const { data, error } = await response.json();
@@ -166,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         renderPosts(posts, currentCategory);
         setActiveNavLink(currentCategory);
-    }, 300);
+    }, 250);
 
     // Initial load
     filterPosts();
@@ -176,12 +158,14 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             currentCategory = link.dataset.category;
+            searchInput.value = ''; // Clear search input on category change
             filterPosts();
         });
         link.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 currentCategory = link.dataset.category;
+                searchInput.value = '';
                 filterPosts();
             }
         });
@@ -211,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     observer.unobserve(img);
                 }
             });
-        });
+        }, { rootMargin: '100px' });
         lazyImages.forEach(img => imageObserver.observe(img));
     }
 });
