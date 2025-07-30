@@ -1,5 +1,13 @@
 import { Octokit } from '@octokit/rest';
-import cheerio from 'cheerio';
+
+// Handle cheerio import for both ES Modules and CommonJS
+let cheerio;
+try {
+  cheerio = await import('cheerio');
+} catch (err) {
+  // Fallback for CommonJS
+  cheerio = require('cheerio');
+}
 
 export default async function handler(req, res) {
   try {
