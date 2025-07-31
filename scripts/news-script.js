@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         postsContainer.className = 'blog-posts';
 
         posts.forEach((post, index) => {
+            // console.log('Rendering post:', post); // Debug
             if (!post.category) return;
             const postElement = document.createElement('article');
             postElement.className = 'blog-post';
@@ -121,8 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 cache: 'no-store'
             });
+            // console.log('API Response Status:', response.status); // Debug
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            const { data, error } = await response.json();
+            const json = await response.json();
+            // console.log('API Response JSON:', json); // Debug
+            const { data, error } = json;
             if (error) throw new Error(error);
             return data || [];
         } catch (error) {
