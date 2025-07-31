@@ -51,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         postsContainer.className = 'blog-posts';
 
         posts.forEach((post, index) => {
-            // console.log('Rendering post:', post); // Debug
             if (!post.category) return;
             const postElement = document.createElement('article');
             postElement.className = 'blog-post';
@@ -62,11 +61,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const excerpt = post.description || 'No description available.';
             const formattedDate = formatDate(post.date);
             const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+            const postUrl = `/content/articles/${post.slug}.html`;
 
             postElement.innerHTML = `
-                <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
+                <meta name="description" content="${excerpt.length > 160 ? excerpt.substring(0, 157) + '...' : excerpt}">
+                <meta name="keywords" content="${keywords.join(', ')}">
+                <meta itemprop="mainEntityOfPage" content="${postUrl}">
                 <div class="post-image">
-                    <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="360" height="180" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                    <img src="${imageUrl}" alt="${post.title ? post.title + ' Kenya News' : 'Kenya News Image'}" loading="lazy" width="360" height="180" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
                 </div>
                 <div class="post-content">
                     <div class="post-meta">
@@ -74,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="post-category" itemprop="articleSection">${post.category || ''}</span>
                     </div>
                     <h3 class="post-title" itemprop="headline">
-                        <a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
+                        <a href="${postUrl}" itemprop="url">${post.title || 'Untitled Post'}</a>
                     </h3>
                     <div class="post-excerpt" itemprop="description">${excerpt}</div>
                     ${keywords.length > 0 ? `
@@ -82,11 +84,36 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${keywords.map(keyword => `<a class="post-tag" data-tag="${encodeURIComponent(keyword)}" itemprop="keywords">${keyword}</a>`).join('')}
                     </div>
                     ` : ''}
-                    <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">Read More</a>
+                    <a href="${postUrl}" class="btn-primary" itemprop="url">Read More</a>
+                    <div class="share-buttons">
+                        <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(post.title)}" target="_blank" rel="noopener"><i class="fab fa-twitter"></i> Share</a>
+                    </div>
+                    <p class="author">By Jonathan Mwaniki, Political Analyst</p>
                 </div>
                 <meta itemprop="author" content="Jonathan Mwaniki">
                 <meta itemprop="dateModified" content="${post.date}">
                 <meta itemprop="publisher" content="Mwaniki Reports">
+                <script type="application/ld+json">
+                {
+                    "@context": "https://schema.org",
+                    "@type": "NewsArticle",
+                    "headline": "${post.title || 'Untitled Post'}",
+                    "image": "${imageUrl}",
+                    "datePublished": "${post.date}",
+                    "author": {
+                        "@type": "Person",
+                        "name": "Jonathan Mwaniki"
+                    },
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "Mwaniki Reports",
+                        "logo": {
+                            "@type": "ImageObject",
+                            "url": "https://www.jonathanmwaniki.co.ke/images/mwaniki-reports-logo.png"
+                        }
+                    }
+                }
+                </script>
             `;
 
             postsContainer.appendChild(postElement);
@@ -122,16 +149,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 cache: 'no-store'
             });
-            // console.log('API Response Status:', response.status); // Debug
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const json = await response.json();
-            // console.log('API Response JSON:', json); // Debug
             const { data, error } = json;
             if (error) throw new Error(error);
             return data || [];
         } catch (error) {
             console.error('Error fetching posts:', error);
-            postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/portfolio.html#contact">contact support</a>.</div>';
+            postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/about#contact">contact support</a>.</div>';
             return [];
         }
     }
