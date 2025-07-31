@@ -1,4 +1,8 @@
-import { inject } from '@vercel/analytics';
+import { inject as injectAnalytics } from '@vercel/analytics';
+import { inject as injectSpeedInsights } from '@vercel/speed-insights';
 
-// Inject Vercel Analytics for page view tracking
-inject();
+// Inject Web Analytics for visitor tracking
+injectAnalytics();
+
+// Inject Speed Insights for performance tracking
+injectSpeedInsights();
