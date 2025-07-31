@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.5/purify.min.js"></script>
-    <script src="https://unpkg.com/markdown-to-quill-delta@1.2.0/dist/markdown-to-quill-delta.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@5.0.0/lib/marked.umd.min.js"></script>
     <style>
         .quill-editor .ql-container {
             border: 1px solid #d1d5db;
@@ -435,7 +435,7 @@
                 if (url) quill.format('link', url);
             });
 
-            // Handle paste event to convert Markdown to Quill Delta during post creation
+            // Handle paste event to convert Markdown to Quill Delta
             quill.root.addEventListener('paste', (e) => {
                 e.preventDefault();
                 const clipboardData = e.clipboardData || window.clipboardData;
@@ -444,40 +444,48 @@
                 // Check if the pasted content looks like Markdown
                 if (isMarkdown(pastedData)) {
                     try {
-                        // Convert Markdown directly to Quill Delta
-                        const converter = new window.MarkdownToQuillDelta();
-                        const delta = converter.convert(pastedData);
+                        // Convert Markdown to HTML using marked
+                        const html = marked.parse(pastedData, { gfm: true, breaks: true });
+                        // Sanitize HTML
+                        const sanitizedHtml = DOMPurify.sanitize(html);
+                        // Create a temporary div to hold the HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = sanitizedHtml;
+
+                        // Convert HTML to Quill Delta
+                        const delta = quill.clipboard.convert({ html: sanitizedHtml });
                         // Insert the Delta into Quill at the current cursor position
                         const range = quill.getSelection(true);
-                        quill.updateContents(new Quill.Delta(delta), 'user');
+                        quill.updateContents(delta, 'user');
                         // Move cursor to the end of inserted content
-                        quill.setSelection(range.index + delta.length, 0);
+                        quill.setSelection(range.index + delta.length(), 0);
                     } catch (err) {
                         console.error('Failed to convert Markdown to Delta:', err);
                         // Fallback to inserting plain text if conversion fails
                         quill.insertText(quill.getSelection(true).index, pastedData);
                     }
                 } else {
-                    // Handle non-Markdown paste normally (e.g., HTML or plain text)
+                    // Handle non-Markdown paste normally
                     const htmlData = clipboardData.getData('text/html') || pastedData;
-                    const delta = quill.clipboard.convert(htmlData);
+                    const delta = quill.clipboard.convert({ html: htmlData });
                     const range = quill.getSelection(true);
                     quill.updateContents(delta, 'user');
-                    quill.setSelection(range.index + delta.length, 0);
+                    quill.setSelection(range.index + delta.length(), 0);
                 }
             });
 
             // Function to check if text resembles Markdown
             function isMarkdown(text) {
                 const markdownPatterns = [
-                    /^#{1,6}\s/, // Headers
-                    /^\*\*.*\*\*/, // Bold
-                    /^\*.*\*/, // Italic
-                    /^\[.*\]\(.*\)/, // Links
-                    /^!\[.*\]\(.*\)/, // Images
+                    /#{1,6}\s/, // Headers
+                    /\*\*.*?\*\*/, // Bold
+                    /\*.*?\*/, // Italic
+                    /\[.*?\]\(.*?\)/, // Links
+                    /!\[.*?\]\(.*?\)/, // Images
                     /^\s*[-+*]\s/, // Lists
                     /^\s*>\s/, // Blockquotes
-                    /^```/, // Code blocks
+                    /```/, // Code blocks
+                    /---/ // Horizontal rules
                 ];
                 return markdownPatterns.some(pattern => pattern.test(text));
             }
@@ -1092,4 +1100,4 @@
     </script>
 <script type='text/javascript' src='//pl27288319.profitableratecpm.com/e9/30/80/e9308078ac3ce510bb8658ccd1eab7e5.js'></script>
 </body>
-</html>
+</html>.
