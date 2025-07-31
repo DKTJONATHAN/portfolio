@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const postsContainer = document.createElement('div');
         postsContainer.className = 'blog-posts';
 
-        posts.slice(0, 5).forEach((post, index) => { // Limit to 5 posts initially
+        posts.slice(0, 5).forEach((post, index) => {
             if (!post.category) return;
             const postElement = document.createElement('article');
             postElement.className = 'blog-post';
@@ -93,18 +93,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchPosts() {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5-second timeout
         try {
+            console.log('Fetching posts...');
             const response = await fetch('/api/list-posts.js', {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
-                cache: 'default' // Changed to default for caching
+                signal: controller.signal,
+                cache: 'default'
             });
+            clearTimeout(timeoutId);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const { data, error } = await response.json();
+            console.log('Posts fetched:', data);
             if (error) throw new Error(error);
             return data || [];
         } catch (error) {
-            console.error('Error fetching posts:', error);
+            console.error('Fetch error:', error);
             postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/portfolio.html#contact">contact support</a>.</div>';
             return [];
         }
@@ -116,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         categories.forEach(category => {
             allPosts[category] = posts.filter(post => post.category && post.category.toLowerCase() === category.toLowerCase());
         });
+        console.log('Preloaded posts:', allPosts);
         return allPosts;
     }
 
@@ -137,9 +144,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial load with preloading
     (async () => {
-        await preloadAllPosts();
-        renderPosts(allPosts[currentCategory].slice(0, 5), currentCategory); // Limit initial render
-        splashScreen.classList.add('hidden');
+        try {
+            console.log('Starting preload...');
+            await preloadAllPosts();
+            console.log('Rendering posts...');
+            renderPosts(allPosts[currentCategory].slice(0, 5), currentCategory);
+            splashScreen.classList.add('hidden');
+        } catch (error) {
+            console.error('Initialization error:', error);
+            postList.innerHTML = '<div class="error-message">Failed to load. Please try again or <a href="/portfolio.html#contact">contact support</a>.</div>';
+            splashScreen.classList.add('hidden'); // Hide splash on error
+        }
     })();
 
-    navLinks.forEach(link =>
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => { e.preventDefault(); currentCategory = link.dataset.category; searchInput.value = ''; filterPosts(); });
+        link.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); currentCategory = link.dataset.category; searchInput.value = ''; filterPosts(); } });
+    });
+
+    postList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('post-tag')) {
+            e.preventDefault();
+            searchInput.value = e.target.dataset.tag;
+            filterPosts();
+        }
+    });
+
+    searchInput.addEventListener('input', filterPosts);
+
+    if ('IntersectionObserver' in window) {
+        const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src || img.src;
+                    img.removeAttribute('loading');
+                    observer.unobserve(img);
+                }
+            });
+        }, { rootMargin: '100px' });
+        lazyImages.forEach(img => imageObserver.observe(img));
+    }
+});
