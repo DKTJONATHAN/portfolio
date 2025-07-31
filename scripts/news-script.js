@@ -10,10 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
+            const later = () => { clearTimeout(timeout); func(...args); };
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
@@ -27,9 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function setActiveNavLink(category) {
         navLinks.forEach(link => {
             link.classList.remove('active');
-            if (link.dataset.category === category) {
-                link.classList.add('active');
-            }
+            if (link.dataset.category === category) link.classList.add('active');
         });
     }
 
@@ -50,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const postsContainer = document.createElement('div');
         postsContainer.className = 'blog-posts';
 
-        posts.forEach((post, index) => {
+        posts.slice(0, 5).forEach((post, index) => { // Limit to 5 posts initially
             if (!post.category) return;
             const postElement = document.createElement('article');
             postElement.className = 'blog-post';
@@ -61,61 +56,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const excerpt = post.description || 'No description available.';
             const formattedDate = formatDate(post.date);
             const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
-            const postUrl = `/content/articles/${post.slug}.html`;
 
             postElement.innerHTML = `
-                <meta name="description" content="${excerpt.length > 160 ? excerpt.substring(0, 157) + '...' : excerpt}">
-                <meta name="keywords" content="${keywords.join(', ')}">
-                <meta itemprop="mainEntityOfPage" content="${postUrl}">
+                <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
                 <div class="post-image">
-                    <img src="${imageUrl}" alt="${post.title ? post.title + ' Kenya News' : 'Kenya News Image'}" loading="lazy" width="360" height="180" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                    <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="360" height="180" fetchpriority="${index === 0 ? 'high' : 'auto'}" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
                 </div>
                 <div class="post-content">
-                    <div class="post-meta">
-                        <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time> • 
-                        <span class="post-category" itemprop="articleSection">${post.category || ''}</span>
-                    </div>
-                    <h3 class="post-title" itemprop="headline">
-                        <a href="${postUrl}" itemprop="url">${post.title || 'Untitled Post'}</a>
-                    </h3>
+                    <div class="post-meta"><time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time> • <span class="post-category" itemprop="articleSection">${post.category || ''}</span></div>
+                    <h3 class="post-title" itemprop="headline"><a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a></h3>
                     <div class="post-excerpt" itemprop="description">${excerpt}</div>
-                    ${keywords.length > 0 ? `
-                    <div class="post-tags">
-                        ${keywords.map(keyword => `<a class="post-tag" data-tag="${encodeURIComponent(keyword)}" itemprop="keywords">${keyword}</a>`).join('')}
-                    </div>
-                    ` : ''}
-                    <a href="${postUrl}" class="btn-primary" itemprop="url">Read More</a>
-                    <div class="share-buttons">
-                        <a href="https://x.com/intent/post?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(post.title)}" target="_blank" rel="noopener">
-                            <img src="/images/x-logo.png" alt="Share on X" width="16" height="16"> Share
-                        </a>
-                    </div>
-                    <p class="author">By Jonathan Mwaniki</p>
+                    ${keywords.length > 0 ? `<div class="post-tags">${keywords.map(keyword => `<a class="post-tag" data-tag="${encodeURIComponent(keyword)}" itemprop="keywords">${keyword}</a>`).join('')}</div>` : ''}
+                    <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">Read More</a>
                 </div>
                 <meta itemprop="author" content="Jonathan Mwaniki">
                 <meta itemprop="dateModified" content="${post.date}">
                 <meta itemprop="publisher" content="Mwaniki Reports">
-                <script type="application/ld+json">
-                {
-                    "@context": "https://schema.org",
-                    "@type": "NewsArticle",
-                    "headline": "${post.title || 'Untitled Post'}",
-                    "image": "${imageUrl}",
-                    "datePublished": "${post.date}",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Jonathan Mwaniki"
-                    },
-                    "publisher": {
-                        "@type": "Organization",
-                        "name": "Mwaniki Reports",
-                        "logo": {
-                            "@type": "ImageObject",
-                            "url": "https://www.jonathanmwaniki.co.ke/images/mwaniki-reports-logo.png"
-                        }
-                    }
-                }
-                </script>
             `;
 
             postsContainer.appendChild(postElement);
@@ -123,18 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if ((index + 1) % 4 === 0) {
                 const adScript = document.createElement('script');
                 adScript.type = 'text/javascript';
-                adScript.textContent = `
-                    atOptions = {
-                        'key': '1610960d9ced232cc76d8f5510ee4608',
-                        'format': 'iframe',
-                        'height': 60,
-                        'width': 468,
-                        'params': {}
-                    };
-                `;
+                adScript.textContent = `atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};`;
                 const adInvoke = document.createElement('script');
                 adInvoke.src = '//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js';
-                adInvoke.setAttribute('defer', '');
+                adInvoke.setAttribute('async', '');
                 postsContainer.appendChild(adScript);
                 postsContainer.appendChild(adInvoke);
             }
@@ -149,16 +97,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/list-posts.js', {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
-                cache: 'no-store'
+                cache: 'default' // Changed to default for caching
             });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            const json = await response.json();
-            const { data, error } = json;
+            const { data, error } = await response.json();
             if (error) throw new Error(error);
             return data || [];
         } catch (error) {
             console.error('Error fetching posts:', error);
-            postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/about#contact">contact support</a>.</div>';
+            postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/portfolio.html#contact">contact support</a>.</div>';
             return [];
         }
     }
@@ -191,53 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial load with preloading
     (async () => {
         await preloadAllPosts();
-        renderPosts(allPosts[currentCategory] || [], currentCategory);
+        renderPosts(allPosts[currentCategory].slice(0, 5), currentCategory); // Limit initial render
         splashScreen.classList.add('hidden');
     })();
 
-    // Navigation link click handlers
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            currentCategory = link.dataset.category;
-            searchInput.value = '';
-            filterPosts();
-        });
-        link.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                currentCategory = link.dataset.category;
-                searchInput.value = '';
-                filterPosts();
-            }
-        });
-    });
-
-    // Tag click handlers
-    postList.addEventListener('click', (e) => {
-        if (e.target.classList.contains('post-tag')) {
-            e.preventDefault();
-            searchInput.value = e.target.dataset.tag;
-            filterPosts();
-        }
-    });
-
-    // Search input handler
-    searchInput.addEventListener('input', filterPosts);
-
-    // Lazy loading images
-    if ('IntersectionObserver' in window) {
-        const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src || img.src;
-                    img.removeAttribute('loading');
-                    observer.unobserve(img);
-                }
-            });
-        }, { rootMargin: '100px' });
-        lazyImages.forEach(img => imageObserver.observe(img));
-    }
-});
+    navLinks.forEach(link =>
