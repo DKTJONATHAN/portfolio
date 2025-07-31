@@ -86,9 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     ` : ''}
                     <a href="${postUrl}" class="btn-primary" itemprop="url">Read More</a>
                     <div class="share-buttons">
-                        <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(post.title)}" target="_blank" rel="noopener"><i class="fab fa-twitter"></i> Share</a>
+                        <a href="https://x.com/intent/post?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(post.title)}" target="_blank" rel="noopener">
+                            <img src="/images/x-logo.png" alt="Share on X" width="16" height="16"> Share
+                        </a>
                     </div>
-                    <p class="author">By Jonathan Mwaniki, Political Analyst</p>
+                    <p class="author">By Jonathan Mwaniki</p>
                 </div>
                 <meta itemprop="author" content="Jonathan Mwaniki">
                 <meta itemprop="dateModified" content="${post.date}">
