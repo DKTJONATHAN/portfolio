@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             postElement.setAttribute('itemtype', 'https://schema.org/NewsArticle');
 
             const imageUrl = post.image || '/images/default-blog.jpg';
-            const excerpt = post.description || '';
+            const excerpt = post.description || 'No description available.';
             const formattedDate = formatDate(post.date);
             const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
 
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3 class="post-title" itemprop="headline">
                         <a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
                     </h3>
-                    ${excerpt ? `<div class="post-excerpt" itemprop="description">${excerpt}</div>` : ''}
+                    <div class="post-excerpt" itemprop="description">${excerpt}</div>
                     ${keywords.length > 0 ? `
                     <div class="post-tags">
                         ${keywords.map(keyword => `<a class="post-tag" data-tag="${encodeURIComponent(keyword)}" itemprop="keywords">${keyword}</a>`).join('')}
