@@ -1,9 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const splashScreen = document.getElementById('splash-screen');
     const postList = document.getElementById('post-list');
     const searchInput = document.getElementById('search-input');
     const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
 
-    let currentCategory = 'News'; // Default category
+    let currentCategory = 'News';
+    let allPosts = {};
 
     function debounce(func, wait) {
         let timeout;
@@ -88,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             postsContainer.appendChild(postElement);
 
-            // Insert ad after every 4 posts
             if ((index + 1) % 4 === 0) {
                 const adScript = document.createElement('script');
                 adScript.type = 'text/javascript';
@@ -115,7 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchPosts() {
         try {
-            postList.innerHTML = '<div class="loading-posts"><i class="fas fa-spinner"></i>Loading posts...</div>';
             const response = await fetch('/api/list-posts.js', {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
@@ -132,11 +132,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const filterPosts = debounce(async () => {
-        const searchTerm = searchInput.value.toLowerCase().trim();
-        let posts = await fetchPosts();
+    async function preloadAllPosts() {
+        const categories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
+        const posts = await fetchPosts();
+        categories.forEach(category => {
+            allPosts[category] = posts.filter(post => post.category && post.category.toLowerCase() === category.toLowerCase());
+        });
+        return allPosts;
+    }
 
-        posts = posts.filter(post => post.category && post.category.toLowerCase() === currentCategory.toLowerCase());
+    const filterPosts = debounce(() => {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        let posts = allPosts[currentCategory] || [];
 
         if (searchTerm) {
             posts = posts.filter(post =>
@@ -150,15 +157,19 @@ document.addEventListener('DOMContentLoaded', () => {
         setActiveNavLink(currentCategory);
     }, 250);
 
-    // Initial load
-    filterPosts();
+    // Initial load with preloading
+    (async () => {
+        await preloadAllPosts();
+        renderPosts(allPosts[currentCategory] || [], currentCategory);
+        splashScreen.classList.add('hidden');
+    })();
 
     // Navigation link click handlers
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             currentCategory = link.dataset.category;
-            searchInput.value = ''; // Clear search input on category change
+            searchInput.value = '';
             filterPosts();
         });
         link.addEventListener('keydown', (e) => {
