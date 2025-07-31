@@ -7,39 +7,27 @@
     <meta name="keywords" content="news, breaking news, opinions, business, sports, tech, entertainment, Mwaniki Reports, Kenya news, Nairobi news">
     <meta name="author" content="Jonathan Mwaniki">
     <meta name="robots" content="index, follow">
+    <meta http-equiv="cache-control" content="public, max-age=31536000">
     <title>Mwaniki Reports | News, Sports, Tech & More</title>
     
-    <meta name="geo.region" content="KE">
-    <meta name="geo.placename" content="Nairobi">
-    <meta name="geo.position" content="-1.286389;36.817223">
-    
-    <link rel="canonical" href="https://www.jonathanmwaniki.co.ke">
-    
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.jonathanmwaniki.co.ke">
-    <meta property="og:title" content="Mwaniki Reports | News, Sports, Tech & More">
-    <meta property="og:description" content="Stay updated with the latest news, breaking news, opinions, business, sports, tech, and entertainment from Mwaniki Reports, Kenya.">
-    <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Mwaniki Reports Logo">
-    <meta property="og:site_name" content="Mwaniki Reports">
-    <meta property="og:locale" content="en_KE">
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@maestropuns">
-    <meta name="twitter:creator" content="@maestropuns">
-    <meta name="twitter:url" content="https://www.jonathanmwaniki.co.ke">
-    <meta name="twitter:title" content="Mwaniki Reports | News, Sports, Tech & More">
-    <meta name="twitter:description" content="Stay updated with the latest news, breaking news, opinions, business, sports, tech, and entertainment from Mwaniki Reports, Kenya.">
-    <meta property="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
-    <meta name="twitter:image:alt" content="Mwaniki Reports Logo">
-    
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16 32x32">
-    <link rel="icon" href="/images/favicon-96x96.png" type="image/png" sizes="96x96">
-    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-    
-    <link rel="stylesheet" href="/styles.css">
+    <!-- Critical CSS Inline -->
+    <style>
+        :root { --primary-color: #4f46e5; --text-color: #111827; --light-text: #6b7280; }
+        body { font-family: 'Inter', sans-serif; line-height: 1.5; color: var(--text-color); overflow-x: hidden; max-width: 100vw; }
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #fff; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .splash-logo img { width: 80px; height: auto; border-radius: 0.5rem; }
+        .splash-title { font-size: 2.25rem; font-weight: 700; margin: 1rem 0; }
+        .gradient-text { background: linear-gradient(135deg, var(--primary-color), #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .blog-post { display: flex; flex-direction: column; aspect-ratio: 4 / 3; }
+        .post-image { height: 180px; overflow: hidden; }
+        .post-image img { width: 100%; height: 100%; object-fit: cover; }
+        .post-content { padding: 1rem; }
+        .post-title { font-size: 1.1rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .post-title a { color: var(--text-color); text-decoration: none; }
+        .post-excerpt { color: var(--light-text); font-size: 0.85rem; line-height: 1.4; margin-bottom: 0.75rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    </style>
+
+    <link rel="stylesheet" href="/styles.css" media="print" onload="this.media='all'">
     <link rel="preload" href="/styles.css" as="style">
     <link rel="preload" href="/scripts/news-script.js" as="script">
     <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
@@ -85,15 +73,9 @@
                 </div>
                 <div class="header-ad">
                     <script type="text/javascript">
-                        atOptions = {
-                            'key': '1610960d9ced232cc76d8f5510ee4608',
-                            'format': 'iframe',
-                            'height': 60,
-                            'width': 468,
-                            'params': {}
-                        };
+                        atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};
                     </script>
-                    <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" defer></script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" async></script>
                 </div>
             </div>
             <nav class="desktop-nav">
@@ -126,15 +108,9 @@
 
             <!-- Ad after posts -->
             <script type="text/javascript">
-                atOptions = {
-                    'key': '1610960d9ced232cc76d8f5510ee4608',
-                    'format': 'iframe',
-                    'height': 60,
-                    'width': 468,
-                    'params': {}
-                };
+                atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};
             </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" defer></script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" async></script>
         </main>
 
         <footer class="site-footer">
@@ -161,15 +137,9 @@
 
         <!-- Ad at the bottom -->
         <script type="text/javascript">
-            atOptions = {
-                'key': '1610960d9ced232cc76d8f5510ee4608',
-                'format': 'iframe',
-                'height': 60,
-                'width': 468,
-                'params': {}
-            };
+            atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};
         </script>
-        <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" defer></script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" async></script>
     </div>
 
     <script src="/scripts/news-script.js" defer></script>
