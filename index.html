@@ -1,27 +1,177 @@
-<!-- Footer -->
-<footer class="site-footer">
-    <div class="footer-container">
-        <div class="footer-brand">
-            <div class="footer-logo">
-                <img src="/images/mwaniki-reports-logo.png" alt="Mwaniki Reports Logo" loading="lazy" width="40" height="40">
-            </div>
-            <div class="footer-info">
-                <span class="footer-name">Mwaniki Reports</span>
-                <p class="footer-description">Your trusted source for Kenya news, breaking news, opinions, business, sports, tech, and entertainment.</p>
-                <p class="author">By Jonathan Mwaniki</p>
-            </div>
-        </div>
-        <div class="footer-legal">
-            <p class="copyright">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
-            <div class="legal-links">
-                <a href="/privacy-policy" class="legal-link">Privacy Policy</a>
-                <a href="/terms-of-service" class="legal-link">Terms of Service</a>
-                <a href="/sitemap.xml" class="legal-link">Sitemap</a>
-                <a href="/about" class="legal-link">About</a>
-            </div>
-        </div>
-    </div>
-</footer>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mwaniki Reports delivers the latest news, breaking news, opinions, business, sports, tech, and entertainment in Kenya. Stay informed with timely updates.">
+    <meta name="keywords" content="news, breaking news, opinions, business, sports, tech, entertainment, Mwaniki Reports, Kenya news, Nairobi news">
+    <meta name="author" content="Jonathan Mwaniki">
+    <meta name="robots" content="index, follow">
+    <title>Mwaniki Reports | News, Sports, Tech & More</title>
+    
+    <meta name="geo.region" content="KE">
+    <meta name="geo.placename" content="Nairobi">
+    <meta name="geo.position" content="-1.286389;36.817223">
+    
+    <link rel="canonical" href="https://www.jonathanmwaniki.co.ke">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.jonathanmwaniki.co.ke">
+    <meta property="og:title" content="Mwaniki Reports | News, Sports, Tech & More">
+    <meta property="og:description" content="Stay updated with the latest news, breaking news, opinions, business, sports, tech, and entertainment from Mwaniki Reports, Kenya.">
+    <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Mwaniki Reports Logo">
+    <meta property="og:site_name" content="Mwaniki Reports">
+    <meta property="og:locale" content="en_KE">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@maestropuns">
+    <meta name="twitter:creator" content="@maestropuns">
+    <meta name="twitter:url" content="https://www.jonathanmwaniki.co.ke">
+    <meta name="twitter:title" content="Mwaniki Reports | News, Sports, Tech & More">
+    <meta name="twitter:description" content="Stay updated with the latest news, breaking news, opinions, business, sports, tech, and entertainment from Mwaniki Reports, Kenya.">
+    <meta property="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    <meta name="twitter:image:alt" content="Mwaniki Reports Logo">
+    
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16 32x32">
+    <link rel="icon" href="/images/favicon-96x96.png" type="image/png" sizes="96x96">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preload" href="/styles.css" as="style">
+    <link rel="preload" href="/scripts/news-script.js" as="script">
+    <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
 
-<!-- External Resources -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'" defer>
+</head>
+<body>
+    <div id="splash-screen">
+        <div class="splash-logo">
+            <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="eager" width="80" height="80">
+        </div>
+        <h1 class="splash-title">Mwaniki <span class="gradient-text">Reports</span></h1>
+        <i class="fas fa-spinner splash-spinner"></i>
+    </div>
+    <div id="mainContent">
+        <nav class="mobile-nav">
+            <div class="mobile-nav-container">
+                <a class="mobile-nav-link active" data-category="News" aria-label="News"><i class="fas fa-newspaper"></i><span>News</span></a>
+                <a class="mobile-nav-link" data-category="Breaking News" aria-label="Breaking News"><i class="fas fa-bolt"></i><span>Breaking News</span></a>
+                <a class="mobile-nav-link" data-category="Opinions" aria-label="Opinions"><i class="fas fa-comment"></i><span>Opinions</span></a>
+                <a class="mobile-nav-link" data-category="Business" aria-label="Business"><i class="fas fa-briefcase"></i><span>Business</span></a>
+                <a class="mobile-nav-link" data-category="Sports" aria-label="Sports"><i class="fas fa-futbol"></i><span>Sports</span></a>
+                <a class="mobile-nav-link" data-category="Tech" aria-label="Tech"><i class="fas fa-microchip"></i><span>Tech</span></a>
+                <a class="mobile-nav-link" data-category="Entertainment" aria-label="Entertainment"><i class="fas fa-film"></i><span>Entertainment</span></a>
+            </div>
+        </nav>
+
+        <main class="blog-container">
+            <div class="section-header">
+                <h1 class="section-title">Mwaniki <span class="gradient-text">Reports</span></h1>
+                <p class="section-description">Your trusted source for news, breaking news, opinions, business, sports, tech, and entertainment.</p>
+                <div class="header-logo-container">
+                    <div class="header-logo">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="lazy" width="80" height="80">
+                    </div>
+                    <div class="header-buttons">
+                        <button class="header-btn" onclick="window.location.reload()">Refresh <i class="fas fa-sync-alt"></i></button>
+                        <a href="/portfolio.html" class="header-btn">About <i class="fas fa-user"></i></a>
+                    </div>
+                </div>
+                <div class="header-ad">
+                    <script type="text/javascript">
+                        atOptions = {
+                            'key': '1610960d9ced232cc76d8f5510ee4608',
+                            'format': 'iframe',
+                            'height': 60,
+                            'width': 468,
+                            'params': {}
+                        };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" defer></script>
+                </div>
+            </div>
+            <nav class="desktop-nav">
+                <div class="nav-container">
+                    <div class="nav-brand">
+                        <div class="brand-logo">
+                            <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="eager" width="64" height="64">
+                        </div>
+                        <span class="brand-name">Mwaniki Reports</span>
+                    </div>
+                    <div class="nav-links">
+                        <a class="nav-link active" data-category="News" aria-label="News"><i class="fas fa-newspaper"></i>News</a>
+                        <a class="nav-link" data-category="Breaking News" aria-label="Breaking News"><i class="fas fa-bolt"></i>Breaking News</a>
+                        <a class="nav-link" data-category="Opinions" aria-label="Opinions"><i class="fas fa-comment"></i>Opinions</a>
+                        <a class="nav-link" data-category="Business" aria-label="Business"><i class="fas fa-briefcase"></i>Business</a>
+                        <a class="nav-link" data-category="Sports" aria-label="Sports"><i class="fas fa-futbol"></i>Sports</a>
+                        <a class="nav-link" data-category="Tech" aria-label="Tech"><i class="fas fa-microchip"></i>Tech</a>
+                        <a class="nav-link" data-category="Entertainment" aria-label="Entertainment"><i class="fas fa-film"></i>Entertainment</a>
+                    </div>
+                </div>
+            </nav>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search posts..." aria-label="Search news articles">
+                <i class="fas fa-search"></i>
+            </div>
+
+            <div id="post-list">
+                <!-- Posts will be dynamically inserted here -->
+            </div>
+
+            <!-- Ad after posts -->
+            <script type="text/javascript">
+                atOptions = {
+                    'key': '1610960d9ced232cc76d8f5510ee4608',
+                    'format': 'iframe',
+                    'height': 60,
+                    'width': 468,
+                    'params': {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" defer></script>
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="lazy" width="64" height="64">
+                    </div>
+                    <div class="footer-info">
+                        <span class="footer-name">Mwaniki Reports</span>
+                        <p class="footer-description">Your trusted source for news, breaking news, opinions, business, sports, tech, and entertainment.</p>
+                    </div>
+                </div>
+                <div class="footer-legal">
+                    <p class="copyright">© 2025 Jonathan Mwaniki. All Rights Reserved.</p>
+                    <div class="legal-links">
+                        <a href="/privacy-policy" class="legal-link">Privacy Policy</a>
+                        <a href="/terms-of-service" class="legal-link">Terms of Service</a>
+                        <a href="/sitemap.xml" class="legal-link">Sitemap</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Ad at the bottom -->
+        <script type="text/javascript">
+            atOptions = {
+                'key': '1610960d9ced232cc76d8f5510ee4608',
+                'format': 'iframe',
+                'height': 60,
+                'width': 468,
+                'params': {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" defer></script>
+    </div>
+
+    <script src="/scripts/news-script.js" defer></script>
+</body>
+</html>
