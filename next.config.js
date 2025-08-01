@@ -1,6 +1,14 @@
 module.exports = {
-  // Allow API to modify public/sitemap.xml
-  serverRuntimeConfig: {
-    PROJECT_ROOT: __dirname,
-  },
+  async rewrites() {
+    return [
+      {
+        source: '/sitemap.xml',
+        destination: '/api/sitemap',
+      },
+      {
+        source: '/rss.xml',
+        destination: '/api/rss.xml',
+      }
+    ];
+  }
 };
