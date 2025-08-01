@@ -1,10 +1,6 @@
 module.exports = {
-  async rewrites() {
-    return [
-      {
-        source: '/rss.xml',
-        destination: '/api/rss',
-      },
-    ];
+  // Allow API to modify public/sitemap.xml
+  serverRuntimeConfig: {
+    PROJECT_ROOT: __dirname,
   },
 };
