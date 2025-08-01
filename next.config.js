@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
   async rewrites() {
     return [
       {
@@ -12,9 +12,7 @@ const nextConfig = {
       },
     ];
   },
-  // Critical for static file handling
-  skipMiddlewareUrlNormalize: true,
-  skipTrailingSlashRedirect: true,
+  experimental: {
+    appDocumentPreloading: false,
+  },
 };
-
-export default nextConfig;
