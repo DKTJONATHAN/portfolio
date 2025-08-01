@@ -1,0 +1,28 @@
+name: Generate RSS Feed
+on:
+  push:
+    paths:
+      - 'content/articles.json'
+jobs:
+  generate-rss:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - run: npm install
+      - run: node scripts/generate-rss.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPO: ${{ github.event.repository.name }}
+      - name: Commit RSS feed
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add public/rss.xml
+          git commit -m "Update rss.xml with latest posts" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
