@@ -4,47 +4,51 @@ import { getPostsMetadata } from './list-posts';
 
 export default async function handler(req, res) {
   try {
-    // 1. Get ALL current articles
+    // 1. Get ALL posts from your working list-posts.js
     const { data: posts } = await getPostsMetadata();
     const baseUrl = 'https://jonathanmwaniki.co.ke';
 
-    // 2. Generate ALL article URLs (force-add all posts)
-    const allArticleUrls = posts.map(post => `
+    // 2. Generate ALL article URLs (no checks, no filters)
+    const articleUrls = posts.map(post => `
       <url>
         <loc>${baseUrl}/articles/${post.slug}</loc>
         <lastmod>${new Date(post.date).toISOString()}</lastmod>
         <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
       </url>
     `).join('');
 
-    // 3. Preserve non-article URLs (Home, About, etc.)
-    const sitemapPath = path.join(process.cwd(), 'public/sitemap.xml');
-    let existingSitemap = '';
-    
-    if (fs.existsSync(sitemapPath)) {
-      existingSitemap = fs.readFileSync(sitemapPath, 'utf8');
-      // Remove old article URLs to avoid duplicates
-      existingSitemap = existingSitemap.replace(
-        /<url>\s*<loc>https:\/\/jonathanmwaniki\.co\.ke\/articles\/.*?<\/loc>.*?<\/url>/gs, 
-        ''
-      );
-    }
+    // 3. Create fresh sitemap skeleton
+    const staticPages = [
+      { url: '/', priority: '1.0' },
+      { url: '/about', priority: '0.7' },
+      { url: '/contact', priority: '0.5' }
+    ].map(page => `
+      <url>
+        <loc>${baseUrl}${page.url}</loc>
+        <priority>${page.priority}</priority>
+      </url>
+    `).join('');
 
-    // 4. Combine old (non-article) + new (all articles)
-    const updatedSitemap = existingSitemap.replace(
-      '</urlset>',
-      `${allArticleUrls}</urlset>`
+    // 4. Combine ALL content
+    const fullSitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  ${staticPages}
+  ${articleUrls}
+</urlset>`;
+
+    // 5. Overwrite sitemap.xml
+    fs.writeFileSync(
+      path.join(process.cwd(), 'public/sitemap.xml'),
+      fullSitemap
     );
 
-    // 5. Save
-    fs.writeFileSync(sitemapPath, updatedSitemap);
-    
-    // 6. Return the updated sitemap
+    // 6. Return the new sitemap
     res.setHeader('Content-Type', 'text/xml');
-    res.send(updatedSitemap);
+    res.send(fullSitemap);
 
   } catch (error) {
-    console.error('Sitemap error:', error);
-    res.status(500).send('Error updating sitemap');
+    console.error('Sitemap generation failed:', error);
+    res.status(500).send('Internal Server Error');
   }
 }
