@@ -381,6 +381,14 @@ export default async function handler(req, res) {
             }
           }
           </script>
+          <!-- Google Analytics -->
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-W3FVP4FRPT"></script>
+          <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-W3FVP4FRPT');
+          </script>
         </head>
         <body>
           <main class="blog-container">
