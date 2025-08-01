@@ -1,8 +1,23 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=3600"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        }
+      ]
+    }
+  ],
   "rewrites": [
-    // 1. XML file rewrites (high priority)
+    // 1. High priority XML rewrites
     {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
@@ -11,8 +26,8 @@
       "source": "/rss.xml",
       "destination": "/api/rss"
     },
-    
-    // 2. Your other existing rules (keep these!)
+
+    // 2. Convenience redirects (lower priority)
     {
       "source": "/sitemap",
       "destination": "/sitemap.xml"
@@ -21,12 +36,21 @@
       "source": "/robots",
       "destination": "/robots.txt"
     },
+
+    // 3. Existing HTML rules (keep these last)
     {
       "source": "/:path*",
-      "destination": "/:path*.html"
+      "destination": "/:path*.html",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept",
+          "value": "text/html"
+        }
+      ]
     },
     {
-      "source": "/:path*",
+      "source": "/:path*/",
       "destination": "/:path*/index.html"
     }
   ]
