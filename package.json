@@ -2,6 +2,7 @@
   "type": "module",
   "dependencies": {
     "@octokit/rest": "^20.0.0",
+    "buffer": "^6.0.3",
     "cheerio": "^1.0.0",
     "marked": "^14.1.0",
     "js-yaml": "^4.1.0",
