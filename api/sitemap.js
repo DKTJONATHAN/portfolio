@@ -1,11 +1,10 @@
-import { promises as fs } from 'fs';
-import path from 'path';
 import { Octokit } from '@octokit/rest';
 
 export default async function handler(req, res) {
   try {
-    // 1. Fetch live posts from GitHub
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+    
+    // 1. Fetch posts from GitHub
     const { data } = await octokit.repos.getContent({
       owner: process.env.GITHUB_OWNER,
       repo: process.env.GITHUB_REPO,
@@ -13,40 +12,37 @@ export default async function handler(req, res) {
     });
     const posts = JSON.parse(Buffer.from(data.content, 'base64').toString('utf-8'));
 
-    // 2. Generate XML
+    // 2. Generate sitemap XML
     const baseUrl = 'https://jonathanmwaniki.co.ke';
-    const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Static Pages -->
   <url>
-    <loc>${baseUrl}/</loc>
+    <loc>${baseUrl}</loc>
     <priority>1.0</priority>
   </url>
   
-  <!-- Articles -->
+  <!-- Dynamic Articles -->
   ${posts.map(post => `
     <url>
       <loc>${baseUrl}/articles/${post.slug}</loc>
       <lastmod>${new Date(post.date).toISOString()}</lastmod>
+      <changefreq>weekly</changefreq>
     </url>
   `).join('')}
 </urlset>`;
 
-    // 3. Write to file (with error handling)
-    const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
-    try {
-      await fs.writeFile(sitemapPath, sitemapContent);
-      console.log('Successfully updated sitemap.xml');
-    } catch (writeError) {
-      console.error('Filesystem write failed, streaming instead...', writeError);
-    }
-
-    // 4. Always return the XML (even if file write failed)
+    // 3. Send response
     res.setHeader('Content-Type', 'text/xml');
-    res.send(sitemapContent);
+    res.send(sitemap);
 
   } catch (error) {
-    console.error('Sitemap generation failed:', error);
-    res.status(500).send(`<error>${error.message}</error>`);
+    console.error('Sitemap Error:', error);
+    res.status(500).send(`
+      <error>
+        <message>Sitemap generation failed</message>
+        <details>${error.message}</details>
+      </error>
+    `);
   }
 }
