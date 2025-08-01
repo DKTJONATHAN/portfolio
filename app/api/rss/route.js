@@ -1,4 +1,5 @@
 import { Octokit } from '@octokit/rest';
+import { Buffer } from 'buffer';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,15 +17,17 @@ export async function GET() {
     const baseUrl = 'https://jonathanmwaniki.co.ke';
 
     const rssFeed = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
   <title>Mwaniki Reports</title>
   <link>${baseUrl}</link>
+  <atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml"/>
   ${posts.map(post => `
     <item>
-      <title>${post.title}</title>
+      <title><![CDATA[${post.title}]]></title>
       <link>${baseUrl}/articles/${post.slug}</link>
       <pubDate>${new Date(post.date).toUTCString()}</pubDate>
+      <description><![CDATA[${post.description || ''}]]></description>
     </item>
   `).join('')}
 </channel>
