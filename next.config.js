@@ -10,5 +10,12 @@ module.exports = {
         destination: '/api/rss.xml',
       }
     ];
+  },
+  // Prevent static files from overriding routes
+  async exportPathMap() {
+    return {
+      '/rss.xml': { page: '/api/rss' },
+      '/sitemap.xml': { page: '/api/sitemap' }
+    }
   }
 };
