@@ -46,4 +46,4 @@ export default async function handler(req, res) {
     console.error('Error fetching posts:', error);
     return res.status(500).json({ data: [], error: `Failed to fetch posts: ${error.message}` });
   }
-}
+} 
