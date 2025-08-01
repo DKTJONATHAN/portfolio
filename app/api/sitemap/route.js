@@ -1,4 +1,5 @@
 import { Octokit } from '@octokit/rest';
+import { Buffer } from 'buffer';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +13,7 @@ export async function GET() {
       path: 'content/articles.json',
     });
 
+    // Handle base64 decoding
     const posts = JSON.parse(Buffer.from(data.content, 'base64').toString('utf-8'));
     const baseUrl = 'https://jonathanmwaniki.co.ke';
 
