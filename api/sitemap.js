@@ -1,16 +1,28 @@
-import { promises as fs } from 'fs';
-import path from 'path';
-import { getPostsMetadata } from './list-posts';
+import { Octokit } from '@octokit/rest';
 
 export default async function handler(req, res) {
   try {
-    const { data: posts } = await getPostsMetadata();
-    const baseUrl = 'https://jonathanmwaniki.co.ke';
-    const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
+    // 1. Fetch posts directly from GitHub (bypassing filesystem)
+    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+    const { data } = await octokit.repos.getContent({
+      owner: process.env.GITHUB_OWNER,
+      repo: process.env.GITHUB_REPO,
+      path: 'content/articles.json',
+    });
+    
+    const posts = JSON.parse(Buffer.from(data.content, 'base64').toString('utf-8'));
 
-    // Generate XML
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+    // 2. Generate XML in memory (no file writing)
+    const baseUrl = 'https://jonathanmwaniki.co.ke';
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Static Pages -->
+  <url>
+    <loc>${baseUrl}/</loc>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Dynamic Articles -->
   ${posts.map(post => `
     <url>
       <loc>${baseUrl}/articles/${post.slug}</loc>
@@ -19,15 +31,17 @@ export default async function handler(req, res) {
   `).join('')}
 </urlset>`;
 
-    // Write file
-    await fs.writeFile(sitemapPath, xml);
-    
-    // Return response
+    // 3. Stream XML directly to response
     res.setHeader('Content-Type', 'text/xml');
-    res.send(xml);
+    res.send(sitemap);
 
   } catch (error) {
-    console.error('CRITICAL ERROR:', error);
-    res.status(500).send(`Sitemap generation failed: ${error.message}`);
+    console.error('Sitemap Generation Error:', error);
+    res.status(500).send(`
+      <error>
+        <message>Sitemap generation failed</message>
+        <detail>${error.message}</detail>
+      </error>
+    `);
   }
 }
