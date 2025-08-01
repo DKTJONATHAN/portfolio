@@ -2,14 +2,17 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
+    // 1. XML file rewrites (high priority)
     {
-      "source": "/:path*",
-      "destination": "/:path*.html"
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
     },
     {
-      "source": "/:path*",
-      "destination": "/:path*/index.html"
+      "source": "/rss.xml",
+      "destination": "/api/rss"
     },
+    
+    // 2. Your other existing rules (keep these!)
     {
       "source": "/sitemap",
       "destination": "/sitemap.xml"
@@ -20,7 +23,11 @@
     },
     {
       "source": "/:path*",
-      "destination": "/:path*"
+      "destination": "/:path*.html"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/:path*/index.html"
     }
   ]
 }
