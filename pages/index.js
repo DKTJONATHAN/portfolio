@@ -1,27 +1,21 @@
 import { useState, useEffect } from 'react';
-import Layout from '../components/Layout';
-import ArticleCard from '../components/ArticleCard';
-import CategoryFilter from '../components/CategoryFilter';
-import SearchBar from '../components/SearchBar';
+import Head from 'next/head';
+import Link from 'next/link';
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [activeCategory, setActiveCategory] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await fetch('/api/posts');
-        const { data, categories } = await response.json();
-        setPosts(data);
-        setFilteredPosts(data);
-        setCategories(categories);
-      } catch (error) {
-        console.error('Error fetching posts:', error);
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        setPosts(data.data);
+      } catch (err) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -30,69 +24,65 @@ export default function Home() {
     fetchPosts();
   }, []);
 
-  useEffect(() => {
-    let results = posts;
-    
-    // Apply category filter
-    if (activeCategory) {
-      results = results.filter(post => post.category === activeCategory);
-    }
-    
-    // Apply search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      results = results.filter(post => 
-        post.title.toLowerCase().includes(query) || 
-        post.excerpt.toLowerCase().includes(query)
-      );
-    }
-    
-    setFilteredPosts(results);
-  }, [activeCategory, searchQuery, posts]);
-
   return (
-    <Layout
-      meta={{
-        title: "Latest News and Reports",
-        description: "Stay updated with the latest news, breaking stories, and in-depth reports from Jonathan Mwaniki",
-        url: "https://jonathanmwaniki.co.ke",
-        image: "/images/Jonathan-Mwaniki-logo.png"
-      }}
-    >
-      <div className="mb-12">
-        <h1 className="text-4xl font-bold mb-6">Jonathan Mwaniki Reports</h1>
-        <p className="text-xl mb-8">Your trusted source for breaking news and in-depth reporting</p>
-        
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <SearchBar onSearch={setSearchQuery} />
-          <CategoryFilter 
-            categories={categories} 
-            activeCategory={activeCategory}
-            onChange={setActiveCategory}
-          />
-        </div>
-      </div>
+    <div className="container">
+      <Head>
+        <title>Jonathan Mwaniki Reports</title>
+        <meta name="description" content="Latest news and reports" />
+      </Head>
 
-      {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-gray-100 rounded-lg h-64 animate-pulse"></div>
+      <header>
+        <h1>Jonathan Mwaniki Reports</h1>
+      </header>
+
+      <main>
+        {loading && <p>Loading posts...</p>}
+        {error && <p>Error: {error}</p>}
+
+        <div className="posts-grid">
+          {posts.map(post => (
+            <article key={post.slug} className="post-card">
+              <h2>
+                <Link href={`/articles/${post.slug}`}>
+                  <a>{post.title}</a>
+                </Link>
+              </h2>
+              <p className="category">{post.category}</p>
+              <p className="date">{new Date(post.date).toLocaleDateString()}</p>
+            </article>
           ))}
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPosts.map(post => (
-            <ArticleCard key={post.slug} post={post} />
-          ))}
-        </div>
-      )}
+      </main>
 
-      {!loading && filteredPosts.length === 0 && (
-        <div className="text-center py-12">
-          <h2 className="text-2xl font-semibold">No articles found</h2>
-          <p className="mt-2">Try adjusting your search or filter criteria</p>
-        </div>
-      )}
-    </Layout>
+      <style jsx>{`
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        .posts-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: 20px;
+          margin-top: 30px;
+        }
+        .post-card {
+          border: 1px solid #ddd;
+          padding: 20px;
+          border-radius: 8px;
+        }
+        .post-card h2 {
+          margin-top: 0;
+        }
+        .category {
+          color: #666;
+          font-weight: bold;
+        }
+        .date {
+          color: #999;
+          font-size: 0.9em;
+        }
+      `}</style>
+    </div>
   );
 }
