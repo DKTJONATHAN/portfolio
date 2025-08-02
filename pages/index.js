@@ -30,9 +30,12 @@ export default function Home() {
         <ul>
           {filteredPosts.length > 0 ? (
             filteredPosts.map(post => (
-              <li key={post.slug} style={{ margin: "10px 0" }}>
+              <li key={post.slug} style={{ margin: "15px 0" }}>
                 <a href={`/articles/${post.slug}`} style={{ color: "#007bff" }}>
-                  {post.title} <span style={{ color: "#666", fontSize: "14px" }}>({post.category})</span>
+                  <h2 style={{ margin: "0", fontSize: "18px" }}>{post.title}</h2>
+                  <p style={{ color: "#666", fontSize: "14px", margin: "5px 0" }}>
+                    {post.description} ({post.category}, {post.date})
+                  </p>
                 </a>
               </li>
             ))
