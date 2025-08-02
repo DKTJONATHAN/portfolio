@@ -514,6 +514,22 @@
             color: var(--primary-color);
         }
 
+        /* Loading and Error States */
+        .loading-posts, .no-posts, .error-message {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--light-text);
+        }
+        .loading-posts i {
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+        .error-message a {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
         /* Animations */
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -647,6 +663,9 @@
 
             <div id="post-list">
                 <!-- Posts will be loaded here dynamically -->
+                <div class="loading-posts">
+                    <i class="fas fa-spinner"></i> Loading posts...
+                </div>
             </div>
         </main>
 
@@ -742,53 +761,196 @@
     </div>
 
     <script>
-        // Mobile menu toggle functionality
-        document.getElementById('mobileMenuToggle').addEventListener('click', function() {
-            const menu = document.getElementById('mobileDropdownMenu');
-            menu.classList.toggle('show');
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            const menu = document.getElementById('mobileDropdownMenu');
-            const toggle = document.getElementById('mobileMenuToggle');
-            
-            if (!menu.contains(event.target) && !toggle.contains(event.target)) {
-                menu.classList.remove('show');
+        // Sample post data - replace with your actual API call
+        const samplePosts = [
+            {
+                id: 1,
+                title: "Kenya's Economy Shows Strong Growth in Q2 2024",
+                description: "The Kenyan economy grew by 5.6% in the second quarter of 2024, exceeding expectations and signaling recovery from previous challenges.",
+                category: "Business",
+                date: "2024-08-15",
+                image: "/images/business-news.jpg",
+                tags: "economy, growth, kenya",
+                slug: "kenya-economy-growth-q2-2024"
+            },
+            {
+                id: 2,
+                title: "New Tech Hub Launched in Nairobi to Support Startups",
+                description: "A state-of-the-art technology hub has opened in Nairobi's Westlands area, offering workspace and funding opportunities for local tech entrepreneurs.",
+                category: "Tech",
+                date: "2024-08-14",
+                image: "/images/tech-hub.jpg",
+                tags: "technology, nairobi, startups",
+                slug: "nairobi-tech-hub-launch"
+            },
+            {
+                id: 3,
+                title: "Harambee Stars Qualify for AFCON 2025",
+                description: "Kenya's national football team secured their place in the 2025 Africa Cup of Nations with a thrilling 2-1 victory over Senegal.",
+                category: "Sports",
+                date: "2024-08-13",
+                image: "/images/football.jpg",
+                tags: "football, afcon, sports",
+                slug: "harambee-stars-afcon-2025"
+            },
+            {
+                id: 4,
+                title: "Government Announces New Tax Relief Measures",
+                description: "The Treasury has introduced new tax relief measures aimed at supporting small businesses and low-income earners in Kenya.",
+                category: "News",
+                date: "2024-08-12",
+                image: "/images/tax-news.jpg",
+                tags: "tax, government, economy",
+                slug: "kenya-tax-relief-measures"
+            },
+            {
+                id: 5,
+                title: "Popular Kenyan Musician Releases New Album",
+                description: "Award-winning artist releases his much-anticipated album featuring collaborations with international stars.",
+                category: "Entertainment",
+                date: "2024-08-11",
+                image: "/images/music.jpg",
+                tags: "music, entertainment, kenya",
+                slug: "kenyan-musician-new-album"
+            },
+            {
+                id: 6,
+                title: "Heavy Rains Cause Flooding in Parts of Nairobi",
+                description: "Several neighborhoods in Nairobi experienced flooding after overnight heavy rains, with emergency services responding to calls for help.",
+                category: "Breaking News",
+                date: "2024-08-10",
+                image: "/images/floods.jpg",
+                tags: "weather, nairobi, emergency",
+                slug: "nairobi-floods-heavy-rains"
             }
-        });
+        ];
 
-        // Category switching functionality
+        // DOM elements
+        const postList = document.getElementById('post-list');
+        const splashScreen = document.getElementById('splash-screen');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
         const categoryLinks = document.querySelectorAll('[data-category]');
-        categoryLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const category = this.getAttribute('data-category');
-                
-                // Update active states
-                categoryLinks.forEach(l => {
-                    l.classList.remove('active');
-                    if (l.classList.contains('mobile-nav-all')) {
-                        l.classList.remove('active');
-                    }
-                });
-                
-                this.classList.add('active');
-                
-                // Here you would typically load posts for the selected category
-                console.log('Switched to category:', category);
-                
-                // Close dropdown if open
-                document.getElementById('mobileDropdownMenu').classList.remove('show');
-            });
-        });
+        
+        // Current state
+        let currentCategory = 'ALL';
+        let allPosts = samplePosts;
+        let filteredPosts = [];
 
-        // Hide splash screen after load
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                document.getElementById('splash-screen').classList.add('hidden');
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        // Render posts
+        function renderPosts(posts, category) {
+            if (!posts || posts.length === 0) {
+                postList.innerHTML = '<div class="no-posts">No posts found in this category.</div>';
+                return;
+            }
+
+            // Sort by date (newest first)
+            const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            let html = '<div class="blog-posts">';
+            
+            sortedPosts.forEach(post => {
+                html += `
+                    <article class="blog-post" data-id="${post.id}">
+                        <div class="post-image">
+                            <img src="${post.image}" alt="${post.title}" loading="lazy">
+                        </div>
+                        <div class="post-content">
+                            <div class="post-meta">
+                                <span class="post-date"><i class="far fa-calendar-alt"></i> ${formatDate(post.date)}</span>
+                                <span class="post-category">${post.category}</span>
+                            </div>
+                            <h3 class="post-title"><a href="/post/${post.slug}">${post.title}</a></h3>
+                            <p class="post-excerpt">${post.description}</p>
+                            <div class="post-footer">
+                                <div class="post-tags">
+                                    ${post.tags.split(',').map(tag => `
+                                        <a href="#" class="post-tag" data-tag="${tag.trim()}">${tag.trim()}</a>
+                                    `).join('')}
+                                </div>
+                                <a href="/post/${post.slug}" class="read-more">
+                                    Read more <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            });
+            
+            html += '</div>';
+            postList.innerHTML = html;
+        }
+
+        // Filter posts by category
+        function filterPostsByCategory(category) {
+            currentCategory = category;
+            if (category === 'ALL') {
+                filteredPosts = allPosts;
+            } else {
+                filteredPosts = allPosts.filter(post => 
+                    post.category.toLowerCase() === category.toLowerCase()
+                );
+            }
+            renderPosts(filteredPosts, category);
+        }
+
+        // Initialize
+        function init() {
+            // Hide splash screen
+            setTimeout(() => {
+                splashScreen.classList.add('hidden');
             }, 1000);
-        });
+            
+            // Load initial posts
+            filterPostsByCategory(currentCategory);
+            
+            // Set up mobile menu toggle
+            mobileMenuToggle.addEventListener('click', () => {
+                mobileDropdownMenu.classList.toggle('show');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobileMenuToggle.contains(e.target) {
+                    mobileDropdownMenu.classList.remove('show');
+                }
+            });
+            
+            // Set up category links
+            categoryLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const category = link.getAttribute('data-category');
+                    
+                    // Update active states
+                    categoryLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    // Filter posts
+                    filterPostsByCategory(category);
+                    
+                    // Close dropdown if open
+                    mobileDropdownMenu.classList.remove('show');
+                });
+            });
+            
+            // Simulate loading from API
+            setTimeout(() => {
+                // In a real app, you would fetch from your API here
+                // For now we're using the sample data
+                filterPostsByCategory(currentCategory);
+            }, 1500);
+        }
+
+        // Start the app
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
