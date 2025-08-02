@@ -43,7 +43,7 @@ export async function getStaticProps({ params }) {
       },
     });
     if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.status} - ${response.statusText}`);
+      throw new Error(`GitHub API error: ${response.status} - ${response.statusText} for ${url}`);
     }
     const content = await response.text();
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
@@ -54,10 +54,13 @@ export async function getStaticProps({ params }) {
     });
     const articles = JSON.parse(Buffer.from(articlesResponse.data.content, 'base64').toString());
     const post = articles.find(p => p.slug === params.slug);
+    if (!post) {
+      throw new Error(`Article not found in articles.json for slug: ${params.slug}`);
+    }
     return {
       props: {
         content,
-        title: post?.title || "Article",
+        title: post.title || "Article",
       },
     };
   } catch (error) {
