@@ -141,7 +141,7 @@
         /* Desktop Navigation */
         .desktop-nav {
             background: var(--background-color);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 até 4px rgba(0, 0, 0, 0.05);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -205,19 +205,18 @@
         }
         .mobile-nav-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             height: 60px;
             max-width: 100%;
             overflow-x: hidden;
-            flex: 1;
         }
         .mobile-main-icons {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
-            justify-content: center;
+            gap: 0.75rem;
             flex: 1;
+            justify-content: center;
         }
         .mobile-nav-link {
             display: flex;
@@ -468,7 +467,7 @@
             font-weight: 600;
         }
         .post-title {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 700;
             margin-bottom: 0.75rem;
             line-height: 1.4;
@@ -476,7 +475,6 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            max-width: 100%;
         }
         .post-title a {
             color: var(--text-color);
@@ -488,14 +486,13 @@
         }
         .post-excerpt {
             color: var(--light-text);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             line-height: 1.5;
             margin-bottom: 1rem;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            max-width: 100%;
         }
         .post-footer {
             display: flex;
@@ -539,28 +536,20 @@
 
         /* Ad Styling */
         .ad-container {
-            position: relative;
             max-width: 100%;
             margin: 1.5rem auto;
             text-align: center;
             overflow: hidden;
-            left: 50%;
-            transform: translateX(-50%);
         }
         .ad-container iframe {
             max-width: 100%;
             width: 468px;
             height: 60px;
-            display: block;
-            margin: 0 auto;
         }
         @media (max-width: 480px) {
             .ad-container iframe {
                 width: 100%;
-                max-width: 320px;
                 height: auto;
-                transform: scale(0.68);
-                transform-origin: center;
             }
         }
 
@@ -732,7 +721,7 @@
                 grid-template-columns: 1fr;
             }
             .mobile-main-icons {
-                gap: 1.2rem;
+                gap: 0.5rem;
             }
         }
 
@@ -752,7 +741,7 @@
                 font-size: 0.85rem;
             }
             .mobile-main-icons {
-                gap: 1rem;
+                gap: 0.5rem;
             }
             .mobile-nav-link {
                 font-size: 0.6rem;
@@ -771,12 +760,6 @@
             .footer-logo img {
                 width: 40px;
                 height: 40px;
-            }
-            .post-title {
-                font-size: 0.95rem;
-            }
-            .post-excerpt {
-                font-size: 0.75rem;
             }
         }
     </style>
@@ -963,13 +946,19 @@
 
             function formatDate(dateString) {
                 if (!dateString) return 'No date';
-                return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                return new Date(dateString).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
             }
 
             function setActiveNavLink(category) {
                 navLinks.forEach(link => {
                     link.classList.remove('active');
-                    if (link.dataset.category === category) link.classList.add('active');
+                    if (link.getAttribute('data-category') === category) {
+                        link.classList.add('active');
+                    }
                 });
             }
 
@@ -995,8 +984,9 @@
                 const postsContainer = document.createElement('div');
                 postsContainer.className = 'blog-posts';
 
-                sortedPosts.slice(0, 5).forEach((post, index) => {
+                sortedPosts.forEach((post, index) => {
                     if (!post.category) return;
+
                     const postElement = document.createElement('article');
                     postElement.className = 'blog-post';
                     postElement.setAttribute('itemscope', '');
@@ -1098,7 +1088,8 @@
                 const posts = await fetchPosts();
                 categories.forEach(category => {
                     allPosts[category] = posts.filter(post =>
-                        post.category && post.category.toLowerCase() === category.toLowerCase());
+                        post.category && post.category.toLowerCase() === category.toLowerCase()
+                    );
                 });
                 allPosts['ALL'] = posts;
                 console.log('Preloaded posts:', allPosts);
@@ -1107,7 +1098,9 @@
 
             const filterPosts = debounce(() => {
                 const searchTerm = searchInput.value.toLowerCase().trim();
-                let posts = currentCategory === 'ALL' ? allPosts['ALL'] || [] : allPosts[currentCategory] || [];
+                let posts = currentCategory === 'ALL'
+                    ? allPosts['ALL'] || []
+                    : allPosts[currentCategory] || [];
 
                 if (searchTerm) {
                     posts = posts.filter(post =>
@@ -1162,7 +1155,7 @@
                     console.log('Starting preload...');
                     await preloadAllPosts();
                     console.log('Rendering posts...');
-                    renderPosts(allPosts[currentCategory].slice(0, 5), currentCategory);
+                    renderPosts(allPosts[currentCategory], currentCategory);
                     splashScreen.classList.add('hidden');
                 } catch (error) {
                     console.error('Initialization error:', error);
