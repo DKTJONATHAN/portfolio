@@ -141,7 +141,7 @@
         /* Desktop Navigation */
         .desktop-nav {
             background: var(--background-color);
-            box-shadow: 0 até 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -201,22 +201,21 @@
             z-index: 90;
             padding: 0.5rem 1rem;
             border-top: 1px solid var(--border-color);
-            overflow-x: hidden;
         }
         .mobile-nav-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             height: 60px;
             max-width: 100%;
-            overflow-x: hidden;
+            gap: 2rem;
         }
         .mobile-main-icons {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            flex: 1;
+            gap: 2rem;
             justify-content: center;
+            flex: 0;
         }
         .mobile-nav-link {
             display: flex;
@@ -226,6 +225,7 @@
             font-size: 0.7rem;
             text-decoration: none;
             transition: all 0.2s ease;
+            min-width: 60px;
         }
         .mobile-nav-link i {
             font-size: 1.2rem;
@@ -535,22 +535,51 @@
         }
 
         /* Ad Styling */
+        .ad-overlay-container {
+            position: fixed;
+            bottom: 80px;
+            left: 0;
+            right: 0;
+            z-index: 80;
+            display: flex;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .ad-overlay {
+            max-width: 468px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            pointer-events: auto;
+        }
         .ad-container {
-            max-width: 100%;
-            margin: 1.5rem auto;
+            margin: 1rem auto;
             text-align: center;
             overflow: hidden;
+            max-width: 100%;
+            contain: content;
         }
         .ad-container iframe {
             max-width: 100%;
             width: 468px;
             height: 60px;
+            display: block;
+            margin: 0 auto;
         }
-        @media (max-width: 480px) {
-            .ad-container iframe {
-                width: 100%;
-                height: auto;
-            }
+        .blog-posts .ad-container {
+            max-width: 468px;
+            width: 100%;
+            margin: 1.5rem auto;
+            text-align: center;
+            overflow: hidden;
+            contain: content;
+        }
+        .blog-posts .ad-container iframe {
+            max-width: 100%;
+            width: 468px;
+            height: 60px;
+            display: block;
+            margin: 0 auto;
         }
 
         /* Footer */
@@ -689,6 +718,9 @@
             .mobile-nav {
                 display: block;
             }
+            .ad-overlay-container {
+                bottom: 80px;
+            }
             .section-title {
                 font-size: 1.75rem;
             }
@@ -720,8 +752,11 @@
             .footer-links {
                 grid-template-columns: 1fr;
             }
+            .mobile-nav-container {
+                gap: 1rem;
+            }
             .mobile-main-icons {
-                gap: 0.5rem;
+                gap: 1rem;
             }
         }
 
@@ -740,11 +775,15 @@
                 padding: 0.5rem 1.25rem;
                 font-size: 0.85rem;
             }
+            .mobile-nav-container {
+                gap: 1rem;
+            }
             .mobile-main-icons {
-                gap: 0.5rem;
+                gap: 1rem;
             }
             .mobile-nav-link {
                 font-size: 0.6rem;
+                min-width: 50px;
             }
             .mobile-nav-link i {
                 font-size: 1.1rem;
@@ -756,6 +795,15 @@
             }
             .mobile-nav-all i {
                 font-size: 1.3rem;
+            }
+            .ad-container iframe {
+                width: 100%;
+                height: auto;
+                max-width: 468px;
+            }
+            .ad-overlay {
+                max-width: 100%;
+                padding: 0 1rem;
             }
             .footer-logo img {
                 width: 40px;
@@ -825,6 +873,18 @@
             </div>
         </main>
 
+        <!-- Ad Overlay -->
+        <div class="ad-overlay-container">
+            <div class="ad-overlay">
+                <div class="ad-container">
+                    <script type="text/javascript">
+                        atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" async></script>
+                </div>
+            </div>
+        </div>
+
         <!-- Footer -->
         <footer class="site-footer">
             <div class="footer-container">
@@ -867,13 +927,6 @@
                         <a href="#" class="legal-link">Sitemap</a>
                     </div>
                 </div>
-            </div>
-            <!-- Footer Ad -->
-            <div class="ad-container">
-                <script type="text/javascript">
-                    atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};
-                </script>
-                <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" async></script>
             </div>
         </footer>
 
