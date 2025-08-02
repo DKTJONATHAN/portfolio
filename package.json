@@ -1,6 +1,13 @@
 {
   "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
   "dependencies": {
+    // Existing dependencies (keep these)
     "@octokit/rest": "^20.0.0",
     "buffer": "^6.0.3",
     "cheerio": "^1.0.0",
@@ -8,6 +15,25 @@
     "js-yaml": "^4.1.0",
     "sanitize-html": "^2.13.0",
     "@vercel/analytics": "^1.3.1",
-    "@vercel/speed-insights": "^1.2.0"
+    "@vercel/speed-insights": "^1.2.0",
+    
+    // New Next.js/React dependencies (add these)
+    "next": "^14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    
+    // Optional (recommended for styling)
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.1"
+  },
+  "devDependencies": {
+    // For development only
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.1.0",
+    "typescript": "^5.3.3",
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18"
   }
 }
