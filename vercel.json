@@ -16,14 +16,6 @@
     },
     {
       "source": "/:path*",
-      "destination": "/:path*.html"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/:path*/index.html"
-    },
-    {
-      "source": "/:path*",
       "destination": "/:path*"
     }
   ]
