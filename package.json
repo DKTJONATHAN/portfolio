@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
+    "build": "next build",
     "start": "next start",
     "preview": "serve out",
     "deploy-gh-pages": "gh-pages -d out -t true",
