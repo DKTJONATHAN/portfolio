@@ -1,5 +1,12 @@
 export default function Article({ content }) {
-  return <div dangerouslySetInnerHTML={{ __html: content }} />;
+  return content ? (
+    <div dangerouslySetInnerHTML={{ __html: content }} />
+  ) : (
+    <div>
+      <h2>Article Not Found</h2>
+      <p>Could not load the article. Please try again later.</p>
+    </div>
+  );
 }
 
 export async function getStaticPaths() {
@@ -13,7 +20,7 @@ export async function getStaticPaths() {
       }
     );
     if (!response.ok) {
-      console.error(`GitHub API error: ${response.status}`);
+      console.error(`GitHub API error in getStaticPaths: ${response.status}`);
       return { paths: [], fallback: false };
     }
     const files = await response.json();
@@ -40,7 +47,8 @@ export async function getStaticProps({ params }) {
       }
     );
     if (!response.ok) {
-      throw new Error(`Failed to fetch article: ${response.status}`);
+      console.error(`GitHub API error in getStaticProps: ${response.status}`);
+      return { notFound: true };
     }
     const content = await response.text();
     return { props: { content } };
