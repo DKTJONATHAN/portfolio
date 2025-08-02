@@ -1,24 +1,46 @@
 import { useEffect, useState } from "react";
+import Header from "../components/Header";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetch("/api/list-posts")
       .then(res => res.json())
-      .then(data => setPosts(data.data || []));
+      .then(data => setPosts(data.data || []))
+      .catch(err => console.error("Fetch error:", err));
   }, []);
+
+  const filteredPosts = posts.filter(post =>
+    post.title.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div>
-      <h1>News</h1>
-      <ul>
-        {posts.map(post => (
-          <li key={post.slug}>
-            <a href={`/articles/${post.slug}`}>{post.title}</a>
-          </li>
-        ))}
-      </ul>
+      <Header />
+      <div style={{ padding: "10px" }}>
+        <input
+          type="text"
+          placeholder="Search articles..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          style={{ padding: "8px", margin: "10px 0", width: "100%", maxWidth: "300px" }}
+        />
+        <ul>
+          {filteredPosts.length > 0 ? (
+            filteredPosts.map(post => (
+              <li key={post.slug} style={{ margin: "10px 0" }}>
+                <a href={`/articles/${post.slug}`} style={{ color: "#007bff" }}>
+                  {post.title} <span style={{ color: "#666", fontSize: "14px" }}>({post.category})</span>
+                </a>
+              </li>
+            ))
+          ) : (
+            <li>No articles found</li>
+          )}
+        </ul>
+      </div>
     </div>
   );
 }
