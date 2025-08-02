@@ -20,15 +20,12 @@ export async function getStaticPaths() {
     const response = await octokit.repos.getContent({
       owner: process.env.GITHUB_OWNER,
       repo: process.env.GITHUB_REPO,
-      path: 'content/articles',
+      path: 'content/articles.json',
     });
-
-    const paths = Array.isArray(response.data)
-      ? response.data.map(file => ({
-          params: { slug: file.name.replace(".html", "") },
-        }))
-      : [];
-
+    const articles = JSON.parse(Buffer.from(response.data.content, 'base64').toString());
+    const paths = articles.map(article => ({
+      params: { slug: article.slug },
+    }));
     return { paths, fallback: false };
   } catch (error) {
     console.error(`getStaticPaths error: ${error.message}`);
@@ -38,16 +35,15 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   try {
-    const response = await fetch(
-      `https://raw.githubusercontent.com/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/main/content/articles/${params.slug}.html`,
-      {
-        headers: {
-          Authorization: `token ${process.env.GITHUB_TOKEN}`,
-        },
-      }
-    );
+    const url = `https://raw.githubusercontent.com/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/main/content/articles/${params.slug}.html`;
+    console.log(`Fetching article: ${url}`);
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `token ${process.env.GITHUB_TOKEN}`,
+      },
+    });
     if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.status}`);
+      throw new Error(`GitHub API error: ${response.status} - ${response.statusText}`);
     }
     const content = await response.text();
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
@@ -65,7 +61,7 @@ export async function getStaticProps({ params }) {
       },
     };
   } catch (error) {
-    console.error(`getStaticProps error: ${error.message}`);
+    console.error(`getStaticProps error for slug ${params.slug}: ${error.message}`);
     return {
       props: {
         content: null,
