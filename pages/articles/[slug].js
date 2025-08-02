@@ -12,9 +12,12 @@ export async function getStaticPaths() {
     }
   );
   const files = await response.json();
-  const paths = files.map(file => ({
-    params: { slug: file.name.replace(".html", "") },
-  }));
+  // Ensure files is an array, handle single file or error case
+  const paths = Array.isArray(files)
+    ? files.map(file => ({
+        params: { slug: file.name.replace(".html", "") },
+      }))
+    : [];
 
   return { paths, fallback: false };
 }
