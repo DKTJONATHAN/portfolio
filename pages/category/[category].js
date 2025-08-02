@@ -8,7 +8,7 @@ export default function CategoryPage({ category }) {
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/list-posts")
+    fetch("/api/list-posts-temp")
       .then(res => res.json())
       .then(data => {
         if (data.error) {
