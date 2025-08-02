@@ -31,16 +31,21 @@
     <meta name="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
 
     <!-- Favicon Links -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
-    <link rel="manifest" href="/images/site.webmanifest">
-    <link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#4f46e5">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48x48.png">
 
     <title>Jonathan Mwaniki Reports | Latest Kenya News, Breaking Updates, Business, Sports & Entertainment</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W3FVP4FRPT"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-W3FVP4FRPT');
+    </script>
 
     <!-- Structured Data for Organization -->
     <script type="application/ld+json">
@@ -901,6 +906,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // DOM elements
             const splashScreen = document.getElementById('splash-screen');
             const postList = document.getElementById('post-list');
             const searchInput = document.getElementById('search-input');
@@ -908,10 +914,11 @@
             const mobileMenuToggle = document.getElementById('mobileMenuToggle');
             const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
 
+            // State
             let postsByCategory = {};
             let currentCategory = 'ALL';
 
-            // Debounce function to limit search input events
+            // Debounce function for search
             function debounce(func, wait) {
                 let timeout;
                 return function (...args) {
@@ -941,7 +948,7 @@
                 });
             }
 
-            // Render posts to the DOM
+            // Render posts
             function renderPosts(posts, category) {
                 postList.innerHTML = '';
                 if (!posts || posts.length === 0) {
@@ -966,7 +973,7 @@
                 postsContainer.className = 'blog-posts';
 
                 sortedPosts.forEach((post, index) => {
-                    if (!post.category || !post.title || !post.slug) return;
+                    if (!post.category || !post.title || !post.slug || !post.url) return;
 
                     const postElement = document.createElement('article');
                     postElement.className = 'blog-post';
@@ -995,7 +1002,7 @@
                             ${keywords.length > 0 ? `
                                 <div class="post-tags">
                                     ${keywords.map(keyword => `
-                                        <a class="post-tag" data-tag="${encodeURIComponent(keyword)}" itemprop="keywords">${keyword}</a>
+                                        <a class="post-tag" href="/blogs.html?tag=${encodeURIComponent(keyword)}" data-tag="${encodeURIComponent(keyword)}" itemprop="keywords">${keyword}</a>
                                     `).join('')}
                                 </div>
                             ` : ''}
@@ -1073,19 +1080,19 @@
                 }
             }
 
-            // Preload and categorize posts
-            async function loadPosts() {
+            // Categorize posts
+            async function categorizePosts() {
                 const categories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment', 'ALL'];
                 const posts = await fetchPosts();
                 categories.forEach(category => {
-                    postsByCategory[category] = category === 'ALL' 
-                        ? posts 
+                    postsByCategory[category] = category === 'ALL'
+                        ? posts
                         : posts.filter(post => post.category && post.category.toLowerCase() === category.toLowerCase());
                 });
                 return postsByCategory;
             }
 
-            // Filter and render posts based on search and category
+            // Filter posts based on search and category
             const filterPosts = debounce(() => {
                 const searchTerm = searchInput.value.toLowerCase().trim();
                 let posts = postsByCategory[currentCategory] || [];
@@ -1132,7 +1139,7 @@
             postList.addEventListener('click', (e) => {
                 if (e.target.classList.contains('post-tag')) {
                     e.preventDefault();
-                    searchInput.value = e.target.dataset.tag;
+                    searchInput.value = decodeURIComponent(e.target.dataset.tag);
                     filterPosts();
                 }
             });
@@ -1141,7 +1148,6 @@
 
             // Lazy load images
             if ('IntersectionObserver' in window) {
-                const lazyImages = document.querySelectorAll('img[loading="lazy"]');
                 const observer = new IntersectionObserver((entries, obs) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
@@ -1152,20 +1158,29 @@
                         }
                     });
                 }, { rootMargin: '100px' });
-                lazyImages.forEach(img => observer.observe(img));
+                document.querySelectorAll('img[loading="lazy"]').forEach(img => observer.observe(img));
             }
 
             // Initialize
             (async () => {
                 try {
-                    await loadPosts();
+                    await categorizePosts();
                     renderPosts(postsByCategory['ALL'], 'ALL');
                     setActiveNav('ALL');
                     splashScreen.classList.add('hidden');
+                    gtag('event', 'page_load', {
+                        'event_category': 'Blog',
+                        'event_label': 'Index Page Loaded'
+                    });
                 } catch (error) {
                     console.error('Initialization error:', error.message);
                     postList.innerHTML = '<div class="error-message">Failed to load Kenya news. Please try again or <a href="/contact">contact support</a>.</div>';
                     splashScreen.classList.add('hidden');
+                    gtag('event', 'page_load_error', {
+                        'event_category': 'Blog',
+                        'event_label': 'Index Page Load Failed',
+                        'error_message': error.message
+                    });
                 }
             })();
         });
