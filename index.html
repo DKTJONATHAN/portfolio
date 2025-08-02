@@ -214,7 +214,7 @@
         .mobile-main-icons {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             flex: 1;
             justify-content: center;
         }
@@ -467,7 +467,7 @@
             font-weight: 600;
         }
         .post-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 700;
             margin-bottom: 0.75rem;
             line-height: 1.4;
@@ -475,6 +475,7 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            max-width: 100%;
         }
         .post-title a {
             color: var(--text-color);
@@ -486,13 +487,14 @@
         }
         .post-excerpt {
             color: var(--light-text);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             line-height: 1.5;
             margin-bottom: 1rem;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            max-width: 100%;
         }
         .post-footer {
             display: flex;
@@ -532,6 +534,33 @@
         }
         .btn-primary:hover {
             background: var(--primary-dark);
+        }
+
+        /* Ad Styling */
+        .ad-container {
+            position: relative;
+            max-width: 100%;
+            margin: 1.5rem auto;
+            text-align: center;
+            overflow: hidden;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .ad-container iframe {
+            max-width: 100%;
+            width: 468px;
+            height: 60px;
+            display: block;
+            margin: 0 auto;
+        }
+        @media (max-width: 480px) {
+            .ad-container iframe {
+                width: 100%;
+                max-width: 320px;
+                height: auto;
+                transform: scale(0.68);
+                transform-origin: center;
+            }
         }
 
         /* Footer */
@@ -702,7 +731,7 @@
                 grid-template-columns: 1fr;
             }
             .mobile-main-icons {
-                gap: 0.75rem;
+                gap: 0.5rem;
             }
         }
 
@@ -741,6 +770,12 @@
             .footer-logo img {
                 width: 40px;
                 height: 40px;
+            }
+            .post-title {
+                font-size: 0.95rem;
+            }
+            .post-excerpt {
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -848,6 +883,13 @@
                         <a href="#" class="legal-link">Sitemap</a>
                     </div>
                 </div>
+            </div>
+            <!-- Footer Ad -->
+            <div class="ad-container">
+                <script type="text/javascript">
+                    atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};
+                </script>
+                <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" async></script>
             </div>
         </footer>
 
@@ -1001,15 +1043,16 @@
 
                     postsContainer.appendChild(postElement);
 
-                    if ((index + 1) % 4 === 0) {
-                        const adScript = document.createElement('script');
-                        adScript.type = 'text/javascript';
-                        adScript.textContent = `atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};`;
-                        const adInvoke = document.createElement('script');
-                        adInvoke.src = '//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js';
-                        adInvoke.setAttribute('async', '');
-                        postsContainer.appendChild(adScript);
-                        postsContainer.appendChild(adInvoke);
+                    if ((index + 1) % 6 === 0) {
+                        const adContainer = document.createElement('div');
+                        adContainer.className = 'ad-container';
+                        adContainer.innerHTML = `
+                            <script type="text/javascript">
+                                atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};
+                            </script>
+                            <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" async></script>
+                        `;
+                        postsContainer.appendChild(adContainer);
                     }
                 });
 
