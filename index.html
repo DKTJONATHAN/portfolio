@@ -304,6 +304,33 @@
             font-size: 0.9rem;
         }
 
+        /* Search Bar */
+        .search-bar { 
+            margin: 0 auto 2rem; 
+            max-width: 500px; 
+            position: relative;
+        }
+        .search-bar input { 
+            width: 100%; 
+            padding: 0.8rem 1rem 0.8rem 2.5rem; 
+            border: 1px solid var(--border-color); 
+            border-radius: 2rem; 
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+        .search-bar input:focus { 
+            outline: none; 
+            border-color: var(--primary-color); 
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        .search-bar i { 
+            position: absolute; 
+            left: 1rem; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: var(--light-text); 
+        }
+
         /* Posts Grid */
         .blog-posts {
             display: grid;
@@ -396,122 +423,21 @@
             background: var(--primary-color);
             color: white;
         }
-        .read-more {
-            color: var(--primary-color);
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 1.5rem;
             font-weight: 600;
             font-size: 0.85rem;
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
             transition: all 0.2s ease;
         }
-        .read-more:hover {
-            gap: 0.5rem;
-        }
-        .read-more i {
-            font-size: 0.8rem;
-        }
-
-        /* Footer */
-        .site-footer {
-            background: var(--light-bg);
-            padding: 2rem 1rem;
-            border-top: 1px solid var(--border-color);
-        }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-        .footer-brand {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .footer-logo img {
-            width: 60px;
-            height: 60px;
-            border-radius: 0.5rem;
-            object-fit: cover;
-        }
-        .footer-name {
-            font-size: 1.25rem;
-            font-weight: 700;
-        }
-        .footer-description {
-            color: var(--light-text);
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        .social-links a {
-            color: var(--light-text);
-            font-size: 1.25rem;
-            transition: color 0.2s ease;
-        }
-        .social-links a:hover {
-            color: var(--primary-color);
-        }
-        .footer-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5rem;
-        }
-        .footer-column h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-        .footer-column ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-        .footer-column a {
-            color: var(--light-text);
-            font-size: 0.9rem;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-        .footer-column a:hover {
-            color: var(--primary-color);
-        }
-        .footer-legal {
-            grid-column: 1 / -1;
-            border-top: 1px solid var(--border-color);
-            padding-top: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            align-items: center;
-            text-align: center;
-        }
-        .copyright {
-            color: var(--light-text);
-            font-size: 0.8rem;
-        }
-        .legal-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-        }
-        .legal-link {
-            color: var(--light-text);
-            font-size: 0.8rem;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-        .legal-link:hover {
-            color: var(--primary-color);
+        .btn-primary:hover {
+            background: var(--primary-dark);
         }
 
         /* Loading and Error States */
@@ -559,6 +485,9 @@
             .header-logo img {
                 width: 70px;
                 height: 70px;
+            }
+            .post-image {
+                height: 160px;
             }
         }
 
@@ -661,8 +590,12 @@
                 </div>
             </div>
 
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search posts..." aria-label="Search news articles">
+                <i class="fas fa-search"></i>
+            </div>
+
             <div id="post-list">
-                <!-- Posts will be loaded here dynamically -->
                 <div class="loading-posts">
                     <i class="fas fa-spinner"></i> Loading posts...
                 </div>
@@ -761,196 +694,253 @@
     </div>
 
     <script>
-        // Sample post data - replace with your actual API call
-        const samplePosts = [
-            {
-                id: 1,
-                title: "Kenya's Economy Shows Strong Growth in Q2 2024",
-                description: "The Kenyan economy grew by 5.6% in the second quarter of 2024, exceeding expectations and signaling recovery from previous challenges.",
-                category: "Business",
-                date: "2024-08-15",
-                image: "/images/business-news.jpg",
-                tags: "economy, growth, kenya",
-                slug: "kenya-economy-growth-q2-2024"
-            },
-            {
-                id: 2,
-                title: "New Tech Hub Launched in Nairobi to Support Startups",
-                description: "A state-of-the-art technology hub has opened in Nairobi's Westlands area, offering workspace and funding opportunities for local tech entrepreneurs.",
-                category: "Tech",
-                date: "2024-08-14",
-                image: "/images/tech-hub.jpg",
-                tags: "technology, nairobi, startups",
-                slug: "nairobi-tech-hub-launch"
-            },
-            {
-                id: 3,
-                title: "Harambee Stars Qualify for AFCON 2025",
-                description: "Kenya's national football team secured their place in the 2025 Africa Cup of Nations with a thrilling 2-1 victory over Senegal.",
-                category: "Sports",
-                date: "2024-08-13",
-                image: "/images/football.jpg",
-                tags: "football, afcon, sports",
-                slug: "harambee-stars-afcon-2025"
-            },
-            {
-                id: 4,
-                title: "Government Announces New Tax Relief Measures",
-                description: "The Treasury has introduced new tax relief measures aimed at supporting small businesses and low-income earners in Kenya.",
-                category: "News",
-                date: "2024-08-12",
-                image: "/images/tax-news.jpg",
-                tags: "tax, government, economy",
-                slug: "kenya-tax-relief-measures"
-            },
-            {
-                id: 5,
-                title: "Popular Kenyan Musician Releases New Album",
-                description: "Award-winning artist releases his much-anticipated album featuring collaborations with international stars.",
-                category: "Entertainment",
-                date: "2024-08-11",
-                image: "/images/music.jpg",
-                tags: "music, entertainment, kenya",
-                slug: "kenyan-musician-new-album"
-            },
-            {
-                id: 6,
-                title: "Heavy Rains Cause Flooding in Parts of Nairobi",
-                description: "Several neighborhoods in Nairobi experienced flooding after overnight heavy rains, with emergency services responding to calls for help.",
-                category: "Breaking News",
-                date: "2024-08-10",
-                image: "/images/floods.jpg",
-                tags: "weather, nairobi, emergency",
-                slug: "nairobi-floods-heavy-rains"
-            }
-        ];
+        document.addEventListener('DOMContentLoaded', () => {
+            const splashScreen = document.getElementById('splash-screen');
+            const postList = document.getElementById('post-list');
+            const searchInput = document.getElementById('search-input');
+            const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link, .mobile-dropdown-link');
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
 
-        // DOM elements
-        const postList = document.getElementById('post-list');
-        const splashScreen = document.getElementById('splash-screen');
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
-        const categoryLinks = document.querySelectorAll('[data-category]');
-        
-        // Current state
-        let currentCategory = 'ALL';
-        let allPosts = samplePosts;
-        let filteredPosts = [];
+            let currentCategory = 'News';
+            let allPosts = {};
 
-        // Format date
-        function formatDate(dateString) {
-            if (!dateString) return '';
-            const options = { year: 'numeric', month: 'short', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString('en-US', options);
-        }
-
-        // Render posts
-        function renderPosts(posts, category) {
-            if (!posts || posts.length === 0) {
-                postList.innerHTML = '<div class="no-posts">No posts found in this category.</div>';
-                return;
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => { clearTimeout(timeout); func(...args); };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
             }
 
-            // Sort by date (newest first)
-            const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            let html = '<div class="blog-posts">';
-            
-            sortedPosts.forEach(post => {
-                html += `
-                    <article class="blog-post" data-id="${post.id}">
+            function formatDate(dateString) {
+                if (!dateString) return 'No date';
+                return new Date(dateString).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+            }
+
+            function setActiveNavLink(category) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('data-category') === category) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            function renderPosts(posts, category) {
+                postList.innerHTML = '';
+                if (!posts || posts.length === 0) {
+                    postList.innerHTML = `<div class="no-posts">No ${category} posts found.</div>`;
+                    return;
+                }
+
+                // Sort posts by date (newest first)
+                const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                const section = document.createElement('section');
+                section.className = 'category-section';
+                
+                if (category !== 'ALL') {
+                    const title = document.createElement('h2');
+                    title.className = 'category-title';
+                    title.textContent = category;
+                    section.appendChild(title);
+                }
+
+                const postsContainer = document.createElement('div');
+                postsContainer.className = 'blog-posts';
+
+                sortedPosts.forEach((post, index) => {
+                    if (!post.category) return;
+                    
+                    const postElement = document.createElement('article');
+                    postElement.className = 'blog-post';
+                    postElement.setAttribute('itemscope', '');
+                    postElement.setAttribute('itemtype', 'https://schema.org/NewsArticle');
+
+                    const imageUrl = post.image || '/images/default-blog.jpg';
+                    const excerpt = post.description || 'No description available.';
+                    const formattedDate = formatDate(post.date);
+                    const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+
+                    postElement.innerHTML = `
+                        <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
                         <div class="post-image">
-                            <img src="${post.image}" alt="${post.title}" loading="lazy">
+                            <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="360" height="180" fetchpriority="${index === 0 ? 'high' : 'auto'}" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
                         </div>
                         <div class="post-content">
                             <div class="post-meta">
-                                <span class="post-date"><i class="far fa-calendar-alt"></i> ${formatDate(post.date)}</span>
-                                <span class="post-category">${post.category}</span>
+                                <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time> • 
+                                <span class="post-category" itemprop="articleSection">${post.category || ''}</span>
                             </div>
-                            <h3 class="post-title"><a href="/post/${post.slug}">${post.title}</a></h3>
-                            <p class="post-excerpt">${post.description}</p>
-                            <div class="post-footer">
+                            <h3 class="post-title" itemprop="headline">
+                                <a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
+                            </h3>
+                            <div class="post-excerpt" itemprop="description">${excerpt}</div>
+                            ${keywords.length > 0 ? `
                                 <div class="post-tags">
-                                    ${post.tags.split(',').map(tag => `
-                                        <a href="#" class="post-tag" data-tag="${tag.trim()}">${tag.trim()}</a>
+                                    ${keywords.map(keyword => `
+                                        <a class="post-tag" data-tag="${encodeURIComponent(keyword)}" itemprop="keywords">${keyword}</a>
                                     `).join('')}
                                 </div>
-                                <a href="/post/${post.slug}" class="read-more">
-                                    Read more <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </div>
+                            ` : ''}
+                            <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">Read More</a>
                         </div>
-                    </article>
-                `;
-            });
-            
-            html += '</div>';
-            postList.innerHTML = html;
-        }
+                        <meta itemprop="author" content="Jonathan Mwaniki">
+                        <meta itemprop="dateModified" content="${post.date}">
+                        <meta itemprop="publisher" content="Mwaniki Reports">
+                    `;
 
-        // Filter posts by category
-        function filterPostsByCategory(category) {
-            currentCategory = category;
-            if (category === 'ALL') {
-                filteredPosts = allPosts;
-            } else {
-                filteredPosts = allPosts.filter(post => 
-                    post.category.toLowerCase() === category.toLowerCase()
-                );
+                    postsContainer.appendChild(postElement);
+
+                    if ((index + 1) % 4 === 0) {
+                        const adScript = document.createElement('script');
+                        adScript.type = 'text/javascript';
+                        adScript.textContent = `atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};`;
+                        const adInvoke = document.createElement('script');
+                        adInvoke.src = '//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js';
+                        adInvoke.setAttribute('async', '');
+                        postsContainer.appendChild(adScript);
+                        postsContainer.appendChild(adInvoke);
+                    }
+                });
+
+                section.appendChild(postsContainer);
+                postList.appendChild(section);
+
+                // Initialize lazy loading for images
+                if ('IntersectionObserver' in window) {
+                    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+                    const imageObserver = new IntersectionObserver((entries, observer) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const img = entry.target;
+                                img.src = img.dataset.src || img.src;
+                                img.removeAttribute('loading');
+                                observer.unobserve(img);
+                            }
+                        });
+                    }, { rootMargin: '100px' });
+                    lazyImages.forEach(img => imageObserver.observe(img));
+                }
             }
-            renderPosts(filteredPosts, category);
-        }
 
-        // Initialize
-        function init() {
-            // Hide splash screen
-            setTimeout(() => {
-                splashScreen.classList.add('hidden');
-            }, 1000);
-            
-            // Load initial posts
-            filterPostsByCategory(currentCategory);
-            
-            // Set up mobile menu toggle
-            mobileMenuToggle.addEventListener('click', () => {
+            async function fetchPosts() {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                try {
+                    console.log('Fetching posts...');
+                    const response = await fetch('/api/list-posts.js', {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' },
+                        signal: controller.signal,
+                        cache: 'default'
+                    });
+                    clearTimeout(timeoutId);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const { data, error } = await response.json();
+                    console.log('Posts fetched:', data);
+                    if (error) throw new Error(error);
+                    return data || [];
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/portfolio.html#contact">contact support</a>.</div>';
+                    return [];
+                }
+            }
+
+            async function preloadAllPosts() {
+                const categories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
+                const posts = await fetchPosts();
+                categories.forEach(category => {
+                    allPosts[category] = posts.filter(post => 
+                        post.category && post.category.toLowerCase() === category.toLowerCase()
+                    );
+                });
+                allPosts['ALL'] = posts; // Add ALL category with all posts
+                console.log('Preloaded posts:', allPosts);
+                return allPosts;
+            }
+
+            const filterPosts = debounce(() => {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                let posts = currentCategory === 'ALL' 
+                    ? allPosts['ALL'] || [] 
+                    : allPosts[currentCategory] || [];
+
+                if (searchTerm) {
+                    posts = posts.filter(post =>
+                        (post.title && post.title.toLowerCase().includes(searchTerm)) ||
+                        (post.description && post.description.toLowerCase().includes(searchTerm)) ||
+                        (post.tags && post.tags.split(',').map(tag => tag.trim()).some(tag => tag.toLowerCase().includes(searchTerm)))
+                    );
+                }
+
+                renderPosts(posts, currentCategory);
+                setActiveNavLink(currentCategory);
+            }, 250);
+
+            // Mobile menu toggle
+            mobileMenuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
                 mobileDropdownMenu.classList.toggle('show');
             });
-            
+
             // Close dropdown when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!mobileMenuToggle.contains(e.target) {
-                    mobileDropdownMenu.classList.remove('show');
-                }
+            document.addEventListener('click', () => {
+                mobileDropdownMenu.classList.remove('show');
             });
-            
-            // Set up category links
-            categoryLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const category = link.getAttribute('data-category');
-                    
-                    // Update active states
-                    categoryLinks.forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-                    
-                    // Filter posts
-                    filterPostsByCategory(category);
-                    
-                    // Close dropdown if open
-                    mobileDropdownMenu.classList.remove('show');
+
+            // Category navigation
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => { 
+                    e.preventDefault(); 
+                    currentCategory = link.dataset.category; 
+                    searchInput.value = ''; 
+                    filterPosts(); 
+                });
+                link.addEventListener('keydown', (e) => { 
+                    if (e.key === 'Enter' || e.key === ' ') { 
+                        e.preventDefault(); 
+                        currentCategory = link.dataset.category; 
+                        searchInput.value = ''; 
+                        filterPosts(); 
+                    } 
                 });
             });
-            
-            // Simulate loading from API
-            setTimeout(() => {
-                // In a real app, you would fetch from your API here
-                // For now we're using the sample data
-                filterPostsByCategory(currentCategory);
-            }, 1500);
-        }
 
-        // Start the app
-        document.addEventListener('DOMContentLoaded', init);
+            // Tag filtering
+            postList.addEventListener('click', (e) => {
+                if (e.target.classList.contains('post-tag')) {
+                    e.preventDefault();
+                    searchInput.value = e.target.dataset.tag;
+                    filterPosts();
+                }
+            });
+
+            // Search input
+            searchInput.addEventListener('input', filterPosts);
+
+            // Initial load
+            (async () => {
+                try {
+                    console.log('Starting preload...');
+                    await preloadAllPosts();
+                    console.log('Rendering posts...');
+                    renderPosts(allPosts[currentCategory], currentCategory);
+                    splashScreen.classList.add('hidden');
+                } catch (error) {
+                    console.error('Initialization error:', error);
+                    postList.innerHTML = '<div class="error-message">Failed to load. Please try again or <a href="/portfolio.html#contact">contact support</a>.</div>';
+                    splashScreen.classList.add('hidden');
+                }
+            })();
+        });
     </script>
 </body>
 </html>
