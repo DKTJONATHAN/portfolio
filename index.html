@@ -3,8 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mwaniki Reports | Kenya News</title>
+    <meta name="description" content="Mwaniki Reports: Breaking Kenya news, business updates, sports, tech & entertainment. Get real-time Nairobi news & expert opinions by Jonathan Mwaniki.">
+    <meta name="keywords" content="Kenya news, Nairobi breaking news, Kenyan business updates, East Africa tech news, Kenyan sports news, Mwaniki Reports, Jonathan Mwaniki">
+    <meta name="author" content="Jonathan Mwaniki">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="cache-control" content="public, max-age=604800, stale-while-revalidate=86400">
+
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Mwaniki Reports | Latest Kenya News & Updates">
+    <meta property="og:description" content="Your trusted source for breaking Kenya news, business, sports, tech and entertainment updates by Jonathan Mwaniki.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jonathanmwaniki.co.ke">
+    <meta property="og:image" content="https://jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    <meta property="og:site_name" content="Mwaniki Reports">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mwaniki Reports | Latest Kenya News & Updates">
+    <meta name="twitter:description" content="Your trusted source for breaking Kenya news, business, sports, tech and entertainment updates by Jonathan Mwaniki.">
+    <meta name="twitter:image" content="https://jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    <meta name="twitter:creator" content="@maestropuns">
+    <meta name="twitter:site" content="@maestropuns">
+
+    <title>Mwaniki Reports | Latest Kenya News, Business, Sports & Tech Updates</title>
+
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://jonathanmwaniki.co.ke">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W3FVP4FRPT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-W3FVP4FRPT');
+    </script>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsMediaOrganization",
+      "name": "Mwaniki Reports",
+      "url": "https://jonathanmwaniki.co.ke",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png",
+        "width": "80",
+        "height": "80"
+      },
+      "sameAs": [
+        "https://twitter.com/maestropuns",
+        "https://facebook.com/mwanikireports"
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Jonathan Mwaniki"
+      }
+    }
+    </script>
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         :root {
             --primary-color: #4f46e5;
@@ -62,6 +130,7 @@
             font-size: 2rem;
             font-weight: 700;
             margin: 1rem 0;
+            text-align: center;
         }
         .splash-spinner {
             font-size: 2rem;
@@ -120,7 +189,7 @@
             color: var(--primary-color);
         }
 
-        /* Unique Mobile Navigation */
+        /* Mobile Navigation */
         .mobile-nav {
             display: none;
             position: fixed;
@@ -135,16 +204,18 @@
         }
         .mobile-nav-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             height: 60px;
+            max-width: 100%;
+            gap: 2rem;
         }
         .mobile-main-icons {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
-            flex: 1;
+            gap: 2rem;
             justify-content: center;
+            flex: 0;
         }
         .mobile-nav-link {
             display: flex;
@@ -154,6 +225,7 @@
             font-size: 0.7rem;
             text-decoration: none;
             transition: all 0.2s ease;
+            min-width: 60px;
         }
         .mobile-nav-link i {
             font-size: 1.2rem;
@@ -256,16 +328,27 @@
         .section-header {
             text-align: center;
             margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .section-title {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .section-description {
             color: var(--light-text);
             max-width: 600px;
             margin: 0 auto 1.5rem;
+            text-align: center;
         }
         .header-logo-container {
             display: flex;
@@ -305,37 +388,38 @@
         }
 
         /* Search Bar */
-        .search-bar { 
-            margin: 0 auto 2rem; 
-            max-width: 500px; 
+        .search-bar {
+            margin: 0 auto 2rem;
+            max-width: 500px;
             position: relative;
         }
-        .search-bar input { 
-            width: 100%; 
-            padding: 0.8rem 1rem 0.8rem 2.5rem; 
-            border: 1px solid var(--border-color); 
-            border-radius: 2rem; 
+        .search-bar input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 2rem;
             font-size: 0.95rem;
             transition: all 0.2s ease;
         }
-        .search-bar input:focus { 
-            outline: none; 
-            border-color: var(--primary-color); 
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
-        .search-bar i { 
-            position: absolute; 
-            left: 1rem; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            color: var(--light-text); 
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light-text);
         }
 
         /* Posts Grid */
         .blog-posts {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 1.5rem;
+            max-width: 100%;
         }
         .blog-post {
             background: white;
@@ -343,6 +427,8 @@
             overflow: hidden;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
+            max-width: 360px;
+            margin: 0 auto;
         }
         .blog-post:hover {
             transform: translateY(-5px);
@@ -385,6 +471,10 @@
             font-weight: 700;
             margin-bottom: 0.75rem;
             line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         .post-title a {
             color: var(--text-color);
@@ -399,6 +489,10 @@
             font-size: 0.85rem;
             line-height: 1.5;
             margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         .post-footer {
             display: flex;
@@ -440,6 +534,151 @@
             background: var(--primary-dark);
         }
 
+        /* Ad Styling */
+        .ad-overlay-container {
+            position: fixed;
+            bottom: 80px;
+            left: 0;
+            right: 0;
+            z-index: 80;
+            display: flex;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .ad-overlay {
+            max-width: 468px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            pointer-events: auto;
+        }
+        .ad-container {
+            margin: 1rem auto;
+            text-align: center;
+            overflow: hidden;
+            max-width: 100%;
+            contain: content;
+        }
+        .ad-container iframe {
+            max-width: 100%;
+            width: 468px;
+            height: 60px;
+            display: block;
+            margin: 0 auto;
+        }
+        .blog-posts .ad-container {
+            max-width: 468px;
+            width: 100%;
+            margin: 1.5rem auto;
+            text-align: center;
+            overflow: hidden;
+            contain: content;
+        }
+        .blog-posts .ad-container iframe {
+            max-width: 100%;
+            width: 468px;
+            height: 60px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Footer */
+        .site-footer {
+            background: var(--light-bg);
+            padding: 2rem 1rem;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .footer-brand {
+            display: flex;
+            gap: 1rem;
+        }
+        .footer-logo img {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+        }
+        .footer-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .footer-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .footer-description {
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        .social-links a {
+            color: var(--light-text);
+            font-size: 1.2rem;
+            transition: color 0.2s ease;
+        }
+        .social-links a:hover {
+            color: var(--primary-color);
+        }
+        .footer-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .footer-column h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        .footer-column ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .footer-column a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+        .footer-column a:hover {
+            color: var(--primary-color);
+        }
+        .footer-legal {
+            grid-column: span 2;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .copyright {
+            color: var(--light-text);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        .legal-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .legal-link {
+            color: var(--light-text);
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .legal-link:hover {
+            color: var(--primary-color);
+        }
+
         /* Loading and Error States */
         .loading-posts, .no-posts, .error-message {
             text-align: center;
@@ -465,7 +704,10 @@
         /* Media Queries */
         @media (max-width: 1024px) {
             .blog-posts {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            }
+            .blog-post {
+                max-width: 320px;
             }
         }
 
@@ -475,6 +717,9 @@
             }
             .mobile-nav {
                 display: block;
+            }
+            .ad-overlay-container {
+                bottom: 80px;
             }
             .section-title {
                 font-size: 1.75rem;
@@ -489,20 +734,29 @@
             .post-image {
                 height: 160px;
             }
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 640px) {
             .blog-posts {
                 grid-template-columns: 1fr;
             }
+            .blog-post {
+                max-width: 100%;
+            }
             .post-image {
                 height: 200px;
             }
-            .footer-container {
+            .footer-links {
                 grid-template-columns: 1fr;
             }
-            .footer-links {
-                grid-template-columns: 1fr 1fr;
+            .mobile-nav-container {
+                gap: 1rem;
+            }
+            .mobile-main-icons {
+                gap: 1rem;
             }
         }
 
@@ -521,11 +775,15 @@
                 padding: 0.5rem 1.25rem;
                 font-size: 0.85rem;
             }
+            .mobile-nav-container {
+                gap: 1rem;
+            }
             .mobile-main-icons {
                 gap: 1rem;
             }
             .mobile-nav-link {
                 font-size: 0.6rem;
+                min-width: 50px;
             }
             .mobile-nav-link i {
                 font-size: 1.1rem;
@@ -537,6 +795,19 @@
             }
             .mobile-nav-all i {
                 font-size: 1.3rem;
+            }
+            .ad-container iframe {
+                width: 100%;
+                height: auto;
+                max-width: 468px;
+            }
+            .ad-overlay {
+                max-width: 100%;
+                padding: 0 1rem;
+            }
+            .footer-logo img {
+                width: 40px;
+                height: 40px;
             }
         }
     </style>
@@ -601,6 +872,18 @@
                 </div>
             </div>
         </main>
+
+        <!-- Ad Overlay -->
+        <div class="ad-overlay-container">
+            <div class="ad-overlay">
+                <div class="ad-container">
+                    <script type="text/javascript">
+                        atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" async></script>
+                </div>
+            </div>
+        </div>
 
         <!-- Footer -->
         <footer class="site-footer">
@@ -716,10 +999,10 @@
 
             function formatDate(dateString) {
                 if (!dateString) return 'No date';
-                return new Date(dateString).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'short', 
-                    day: 'numeric' 
+                return new Date(dateString).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
                 });
             }
 
@@ -739,12 +1022,11 @@
                     return;
                 }
 
-                // Sort posts by date (newest first)
                 const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
 
                 const section = document.createElement('section');
                 section.className = 'category-section';
-                
+
                 if (category !== 'ALL') {
                     const title = document.createElement('h2');
                     title.className = 'category-title';
@@ -757,7 +1039,7 @@
 
                 sortedPosts.forEach((post, index) => {
                     if (!post.category) return;
-                    
+
                     const postElement = document.createElement('article');
                     postElement.className = 'blog-post';
                     postElement.setAttribute('itemscope', '');
@@ -775,7 +1057,7 @@
                         </div>
                         <div class="post-content">
                             <div class="post-meta">
-                                <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time> • 
+                                <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time> •
                                 <span class="post-category" itemprop="articleSection">${post.category || ''}</span>
                             </div>
                             <h3 class="post-title" itemprop="headline">
@@ -798,22 +1080,22 @@
 
                     postsContainer.appendChild(postElement);
 
-                    if ((index + 1) % 4 === 0) {
-                        const adScript = document.createElement('script');
-                        adScript.type = 'text/javascript';
-                        adScript.textContent = `atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};`;
-                        const adInvoke = document.createElement('script');
-                        adInvoke.src = '//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js';
-                        adInvoke.setAttribute('async', '');
-                        postsContainer.appendChild(adScript);
-                        postsContainer.appendChild(adInvoke);
+                    if ((index + 1) % 6 === 0) {
+                        const adContainer = document.createElement('div');
+                        adContainer.className = 'ad-container';
+                        adContainer.innerHTML = `
+                            <script type="text/javascript">
+                                atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};
+                            </script>
+                            <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" async></script>
+                        `;
+                        postsContainer.appendChild(adContainer);
                     }
                 });
 
                 section.appendChild(postsContainer);
                 postList.appendChild(section);
 
-                // Initialize lazy loading for images
                 if ('IntersectionObserver' in window) {
                     const lazyImages = document.querySelectorAll('img[loading="lazy"]');
                     const imageObserver = new IntersectionObserver((entries, observer) => {
@@ -858,19 +1140,19 @@
                 const categories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
                 const posts = await fetchPosts();
                 categories.forEach(category => {
-                    allPosts[category] = posts.filter(post => 
+                    allPosts[category] = posts.filter(post =>
                         post.category && post.category.toLowerCase() === category.toLowerCase()
                     );
                 });
-                allPosts['ALL'] = posts; // Add ALL category with all posts
+                allPosts['ALL'] = posts;
                 console.log('Preloaded posts:', allPosts);
                 return allPosts;
             }
 
             const filterPosts = debounce(() => {
                 const searchTerm = searchInput.value.toLowerCase().trim();
-                let posts = currentCategory === 'ALL' 
-                    ? allPosts['ALL'] || [] 
+                let posts = currentCategory === 'ALL'
+                    ? allPosts['ALL'] || []
                     : allPosts[currentCategory] || [];
 
                 if (searchTerm) {
@@ -885,36 +1167,32 @@
                 setActiveNavLink(currentCategory);
             }, 250);
 
-            // Mobile menu toggle
             mobileMenuToggle.addEventListener('click', (e) => {
                 e.stopPropagation();
                 mobileDropdownMenu.classList.toggle('show');
             });
 
-            // Close dropdown when clicking outside
             document.addEventListener('click', () => {
                 mobileDropdownMenu.classList.remove('show');
             });
 
-            // Category navigation
             navLinks.forEach(link => {
-                link.addEventListener('click', (e) => { 
-                    e.preventDefault(); 
-                    currentCategory = link.dataset.category; 
-                    searchInput.value = ''; 
-                    filterPosts(); 
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentCategory = link.dataset.category;
+                    searchInput.value = '';
+                    filterPosts();
                 });
-                link.addEventListener('keydown', (e) => { 
-                    if (e.key === 'Enter' || e.key === ' ') { 
-                        e.preventDefault(); 
-                        currentCategory = link.dataset.category; 
-                        searchInput.value = ''; 
-                        filterPosts(); 
-                    } 
+                link.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        currentCategory = link.dataset.category;
+                        searchInput.value = '';
+                        filterPosts();
+                    }
                 });
             });
 
-            // Tag filtering
             postList.addEventListener('click', (e) => {
                 if (e.target.classList.contains('post-tag')) {
                     e.preventDefault();
@@ -923,10 +1201,8 @@
                 }
             });
 
-            // Search input
             searchInput.addEventListener('input', filterPosts);
 
-            // Initial load
             (async () => {
                 try {
                     console.log('Starting preload...');
