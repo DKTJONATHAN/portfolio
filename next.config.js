@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export", // Enables static export
+  output: "export",
   reactStrictMode: true,
-  trailingSlash: true, // Ensures URLs work with static export
+  trailingSlash: true,
   env: {
-    GITHUB_OWNER: process.env.GITHUB_OWNER,
-    GITHUB_REPO: process.env.GITHUB_REPO,
+    GITHUB_OWNER: "DKTJONATHAN",
+    GITHUB_REPO: "portfolio",
     GITHUB_TOKEN: process.env.GITHUB_TOKEN,
   },
 };
