@@ -28,13 +28,10 @@
             color: var(--text-color);
             background: var(--background-color);
             line-height: 1.5;
-            overflow-x: hidden;
         }
 
         #mainContent {
             padding-bottom: 80px;
-            max-width: 100%;
-            overflow-x: hidden;
         }
 
         /* Splash Screen */
@@ -65,7 +62,6 @@
             font-size: 2rem;
             font-weight: 700;
             margin: 1rem 0;
-            text-align: center;
         }
         .splash-spinner {
             font-size: 2rem;
@@ -80,7 +76,6 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            width: 100%;
         }
         .nav-container {
             max-width: 1200px;
@@ -108,8 +103,6 @@
         .nav-links {
             display: flex;
             gap: 1.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
         }
         .nav-link {
             color: var(--light-text);
@@ -119,7 +112,6 @@
             align-items: center;
             gap: 0.5rem;
             transition: color 0.2s ease;
-            white-space: nowrap;
         }
         .nav-link i {
             font-size: 1.1rem;
@@ -138,25 +130,21 @@
             background: var(--background-color);
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
             z-index: 90;
-            padding: 0.5rem;
+            padding: 0.5rem 1rem;
             border-top: 1px solid var(--border-color);
-            width: 100%;
         }
         .mobile-nav-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             height: 60px;
-            max-width: 100%;
-            margin: 0 auto;
         }
         .mobile-main-icons {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
             flex: 1;
             justify-content: center;
-            max-width: calc(100% - 50px);
         }
         .mobile-nav-link {
             display: flex;
@@ -166,9 +154,6 @@
             font-size: 0.7rem;
             text-decoration: none;
             transition: all 0.2s ease;
-            min-width: 60px;
-            max-width: 80px;
-            overflow: hidden;
         }
         .mobile-nav-link i {
             font-size: 1.2rem;
@@ -190,7 +175,6 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
-            flex-shrink: 0;
         }
         .mobile-nav-all i {
             font-size: 1.4rem;
@@ -212,8 +196,6 @@
             color: var(--text-color);
             cursor: pointer;
             transition: all 0.2s ease;
-            flex-shrink: 0;
-            margin-left: 0.5rem;
         }
         .mobile-menu-toggle:hover {
             background: var(--primary-color);
@@ -225,7 +207,7 @@
         .mobile-dropdown-menu {
             position: fixed;
             bottom: 80px;
-            right: 10px;
+            right: 20px;
             background: white;
             border-radius: 1rem;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -235,7 +217,6 @@
             flex-direction: column;
             gap: 0.75rem;
             min-width: 150px;
-            max-width: 200px;
             transform-origin: bottom right;
             transform: scale(0.9);
             opacity: 0;
@@ -255,7 +236,6 @@
             padding: 0.5rem 0.75rem;
             border-radius: 0.5rem;
             transition: all 0.2s ease;
-            white-space: nowrap;
         }
         .mobile-dropdown-link i {
             font-size: 1rem;
@@ -272,37 +252,28 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem 1rem;
-            width: 100%;
-            box-sizing: border-box;
         }
         .section-header {
             text-align: center;
             margin-bottom: 2rem;
-            width: 100%;
-            padding: 0 1rem;
-            box-sizing: border-box;
         }
         .section-title {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            line-height: 1.2;
         }
         .section-description {
             color: var(--light-text);
             max-width: 600px;
             margin: 0 auto 1.5rem;
-            font-size: 1rem;
-            line-height: 1.5;
         }
         .header-logo-container {
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 1.5rem;
             margin-bottom: 1.5rem;
-            width: 100%;
+            flex-wrap: wrap;
         }
         .header-logo img {
             width: 80px;
@@ -313,9 +284,6 @@
         .header-buttons {
             display: flex;
             gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            width: 100%;
         }
         .header-btn {
             padding: 0.6rem 1.5rem;
@@ -328,8 +296,6 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.9rem;
-            white-space: nowrap;
         }
         .header-btn:hover {
             background: var(--primary-dark);
@@ -338,45 +304,11 @@
             font-size: 0.9rem;
         }
 
-        /* Search Bar */
-        .search-bar { 
-            margin: 0 auto 2rem; 
-            max-width: 500px; 
-            width: 100%;
-            position: relative;
-            padding: 0 1rem;
-            box-sizing: border-box;
-        }
-        .search-bar input { 
-            width: 100%; 
-            padding: 0.8rem 1rem 0.8rem 2.5rem; 
-            border: 1px solid var(--border-color); 
-            border-radius: 2rem; 
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
-        }
-        .search-bar input:focus { 
-            outline: none; 
-            border-color: var(--primary-color); 
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-        .search-bar i { 
-            position: absolute; 
-            left: 1.75rem; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            color: var(--light-text); 
-        }
-
         /* Posts Grid */
         .blog-posts {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
-            width: 100%;
-            padding: 0 1rem;
-            box-sizing: border-box;
         }
         .blog-post {
             background: white;
@@ -384,9 +316,6 @@
             overflow: hidden;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            max-width: 100%;
         }
         .blog-post:hover {
             transform: translateY(-5px);
@@ -395,7 +324,6 @@
         .post-image {
             height: 180px;
             overflow: hidden;
-            width: 100%;
         }
         .post-image img {
             width: 100%;
@@ -408,9 +336,6 @@
         }
         .post-content {
             padding: 1.25rem;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
         }
         .post-meta {
             display: flex;
@@ -419,7 +344,6 @@
             color: var(--light-text);
             font-size: 0.75rem;
             margin-bottom: 0.75rem;
-            flex-wrap: wrap;
         }
         .post-category {
             background: var(--light-bg);
@@ -428,7 +352,6 @@
             border-radius: 1rem;
             font-size: 0.7rem;
             font-weight: 600;
-            white-space: nowrap;
         }
         .post-title {
             font-size: 1.1rem;
@@ -449,16 +372,11 @@
             font-size: 0.85rem;
             line-height: 1.5;
             margin-bottom: 1rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
         }
         .post-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: auto;
         }
         .post-tags {
             display: flex;
@@ -473,28 +391,26 @@
             font-size: 0.7rem;
             text-decoration: none;
             transition: all 0.2s ease;
-            white-space: nowrap;
         }
         .post-tag:hover {
             background: var(--primary-color);
             color: white;
         }
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: var(--primary-color);
-            color: white;
-            border-radius: 1.5rem;
+        .read-more {
+            color: var(--primary-color);
             font-weight: 600;
             font-size: 0.85rem;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
             transition: all 0.2s ease;
-            white-space: nowrap;
         }
-        .btn-primary:hover {
-            background: var(--primary-dark);
+        .read-more:hover {
+            gap: 0.5rem;
+        }
+        .read-more i {
+            font-size: 0.8rem;
         }
 
         /* Footer */
@@ -502,7 +418,6 @@
             background: var(--light-bg);
             padding: 2rem 1rem;
             border-top: 1px solid var(--border-color);
-            width: 100%;
         }
         .footer-container {
             max-width: 1200px;
@@ -514,8 +429,6 @@
         .footer-brand {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
             gap: 1rem;
         }
         .footer-logo img {
@@ -532,14 +445,11 @@
             color: var(--light-text);
             font-size: 0.9rem;
             line-height: 1.5;
-            max-width: 300px;
-            margin: 0 auto;
         }
         .social-links {
             display: flex;
             gap: 1rem;
             margin-top: 1rem;
-            justify-content: center;
         }
         .social-links a {
             color: var(--light-text);
@@ -553,10 +463,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 1.5rem;
-            padding: 0 1rem;
-        }
-        .footer-column {
-            text-align: center;
         }
         .footer-column h3 {
             font-size: 1rem;
@@ -613,7 +519,6 @@
             text-align: center;
             padding: 3rem 1rem;
             color: var(--light-text);
-            width: 100%;
         }
         .loading-posts i {
             color: var(--primary-color);
@@ -636,9 +541,6 @@
             .blog-posts {
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             }
-            .nav-links {
-                gap: 1rem;
-            }
         }
 
         @media (max-width: 768px) {
@@ -646,7 +548,7 @@
                 display: none;
             }
             .mobile-nav {
-                display: flex;
+                display: block;
             }
             .section-title {
                 font-size: 1.75rem;
@@ -658,24 +560,20 @@
                 width: 70px;
                 height: 70px;
             }
-            .post-image {
-                height: 160px;
-            }
+        }
+
+        @media (max-width: 640px) {
             .blog-posts {
                 grid-template-columns: 1fr;
-                max-width: 600px;
-                margin: 0 auto;
+            }
+            .post-image {
+                height: 200px;
             }
             .footer-container {
                 grid-template-columns: 1fr;
             }
             .footer-links {
                 grid-template-columns: 1fr 1fr;
-                margin-top: 1.5rem;
-            }
-            .footer-brand {
-                align-items: center;
-                text-align: center;
             }
         }
 
@@ -695,11 +593,10 @@
                 font-size: 0.85rem;
             }
             .mobile-main-icons {
-                gap: 0.5rem;
+                gap: 1rem;
             }
             .mobile-nav-link {
                 font-size: 0.6rem;
-                min-width: 50px;
             }
             .mobile-nav-link i {
                 font-size: 1.1rem;
@@ -711,13 +608,6 @@
             }
             .mobile-nav-all i {
                 font-size: 1.3rem;
-            }
-            .mobile-dropdown-menu {
-                right: 5px;
-                min-width: 140px;
-            }
-            .footer-links {
-                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -771,12 +661,8 @@
                 </div>
             </div>
 
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Search posts..." aria-label="Search news articles">
-                <i class="fas fa-search"></i>
-            </div>
-
             <div id="post-list">
+                <!-- Posts will be loaded here dynamically -->
                 <div class="loading-posts">
                     <i class="fas fa-spinner"></i> Loading posts...
                 </div>
@@ -874,255 +760,197 @@
         </nav>
     </div>
 
-    <!-- Original Scripts Preserved -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const splashScreen = document.getElementById('splash-screen');
-            const postList = document.getElementById('post-list');
-            const searchInput = document.getElementById('search-input');
-            const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link, .mobile-dropdown-link');
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
+        // Sample post data - replace with your actual API call
+        const samplePosts = [
+            {
+                id: 1,
+                title: "Kenya's Economy Shows Strong Growth in Q2 2024",
+                description: "The Kenyan economy grew by 5.6% in the second quarter of 2024, exceeding expectations and signaling recovery from previous challenges.",
+                category: "Business",
+                date: "2024-08-15",
+                image: "/images/business-news.jpg",
+                tags: "economy, growth, kenya",
+                slug: "kenya-economy-growth-q2-2024"
+            },
+            {
+                id: 2,
+                title: "New Tech Hub Launched in Nairobi to Support Startups",
+                description: "A state-of-the-art technology hub has opened in Nairobi's Westlands area, offering workspace and funding opportunities for local tech entrepreneurs.",
+                category: "Tech",
+                date: "2024-08-14",
+                image: "/images/tech-hub.jpg",
+                tags: "technology, nairobi, startups",
+                slug: "nairobi-tech-hub-launch"
+            },
+            {
+                id: 3,
+                title: "Harambee Stars Qualify for AFCON 2025",
+                description: "Kenya's national football team secured their place in the 2025 Africa Cup of Nations with a thrilling 2-1 victory over Senegal.",
+                category: "Sports",
+                date: "2024-08-13",
+                image: "/images/football.jpg",
+                tags: "football, afcon, sports",
+                slug: "harambee-stars-afcon-2025"
+            },
+            {
+                id: 4,
+                title: "Government Announces New Tax Relief Measures",
+                description: "The Treasury has introduced new tax relief measures aimed at supporting small businesses and low-income earners in Kenya.",
+                category: "News",
+                date: "2024-08-12",
+                image: "/images/tax-news.jpg",
+                tags: "tax, government, economy",
+                slug: "kenya-tax-relief-measures"
+            },
+            {
+                id: 5,
+                title: "Popular Kenyan Musician Releases New Album",
+                description: "Award-winning artist releases his much-anticipated album featuring collaborations with international stars.",
+                category: "Entertainment",
+                date: "2024-08-11",
+                image: "/images/music.jpg",
+                tags: "music, entertainment, kenya",
+                slug: "kenyan-musician-new-album"
+            },
+            {
+                id: 6,
+                title: "Heavy Rains Cause Flooding in Parts of Nairobi",
+                description: "Several neighborhoods in Nairobi experienced flooding after overnight heavy rains, with emergency services responding to calls for help.",
+                category: "Breaking News",
+                date: "2024-08-10",
+                image: "/images/floods.jpg",
+                tags: "weather, nairobi, emergency",
+                slug: "nairobi-floods-heavy-rains"
+            }
+        ];
 
-            let currentCategory = 'News';
-            let allPosts = {};
+        // DOM elements
+        const postList = document.getElementById('post-list');
+        const splashScreen = document.getElementById('splash-screen');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
+        const categoryLinks = document.querySelectorAll('[data-category]');
+        
+        // Current state
+        let currentCategory = 'ALL';
+        let allPosts = samplePosts;
+        let filteredPosts = [];
 
-            function debounce(func, wait) {
-                let timeout;
-                return function executedFunction(...args) {
-                    const later = () => { clearTimeout(timeout); func(...args); };
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                };
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        // Render posts
+        function renderPosts(posts, category) {
+            if (!posts || posts.length === 0) {
+                postList.innerHTML = '<div class="no-posts">No posts found in this category.</div>';
+                return;
             }
 
-            function formatDate(dateString) {
-                if (!dateString) return 'No date';
-                return new Date(dateString).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'short', 
-                    day: 'numeric' 
-                });
-            }
-
-            function setActiveNavLink(category) {
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('data-category') === category) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-
-            function renderPosts(posts, category) {
-                postList.innerHTML = '';
-                if (!posts || posts.length === 0) {
-                    postList.innerHTML = `<div class="no-posts">No ${category} posts found.</div>`;
-                    return;
-                }
-
-                // Sort posts by date (newest first)
-                const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                const section = document.createElement('section');
-                section.className = 'category-section';
-                
-                if (category !== 'ALL') {
-                    const title = document.createElement('h2');
-                    title.className = 'category-title';
-                    title.textContent = category;
-                    section.appendChild(title);
-                }
-
-                const postsContainer = document.createElement('div');
-                postsContainer.className = 'blog-posts';
-
-                sortedPosts.forEach((post, index) => {
-                    if (!post.category) return;
-                    
-                    const postElement = document.createElement('article');
-                    postElement.className = 'blog-post';
-                    postElement.setAttribute('itemscope', '');
-                    postElement.setAttribute('itemtype', 'https://schema.org/NewsArticle');
-
-                    const imageUrl = post.image || '/images/default-blog.jpg';
-                    const excerpt = post.description || 'No description available.';
-                    const formattedDate = formatDate(post.date);
-                    const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
-
-                    postElement.innerHTML = `
-                        <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
+            // Sort by date (newest first)
+            const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            let html = '<div class="blog-posts">';
+            
+            sortedPosts.forEach(post => {
+                html += `
+                    <article class="blog-post" data-id="${post.id}">
                         <div class="post-image">
-                            <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="360" height="180" fetchpriority="${index === 0 ? 'high' : 'auto'}" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                            <img src="${post.image}" alt="${post.title}" loading="lazy">
                         </div>
                         <div class="post-content">
                             <div class="post-meta">
-                                <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time> • 
-                                <span class="post-category" itemprop="articleSection">${post.category || ''}</span>
+                                <span class="post-date"><i class="far fa-calendar-alt"></i> ${formatDate(post.date)}</span>
+                                <span class="post-category">${post.category}</span>
                             </div>
-                            <h3 class="post-title" itemprop="headline">
-                                <a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
-                            </h3>
-                            <div class="post-excerpt" itemprop="description">${excerpt}</div>
-                            ${keywords.length > 0 ? `
+                            <h3 class="post-title"><a href="/post/${post.slug}">${post.title}</a></h3>
+                            <p class="post-excerpt">${post.description}</p>
+                            <div class="post-footer">
                                 <div class="post-tags">
-                                    ${keywords.map(keyword => `
-                                        <a class="post-tag" data-tag="${encodeURIComponent(keyword)}" itemprop="keywords">${keyword}</a>
+                                    ${post.tags.split(',').map(tag => `
+                                        <a href="#" class="post-tag" data-tag="${tag.trim()}">${tag.trim()}</a>
                                     `).join('')}
                                 </div>
-                            ` : ''}
-                            <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">Read More</a>
+                                <a href="/post/${post.slug}" class="read-more">
+                                    Read more <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
                         </div>
-                        <meta itemprop="author" content="Jonathan Mwaniki">
-                        <meta itemprop="dateModified" content="${post.date}">
-                        <meta itemprop="publisher" content="Mwaniki Reports">
-                    `;
+                    </article>
+                `;
+            });
+            
+            html += '</div>';
+            postList.innerHTML = html;
+        }
 
-                    postsContainer.appendChild(postElement);
-
-                    if ((index + 1) % 4 === 0) {
-                        const adScript = document.createElement('script');
-                        adScript.type = 'text/javascript';
-                        adScript.textContent = `atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};`;
-                        const adInvoke = document.createElement('script');
-                        adInvoke.src = '//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js';
-                        adInvoke.setAttribute('async', '');
-                        postsContainer.appendChild(adScript);
-                        postsContainer.appendChild(adInvoke);
-                    }
-                });
-
-                section.appendChild(postsContainer);
-                postList.appendChild(section);
-
-                // Initialize lazy loading for images
-                if ('IntersectionObserver' in window) {
-                    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-                    const imageObserver = new IntersectionObserver((entries, observer) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) {
-                                const img = entry.target;
-                                img.src = img.dataset.src || img.src;
-                                img.removeAttribute('loading');
-                                observer.unobserve(img);
-                            }
-                        });
-                    }, { rootMargin: '100px' });
-                    lazyImages.forEach(img => imageObserver.observe(img));
-                }
+        // Filter posts by category
+        function filterPostsByCategory(category) {
+            currentCategory = category;
+            if (category === 'ALL') {
+                filteredPosts = allPosts;
+            } else {
+                filteredPosts = allPosts.filter(post => 
+                    post.category.toLowerCase() === category.toLowerCase()
+                );
             }
+            renderPosts(filteredPosts, category);
+        }
 
-            async function fetchPosts() {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
-                try {
-                    console.log('Fetching posts...');
-                    const response = await fetch('/api/list-posts.js', {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json' },
-                        signal: controller.signal,
-                        cache: 'default'
-                    });
-                    clearTimeout(timeoutId);
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    const { data, error } = await response.json();
-                    console.log('Posts fetched:', data);
-                    if (error) throw new Error(error);
-                    return data || [];
-                } catch (error) {
-                    console.error('Fetch error:', error);
-                    postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/portfolio.html#contact">contact support</a>.</div>';
-                    return [];
-                }
-            }
-
-            async function preloadAllPosts() {
-                const categories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
-                const posts = await fetchPosts();
-                categories.forEach(category => {
-                    allPosts[category] = posts.filter(post => 
-                        post.category && post.category.toLowerCase() === category.toLowerCase()
-                    );
-                });
-                allPosts['ALL'] = posts; // Add ALL category with all posts
-                console.log('Preloaded posts:', allPosts);
-                return allPosts;
-            }
-
-            const filterPosts = debounce(() => {
-                const searchTerm = searchInput.value.toLowerCase().trim();
-                let posts = currentCategory === 'ALL' 
-                    ? allPosts['ALL'] || [] 
-                    : allPosts[currentCategory] || [];
-
-                if (searchTerm) {
-                    posts = posts.filter(post =>
-                        (post.title && post.title.toLowerCase().includes(searchTerm)) ||
-                        (post.description && post.description.toLowerCase().includes(searchTerm)) ||
-                        (post.tags && post.tags.split(',').map(tag => tag.trim()).some(tag => tag.toLowerCase().includes(searchTerm))
-                    );
-                }
-
-                renderPosts(posts, currentCategory);
-                setActiveNavLink(currentCategory);
-            }, 250);
-
-            // Mobile menu toggle
-            mobileMenuToggle.addEventListener('click', (e) => {
-                e.stopPropagation();
+        // Initialize
+        function init() {
+            // Hide splash screen
+            setTimeout(() => {
+                splashScreen.classList.add('hidden');
+            }, 1000);
+            
+            // Load initial posts
+            filterPostsByCategory(currentCategory);
+            
+            // Set up mobile menu toggle
+            mobileMenuToggle.addEventListener('click', () => {
                 mobileDropdownMenu.classList.toggle('show');
             });
-
+            
             // Close dropdown when clicking outside
-            document.addEventListener('click', () => {
-                mobileDropdownMenu.classList.remove('show');
+            document.addEventListener('click', (e) => {
+                if (!mobileMenuToggle.contains(e.target) {
+                    mobileDropdownMenu.classList.remove('show');
+                }
             });
-
-            // Category navigation
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => { 
-                    e.preventDefault(); 
-                    currentCategory = link.dataset.category; 
-                    searchInput.value = ''; 
-                    filterPosts(); 
-                });
-                link.addEventListener('keydown', (e) => { 
-                    if (e.key === 'Enter' || e.key === ' ') { 
-                        e.preventDefault(); 
-                        currentCategory = link.dataset.category; 
-                        searchInput.value = ''; 
-                        filterPosts(); 
-                    } 
-                });
-            });
-
-            // Tag filtering
-            postList.addEventListener('click', (e) => {
-                if (e.target.classList.contains('post-tag')) {
+            
+            // Set up category links
+            categoryLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    searchInput.value = e.target.dataset.tag;
-                    filterPosts();
-                }
+                    const category = link.getAttribute('data-category');
+                    
+                    // Update active states
+                    categoryLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    // Filter posts
+                    filterPostsByCategory(category);
+                    
+                    // Close dropdown if open
+                    mobileDropdownMenu.classList.remove('show');
+                });
             });
+            
+            // Simulate loading from API
+            setTimeout(() => {
+                // In a real app, you would fetch from your API here
+                // For now we're using the sample data
+                filterPostsByCategory(currentCategory);
+            }, 1500);
+        }
 
-            // Search input
-            searchInput.addEventListener('input', filterPosts);
-
-            // Initial load
-            (async () => {
-                try {
-                    console.log('Starting preload...');
-                    await preloadAllPosts();
-                    console.log('Rendering posts...');
-                    renderPosts(allPosts[currentCategory], currentCategory);
-                    splashScreen.classList.add('hidden');
-                } catch (error) {
-                    console.error('Initialization error:', error);
-                    postList.innerHTML = '<div class="error-message">Failed to load. Please try again or <a href="/portfolio.html#contact">contact support</a>.</div>';
-                    splashScreen.classList.add('hidden');
-                }
-            })();
-        });
+        // Start the app
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
