@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
+import Layout from '../components/Layout';
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -25,40 +24,34 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="container">
-      <Head>
-        <title>Jonathan Mwaniki Reports</title>
-        <meta name="description" content="Latest news and reports" />
-      </Head>
-
-      <header>
-        <h1>Jonathan Mwaniki Reports</h1>
-      </header>
-
-      <main>
-        {loading && <p>Loading posts...</p>}
-        {error && <p>Error: {error}</p>}
+    <Layout>
+      <div className="content">
+        {loading && <p className="loading">Loading posts...</p>}
+        {error && <p className="error">Error: {error}</p>}
 
         <div className="posts-grid">
           {posts.map(post => (
             <article key={post.slug} className="post-card">
               <h2>
-                <Link href={`/articles/${post.slug}`}>
-                  <a>{post.title}</a>
-                </Link>
+                <a href={`/articles/${post.slug}`}>{post.title}</a>
               </h2>
               <p className="category">{post.category}</p>
               <p className="date">{new Date(post.date).toLocaleDateString()}</p>
             </article>
           ))}
         </div>
-      </main>
+      </div>
 
       <style jsx>{`
-        .container {
-          max-width: 1200px;
-          margin: 0 auto;
+        .content {
+          padding: 20px 0;
+        }
+        .loading, .error {
+          text-align: center;
           padding: 20px;
+        }
+        .error {
+          color: #d32f2f;
         }
         .posts-grid {
           display: grid;
@@ -70,19 +63,35 @@ export default function Home() {
           border: 1px solid #ddd;
           padding: 20px;
           border-radius: 8px;
+          transition: transform 0.2s;
+        }
+        .post-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         .post-card h2 {
           margin-top: 0;
+          margin-bottom: 10px;
+        }
+        .post-card h2 a {
+          color: #333;
+          text-decoration: none;
+        }
+        .post-card h2 a:hover {
+          color: #0066cc;
+          text-decoration: underline;
         }
         .category {
           color: #666;
           font-weight: bold;
+          margin: 5px 0;
         }
         .date {
           color: #999;
           font-size: 0.9em;
+          margin: 5px 0 0;
         }
       `}</style>
-    </div>
+    </Layout>
   );
 }
