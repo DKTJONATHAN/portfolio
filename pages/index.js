@@ -6,8 +6,10 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     fetch("/api/list-posts")
       .then(res => res.json())
       .then(data => {
@@ -18,10 +20,12 @@ export default function Home() {
           setPosts(data.data || []);
           setError(null);
         }
+        setLoading(false);
       })
       .catch(err => {
         setError("Failed to fetch articles");
         setPosts([]);
+        setLoading(false);
         console.error("Fetch error:", err);
       });
   }, []);
@@ -52,6 +56,22 @@ export default function Home() {
             <option key={cat} value={cat}>{cat}</option>
           ))}
         </select>
+        <div style={{ margin: "10px 0" }}>
+          {categories.slice(1).map(cat => (
+            <a
+              key={cat}
+              href={`/category/${cat}`}
+              style={{ margin: "0 10px", color: "#007bff", textDecoration: "none" }}
+            >
+              {cat}
+            </a>
+          ))}
+        </div>
+        {loading && (
+          <p style={{ color: "#666", fontSize: "14px", margin: "10px 0" }}>
+            Loading articles...
+          </p>
+        )}
         {error && (
           <p style={{ color: "red", fontSize: "14px", margin: "10px 0" }}>
             Error: {error}
@@ -70,7 +90,7 @@ export default function Home() {
               </li>
             ))
           ) : (
-            <li>No articles found</li>
+            !loading && <li>No articles found</li>
           )}
         </ul>
       </div>
