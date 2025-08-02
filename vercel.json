@@ -1,14 +1,10 @@
- {
+{
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/:path*",
-      "destination": "/:path*.html"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/:path*/index.html"
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     },
     {
       "source": "/sitemap",
@@ -17,6 +13,14 @@
     {
       "source": "/robots",
       "destination": "/robots.txt"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/:path*.html"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/:path*/index.html"
     },
     {
       "source": "/:path*",
