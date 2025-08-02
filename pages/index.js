@@ -4,16 +4,32 @@ import Header from "../components/Header";
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("All");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetch("/api/list-posts")
       .then(res => res.json())
-      .then(data => setPosts(data.data || []))
-      .catch(err => console.error("Fetch error:", err));
+      .then(data => {
+        if (data.error) {
+          setError(data.error);
+          setPosts([]);
+        } else {
+          setPosts(data.data || []);
+          setError(null);
+        }
+      })
+      .catch(err => {
+        setError("Failed to fetch articles");
+        setPosts([]);
+        console.error("Fetch error:", err);
+      });
   }, []);
 
+  const categories = ["All", "News", "Business", "Entertainment", "Tech", "Sports", "Opinions"];
   const filteredPosts = posts.filter(post =>
-    post.title.toLowerCase().includes(search.toLowerCase())
+    post.title.toLowerCase().includes(search.toLowerCase()) &&
+    (category === "All" || post.category === category)
   );
 
   return (
@@ -27,6 +43,20 @@ export default function Home() {
           onChange={e => setSearch(e.target.value)}
           style={{ padding: "8px", margin: "10px 0", width: "100%", maxWidth: "300px" }}
         />
+        <select
+          value={category}
+          onChange={e => setCategory(e.target.value)}
+          style={{ padding: "8px", margin: "10px 0", width: "100%", maxWidth: "200px" }}
+        >
+          {categories.map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
+        {error && (
+          <p style={{ color: "red", fontSize: "14px", margin: "10px 0" }}>
+            Error: {error}
+          </p>
+        )}
         <ul>
           {filteredPosts.length > 0 ? (
             filteredPosts.map(post => (
