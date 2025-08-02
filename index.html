@@ -251,16 +251,16 @@
         .blog-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem 1rem 80px; /* Increased padding-bottom for mobile nav */
+            padding: 2rem 1rem 80px;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Center content horizontally */
+            align-items: center;
         }
 
         .section-header {
             text-align: center;
             margin-bottom: 2rem;
-            width: 100%; /* Ensure full width for centering */
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -270,7 +270,7 @@
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            width: 100%; /* Ensure title spans container */
+            width: 100%;
             text-align: center;
         }
 
@@ -285,11 +285,11 @@
         .header-logo-container {
             display: flex;
             align-items: center;
-            justify-content: center; /* Center logo and buttons */
+            justify-content: center;
             gap: 1.5rem;
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
-            width: 100%; /* Ensure full width for centering */
+            width: 100%;
         }
 
         .header-logo img {
@@ -302,7 +302,7 @@
         .header-buttons {
             display: flex;
             gap: 1rem;
-            justify-content: center; /* Center buttons */
+            justify-content: center;
         }
 
         .header-btn {
@@ -330,7 +330,7 @@
         .search-bar { 
             margin: 0 auto 2rem; 
             max-width: 500px; 
-            width: 100%; /* Ensure full width on mobile */
+            width: 100%;
             position: relative;
             display: flex;
             align-items: center;
@@ -365,8 +365,8 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
-            width: 100%; /* Ensure grid takes full width */
-            justify-items: center; /* Center grid items */
+            width: 100%;
+            justify-items: center;
         }
 
         .blog-post {
@@ -375,6 +375,7 @@
             overflow: hidden;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
+            max-width: 100%; /* Ensure posts don't stretch */
         }
 
         .blog-post:hover {
@@ -489,6 +490,24 @@
             background: var(--primary-dark);
         }
 
+        /* Ad Container */
+        .ad-container {
+            width: 100%;
+            max-width: 468px; /* Match ad width */
+            margin: 1rem auto; /* Center horizontally */
+            overflow: hidden; /* Prevent overflow */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ad-container iframe {
+            width: 100%;
+            max-width: 100%; /* Ensure iframe doesn't exceed container */
+            height: 60px; /* Match ad height */
+            border: none;
+        }
+
         /* Loading and Error States */
         .loading-posts, .no-posts, .error-message {
             text-align: center;
@@ -527,7 +546,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 2rem;
-            justify-items: center; /* Center footer content */
+            justify-items: center;
         }
 
         .footer-brand {
@@ -650,42 +669,49 @@
                 display: block;
             }
             .blog-container {
-                padding: 1.5rem 1rem 70px; /* Adjusted padding for mobile */
+                padding: 1.5rem 1rem 70px;
             }
             .section-title {
                 font-size: 1.75rem;
             }
             .section-description {
                 font-size: 0.95rem;
-                max-width: 90%; /* Prevent overflow on mobile */
+                max-width: 90%;
             }
             .header-logo img {
                 width: 70px;
                 height: 70px;
             }
             .blog-posts {
-                grid-template-columns: 1fr; /* Single column for mobile */
+                grid-template-columns: 1fr;
                 gap: 1.25rem;
             }
             .post-image {
                 height: 160px;
             }
             .footer-container {
-                grid-template-columns: 1fr; /* Stack footer items */
+                grid-template-columns: 1fr;
                 gap: 1.5rem;
             }
             .footer-brand, .footer-links, .footer-legal {
                 justify-items: center;
-                text-align: center; /* Center text in footer */
+                text-align: center;
             }
             .footer-links {
                 grid-template-columns: 1fr 1fr;
+            }
+            .ad-container {
+                max-width: 100%; /* Ensure ads fit within container */
+            }
+            .ad-container iframe {
+                width: 100%;
+                max-width: 336px; /* Smaller ad width for tablets */
             }
         }
 
         @media (max-width: 480px) {
             .blog-container {
-                padding: 1rem 0.75rem 65px; /* Further reduced for smaller screens */
+                padding: 1rem 0.75rem 65px;
             }
             .section-title {
                 font-size: 1.5rem;
@@ -703,7 +729,7 @@
                 font-size: 0.85rem;
             }
             .search-bar {
-                max-width: 90%; /* Ensure search bar fits smaller screens */
+                max-width: 90%;
             }
             .blog-posts {
                 gap: 1rem;
@@ -715,7 +741,7 @@
                 gap: 1rem;
             }
             .footer-links {
-                grid-template-columns: 1fr; /* Stack links for very small screens */
+                grid-template-columns: 1fr;
             }
             .footer-logo img {
                 width: 50px;
@@ -737,6 +763,13 @@
             }
             .mobile-nav-all i {
                 font-size: 1.3rem;
+            }
+            .ad-container {
+                max-width: 100%; /* Ensure ads fit within container */
+            }
+            .ad-container iframe {
+                width: 100%;
+                max-width: 300px; /* Smaller ad width for mobile */
             }
         }
     </style>
@@ -998,14 +1031,20 @@
                     postsContainer.appendChild(postElement);
 
                     if ((index + 1) % 4 === 0) {
+                        const adContainer = document.createElement('div');
+                        adContainer.className = 'ad-container';
+                        
                         const adScript = document.createElement('script');
                         adScript.type = 'text/javascript';
                         adScript.textContent = `atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};`;
+                        
                         const adInvoke = document.createElement('script');
                         adInvoke.src = '//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js';
                         adInvoke.setAttribute('async', '');
-                        postsContainer.appendChild(adScript);
-                        postsContainer.appendChild(adInvoke);
+
+                        adContainer.appendChild(adScript);
+                        adContainer.appendChild(adInvoke);
+                        postsContainer.appendChild(adContainer);
                     }
                 });
 
