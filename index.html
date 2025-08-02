@@ -367,34 +367,34 @@
         .header-btn i {
             font-size: 0.9rem;
         }
-        .search-bar { 
-            margin: 0 auto 2rem; 
-            max-width: 500px; 
+        .search-bar {
+            margin: 0 auto 2rem;
+            max-width: 500px;
             width: 100%;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .search-bar input { 
-            width: 100%; 
-            padding: 0.8rem 1rem 0.8rem 2.5rem; 
-            border: 1px solid var(--border-color); 
-            border-radius: 2rem; 
+        .search-bar input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 2rem;
             font-size: 0.95rem;
             transition: all 0.2s ease;
         }
-        .search-bar input:focus { 
-            outline: none; 
-            border-color: var(--primary-color); 
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
-        .search-bar i { 
-            position: absolute; 
-            left: 1rem; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            color: var(--light-text); 
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light-text);
         }
         .blog-posts {
             display: grid;
@@ -908,34 +908,40 @@
             const mobileMenuToggle = document.getElementById('mobileMenuToggle');
             const mobileDropdownMenu = document.getElementById('mobileDropdownMenu');
 
-            let currentCategory = 'ALL'; // Default to ALL
-            let allPosts = {};
+            let postsByCategory = {};
+            let currentCategory = 'ALL';
 
+            // Debounce function to limit search input events
             function debounce(func, wait) {
                 let timeout;
-                return function executedFunction(...args) {
-                    const later = () => { clearTimeout(timeout); func(...args); };
+                return function (...args) {
                     clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
+                    timeout = setTimeout(() => func(...args), wait);
                 };
             }
 
+            // Format date for display
             function formatDate(dateString) {
                 if (!dateString) return 'No date';
-                return new Date(dateString).toLocaleDateString('en-KE', { 
-                    year: 'numeric', 
-                    month: 'short', 
-                    day: 'numeric' 
-                });
+                try {
+                    return new Date(dateString).toLocaleDateString('en-KE', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                } catch {
+                    return 'Invalid date';
+                }
             }
 
-            function setActiveNavLink(category) {
+            // Set active navigation link
+            function setActiveNav(category) {
                 navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.dataset.category === category) link.classList.add('active');
+                    link.classList.toggle('active', link.dataset.category === category);
                 });
             }
 
+            // Render posts to the DOM
             function renderPosts(posts, category) {
                 postList.innerHTML = '';
                 if (!posts || posts.length === 0) {
@@ -943,11 +949,12 @@
                     return;
                 }
 
+                // Sort posts by date (newest first)
                 const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
 
                 const section = document.createElement('section');
                 section.className = 'category-section';
-                
+
                 if (category !== 'ALL') {
                     const title = document.createElement('h2');
                     title.className = 'category-title';
@@ -959,7 +966,8 @@
                 postsContainer.className = 'blog-posts';
 
                 sortedPosts.forEach((post, index) => {
-                    if (!post.category) return;
+                    if (!post.category || !post.title || !post.slug) return;
+
                     const postElement = document.createElement('article');
                     postElement.className = 'blog-post';
                     postElement.setAttribute('itemscope', '');
@@ -971,17 +979,17 @@
                     const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
 
                     postElement.innerHTML = `
-                        <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
+                        <meta itemprop="mainEntityOfPage" content="${post.url}">
                         <div class="post-image">
-                            <img src="${imageUrl}" alt="${post.title ? `${post.title} - Kenya News` : 'Kenya News Image'}" loading="lazy" width="360" height="180" fetchpriority="${index === 0 ? 'high' : 'auto'}" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                            <img src="${imageUrl}" alt="${post.title} - Kenya News" loading="lazy" width="360" height="180" fetchpriority="${index === 0 ? 'high' : 'auto'}" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
                         </div>
                         <div class="post-content">
                             <div class="post-meta">
                                 <time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time> • 
-                                <span class="post-category" itemprop="articleSection">${post.category || ''}</span>
+                                <span class="post-category" itemprop="articleSection">${post.category}</span>
                             </div>
                             <h3 class="post-title" itemprop="headline">
-                                <a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a>
+                                <a href="${post.url}" itemprop="url">${post.title}</a>
                             </h3>
                             <div class="post-excerpt" itemprop="description">${excerpt}</div>
                             ${keywords.length > 0 ? `
@@ -991,7 +999,7 @@
                                     `).join('')}
                                 </div>
                             ` : ''}
-                            <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">Read More</a>
+                            <a href="${post.url}" class="btn-primary" itemprop="url">Read More</a>
                         </div>
                         <meta itemprop="author" content="Jonathan Mwaniki">
                         <meta itemprop="dateModified" content="${post.date}">
@@ -1000,7 +1008,7 @@
                         {
                             "@context": "https://schema.org",
                             "@type": "NewsArticle",
-                            "headline": "${post.title || 'Untitled Post'}",
+                            "headline": "${post.title}",
                             "image": "${imageUrl}",
                             "datePublished": "${post.date}",
                             "dateModified": "${post.date}",
@@ -1041,66 +1049,46 @@
 
                 section.appendChild(postsContainer);
                 postList.appendChild(section);
-
-                if ('IntersectionObserver' in window) {
-                    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-                    const imageObserver = new IntersectionObserver((entries, observer) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) {
-                                const img = entry.target;
-                                img.src = img.dataset.src || img.src;
-                                img.removeAttribute('loading');
-                                observer.unobserve(img);
-                            }
-                        });
-                    }, { rootMargin: '100px' });
-                    lazyImages.forEach(img => imageObserver.observe(img));
-                }
             }
 
+            // Fetch posts from API
             async function fetchPosts() {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 5000);
                 try {
-                    console.log('Fetching posts...');
                     const response = await fetch('/api/list-posts.js', {
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' },
-                        signal: controller.signal,
-                        cache: 'default'
+                        signal: controller.signal
                     });
                     clearTimeout(timeoutId);
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                     const { data, error } = await response.json();
-                    console.log('Posts fetched:', data);
                     if (error) throw new Error(error);
                     return data || [];
                 } catch (error) {
-                    console.error('Fetch error:', error);
+                    console.error('Error fetching posts:', error.message);
                     postList.innerHTML = '<div class="error-message">Failed to load Kenya news. Please try again later or <a href="/contact">contact support</a>.</div>';
                     return [];
                 }
             }
 
-            async function preloadAllPosts() {
+            // Preload and categorize posts
+            async function loadPosts() {
                 const categories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment', 'ALL'];
                 const posts = await fetchPosts();
                 categories.forEach(category => {
-                    if (category === 'ALL') {
-                        allPosts[category] = posts;
-                    } else {
-                        allPosts[category] = posts.filter(post => 
-                            post.category && post.category.toLowerCase() === category.toLowerCase()
-                        );
-                    }
+                    postsByCategory[category] = category === 'ALL' 
+                        ? posts 
+                        : posts.filter(post => post.category && post.category.toLowerCase() === category.toLowerCase());
                 });
-                console.log('Preloaded posts:', allPosts);
-                return allPosts;
+                return postsByCategory;
             }
 
+            // Filter and render posts based on search and category
             const filterPosts = debounce(() => {
                 const searchTerm = searchInput.value.toLowerCase().trim();
-                let posts = allPosts[currentCategory] || [];
+                let posts = postsByCategory[currentCategory] || [];
 
                 if (searchTerm) {
                     posts = posts.filter(post =>
@@ -1111,9 +1099,10 @@
                 }
 
                 renderPosts(posts, currentCategory);
-                setActiveNavLink(currentCategory);
-            }, 250);
+                setActiveNav(currentCategory);
+            }, 300);
 
+            // Event listeners
             mobileMenuToggle.addEventListener('click', (e) => {
                 e.stopPropagation();
                 mobileDropdownMenu.classList.toggle('show');
@@ -1124,19 +1113,19 @@
             });
 
             navLinks.forEach(link => {
-                link.addEventListener('click', (e) => { 
-                    e.preventDefault(); 
-                    currentCategory = link.dataset.category; 
-                    searchInput.value = ''; 
-                    filterPosts(); 
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentCategory = link.dataset.category;
+                    searchInput.value = '';
+                    filterPosts();
                 });
-                link.addEventListener('keydown', (e) => { 
-                    if (e.key === 'Enter' || e.key === ' ') { 
-                        e.preventDefault(); 
-                        currentCategory = link.dataset.category; 
-                        searchInput.value = ''; 
-                        filterPosts(); 
-                    } 
+                link.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        currentCategory = link.dataset.category;
+                        searchInput.value = '';
+                        filterPosts();
+                    }
                 });
             });
 
@@ -1150,15 +1139,31 @@
 
             searchInput.addEventListener('input', filterPosts);
 
+            // Lazy load images
+            if ('IntersectionObserver' in window) {
+                const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src || img.src;
+                            img.removeAttribute('loading');
+                            obs.unobserve(img);
+                        }
+                    });
+                }, { rootMargin: '100px' });
+                lazyImages.forEach(img => observer.observe(img));
+            }
+
+            // Initialize
             (async () => {
                 try {
-                    console.log('Starting preload...');
-                    await preloadAllPosts();
-                    console.log('Rendering posts for ALL category...');
-                    renderPosts(allPosts['ALL'], 'ALL');
+                    await loadPosts();
+                    renderPosts(postsByCategory['ALL'], 'ALL');
+                    setActiveNav('ALL');
                     splashScreen.classList.add('hidden');
                 } catch (error) {
-                    console.error('Initialization error:', error);
+                    console.error('Initialization error:', error.message);
                     postList.innerHTML = '<div class="error-message">Failed to load Kenya news. Please try again or <a href="/contact">contact support</a>.</div>';
                     splashScreen.classList.add('hidden');
                 }
