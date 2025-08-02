@@ -3,39 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Mwaniki Reports delivers the latest news, breaking news, opinions, business, sports, tech, and entertainment in Kenya. Stay informed with timely updates.">
-    <meta name="keywords" content="news, breaking news, opinions, business, sports, tech, entertainment, Mwaniki Reports, Kenya news, Nairobi news">
+    <meta name="description" content="Mwaniki Reports: Breaking Kenya news, business updates, sports, tech & entertainment. Get real-time Nairobi news & expert opinions by Jonathan Mwaniki.">
+    <meta name="keywords" content="Kenya news, Nairobi breaking news, Kenyan business updates, East Africa tech news, Kenyan sports news, Mwaniki Reports, Jonathan Mwaniki">
     <meta name="author" content="Jonathan Mwaniki">
     <meta name="robots" content="index, follow">
-    <meta http-equiv="cache-control" content="public, max-age=31536000">
-    <title>Mwaniki Reports | News, Sports, Tech & More</title>
+    <meta http-equiv="cache-control" content="public, max-age=604800, stale-while-revalidate=86400">
     
-    <!-- Critical CSS Inline -->
-    <style>
-        :root { --primary-color: #4f46e5; --text-color: #111827; --light-text: #6b7280; }
-        body { font-family: 'Inter', sans-serif; line-height: 1.5; color: var(--text-color); overflow-x: hidden; max-width: 100vw; }
-        #splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #fff; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .splash-logo img { width: 80px; height: auto; border-radius: 0.5rem; }
-        .splash-title { font-size: 2.25rem; font-weight: 700; margin: 1rem 0; }
-        .gradient-text { background: linear-gradient(135deg, var(--primary-color), #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .blog-post { display: flex; flex-direction: column; aspect-ratio: 4 / 3; }
-        .post-image { height: 180px; overflow: hidden; }
-        .post-image img { width: 100%; height: 100%; object-fit: cover; }
-        .post-content { padding: 1rem; }
-        .post-title { font-size: 1.1rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .post-title a { color: var(--text-color); text-decoration: none; }
-        .post-excerpt { color: var(--light-text); font-size: 0.85rem; line-height: 1.4; margin-bottom: 0.75rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    </style>
-
-    <link rel="stylesheet" href="/styles.css" media="print" onload="this.media='all'">
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Mwaniki Reports | Latest Kenya News & Updates">
+    <meta property="og:description" content="Your trusted source for breaking Kenya news, business, sports, tech and entertainment updates by Jonathan Mwaniki.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jonathanmwaniki.co.ke">
+    <meta property="og:image" content="https://jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    <meta property="og:site_name" content="Mwaniki Reports">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mwaniki Reports | Latest Kenya News & Updates">
+    <meta name="twitter:description" content="Your trusted source for breaking Kenya news, business, sports, tech and entertainment updates by Jonathan Mwaniki.">
+    <meta name="twitter:image" content="https://jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    <meta name="twitter:creator" content="@maestropuns">
+    <meta name="twitter:site" content="@maestropuns">
+    
+    <title>Mwaniki Reports | Latest Kenya News, Business, Sports & Tech Updates</title>
+    
+    <!-- Preload Critical Resources -->
     <link rel="preload" href="/styles.css" as="style">
     <link rel="preload" href="/scripts/news-script.js" as="script">
     <link rel="preload" href="/images/Jonathan-Mwaniki-logo.png" as="image" type="image/png">
+    
+    <!-- Inline Critical CSS -->
+    <style>
+        :root { 
+            --primary-color: #4f46e5; 
+            --text-color: #111827; 
+            --light-text: #6b7280; 
+        }
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            line-height: 1.5; 
+            color: var(--text-color); 
+            margin: 0;
+            padding: 0;
+        }
+        #splash-screen { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            background: #fff; 
+            z-index: 1000; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .splash-logo img { 
+            width: 80px; 
+            height: 80px; 
+            border-radius: 0.5rem; 
+        }
+        .splash-title { 
+            font-size: 2.25rem; 
+            font-weight: 700; 
+            margin: 1rem 0; 
+        }
+        .gradient-text { 
+            background: linear-gradient(135deg, var(--primary-color), #3b82f6); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        .blog-post { 
+            display: flex; 
+            flex-direction: column; 
+            aspect-ratio: 4 / 3; 
+        }
+        .post-image { 
+            height: 180px; 
+            overflow: hidden; 
+        }
+        .post-image img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+        .post-content { 
+            padding: 1rem; 
+        }
+        .post-title { 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            line-height: 1.3; 
+            margin-bottom: 0.5rem; 
+            display: -webkit-box; 
+            -webkit-line-clamp: 2; 
+            -webkit-box-orient: vertical; 
+            overflow: hidden; 
+        }
+        .post-title a { 
+            color: var(--text-color); 
+            text-decoration: none; 
+        }
+        .post-excerpt { 
+            color: var(--light-text); 
+            font-size: 0.85rem; 
+            line-height: 1.4; 
+            margin-bottom: 0.75rem; 
+            display: -webkit-box; 
+            -webkit-line-clamp: 3; 
+            -webkit-box-orient: vertical; 
+            overflow: hidden; 
+        }
+        
+        /* Basic layout styles */
+        .mobile-nav, .desktop-nav, .search-bar, .blog-container, .site-footer {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+    </style>
+    
+    <!-- Deferred CSS -->
+    <link rel="stylesheet" href="/styles.css" media="print" onload="this.media='all'">
+    
+    <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Self-hosted fonts (recommended) or use font-display: swap -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
-
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://jonathanmwaniki.co.ke">
+    
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-W3FVP4FRPT"></script>
     <script>
@@ -44,19 +149,45 @@
       gtag('js', new Date());
       gtag('config', 'G-W3FVP4FRPT');
     </script>
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsMediaOrganization",
+      "name": "Mwaniki Reports",
+      "url": "https://jonathanmwaniki.co.ke",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png",
+        "width": "80",
+        "height": "80"
+      },
+      "sameAs": [
+        "https://twitter.com/maestropuns",
+        "https://facebook.com/mwanikireports"
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Jonathan Mwaniki"
+      }
+    }
+    </script>
 </head>
 <body>
     <div id="splash-screen">
         <div class="splash-logo">
-            <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="eager" width="80" height="80">
+            <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Kenya News Logo" loading="eager" width="80" height="80">
         </div>
         <h1 class="splash-title">Mwaniki <span class="gradient-text">Reports</span></h1>
         <i class="fas fa-spinner splash-spinner"></i>
     </div>
+    
     <div id="mainContent">
         <nav class="mobile-nav">
             <div class="mobile-nav-container">
-                <a class="mobile-nav-link active" data-category="News" aria-label="News"><i class="fas fa-newspaper"></i><span>News</span></a>
+                <a class="mobile-nav-link active" data-category="ALL" aria-label="All Posts"><i class="fas fa-globe"></i><span>All</span></a>
+                <a class="mobile-nav-link" data-category="News" aria-label="News"><i class="fas fa-newspaper"></i><span>News</span></a>
                 <a class="mobile-nav-link" data-category="Breaking News" aria-label="Breaking News"><i class="fas fa-bolt"></i><span>Breaking News</span></a>
                 <a class="mobile-nav-link" data-category="Opinions" aria-label="Opinions"><i class="fas fa-comment"></i><span>Opinions</span></a>
                 <a class="mobile-nav-link" data-category="Business" aria-label="Business"><i class="fas fa-briefcase"></i><span>Business</span></a>
@@ -69,14 +200,14 @@
         <main class="blog-container">
             <div class="section-header">
                 <h1 class="section-title">Mwaniki <span class="gradient-text">Reports</span></h1>
-                <p class="section-description">Your trusted source for news, breaking news, opinions, business, sports, tech, and entertainment.</p>
+                <p class="section-description">Your trusted source for breaking Kenya news, business updates, sports, tech and entertainment by Jonathan Mwaniki.</p>
                 <div class="header-logo-container">
                     <div class="header-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="lazy" width="80" height="80">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Kenya News Logo" loading="lazy" width="80" height="80">
                     </div>
                     <div class="header-buttons">
                         <button class="header-btn" onclick="window.location.reload()">Refresh <i class="fas fa-sync-alt"></i></button>
-                        <a href="/portfolio.html" class="header-btn">About <i class="fas fa-user"></i></a>
+                        <a href="/about" class="header-btn">About <i class="fas fa-user"></i></a>
                     </div>
                 </div>
                 <div class="header-ad">
@@ -86,16 +217,18 @@
                     <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" async></script>
                 </div>
             </div>
+            
             <nav class="desktop-nav">
                 <div class="nav-container">
                     <div class="nav-brand">
                         <div class="brand-logo">
-                            <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="eager" width="64" height="64">
+                            <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Kenya News Logo" loading="lazy" width="64" height="64">
                         </div>
                         <span class="brand-name">Mwaniki Reports</span>
                     </div>
                     <div class="nav-links">
-                        <a class="nav-link active" data-category="News" aria-label="News"><i class="fas fa-newspaper"></i>News</a>
+                        <a class="nav-link active" data-category="ALL" aria-label="All Posts"><i class="fas fa-globe"></i>All</a>
+                        <a class="nav-link" data-category="News" aria-label="News"><i class="fas fa-newspaper"></i>News</a>
                         <a class="nav-link" data-category="Breaking News" aria-label="Breaking News"><i class="fas fa-bolt"></i>Breaking News</a>
                         <a class="nav-link" data-category="Opinions" aria-label="Opinions"><i class="fas fa-comment"></i>Opinions</a>
                         <a class="nav-link" data-category="Business" aria-label="Business"><i class="fas fa-briefcase"></i>Business</a>
@@ -105,8 +238,9 @@
                     </div>
                 </div>
             </nav>
+            
             <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Search posts..." aria-label="Search news articles">
+                <input type="text" id="search-input" placeholder="Search Kenya news..." aria-label="Search Kenya news articles">
                 <i class="fas fa-search"></i>
             </div>
 
@@ -125,11 +259,33 @@
             <div class="footer-container">
                 <div class="footer-brand">
                     <div class="footer-logo">
-                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Logo" loading="lazy" width="64" height="64">
+                        <img src="/images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports Kenya News Logo" loading="lazy" width="64" height="64">
                     </div>
                     <div class="footer-info">
                         <span class="footer-name">Mwaniki Reports</span>
-                        <p class="footer-description">Your trusted source for news, breaking news, opinions, business, sports, tech, and entertainment.</p>
+                        <p class="footer-description">Kenya's leading independent news source by Jonathan Mwaniki covering Nairobi and nationwide updates.</p>
+                        <div class="social-links">
+                            <a href="https://twitter.com/maestropuns" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="https://facebook.com/mwanikireports" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h3>Categories</h3>
+                        <ul>
+                            <li><a href="/news">Kenya News</a></li>
+                            <li><a href="/business">Business</a></li>
+                            <li><a href="/sports">Sports</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Company</h3>
+                        <ul>
+                            <li><a href="/about">About Us</a></li>
+                            <li><a href="/contact">Contact</a></li>
+                            <li><a href="/advertise">Advertise</a></li>
+                        </ul>
                     </div>
                 </div>
                 <div class="footer-legal">
@@ -137,7 +293,7 @@
                     <div class="legal-links">
                         <a href="/privacy-policy" class="legal-link">Privacy Policy</a>
                         <a href="/terms-of-service" class="legal-link">Terms of Service</a>
-                        <a href="/api/sitemap" class="legal-link">Sitemap</a>
+                        <a href="/sitemap.xml" class="legal-link">Sitemap</a>
                     </div>
                 </div>
             </div>
@@ -148,8 +304,225 @@
             atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};
         </script>
         <script type="text/javascript" src="//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js" async></script>
-        <script src="/scripts/analytics.js" type="module" defer></script>
-        <script src="/scripts/news-script.js" defer></script>
+        
+        <!-- JavaScript with ALL category functionality -->
+        <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const splashScreen = document.getElementById('splash-screen');
+            const postList = document.getElementById('post-list');
+            const searchInput = document.getElementById('search-input');
+            const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+
+            let currentCategory = 'ALL';
+            let allPosts = {};
+
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => { clearTimeout(timeout); func(...args); };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            function formatDate(dateString) {
+                if (!dateString) return 'No date';
+                return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            }
+
+            function setActiveNavLink(category) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.dataset.category === category) link.classList.add('active');
+                });
+            }
+
+            function renderPosts(posts, category) {
+                postList.innerHTML = '';
+                if (!posts || posts.length === 0) {
+                    postList.innerHTML = `<div class="no-posts">No ${category === 'ALL' ? 'posts' : category} found.</div>`;
+                    return;
+                }
+
+                const section = document.createElement('section');
+                section.className = 'category-section';
+                
+                if (category !== 'ALL') {
+                    const title = document.createElement('h2');
+                    title.className = 'category-title';
+                    title.textContent = category;
+                    section.appendChild(title);
+                }
+
+                const postsContainer = document.createElement('div');
+                postsContainer.className = 'blog-posts';
+
+                // Sort posts by date (newest first) when showing ALL
+                const sortedPosts = category === 'ALL' 
+                    ? [...posts].sort((a, b) => new Date(b.date) - new Date(a.date))
+                    : posts;
+
+                sortedPosts.slice(0, 20).forEach((post, index) => {
+                    if (!post.category) return;
+                    const postElement = document.createElement('article');
+                    postElement.className = 'blog-post';
+                    postElement.setAttribute('itemscope', '');
+                    postElement.setAttribute('itemtype', 'https://schema.org/NewsArticle');
+
+                    const imageUrl = post.image || '/images/default-blog.jpg';
+                    const excerpt = post.description || 'No description available.';
+                    const formattedDate = formatDate(post.date);
+                    const keywords = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag).slice(0, 3) : [];
+
+                    postElement.innerHTML = `
+                        <meta itemprop="mainEntityOfPage" content="/content/articles/${post.slug}.html">
+                        <div class="post-image">
+                            <img src="${imageUrl}" alt="${post.title || 'Post image'}" loading="lazy" width="360" height="180" fetchpriority="${index === 0 ? 'high' : 'auto'}" onerror="this.src='/images/default-blog.jpg'" itemprop="image">
+                        </div>
+                        <div class="post-content">
+                            <div class="post-meta"><time datetime="${post.date}" itemprop="datePublished">${formattedDate}</time> • <span class="post-category" itemprop="articleSection">${post.category || ''}</span></div>
+                            <h3 class="post-title" itemprop="headline"><a href="/content/articles/${post.slug}.html" itemprop="url">${post.title || 'Untitled Post'}</a></h3>
+                            <div class="post-excerpt" itemprop="description">${excerpt}</div>
+                            ${keywords.length > 0 ? `<div class="post-tags">${keywords.map(keyword => `<a class="post-tag" data-tag="${encodeURIComponent(keyword)}" itemprop="keywords">${keyword}</a>`).join('')}</div>` : ''}
+                            <a href="/content/articles/${post.slug}.html" class="btn-primary" itemprop="url">Read More</a>
+                        </div>
+                        <meta itemprop="author" content="Jonathan Mwaniki">
+                        <meta itemprop="dateModified" content="${post.date}">
+                        <meta itemprop="publisher" content="Mwaniki Reports">
+                    `;
+
+                    postsContainer.appendChild(postElement);
+
+                    if ((index + 1) % 4 === 0) {
+                        const adScript = document.createElement('script');
+                        adScript.type = 'text/javascript';
+                        adScript.textContent = `atOptions = {'key': '1610960d9ced232cc76d8f5510ee4608', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {}};`;
+                        const adInvoke = document.createElement('script');
+                        adInvoke.src = '//www.highperformanceformat.com/1610960d9ced232cc76d8f5510ee4608/invoke.js';
+                        adInvoke.setAttribute('async', '');
+                        postsContainer.appendChild(adScript);
+                        postsContainer.appendChild(adInvoke);
+                    }
+                });
+
+                section.appendChild(postsContainer);
+                postList.appendChild(section);
+            }
+
+            async function fetchPosts() {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                try {
+                    console.log('Fetching posts...');
+                    const response = await fetch('/api/list-posts.js', {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' },
+                        signal: controller.signal,
+                        cache: 'default'
+                    });
+                    clearTimeout(timeoutId);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const { data, error } = await response.json();
+                    console.log('Posts fetched:', data);
+                    if (error) throw new Error(error);
+                    return data || [];
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    postList.innerHTML = '<div class="error-message">Failed to load posts. Please try again later or <a href="/portfolio.html#contact">contact support</a>.</div>';
+                    return [];
+                }
+            }
+
+            async function preloadAllPosts() {
+                const categories = ['ALL', 'News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
+                const posts = await fetchPosts();
+                categories.forEach(category => {
+                    if (category === 'ALL') {
+                        allPosts[category] = posts;
+                    } else {
+                        allPosts[category] = posts.filter(post => post.category && post.category.toLowerCase() === category.toLowerCase());
+                    }
+                });
+                console.log('Preloaded posts:', allPosts);
+                return allPosts;
+            }
+
+            const filterPosts = debounce(() => {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                let posts = currentCategory === 'ALL' 
+                    ? allPosts['ALL'] || [] 
+                    : allPosts[currentCategory] || [];
+
+                if (searchTerm) {
+                    posts = posts.filter(post =>
+                        (post.title && post.title.toLowerCase().includes(searchTerm)) ||
+                        (post.description && post.description.toLowerCase().includes(searchTerm)) ||
+                        (post.tags && post.tags.split(',').map(tag => tag.trim()).some(tag => tag.toLowerCase().includes(searchTerm)))
+                    );
+                }
+
+                renderPosts(posts, currentCategory);
+                setActiveNavLink(currentCategory);
+            }, 250);
+
+            // Initial load with preloading
+            (async () => {
+                try {
+                    console.log('Starting preload...');
+                    await preloadAllPosts();
+                    console.log('Rendering posts...');
+                    renderPosts(allPosts['ALL'], 'ALL');
+                    splashScreen.classList.add('hidden');
+                } catch (error) {
+                    console.error('Initialization error:', error);
+                    postList.innerHTML = '<div class="error-message">Failed to load. Please try again or <a href="/portfolio.html#contact">contact support</a>.</div>';
+                    splashScreen.classList.add('hidden');
+                }
+            })();
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => { 
+                    e.preventDefault(); 
+                    currentCategory = link.dataset.category; 
+                    searchInput.value = ''; 
+                    filterPosts(); 
+                });
+                link.addEventListener('keydown', (e) => { 
+                    if (e.key === 'Enter' || e.key === ' ') { 
+                        e.preventDefault(); 
+                        currentCategory = link.dataset.category; 
+                        searchInput.value = ''; 
+                        filterPosts(); 
+                    } 
+                });
+            });
+
+            postList.addEventListener('click', (e) => {
+                if (e.target.classList.contains('post-tag')) {
+                    e.preventDefault();
+                    searchInput.value = e.target.dataset.tag;
+                    filterPosts();
+                }
+            });
+
+            searchInput.addEventListener('input', filterPosts);
+
+            if ('IntersectionObserver' in window) {
+                const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src || img.src;
+                            img.removeAttribute('loading');
+                            observer.unobserve(img);
+                        }
+                    });
+                }, { rootMargin: '100px' });
+                lazyImages.forEach(img => imageObserver.observe(img));
+            }
+        });
+        </script>
     </div>
 </body>
 </html>
