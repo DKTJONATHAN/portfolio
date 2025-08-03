@@ -1,75 +1,49 @@
-import { Octokit } from '@octokit/rest';
+import Header from "../../components/Header";
 
 export default function Article({ content, title }) {
-  return content ? (
-    <div>
-      <h1 style={{ padding: "10px", fontSize: "20px" }}>{title}</h1>
-      <div dangerouslySetInnerHTML={{ __html: content }} />
-    </div>
-  ) : (
-    <div>
-      <h2>Article Not Found</h2>
-      <p>Could not load the article. Please try again later.</p>
-    </div>
+  return (
+    <>
+      <Header />
+      <link rel="stylesheet" href="/styles.css" />
+      <div className="container">
+        <h1>{title}</h1>
+        <div dangerouslySetInnerHTML={{ __html: content }} />
+      </div>
+      <nav className="bottom-nav">
+        <a href="/">🏠</a>
+        <a href="/category/News">📰</a>
+        <a href="/category/Business">💼</a>
+        <a href="/category/Tech">💻</a>
+        <a href="/category/Sports">⚽</a>
+        <a href="/category/Entertainment">🎬</a>
+        <a href="/category/Opinions">💭</a>
+      </nav>
+    </>
   );
 }
 
 export async function getStaticPaths() {
-  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-  try {
-    const response = await octokit.repos.getContent({
-      owner: process.env.GITHUB_OWNER,
-      repo: process.env.GITHUB_REPO,
-      path: 'content/articles.json',
-    });
-    const articles = JSON.parse(Buffer.from(response.data.content, 'base64').toString());
-    const paths = articles.map(article => ({
-      params: { slug: article.slug },
-    }));
-    return { paths, fallback: false };
-  } catch (error) {
-    console.error(`getStaticPaths error: ${error.message}`);
-    return { paths: [], fallback: false };
-  }
+  return {
+    paths: [
+      { params: { slug: "sample-news" } },
+      { params: { slug: "sample-tech" } },
+      { params: { slug: "sample-sports" } },
+    ],
+    fallback: false,
+  };
 }
 
 export async function getStaticProps({ params }) {
-  try {
-    const url = `https://raw.githubusercontent.com/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/main/content/articles/${params.slug}.html`;
-    console.log(`Fetching article: ${url}`);
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `token ${process.env.GITHUB_TOKEN}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.status} - ${response.statusText} for ${url}`);
-    }
-    const content = await response.text();
-    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-    const articlesResponse = await octokit.repos.getContent({
-      owner: process.env.GITHUB_OWNER,
-      repo: process.env.GITHUB_REPO,
-      path: 'content/articles.json',
-    });
-    const articles = JSON.parse(Buffer.from(articlesResponse.data.content, 'base64').toString());
-    const post = articles.find(p => p.slug === params.slug);
-    if (!post) {
-      throw new Error(`Article not found in articles.json for slug: ${params.slug}`);
-    }
-    return {
-      props: {
-        content,
-        title: post.title || "Article",
-      },
-    };
-  } catch (error) {
-    console.error(`getStaticProps error for slug ${params.slug}: ${error.message}`);
-    return {
-      props: {
-        content: null,
-        title: "Article",
-      },
-    };
-  }
+  const posts = [
+    { slug: "sample-news", title: "Sample News Article", content: "<p>This is a sample news article content.</p>" },
+    { slug: "sample-tech", title: "Sample Tech Article", content: "<p>This is a sample tech article content.</p>" },
+    { slug: "sample-sports", title: "Sample Sports Article", content: "<p>This is a sample sports article content.</p>" },
+  ];
+  const post = posts.find(p => p.slug === params.slug);
+  return {
+    props: {
+      content: post ? post.content : "<p>Article Not Found</p>",
+      title: post ? post.title : "Article",
+    },
+  };
 }
