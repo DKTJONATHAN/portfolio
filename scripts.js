@@ -3,14 +3,15 @@ let posts = [];
 async function fetchPosts() {
   try {
     const response = await fetch('/api/fetch-posts');
+    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
     posts = await response.json();
     if (!Array.isArray(posts)) throw new Error('Invalid posts data');
     renderCategories();
     renderPosts(posts);
-    document.getElementById('loader').style.display = 'none'; // Hide loader
   } catch (error) {
-    console.error('Failed to fetch posts:', error);
+    console.error('Fetch error:', error);
     document.getElementById('postList').innerHTML = '<p class="text-center text-muted col-span-full">Failed to load posts.</p>';
+  } finally {
     document.getElementById('loader').style.display = 'none';
   }
 }
@@ -39,8 +40,7 @@ function renderPosts(postsToRender) {
 
 function renderCategories() {
   const categories = ['All', ...new Set(posts.map(post => post.category))];
-  const categoryFilter = document.getElementById('categoryFilter');
-  categoryFilter.innerHTML = categories.map(category => `
+  document.getElementById('categoryFilter').innerHTML = categories.map(category => `
     <button
       onclick="filterByCategory('${category}')"
       class="px-4 py-2 rounded-lg text-sm font-medium transition-colors ${category === 'All' ? 'bg-gradient-to-r from-primary to-secondary text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
@@ -75,5 +75,4 @@ function filterByCategory(category) {
   filterPosts();
 }
 
-// Fetch posts on page load
 fetchPosts();
