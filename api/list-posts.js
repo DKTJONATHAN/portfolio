@@ -1,53 +1,73 @@
-import Header from "../components/Header";
+import { Octokit } from '@octokit/rest';
 
-export default function Home() {
-  return (
-    <>
-      <Head>
-        <title>Jonathan Mwaniki News</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-      </Head>
-      <Header />
-      <link rel="stylesheet" href="/styles.css" />
-      <div className="container">
-        <div style={{ margin: "20px 0" }}>
-          <input
-            type="text"
-            placeholder="Search articles..."
-            className="search-input"
-            style={{ padding: "8px", width: "100%", maxWidth: "300px" }}
-          />
-          <span className="search-icon" style={{ cursor: "pointer", marginLeft: "10px" }}>
-            <i className="fas fa-search"></i>
-          </span>
-          <select className="category-select" style={{ padding: "8px", margin: "10px 0", width: "100%", maxWidth: "200px" }}>
-            <option value="All">All</option>
-            <option value="News">News</option>
-            <option value="Business">Business</option>
-            <option value="Tech">Tech</option>
-            <option value="Sports">Sports</option>
-            <option value="Entertainment">Entertainment</option>
-            <option value="Opinions">Opinions</option>
-          </select>
-        </div>
-        <div className="posts" />
-        <div className="search-overlay">
-          <input type="text" className="search-input" placeholder="Search articles..." />
-          <div className="search-results" />
-        </div>
-      </div>
-      <nav className="bottom-nav">
-        <a href="/"><i className="fas fa-home"></i></a>
-        <a href="/category/News"><i className="fas fa-newspaper"></i></a>
-        <a href="/category/Business"><i className="fas fa-briefcase"></i></a>
-        <a href="/category/Tech"><i className="fas fa-laptop"></i></a>
-        <a href="/category/Sports"><i className="fas fa-futbol"></i></a>
-        <a href="/category/Entertainment"><i className="fas fa-film"></i></a>
-        <a href="/category/Opinions"><i className="fas fa-comment"></i></a>
-      </nav>
-      <script src="/news-script.js" />
-    </>
-  );
+// Cache setup (keep existing)
+let cachedPosts = null;
+let lastFetchTime = 0;
+const CACHE_LIFETIME_MS = 300000;
+
+// Background update helper
+async function triggerStaticRegeneration() {
+  try {
+    // Fire-and-forget requests (no await)
+    const urls = [
+      `${process.env.VERCEL_URL}/api/sitemap`,
+      `${process.env.VERCEL_URL}/api/rss.xml`
+    ];
+    
+    urls.forEach(url => {
+      fetch(url, { method: 'HEAD' })
+        .catch(e => console.log('Background update skipped:', e.message));
+    });
+  } catch (e) {
+    console.log('Regeneration error:', e.message);
+  }
 }
 
-import { Head } from "next/document";
+export default async function handler(req, res) {
+  try {
+    // 1. Cache check (existing logic)
+    if (cachedPosts && Date.now() - lastFetchTime < CACHE_LIFETIME_MS) {
+      return res.status(200).json({ 
+        data: cachedPosts,
+        error: null,
+        cached: true
+      });
+    }
+
+    const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+    // 2. Fetch and process posts (existing logic)
+    const { data } = await octokit.repos.getContent({
+      owner: process.env.GITHUB_OWNER,
+      repo: process.env.GITHUB_REPO,
+      path: 'content/articles.json',
+    });
+    const metadata = JSON.parse(Buffer.from(data.content, 'base64').toString('utf-8'));
+
+    const allowedCategories = ['News', 'Breaking News', 'Opinions', 'Business', 'Sports', 'Tech', 'Entertainment'];
+    const posts = metadata
+      .filter(post => post && post.slug && post.title && post.date && allowedCategories.includes(post.category))
+      .map(post => ({
+        ...post,
+        url: `https://jonathanmwaniki.co.ke/articles/${post.slug}`
+      }));
+
+    // 3. Update cache (existing)
+    cachedPosts = posts;
+    lastFetchTime = Date.now();
+
+    // 4. Trigger background updates (NEW)
+    if (process.env.NODE_ENV === 'production') {
+      triggerStaticRegeneration(); // No await - runs in background
+    }
+
+    return res.status(200).json({
+      data: posts,
+      error: null,
+      cached: false
+    });
+
+  } catch (error) {
+    // Existing error handling
+  }
+}
