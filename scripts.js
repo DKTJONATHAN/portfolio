@@ -1,144 +1,190 @@
+// ====================
+// MAIN POSTS CONTROLLER
+// ====================
 let posts = [];
 
-// Immediately hide spinner and show content area
-document.getElementById('loader').style.display = 'none';
-document.getElementById('postList').style.visibility = 'visible';
+// 1. IMMEDIATELY INITIALIZE UI
+document.getElementById('loader').remove(); // Remove spinner completely
 
+// 2. SHOW BRANDED SPLASH SCREEN
+const splashHTML = `
+  <div id="splash" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center gap-4 transition-opacity duration-500">
+    <img src="images/Jonathan-Mwaniki-logo.png" alt="Logo" class="h-20 animate-pulse">
+    <div class="text-sm text-gray-500">Loading your experience...</div>
+  </div>
+`;
+document.body.insertAdjacentHTML('afterbegin', splashHTML);
+
+// 3. HIDE SPLASH AFTER 2 SECONDS (REGARDLESS OF CONTENT LOAD)
+setTimeout(() => {
+  document.getElementById('splash').style.opacity = '0';
+  setTimeout(() => document.getElementById('splash').remove(), 500);
+}, 2000);
+
+// 4. INITIAL RENDER WITH EMPTY STATE
+renderCategories();
+renderPosts([]); // Show empty state immediately
+
+// 5. LOAD POSTS IN BACKGROUND
+fetchPosts();
+
+// ====================
+// CORE FUNCTIONS
+// ====================
 async function fetchPosts() {
   try {
-    // Try fetching from API first
-    const response = await fetch('https://jonathanmwaniki.co.ke/api/fetch-posts');
+    // Try production API first
+    let response = await fetch('https://jonathanmwaniki.co.ke/api/fetch-posts');
     
-    if (!response.ok) throw new Error(`API Error: ${response.status}`);
-    
-    const data = await response.json();
-    posts = Array.isArray(data?.data) ? data.data : [];
-    
-    // If no posts, use fallback data but keep API structure
-    if (posts.length === 0) {
-      posts = generateSamplePosts();
-      console.warn("Using sample data - API returned empty array");
+    // Fallback to direct GitHub if needed
+    if (!response.ok) {
+      response = await fetch('https://api.github.com/repos/your-username/your-repo/contents/content/articles.json', {
+        headers: {
+          'Accept': 'application/vnd.github.v3.raw',
+          'Authorization': `token ${process.env.GITHUB_TOKEN}`
+        }
+      });
     }
+
+    const data = await response.json();
+    posts = Array.isArray(data) ? data : [];
     
   } catch (error) {
-    console.error("Fetch failed, using sample data:", error);
-    posts = generateSamplePosts();
+    console.error("Posts load error:", error);
+    posts = generateFallbackPosts();
   } finally {
-    renderCategories();
-    renderPosts(posts);
+    updateUI();
   }
 }
 
-function generateSamplePosts() {
+function generateFallbackPosts() {
+  const fallbacks = [];
   const categories = ['News', 'Tech', 'Business', 'Entertainment'];
-  const tags = ['Kenya', 'Politics', 'Economy', 'Startups', 'Innovation'];
+  const tags = ['Kenya', 'Politics', 'Innovation', 'Economy'];
   
-  return Array.from({ length: 4 }, (_, i) => ({
-    slug: `sample-post-${i+1}`,
-    title: `Sample Post Title ${i+1}`,
-    description: `This is a sample post description ${i+1}. Use this to test your layout and design.`,
-    image: i % 2 === 0 ? 'https://via.placeholder.com/600x400?text=Sample+Image' : '',
-    date: new Date(Date.now() - i * 86400000).toISOString(),
-    category: categories[i % categories.length],
-    tags: `${tags[i % tags.length]}, ${tags[(i + 1) % tags.length]}`,
-    url: `#sample-${i+1}`
-  }));
+  for (let i = 0; i < 6; i++) {
+    fallbacks.push({
+      slug: `fallback-${i}`,
+      title: `Sample Post ${i+1}`,
+      description: 'This is placeholder content while we load the latest posts.',
+      image: `https://source.unsplash.com/random/600x400?${categories[i%4]}`,
+      date: new Date(Date.now() - i * 86400000).toISOString(),
+      category: categories[i%4],
+      tags: `${tags[i%4]}, ${tags[(i+1)%4]}`
+    });
+  }
+  return fallbacks;
 }
 
+function updateUI() {
+  renderCategories();
+  renderPosts(posts);
+  document.querySelectorAll('#postList a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      if (link.href.includes('fallback-')) e.preventDefault();
+    });
+  });
+}
+
+// ====================
+// RENDER FUNCTIONS
+// ====================
 function renderPosts(postsToRender) {
   const postList = document.getElementById('postList');
   
   if (!postsToRender.length) {
     postList.innerHTML = `
       <div class="col-span-full text-center py-12">
-        <h3 class="text-xl font-bold mb-2">No Posts Available</h3>
-        <p class="text-gray-600 mb-4">We couldn't find any posts to display.</p>
-        ${generateSamplePosts().map(post => postTemplate(post)).join('')}
+        <h3 class="text-xl font-bold mb-4">Welcome to Mwaniki Reports</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          ${generateFallbackPosts().slice(0, 3).map(post => renderPostCard(post)).join('')}
+        </div>
       </div>`;
     return;
   }
-  
-  postList.innerHTML = postsToRender.map(post => postTemplate(post)).join('');
+
+  postList.innerHTML = postsToRender.map(post => renderPostCard(post)).join('');
 }
 
-function postTemplate(post) {
+function renderPostCard(post) {
   return `
-    <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <a href="${post.slug.includes('fallback') ? '#' : `/content/articles/${post.slug}.html`}" 
+       class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 block h-full">
       ${post.image ? `
         <img src="${post.image}" 
-             alt="${post.title}" 
+             alt="${post.title}"
              class="w-full h-48 object-cover"
-             onerror="this.style.display='none'">` : ''
-      }
-      <div class="p-4">
-        <h2 class="text-xl font-bold mb-2">${post.title}</h2>
-        <p class="text-gray-600 text-sm mb-2">${post.description}</p>
-        <div class="flex justify-between text-gray-500 text-xs mb-3">
-          <span class="font-medium">${post.category || 'General'}</span>
-          <time>${new Date(post.date).toLocaleDateString()}</time>
+             loading="lazy"
+             onerror="this.src='https://via.placeholder.com/600x400?text=News+Image'">` : ''}
+      
+      <div class="p-4 flex flex-col h-[calc(100%-12rem)]">
+        <h2 class="text-xl font-bold mb-2 line-clamp-2">${post.title}</h2>
+        <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">${post.description}</p>
+        
+        <div class="flex justify-between items-center mt-auto">
+          <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+            ${post.category || 'General'}
+          </span>
+          <time class="text-xs text-gray-500">
+            ${new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+          </time>
         </div>
-        ${post.tags ? `
-          <div class="flex flex-wrap gap-1 mt-2">
-            ${post.tags.split(',').map(tag => `
-              <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">${tag.trim()}</span>
-            `).join('')}
-          </div>` : ''
-        }
-        <button class="mt-4 w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-          Read More
-        </button>
       </div>
-    </div>`;
+    </a>`;
 }
 
 function renderCategories() {
-  const categories = ['All', ...new Set(posts.map(post => post.category || 'Uncategorized'))];
+  const categories = ['All', ...new Set(posts.map(post => post.category || 'General'))];
   const container = document.getElementById('categoryFilter');
   
-  container.innerHTML = categories.map(category => `
-    <button onclick="filterByCategory('${category}')"
-            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                   ${category === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">
-      ${category}
+  container.innerHTML = categories.map(cat => `
+    <button onclick="filterByCategory('${cat}')"
+            class="category-btn px-4 py-2 rounded-lg text-sm font-medium transition-all
+                   ${cat === 'All' ? 'bg-gradient-to-r from-primary to-secondary text-white' : 'bg-gray-100 hover:bg-gray-200'}">
+      ${cat}
     </button>
   `).join('');
 }
 
+// ====================
+// FILTER FUNCTIONS
+// ====================
 function filterPosts() {
-  const query = document.getElementById('searchInput')?.value.toLowerCase() || '';
-  const selectedCategory = document.querySelector('#categoryFilter .bg-blue-600')?.textContent || 'All';
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const activeCat = document.querySelector('.category-btn.bg-gradient-to-r')?.textContent || 'All';
   
   const filtered = posts.filter(post => {
-    const matchesSearch = 
-      post.title.toLowerCase().includes(query) ||
-      post.description.toLowerCase().includes(query) ||
-      (post.tags && post.tags.toLowerCase().includes(query));
-    
-    const matchesCategory = 
-      selectedCategory === 'All' || 
-      post.category === selectedCategory;
-    
+    const matchesSearch = post.title.toLowerCase().includes(query) || 
+                         post.description.toLowerCase().includes(query);
+    const matchesCategory = activeCat === 'All' || post.category === activeCat;
     return matchesSearch && matchesCategory;
   });
   
-  renderPosts(filtered);
+  renderPosts(filtered.length ? filtered : posts);
 }
 
 function filterByCategory(category) {
-  const buttons = document.querySelectorAll('#categoryFilter button');
-  buttons.forEach(btn => {
-    btn.classList.toggle('bg-blue-600', btn.textContent === category);
-    btn.classList.toggle('text-white', btn.textContent === category);
-    btn.classList.toggle('bg-gray-200', btn.textContent !== category);
-    btn.classList.toggle('text-gray-700', btn.textContent !== category);
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    const isActive = btn.textContent === category;
+    btn.classList.toggle('bg-gradient-to-r', isActive);
+    btn.classList.toggle('from-primary', isActive);
+    btn.classList.toggle('to-secondary', isActive);
+    btn.classList.toggle('text-white', isActive);
+    btn.classList.toggle('bg-gray-100', !isActive);
   });
   
   filterPosts();
 }
 
-// Initialize
-fetchPosts();
-
-// Make functions available globally for HTML event handlers
+// ====================
+// INITIALIZE
+// ====================
 window.filterPosts = filterPosts;
 window.filterByCategory = filterByCategory;
+
+// Optional: Load more when scrolling
+window.addEventListener('scroll', () => {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+    // Implement pagination here if needed
+  }
+});
