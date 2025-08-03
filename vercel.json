@@ -7,11 +7,13 @@
     { "src": "scripts.js", "use": "@vercel/static" },
     { "src": "content/articles.json", "use": "@vercel/static" },
     { "src": "content/articles/*.html", "use": "@vercel/static" },
-    { "src": "images/Jonathan-Mwaniki-logo.png", "use": "@vercel/static" }
+    { "src": "images/Jonathan-Mwaniki-logo.png", "use": "@vercel/static" },
+    { "src": "admin/index.html", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/fetch-posts", "dest": "/api/fetch-posts.js" },
     { "src": "/content/(.*)", "dest": "/content/$1" },
+    { "src": "/admin", "dest": "/admin/index.html" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
