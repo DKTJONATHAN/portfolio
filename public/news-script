@@ -1,0 +1,57 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const searchIcon = document.querySelector(".search-icon");
+  const searchOverlay = document.querySelector(".search-overlay");
+  const searchInput = document.querySelector(".search-input");
+  const searchResults = document.querySelector(".search-results");
+  const categorySelect = document.querySelector(".category-select");
+  const postsContainer = document.querySelector(".posts");
+
+  // Placeholder posts
+  const posts = [
+    { slug: "sample-news", title: "Sample News Article", description: "A sample news article.", category: "News", date: "2025-08-03" },
+    { slug: "sample-tech", title: "Sample Tech Article", description: "A sample tech article.", category: "Tech", date: "2025-08-02" },
+    { slug: "sample-sports", title: "Sample Sports Article", description: "A sample sports article.", category: "Sports", date: "2025-08-01" }
+  ];
+
+  // Render posts
+  function renderPosts(postsToRender) {
+    postsContainer.innerHTML = "";
+    postsToRender.forEach(post => {
+      const postElement = document.createElement("div");
+      postElement.className = "post-card";
+      postElement.innerHTML = `
+        <a href="/articles/${post.slug}">
+          <h3>${post.title}</h3>
+          <p>${post.description} (${post.category}, ${post.date})</p>
+        </a>
+      `;
+      postsContainer.appendChild(postElement);
+    });
+  }
+
+  // Initial render
+  renderPosts(posts);
+
+  // Search functionality
+  searchIcon.addEventListener("click", () => {
+    searchOverlay.classList.toggle("active");
+    searchInput.focus();
+  });
+
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase();
+    const filteredPosts = posts.filter(post =>
+      post.title.toLowerCase().includes(query) ||
+      post.description.toLowerCase().includes(query) ||
+      post.category.toLowerCase().includes(query)
+    );
+    renderPosts(filteredPosts);
+  });
+
+  // Category filter
+  categorySelect.addEventListener("change", () => {
+    const category = categorySelect.value;
+    const filteredPosts = category === "All" ? posts : posts.filter(post => post.category === category);
+    renderPosts(filteredPosts);
+  });
+});
