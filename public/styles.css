@@ -18,6 +18,10 @@ a {
   text-decoration: none;
 }
 
+a:hover {
+  text-decoration: underline;
+}
+
 .search-overlay {
   position: fixed;
   top: 0;
@@ -62,12 +66,16 @@ a {
   bottom: 0;
   width: 100%;
   background: #003087;
-  padding: 10px 0;
   z-index: 1000;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 .bottom-nav a {
   color: white;
+  padding: 10px;
+  font-size: 14px;
+  display: inline-block;
   text-align: center;
   flex: 1;
 }
@@ -76,9 +84,16 @@ a {
   header nav {
     display: none;
   }
+  header h1 {
+    font-size: 32px;
+  }
+  header p {
+    font-size: 16px;
+  }
   .bottom-nav {
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
+    align-items: center;
   }
   .container {
     padding: 10px;
