@@ -1,0 +1,47 @@
+:root {
+  --primary-color: #1a73e8;
+  --secondary-color: #3b82f6;
+  --text-color: #333;
+  --muted-color: #666;
+  --bg-color: #fff;
+}
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  color: var(--text-color);
+  background: var(--bg-color);
+}
+
+@layer components {
+  .container {
+    max-width: 1200px;
+  }
+
+  .text-muted {
+    color: var(--muted-color);
+  }
+
+  .font-poppins {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  button:hover {
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 640px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    img {
+      max-height: 40px;
+    }
+  }
+}
