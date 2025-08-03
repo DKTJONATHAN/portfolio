@@ -1,71 +1,497 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mwaniki Reports | Blogs</title>
-  <meta name="description" content="Your trusted source for news, sports, tech, and entertainment.">
-  <meta property="og:title" content="Mwaniki Reports">
-  <meta property="og:description" content="Your trusted source for news, sports, tech, and entertainment.">
-  <meta property="og:image" content="images/Jonathan-Mwaniki-logo.png">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mwaniki Reports - Your Trusted News Source</title>
+    <meta name="description" content="Stay updated with the latest news, sports, tech, and entertainment from Jonathan Mwaniki. Your trusted source for breaking news and insightful reporting.">
+    <meta name="keywords" content="news, breaking news, sports, tech, entertainment, Kenya, journalism, Jonathan Mwaniki">
+    <meta name="author" content="Jonathan Mwaniki">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Mwaniki Reports - Your Trusted News Source">
+    <meta property="og:description" content="Stay updated with the latest news, sports, tech, and entertainment from Jonathan Mwaniki.">
+    <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    <meta property="og:url" content="https://www.jonathanmwaniki.co.ke">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Mwaniki Reports">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@maestropuns">
+    <meta name="twitter:title" content="Mwaniki Reports - Your Trusted News Source">
+    <meta name="twitter:description" content="Stay updated with the latest news, sports, tech, and entertainment from Jonathan Mwaniki.">
+    <meta name="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    
+    <!-- External Dependencies -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-white text-gray-800 font-poppins">
-  <div id="loader" class="fixed inset-0 bg-white flex items-center justify-center z-50">
-    <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-primary"></div>
-  </div>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-newspaper"></i>
+            </div>
+            <h1 class="site-title">Mwaniki Reports</h1>
+            <p class="site-tagline">Your trusted source for news, sports, tech, and entertainment</p>
+        </div>
+    </header>
 
-  <header class="bg-gradient-to-r from-primary to-secondary text-white py-4 sticky top-0 z-40 shadow-lg">
-    <div class="container mx-auto px-4 flex justify-between items-center">
-      <a href="index.html">
-        <img src="images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports" class="h-12">
-      </a>
-      <nav class="flex gap-4">
-        <a href="index.html" class="hover:underline">Blogs</a>
-        <a href="https://x.com/maestropuns" target="_blank" class="hover:underline">X</a>
-        <a href="https://linkedin.com" target="_blank" class="hover:underline">LinkedIn</a>
-      </nav>
-    </div>
-  </header>
+    <!-- Navigation -->
+    <nav class="nav-container">
+        <div class="nav-content">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search articles..." id="searchInput">
+            </div>
+            <div class="filters">
+                <select class="filter-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="News">News</option>
+                    <option value="Breaking News">Breaking News</option>
+                    <option value="Opinions">Opinions</option>
+                    <option value="Business">Business</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Tech">Tech</option>
+                    <option value="Entertainment">Entertainment</option>
+                </select>
+                <select class="filter-select" id="sortFilter">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                </select>
+            </div>
+        </div>
+    </nav>
 
-  <main class="container mx-auto px-4 py-8 min-h-screen">
-    <div class="text-center mb-12">
-      <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-        Mwaniki Reports
-      </h1>
-      <p class="text-lg text-muted mt-2">Your trusted source for news, sports, tech, and entertainment.</p>
-    </div>
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <i class="fas fa-spinner"></i>
+            <p>Loading articles...</p>
+        </div>
 
-    <div class="flex flex-col md:flex-row gap-4 mb-8">
-      <div class="relative flex-1">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Search posts..."
-          class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
-          oninput="filterPosts()"
-        >
-        <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-muted"></i>
-      </div>
-      <div id="categoryFilter" class="flex flex-wrap gap-2"></div>
-    </div>
+        <!-- No Posts State -->
+        <div id="noPostsState" class="no-posts" style="display: none;">
+            <i class="fas fa-newspaper"></i>
+            <h2>No articles found</h2>
+            <p>Try adjusting your search or filter criteria.</p>
+        </div>
 
-    <div id="postList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-  </main>
+        <!-- Posts Container -->
+        <div id="postsContainer" class="posts-grid" style="display: none;"></div>
 
-  <footer class="bg-gradient-to-r from-primary to-secondary text-white py-6">
-    <div class="container mx-auto px-4 text-center">
-      <img src="images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports" class="h-10 mx-auto mb-4">
-      <p>&copy; 2025 Jonathan Mwaniki. All rights reserved.</p>
-      <div class="flex justify-center gap-4 mt-2">
-        <a href="https://x.com/maestropuns" target="_blank"><i class="fab fa-x-twitter"></i></a>
-        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
-      </div>
-    </div>
-  </footer>
+        <!-- Pagination -->
+        <div class="pagination" id="pagination" style="display: none;">
+            <button id="prevBtn" onclick="changePage(-1)">
+                <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span class="page-info" id="pageInfo"></span>
+            <button id="nextBtn" onclick="changePage(1)">
+                Next <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </main>
 
-  <script src="script.js"></script>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <img src="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png" alt="Jonathan Mwaniki Logo" class="footer-logo">
+                <p class="footer-description">Your trusted source for news, sports, tech, and entertainment. Stay informed with quality journalism from Jonathan Mwaniki.</p>
+                <div class="social-links">
+                    <a href="https://twitter.com/maestropuns" target="_blank" aria-label="Twitter">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/jonathanmwaniki" target="_blank" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="mailto:contact@jonathanmwaniki.co.ke" aria-label="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">Categories</h3>
+                <ul class="footer-links">
+                    <li><a href="?category=News">News</a></li>
+                    <li><a href="?category=Breaking News">Breaking News</a></li>
+                    <li><a href="?category=Sports">Sports</a></li>
+                    <li><a href="?category=Tech">Tech</a></li>
+                    <li><a href="?category=Entertainment">Entertainment</a></li>
+                    <li><a href="?category=Business">Business</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#" onclick="scrollToTop()">Back to Top</a></li>
+                    <li><a href="mailto:contact@jonathanmwaniki.co.ke">Contact Us</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">Subscribe</h3>
+                <p>Stay updated with our latest articles and news.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Enter your email" class="newsletter-input" id="newsletterEmail">
+                    <button type="button" class="newsletter-btn" onclick="subscribeNewsletter()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 Jonathan Mwaniki. All rights reserved.</p>
+            <p class="geo-info">Nairobi, Kenya</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // State management
+        let allPosts = [];
+        let filteredPosts = [];
+        let currentPage = 1;
+        const postsPerPage = 9;
+
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const sortFilter = document.getElementById('sortFilter');
+        const postsContainer = document.getElementById('postsContainer');
+        const loadingState = document.getElementById('loadingState');
+        const noPostsState = document.getElementById('noPostsState');
+        const pagination = document.getElementById('pagination');
+        const pageInfo = document.getElementById('pageInfo');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Event listeners
+        searchInput.addEventListener('input', debounce(filterPosts, 300));
+        categoryFilter.addEventListener('change', filterPosts);
+        sortFilter.addEventListener('change', filterPosts);
+
+        // Utility functions
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function truncateText(text, maxLength) {
+            if (text.length <= maxLength) return text;
+            return text.substr(0, maxLength) + '...';
+        }
+
+        function getImageUrl(post) {
+            if (post.image && post.image !== 'https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png') {
+                return post.image;
+            }
+            return 'https://via.placeholder.com/400x200/1a73e8/ffffff?text=Mwaniki+Reports';
+        }
+
+        // API functions
+        async function fetchPosts() {
+            try {
+                showLoading();
+                const response = await fetch('/api/fetch-posts');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                allPosts = data.posts || [];
+                filteredPosts = [...allPosts];
+                
+                if (allPosts.length === 0) {
+                    showNoPosts();
+                } else {
+                    filterPosts();
+                }
+                
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+                showError('Failed to load articles. Please try again later.');
+            }
+        }
+
+        // Display functions
+        function showLoading() {
+            loadingState.style.display = 'block';
+            postsContainer.style.display = 'none';
+            noPostsState.style.display = 'none';
+            pagination.style.display = 'none';
+        }
+
+        function showNoPosts() {
+            loadingState.style.display = 'none';
+            postsContainer.style.display = 'none';
+            noPostsState.style.display = 'block';
+            pagination.style.display = 'none';
+        }
+
+        function showPosts() {
+            loadingState.style.display = 'none';
+            postsContainer.style.display = 'grid';
+            noPostsState.style.display = 'none';
+            pagination.style.display = filteredPosts.length > postsPerPage ? 'flex' : 'none';
+        }
+
+        function showError(message) {
+            loadingState.style.display = 'none';
+            postsContainer.style.display = 'none';
+            noPostsState.style.display = 'block';
+            noPostsState.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2>Error Loading Articles</h2>
+                <p>${message}</p>
+                <button onclick="fetchPosts()" class="retry-btn">
+                    <i class="fas fa-refresh"></i> Try Again
+                </button>
+            `;
+            pagination.style.display = 'none';
+        }
+
+        function createPostCard(post, isFeatured = false) {
+            const imageUrl = getImageUrl(post);
+            const tags = post.tags ? post.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+            
+            if (isFeatured) {
+                return `
+                    <article class="featured-post fade-in" onclick="openPost('${post.slug}')">
+                        <div class="featured-content">
+                            <div class="featured-label">
+                                <i class="fas fa-star"></i> Featured Article
+                            </div>
+                            <h2 class="featured-title">${post.title}</h2>
+                            <p class="featured-description">${post.description}</p>
+                            <div class="post-meta">
+                                <span class="post-category">${post.category}</span>
+                                <span class="post-date">
+                                    <i class="fas fa-calendar"></i>
+                                    ${formatDate(post.date)}
+                                </span>
+                            </div>
+                        </div>
+                        <img src="${imageUrl}" alt="${post.title}" class="featured-image" loading="lazy">
+                    </article>
+                `;
+            }
+
+            return `
+                <article class="post-card slide-in" onclick="openPost('${post.slug}')">
+                    <img src="${imageUrl}" alt="${post.title}" class="post-image" loading="lazy">
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <span class="post-category">${post.category}</span>
+                            <span class="post-date">
+                                <i class="fas fa-calendar"></i>
+                                ${formatDate(post.date)}
+                            </span>
+                        </div>
+                        <h2 class="post-title">${truncateText(post.title, 80)}</h2>
+                        <p class="post-description">${truncateText(post.description, 150)}</p>
+                        ${tags.length > 0 ? `
+                            <div class="post-tags">
+                                ${tags.slice(0, 3).map(tag => `
+                                    <span class="post-tag" onclick="event.stopPropagation(); filterByTag('${tag}')">${tag}</span>
+                                `).join('')}
+                                ${tags.length > 3 ? `<span class="post-tag">+${tags.length - 3} more</span>` : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+                </article>
+            `;
+        }
+
+        function renderPosts() {
+            const startIndex = (currentPage - 1) * postsPerPage;
+            const endIndex = startIndex + postsPerPage;
+            const postsToShow = filteredPosts.slice(startIndex, endIndex);
+
+            if (postsToShow.length === 0) {
+                showNoPosts();
+                return;
+            }
+
+            let html = '';
+            
+            // Add featured post only on first page and if we have posts
+            if (currentPage === 1 && postsToShow.length > 0) {
+                html += createPostCard(postsToShow[0], true);
+                // Show remaining posts (exclude the featured one)
+                const remainingPosts = postsToShow.slice(1);
+                html += remainingPosts.map(post => createPostCard(post)).join('');
+            } else {
+                html = postsToShow.map(post => createPostCard(post)).join('');
+            }
+
+            postsContainer.innerHTML = html;
+            showPosts();
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+            
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+            pagination.style.display = 'flex';
+        }
+
+        function changePage(direction) {
+            const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+            const newPage = currentPage + direction;
+            
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderPosts();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Filter functions
+        function filterPosts() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const selectedCategory = categoryFilter.value;
+            const sortOrder = sortFilter.value;
+
+            // Filter posts
+            filteredPosts = allPosts.filter(post => {
+                const matchesSearch = !searchTerm || 
+                    post.title.toLowerCase().includes(searchTerm) ||
+                    post.description.toLowerCase().includes(searchTerm) ||
+                    (post.tags && post.tags.toLowerCase().includes(searchTerm));
+                
+                const matchesCategory = !selectedCategory || post.category === selectedCategory;
+                
+                return matchesSearch && matchesCategory;
+            });
+
+            // Sort posts
+            filteredPosts.sort((a, b) => {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                
+                if (sortOrder === 'newest') {
+                    return dateB - dateA;
+                } else {
+                    return dateA - dateB;
+                }
+            });
+
+            currentPage = 1;
+            renderPosts();
+        }
+
+        function filterByTag(tag) {
+            searchInput.value = tag;
+            categoryFilter.value = '';
+            filterPosts();
+        }
+
+        // Navigation function
+        function openPost(slug) {
+            window.open(`/content/articles/${slug}.html`, '_blank');
+        }
+
+        // Utility functions for footer
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function subscribeNewsletter() {
+            const email = document.getElementById('newsletterEmail').value;
+            if (email && email.includes('@')) {
+                alert('Thank you for subscribing! We\'ll keep you updated.');
+                document.getElementById('newsletterEmail').value = '';
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        }
+
+        // URL parameter handling
+        function handleUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+            const tag = urlParams.get('tag');
+            const search = urlParams.get('search');
+
+            if (category) {
+                categoryFilter.value = category;
+            }
+            if (tag) {
+                searchInput.value = tag;
+            }
+            if (search) {
+                searchInput.value = search;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            handleUrlParams();
+            fetchPosts();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === '/') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+            if (e.key === 'Escape') {
+                searchInput.blur();
+            }
+        });
+
+        // Service worker registration for PWA features (optional)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful');
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
 </body>
 </html>
