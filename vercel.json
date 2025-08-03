@@ -1,12 +1,17 @@
-"routes": [
-  {
-    "src": "/api/fetch-posts",
-    "dest": "/api/fetch-posts.js",
-    "headers": {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET"
-    }
-  },
-  { "src": "/content/(.*)", "dest": "/content/$1" },
-  { "src": "/(.*)", "dest": "/index.html" }
-]
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/fetch-posts.js", "use": "@vercel/node" },
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "styles.css", "use": "@vercel/static" },
+    { "src": "scripts.js", "use": "@vercel/static" },
+    { "src": "content/articles.json", "use": "@vercel/static" },
+    { "src": "content/articles/*.html", "use": "@vercel/static" },
+    { "src": "images/Jonathan-Mwaniki-logo.png", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/fetch-posts", "dest": "/api/fetch-posts.js" },
+    { "src": "/content/(.*)", "dest": "/content/$1" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
