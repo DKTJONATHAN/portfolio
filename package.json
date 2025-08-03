@@ -2,15 +2,15 @@
   "name": "mwaniki-reports",
   "version": "1.0.0",
   "private": true,
-  "description": "Mwaniki Reports static site with serverless API",
   "scripts": {
     "dev": "npx serve .",
     "deploy": "vercel deploy"
   },
   "dependencies": {
-    "@octokit/rest": "^19.0.13"
+    "@octokit/rest": "^19.0.13",
+    "cheerio": "^1.0.0-rc.12"
   },
   "engines": {
-    "node": "22.x"
+    "node": "18.x"
   }
 }
