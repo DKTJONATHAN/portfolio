@@ -2,7 +2,6 @@
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
-  "public": "news-website",
   "rewrites": [
     {
       "source": "/api/:path*",
@@ -17,4 +16,4 @@
       "destination": "/robots.txt"
     }
   ]
-} 
+}
