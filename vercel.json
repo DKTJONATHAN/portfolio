@@ -1,39 +1,17 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/**/*.js", "use": "@vercel/node" },
-    { "src": "*.html", "use": "@vercel/static" },
-    { "src": "content/**/*", "use": "@vercel/static" },
+    { "src": "api/fetch-posts.js", "use": "@vercel/node" },
+    { "src": "index.html", "use": "@vercel/static" },
     { "src": "styles.css", "use": "@vercel/static" },
     { "src": "scripts.js", "use": "@vercel/static" },
-    { "src": "images/**/*", "use": "@vercel/static" }
+    { "src": "content/articles.json", "use": "@vercel/static" },
+    { "src": "content/articles/*.html", "use": "@vercel/static" },
+    { "src": "images/Jonathan-Mwaniki-logo.png", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1", "methods": ["GET"], "headers": { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET", "Access-Control-Allow-Headers": "Content-Type" } },
+    { "src": "/api/fetch-posts", "dest": "/api/fetch-posts.js" },
     { "src": "/content/(.*)", "dest": "/content/$1" },
     { "src": "/(.*)", "dest": "/index.html" }
-  ],
-  "functions": {
-    "api/**/*.js": { "memory": 1024, "maxDuration": 30 }
-  },
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "build": {
-    "env": {
-      "GITHUB_TOKEN": "@github_token",
-      "GITHUB_OWNER": "@github_owner",
-      "GITHUB_REPO": "@github_repo"
-    }
-  },
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-XSS-Protection", "value": "1; mode=block" }
-      ]
-    }
   ]
 }
