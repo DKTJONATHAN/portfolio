@@ -16,6 +16,7 @@ async function fetchPosts() {
   }
 }
 
+// Rest of scripts.js remains unchanged (renderPosts, renderCategories, filterPosts, filterByCategory)
 function renderPosts(postsToRender) {
   const postList = document.getElementById('postList');
   postList.innerHTML = postsToRender.length ? '' : '<p class="text-center text-muted col-span-full">No posts found.</p>';
