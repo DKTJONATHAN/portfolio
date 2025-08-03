@@ -1,50 +1,25 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/*.js", "use": "@vercel/node" },
-    { "src": "*.html", "use": "@vercel/static" },
-    { "src": "admin/*.html", "use": "@vercel/static" },
-    { "src": "*.css", "use": "@vercel/static" },
-    { "src": "scripts.js", "use": "@vercel/static" },
-    { "src": "content/articles/*.html", "use": "@vercel/static" },
-    { "src": "images/*", "use": "@vercel/static" }
+    { "src": "api/**/*.js", "use": "@vercel/node" },
+    { "src": "*.{html,css,js}", "use": "@vercel/static" },
+    { "src": "content/articles/*.html", "use": "@vercel/static" }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "/api/$1",
       "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Origin": "*"
       }
     },
-    { 
-      "src": "/content/articles/(.*)", 
-      "dest": "/content/articles/$1.html",
-      "headers": {
-        "Cache-Control": "public, max-age=3600"
-      }
+    {
+      "src": "/articles/(.*)",
+      "dest": "/content/articles/$1.html"
     },
-    { 
-      "src": "/articles/(.*)", 
-      "dest": "/content/articles/$1.html",
-      "status": 301
-    },
-    { 
-      "src": "/admin", 
-      "dest": "/admin/index.html" 
-    },
-    { 
-      "src": "/(.*)", 
-      "dest": "/index.html",
-      "headers": {
-        "Cache-Control": "public, max-age=0, must-revalidate"
-      }
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
-  ],
-  "rewrites": [
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/rss.xml", "destination": "/api/rss" }
   ]
 }
