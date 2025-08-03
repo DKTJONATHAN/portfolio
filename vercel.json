@@ -13,10 +13,6 @@
     {
       "source": "/robots",
       "destination": "/robots.txt"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/:path*"
     }
   ]
 }
