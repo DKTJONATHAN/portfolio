@@ -1,16 +1,108 @@
 {
   "name": "mwaniki-reports",
   "version": "1.0.0",
-  "private": true,
+  "description": "Mwaniki Reports - Your trusted source for news, sports, tech, and entertainment",
+  "main": "index.html",
   "scripts": {
-    "dev": "npx serve .",
-    "deploy": "vercel deploy"
+    "dev": "vercel dev",
+    "build": "echo 'Static site - no build required'",
+    "start": "vercel dev",
+    "deploy": "vercel --prod",
+    "preview": "vercel",
+    "lint": "eslint *.js api/*.js",
+    "format": "prettier --write *.js api/*.js *.html *.css",
+    "test": "echo 'No tests specified'",
+    "validate": "html5validator --root . --also-check-css",
+    "lighthouse": "lighthouse http://localhost:3000 --output html --output-path ./lighthouse-report.html"
+  },
+  "keywords": [
+    "news",
+    "blog",
+    "journalism",
+    "kenya",
+    "sports",
+    "tech",
+    "entertainment",
+    "mwaniki",
+    "reports"
+  ],
+  "author": {
+    "name": "Jonathan Mwaniki",
+    "email": "contact@jonathanmwaniki.co.ke",
+    "url": "https://www.jonathanmwaniki.co.ke"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/mwaniki-reports.git"
+  },
+  "homepage": "https://www.jonathanmwaniki.co.ke",
+  "bugs": {
+    "url": "https://github.com/your-username/mwaniki-reports/issues",
+    "email": "contact@jonathanmwaniki.co.ke"
   },
   "dependencies": {
-    "@octokit/rest": "^19.0.13",
+    "@octokit/rest": "^20.0.2",
     "cheerio": "^1.0.0-rc.12"
   },
+  "devDependencies": {
+    "@vercel/node": "^3.0.21",
+    "@vercel/static": "^6.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-node": "^11.1.0",
+    "prettier": "^3.2.5",
+    "html5validator": "^0.4.9",
+    "lighthouse": "^11.6.0"
+  },
   "engines": {
-    "node": "18.x"
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "vercel": {
+    "functions": {
+      "api/fetch-posts.js": {
+        "maxDuration": 30
+      },
+      "api/save-post.js": {
+        "maxDuration": 60
+      }
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "printWidth": 100,
+    "bracketSpacing": true,
+    "arrowParens": "avoid"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true,
+      "es2022": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "prettier"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2022,
+      "sourceType": "module"
+    },
+    "rules": {
+      "no-console": "warn",
+      "no-unused-vars": "warn",
+      "prefer-const": "error",
+      "no-var": "error"
+    }
   }
 }
