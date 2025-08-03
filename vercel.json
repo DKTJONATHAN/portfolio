@@ -1,18 +1,19 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/fetch-posts.js", "use": "@vercel/node" },
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "styles.css", "use": "@vercel/static" },
-    { "src": "scripts.js", "use": "@vercel/static" },
-    { "src": "content/articles.json", "use": "@vercel/static" },
+    { "src": "api/*.js", "use": "@vercel/node" },
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "admin/*.html", "use": "@vercel/static" },
+    { "src": "*.css", "use": "@vercel/static" },
+    { "src": "*.js", "use": "@vercel/static" },
+    { "src": "content/*", "use": "@vercel/static" },
     { "src": "content/articles/*.html", "use": "@vercel/static" },
-    { "src": "images/Jonathan-Mwaniki-logo.png", "use": "@vercel/static" },
-    { "src": "admin/index.html", "use": "@vercel/static" }
+    { "src": "images/*", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/fetch-posts", "dest": "/api/fetch-posts.js" },
+    { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/content/(.*)", "dest": "/content/$1" },
+    { "src": "/articles/(.*)", "dest": "/content/articles/$1" },
     { "src": "/admin", "dest": "/admin/index.html" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
