@@ -1,5 +1,5 @@
 {
-  "name": "mwaniki-reports",
+  "name": "portfolio",
   "version": "1.0.0",
   "description": "Mwaniki Reports - Your trusted source for news, sports, tech, and entertainment",
   "main": "index.html",
@@ -9,11 +9,7 @@
     "start": "vercel dev",
     "deploy": "vercel --prod",
     "preview": "vercel",
-    "lint": "eslint *.js api/*.js",
-    "format": "prettier --write *.js api/*.js *.html *.css",
-    "test": "echo 'No tests specified'",
-    "validate": "html5validator --root . --also-check-css",
-    "lighthouse": "lighthouse http://localhost:3000 --output html --output-path ./lighthouse-report.html"
+    "test": "echo 'No tests specified'"
   },
   "keywords": [
     "news",
@@ -34,11 +30,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/DKTJONATHAN/mwaniki-reports.git"
+    "url": "https://github.com/DKTJONATHAN/portfolio.git"
   },
   "homepage": "https://www.jonathanmwaniki.co.ke",
   "bugs": {
-    "url": "https://github.com/DKTJONATHAN/mwaniki-reports/issues",
+    "url": "https://github.com/DKTJONATHAN/portfolio/issues",
     "email": "contact@jonathanmwaniki.co.ke"
   },
   "dependencies": {
@@ -46,16 +42,10 @@
     "cheerio": "^1.0.0-rc.12"
   },
   "devDependencies": {
-    "@vercel/node": "^3.0.21",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-node": "^11.1.0",
-    "prettier": "^3.2.5",
-    "html5validator": "^0.4.9",
-    "lighthouse": "^11.6.0"
+    "@vercel/node": "^3.0.21"
   },
   "engines": {
-    "node": "18.x",
+    "node": "22.x",
     "npm": ">=8.0.0"
   },
   "vercel": {
@@ -66,42 +56,6 @@
       "api/save-post.js": {
         "maxDuration": 60
       }
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ],
-  "prettier": {
-    "semi": true,
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5",
-    "printWidth": 100,
-    "bracketSpacing": true,
-    "arrowParens": "avoid"
-  },
-  "eslintConfig": {
-    "env": {
-      "browser": true,
-      "node": true,
-      "es2022": true
-    },
-    "extends": [
-      "eslint:recommended",
-      "prettier"
-    ],
-    "parserOptions": {
-      "ecmaVersion": 2022,
-      "sourceType": "module"
-    },
-    "rules": {
-      "no-console": "warn",
-      "no-unused-vars": "warn",
-      "prefer-const": "error",
-      "no-var": "error"
     }
   }
 }
