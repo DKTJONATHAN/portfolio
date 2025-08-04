@@ -3,21 +3,15 @@
   "version": "1.0.0",
   "description": "Mwaniki Reports - News Platform",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "start": "serve -p $PORT",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@octokit/rest": "^19.0.7",
     "cheerio": "^1.0.0-rc.12",
-    "next": "^13.4.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "serve": "^14.2.1"
   },
   "devDependencies": {
-    "@vercel/node": "^2.8.4",
-    "eslint": "^8.34.0",
-    "eslint-config-next": "13.4.7"
+    "@vercel/node": "^2.8.4"
   }
 }
