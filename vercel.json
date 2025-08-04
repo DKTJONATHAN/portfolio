@@ -1,28 +1,39 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "next.config.js",
-      "use": "@vercel/next"
-    },
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    }
-  ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "src": "/api/fetch-posts",
+      "dest": "/api/fetch-posts.js",
+      "timeout": 30
+    },
+    {
+      "src": "/api/save-post",
+      "dest": "/api/save-post.js",
+      "timeout": 60
+    },
+    {
+      "src": "/api/test",
+      "dest": "/api/test.js",
+      "timeout": 10
+    },
+    {
+      "src": "/images/logo.png",
+      "dest": "/images/Jonathan-Mwaniki-logo.png"
     },
     {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "/index.html"
     }
   ],
-  "env": {
-    "GITHUB_TOKEN": "@github_token",
-    "GITHUB_OWNER": "@github_owner",
-    "GITHUB_REPO": "@github_repo"
-  }
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
+      ]
+    }
+  ]
 }
