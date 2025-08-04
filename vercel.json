@@ -2,30 +2,65 @@
   "version": 2,
   "builds": [
     {
-      "src": "*.html",
-      "use": "@vercel/static"
-    },
-    {
       "src": "api/*.js",
       "use": "@vercel/node"
     },
     {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
       "src": "images/*",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "content/*.json",
       "use": "@vercel/static"
     }
   ],
   "routes": [
-    {
-      "src": "/images/(.*)",
-      "dest": "/images/$1"
-    },
+    // API Routes
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
+    
+    // Image Assets
+    {
+      "src": "/images/(.*)",
+      "dest": "/images/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    
+    // Content Data
+    {
+      "src": "/content/(.*)",
+      "dest": "/content/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=3600"
+      }
+    },
+    
+    // Frontend Routes
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*).(jpg|jpeg|png|gif|webp)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
   ]
 }
