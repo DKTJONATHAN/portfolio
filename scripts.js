@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Fetch posts from articles.json (Solution 1) or API (Solution 2)
+// Fetch posts from API
 async function fetchPosts() {
     try {
         // Show loading state
@@ -95,77 +95,7 @@ async function fetchPosts() {
         loadingState.classList.remove('hidden');
         pagination.classList.add('hidden');
         
-        // Solution 1: Fetch from content/articles.json
-        const url = 'https://jonathanmwaniki.co.ke/content/articles.json';
-        console.log('Attempting to fetch posts from:', url);
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Cache-Control': 'no-cache'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status} ${response.statusText}`);
-        }
-
-        const posts = await response.json();
-        console.log('Posts fetched successfully:', posts);
-
-        // Validate posts data
-        if (!Array.isArray(posts)) {
-            throw new Error('Invalid data format: posts is not an array');
-        }
-
-        // Filter posts by category, search, and tag
-        let filteredPosts = posts;
-        if (currentCategory) {
-            filteredPosts = filteredPosts.filter(post => post.category === currentCategory);
-        }
-        if (currentSearch) {
-            const searchLower = currentSearch.toLowerCase();
-            filteredPosts = filteredPosts.filter(post => {
-                return (post.title && post.title.toLowerCase().includes(searchLower)) ||
-                       (post.description && post.description.toLowerCase().includes(searchLower)) ||
-                       (post.tags && post.tags.toLowerCase().includes(searchLower));
-            });
-        }
-        if (currentTag) {
-            filteredPosts = filteredPosts.filter(post => post.tags && post.tags.toLowerCase().includes(currentTag.toLowerCase()));
-        }
-
-        // Sort posts
-        filteredPosts.sort((a, b) => {
-            const dateA = new Date(a.date);
-            const dateB = new Date(b.date);
-            if (isNaN(dateA) || isNaN(dateB)) {
-                console.warn('Invalid date detected:', a.date, b.date);
-                return 0;
-            }
-            return currentSort === 'newest' ? dateB - dateA : dateA - dateB;
-        });
-
-        // Paginate posts
-        const postsPerPage = 10;
-        totalPages = Math.ceil(filteredPosts.length / postsPerPage);
-        const start = (currentPage - 1) * postsPerPage;
-        const paginatedPosts = filteredPosts.slice(start, start + postsPerPage);
-
-        // Update pagination
-        updatePagination();
-
-        // Render posts
-        renderPosts(paginatedPosts.map(post => ({
-            ...post,
-            url: `/articles/${post.slug}`
-        })));
-
-        // Update debug info
-        updateDebugInfo({ posts: paginatedPosts, totalPages });
-
-        /*
-        // Solution 2: Fetch from /api/fetch-posts (uncomment to use API)
+        // Build API URL with query parameters
         const params = new URLSearchParams({
             page: currentPage,
             limit: 10,
@@ -175,7 +105,7 @@ async function fetchPosts() {
             sort: currentSort
         });
         
-        const url = `https://jonathanmwaniki.co.ke/api/fetch-posts?${params.toString()}`;
+        const url = `/api/fetch-posts?${params.toString()}`; // Use relative path for flexibility
         console.log('Fetching posts from:', url);
         const response = await fetch(url, {
             method: 'GET',
@@ -206,7 +136,6 @@ async function fetchPosts() {
 
         // Update debug info
         updateDebugInfo(data);
-        */
         
     } catch (error) {
         console.error('Error in fetchPosts:', error);
