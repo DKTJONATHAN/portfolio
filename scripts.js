@@ -13,6 +13,19 @@ const categoryFilter = document.getElementById('categoryFilter');
 const sortFilter = document.getElementById('sortFilter');
 const debugPanel = document.getElementById('debugPanel');
 
+// Validate DOM elements
+if (!postsContainer || !loadingState || !noPostsState || !pagination || !prevBtn || !nextBtn || !pageInfo) {
+    console.error('Missing critical DOM elements:', {
+        postsContainer: !!postsContainer,
+        loadingState: !!loadingState,
+        noPostsState: !!noPostsState,
+        pagination: !!pagination,
+        prevBtn: !!prevBtn,
+        nextBtn: !!nextBtn,
+        pageInfo: !!pageInfo
+    });
+}
+
 // State variables
 let currentPage = 1;
 let totalPages = 1;
@@ -23,6 +36,8 @@ let currentTag = '';
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded, initializing...');
+    
     // Check URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     currentCategory = urlParams.get('category') || '';
@@ -30,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set filters from URL
     if (categoryFilter && currentCategory) {
+        console.log('Setting category filter:', currentCategory);
         categoryFilter.value = currentCategory;
     }
     
@@ -39,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listeners
     if (searchInput) {
         searchInput.addEventListener('input', debounce(() => {
+            console.log('Search input changed:', searchInput.value);
             currentSearch = searchInput.value.trim();
             currentPage = 1;
             fetchPosts();
@@ -47,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (categoryFilter) {
         categoryFilter.addEventListener('change', () => {
+            console.log('Category filter changed:', categoryFilter.value);
             currentCategory = categoryFilter.value;
             currentPage = 1;
             updateURL();
@@ -56,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (sortFilter) {
         sortFilter.addEventListener('change', () => {
+            console.log('Sort filter changed:', sortFilter.value);
             currentSort = sortFilter.value;
             currentPage = 1;
             fetchPosts();
@@ -65,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (prevBtn) {
         prevBtn.addEventListener('click', () => {
             if (currentPage > 1) {
+                console.log('Previous page clicked, new page:', currentPage - 1);
                 currentPage--;
                 fetchPosts();
             }
@@ -74,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (nextBtn) {
         nextBtn.addEventListener('click', () => {
             if (currentPage < totalPages) {
+                console.log('Next page clicked, new page:', currentPage + 1);
                 currentPage++;
                 fetchPosts();
             }
@@ -82,18 +103,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Enable debug panel if debug parameter exists
     if (urlParams.has('debug') && debugPanel) {
+        console.log('Enabling debug panel');
         debugPanel.style.display = 'block';
     }
 });
 
 // Fetch posts from API
 async function fetchPosts() {
+    console.log('Starting fetchPosts...');
     try {
         // Show loading state
-        postsContainer.classList.add('hidden');
-        noPostsState.classList.add('hidden');
-        loadingState.classList.remove('hidden');
-        pagination.classList.add('hidden');
+        if (postsContainer) postsContainer.classList.add('hidden');
+        if (noPostsState) noPostsState.classList.add('hidden');
+        if (loadingState) loadingState.classList.remove('hidden');
+        if (pagination) pagination.classList.add('hidden');
         
         // Build API URL with query parameters
         const params = new URLSearchParams({
@@ -105,7 +128,7 @@ async function fetchPosts() {
             sort: currentSort
         });
         
-        const url = `/api/fetch-posts?${params.toString()}`; // Use relative path for flexibility
+        const url = `/api/fetch-posts?${params.toString()}`;
         console.log('Fetching posts from:', url);
         const response = await fetch(url, {
             method: 'GET',
@@ -115,23 +138,29 @@ async function fetchPosts() {
             }
         });
 
+        console.log('Fetch response status:', response.status);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
-        console.log('Posts fetched successfully:', data);
+        console.log('API response:', data);
 
         // Validate response
-        if (!data.posts || !Array.isArray(data.posts)) {
+        if (!data || !data.posts || !Array.isArray(data.posts)) {
             throw new Error('Invalid response format: posts is not an array');
+        }
+        if (typeof data.totalPages !== 'number') {
+            console.warn('Invalid totalPages, defaulting to 1:', data.totalPages);
+            data.totalPages = 1;
         }
 
         // Update pagination
-        totalPages = data.totalPages || 1;
+        totalPages = data.totalPages;
         updatePagination();
 
         // Render posts
+        console.log('Rendering posts:', data.posts);
         renderPosts(data.posts);
 
         // Update debug info
@@ -143,22 +172,33 @@ async function fetchPosts() {
         updateDebugInfo({ error: error.message });
     } finally {
         // Ensure loading state is cleared
-        loadingState.classList.add('hidden');
+        if (loadingState) {
+            console.log('Clearing loading state');
+            loadingState.classList.add('hidden');
+        }
     }
 }
 
 // Render posts to the DOM
 function renderPosts(posts) {
+    console.log('Starting renderPosts, post count:', posts.length);
+    if (!postsContainer) {
+        console.error('postsContainer not found, cannot render posts');
+        return;
+    }
+
     if (!posts || posts.length === 0) {
-        loadingState.classList.add('hidden');
-        noPostsState.classList.remove('hidden');
+        console.log('No posts to render, showing noPostsState');
+        if (loadingState) loadingState.classList.add('hidden');
+        if (noPostsState) noPostsState.classList.remove('hidden');
         postsContainer.classList.add('hidden');
         return;
     }
     
     postsContainer.innerHTML = '';
     
-    posts.forEach(post => {
+    posts.forEach((post, index) => {
+        console.log(`Rendering post ${index + 1}:`, post.title);
         const postDate = new Date(post.date).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
@@ -176,7 +216,7 @@ function renderPosts(posts) {
                 ` : ''}
                 <div class="p-8 ${post.image ? 'md:w-2/3' : ''}">
                     <div class="uppercase tracking-wide text-sm text-primary-500 font-semibold">${post.category || 'Uncategorized'}</div>
-                    <a href="${post.url}" class="block mt-1 text-xl leading-tight font-medium text-gray-900 hover:text-primary-500">${post.title || 'Untitled'}</a>
+                    <a href="${post.url || '#'}" class="block mt-1 text-xl leading-tight font-medium text-gray-900 hover:text-primary-500">${post.title || 'Untitled'}</a>
                     <p class="mt-2 text-gray-500">${post.description || 'No description available'}</p>
                     <div class="mt-4 flex items-center">
                         <div class="text-sm text-gray-500">
@@ -197,33 +237,39 @@ function renderPosts(posts) {
         postsContainer.appendChild(postElement);
     });
     
-    loadingState.classList.add('hidden');
+    console.log('Posts rendered, showing postsContainer');
+    if (loadingState) loadingState.classList.add('hidden');
     postsContainer.classList.remove('hidden');
 }
 
 // Update pagination controls
 function updatePagination() {
+    console.log('Updating pagination, totalPages:', totalPages);
     if (totalPages <= 1) {
-        pagination.classList.add('hidden');
+        if (pagination) pagination.classList.add('hidden');
         return;
     }
     
-    pagination.classList.remove('hidden');
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-    
-    prevBtn.disabled = currentPage <= 1;
-    nextBtn.disabled = currentPage >= totalPages;
+    if (pagination && pageInfo) {
+        pagination.classList.remove('hidden');
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = currentPage >= totalPages;
+    }
 }
 
 // Show error state
 function showErrorState() {
-    loadingState.classList.add('hidden');
-    noPostsState.classList.remove('hidden');
-    pagination.classList.add('hidden');
+    console.log('Showing error state (noPostsState)');
+    if (loadingState) loadingState.classList.add('hidden');
+    if (noPostsState) noPostsState.classList.remove('hidden');
+    if (postsContainer) postsContainer.classList.add('hidden');
+    if (pagination) pagination.classList.add('hidden');
 }
 
 // Update URL without reloading
 function updateURL() {
+    console.log('Updating URL with category and tag');
     const url = new URL(window.location);
     
     if (currentCategory) {
@@ -243,11 +289,12 @@ function updateURL() {
 
 // Update debug info
 function updateDebugInfo(data) {
-    if (!debugPanel) return;
+    if (!debugPanel || !document.getElementById('debugInfo')) {
+        console.log('Debug panel or debugInfo not found');
+        return;
+    }
     
     const debugInfo = document.getElementById('debugInfo');
-    if (!debugInfo) return;
-    
     debugInfo.innerHTML = `
         <strong>Current State:</strong>
         <div>Page: ${currentPage}</div>
@@ -261,8 +308,10 @@ function updateDebugInfo(data) {
         ` : ''}
         ${data.posts ? `
         <div>Posts Loaded: ${data.posts.length}</div>
+        <div>First Post: ${data.posts[0]?.title || 'None'}</div>
         ` : ''}
     `;
+    console.log('Debug info updated:', data);
 }
 
 // Debounce function for search input
@@ -279,6 +328,7 @@ function debounce(func, wait) {
 
 // Scroll to top function
 function scrollToTop() {
+    console.log('Scrolling to top');
     window.scrollTo({
         top: 0,
         behavior: 'smooth'
@@ -291,6 +341,7 @@ function subscribeNewsletter() {
     const email = emailInput ? emailInput.value.trim() : '';
     
     if (!email) {
+        console.log('Newsletter subscription: No email provided');
         alert('Please enter your email address');
         return;
     }
