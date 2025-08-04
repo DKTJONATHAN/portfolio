@@ -8,9 +8,21 @@
     {
       "src": "api/*.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "images/*",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
+    {
+      "src": "/images/(.*)",
+      "dest": "/images/$1"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
     {
       "src": "/(.*)",
       "dest": "/index.html"
