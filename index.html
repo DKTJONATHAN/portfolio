@@ -12,7 +12,7 @@
     <!-- Open Graph -->
     <meta property="og:title" content="Mwaniki Reports - Your Trusted News Source">
     <meta property="og:description" content="Stay updated with the latest news, sports, tech, and entertainment from Jonathan Mwaniki.">
-    <meta property="og:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    <meta property="og:image" content="images/Jonathan-Mwaniki-logo.png">
     <meta property="og:url" content="https://www.jonathanmwaniki.co.ke">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Mwaniki Reports">
@@ -22,7 +22,7 @@
     <meta name="twitter:site" content="@maestropuns">
     <meta name="twitter:title" content="Mwaniki Reports - Your Trusted News Source">
     <meta name="twitter:description" content="Stay updated with the latest news, sports, tech, and entertainment from Jonathan Mwaniki.">
-    <meta name="twitter:image" content="https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png">
+    <meta name="twitter:image" content="images/Jonathan-Mwaniki-logo.png">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -76,12 +76,6 @@
     </script>
 </head>
 <body class="font-poppins bg-gray-50 text-gray-900">
-    <!-- Debug Panel (remove in production) -->
-    <div id="debugPanel" class="fixed top-0 right-0 bg-red-500 text-white p-2 text-xs z-50 max-w-xs" style="display: none;">
-        <div id="debugInfo"></div>
-        <button onclick="document.getElementById('debugPanel').style.display='none'" class="absolute top-1 right-1 text-white">×</button>
-    </div>
-
     <!-- Header -->
     <header class="bg-gradient-to-br from-primary-500 to-primary-600 text-white relative overflow-hidden">
         <!-- Background Pattern -->
@@ -92,14 +86,10 @@
         <!-- Header Content -->
         <div class="relative z-10 max-w-6xl mx-auto px-4 py-16 text-center animate-fade-in-up">
             <div class="mb-6">
-                <!-- Multiple logo attempts with fallback -->
                 <img 
-                    id="headerLogo"
-                    src="/images/Jonathan-Mwaniki-logo.png" 
+                    src="images/Jonathan-Mwaniki-logo.png" 
                     alt="Jonathan Mwaniki Logo" 
                     class="w-32 h-32 mx-auto rounded-full shadow-2xl border-4 border-white/20 backdrop-blur-sm hover:scale-105 transition-transform duration-300"
-                    onerror="handleLogoError(this)"
-                    onload="console.log('✅ Header logo loaded successfully')"
                 >
             </div>
             <h1 class="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
@@ -159,33 +149,21 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 py-8 min-h-screen">
-        <!-- Debug Info -->
-        <div id="debugDisplay" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4" style="display: none;">
-            <strong>Debug Info:</strong>
-            <div id="debugContent"></div>
-        </div>
-
         <!-- Loading State -->
         <div id="loadingState" class="text-center py-20">
             <i class="fas fa-spinner text-5xl text-primary-500 animate-spin mb-6"></i>
             <p class="text-xl text-gray-600 font-medium">Loading articles...</p>
-            <p class="text-sm text-gray-500 mt-2">If this takes too long, check console for errors</p>
         </div>
 
         <!-- No Posts State -->
         <div id="noPostsState" class="text-center py-20 hidden">
             <i class="fas fa-newspaper text-6xl text-gray-300 mb-6"></i>
             <h2 class="text-2xl font-semibold text-gray-700 mb-2">No articles found</h2>
-            <p class="text-gray-500 max-w-md mx-auto">Try adjusting your search or filter criteria to find what you're looking for.</p>
-            <button onclick="debugAPI()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                Debug API
-            </button>
+            <p class="text-gray-500 max-w-md mx-auto">Try adjusting your search or filter criteria.</p>
         </div>
 
         <!-- Posts Container -->
-        <div id="postsContainer" class="hidden">
-            <!-- Posts will be dynamically inserted here -->
-        </div>
+        <div id="postsContainer" class="hidden"></div>
 
         <!-- Pagination -->
         <div id="pagination" class="flex justify-center items-center gap-6 mt-12 hidden">
@@ -205,26 +183,18 @@
 
     <!-- Footer -->
     <footer class="bg-gradient-to-br from-gray-900 to-gray-800 text-white relative overflow-hidden mt-20">
-        <!-- Background Pattern -->
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute inset-0" style="background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 30px 30px;"></div>
-        </div>
-        
         <!-- Footer Content -->
         <div class="relative z-10 max-w-6xl mx-auto px-4 py-16">
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Brand Section -->
                 <div class="lg:col-span-1">
                     <img 
-                        id="footerLogo"
-                        src="/images/Jonathan-Mwaniki-logo.png" 
+                        src="images/Jonathan-Mwaniki-logo.png" 
                         alt="Jonathan Mwaniki Logo" 
                         class="w-20 h-20 rounded-full shadow-lg mb-4"
-                        onerror="handleLogoError(this)"
-                        onload="console.log('✅ Footer logo loaded successfully')"
                     >
                     <p class="text-gray-300 text-sm leading-relaxed mb-6">
-                        Your trusted source for news, sports, tech, and entertainment. Stay informed with quality journalism from Jonathan Mwaniki.
+                        Your trusted source for news, sports, tech, and entertainment.
                     </p>
                     <div class="flex gap-3">
                         <a href="https://twitter.com/maestropuns" target="_blank" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-primary-500 transition-all duration-200 hover:scale-110" aria-label="Twitter">
@@ -248,7 +218,6 @@
                         <li><a href="?category=Sports" class="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">Sports</a></li>
                         <li><a href="?category=Tech" class="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">Tech</a></li>
                         <li><a href="?category=Entertainment" class="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">Entertainment</a></li>
-                        <li><a href="?category=Business" class="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">Business</a></li>
                     </ul>
                 </div>
                 
@@ -258,16 +227,13 @@
                     <ul class="space-y-2">
                         <li><a href="#" onclick="scrollToTop()" class="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">Back to Top</a></li>
                         <li><a href="mailto:contact@jonathanmwaniki.co.ke" class="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">Contact Us</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">About</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">Privacy Policy</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-200 inline-block">Terms of Service</a></li>
                     </ul>
                 </div>
                 
                 <!-- Newsletter -->
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Subscribe</h3>
-                    <p class="text-gray-300 text-sm mb-4">Stay updated with our latest articles and news.</p>
+                    <p class="text-gray-300 text-sm mb-4">Stay updated with our latest articles.</p>
                     <div class="flex gap-2">
                         <input 
                             type="email" 
@@ -275,10 +241,7 @@
                             placeholder="Enter your email" 
                             class="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 backdrop-blur-sm"
                         >
-                        <button 
-                            onclick="subscribeNewsletter()" 
-                            class="px-4 py-2 bg-primary-500 rounded-lg hover:bg-primary-600 transition-colors duration-200 hover:scale-105"
-                        >
+                        <button class="px-4 py-2 bg-primary-500 rounded-lg hover:bg-primary-600 transition-colors duration-200 hover:scale-105">
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
@@ -290,103 +253,10 @@
         <div class="border-t border-white/20 bg-black/20 relative z-10">
             <div class="max-w-6xl mx-auto px-4 py-6 text-center">
                 <p class="text-gray-300 text-sm mb-1">&copy; 2025 Jonathan Mwaniki. All rights reserved.</p>
-                <p class="text-gray-400 text-xs">Nairobi, Kenya</p>
             </div>
         </div>
     </footer>
 
-    <!-- Debug Functions -->
-    <script>
-        // Logo error handling
-        function handleLogoError(img) {
-            console.log('❌ Logo failed to load:', img.src);
-            
-            const fallbackPaths = [
-                './images/Jonathan-Mwaniki-logo.png',
-                'images/Jonathan-Mwaniki-logo.png',
-                'https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png',
-                'https://via.placeholder.com/150/1a73e8/ffffff?text=MR'
-            ];
-            
-            const currentIndex = fallbackPaths.indexOf(img.src);
-            if (currentIndex < fallbackPaths.length - 1) {
-                img.src = fallbackPaths[currentIndex + 1];
-                console.log('🔄 Trying fallback logo:', img.src);
-            } else {
-                console.log('❌ All logo paths failed');
-                showDebug('Logo loading failed. Check if images/Jonathan-Mwaniki-logo.png exists in your project.');
-            }
-        }
-
-        // Debug API function
-        async function debugAPI() {
-            console.log('🔍 Debugging API...');
-            showDebug('Testing API endpoints...');
-            
-            const endpoints = [
-                '/api/fetch-posts',
-                './api/fetch-posts',
-                window.location.origin + '/api/fetch-posts'
-            ];
-            
-            for (const endpoint of endpoints) {
-                try {
-                    console.log(`Testing: ${endpoint}`);
-                    const response = await fetch(endpoint);
-                    console.log(`Status: ${response.status} for ${endpoint}`);
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log(`✅ API working at: ${endpoint}`);
-                        console.log('Response:', data);
-                        showDebug(`API working! Found ${data.posts?.length || 0} posts at ${endpoint}`);
-                        return;
-                    } else {
-                        const errorText = await response.text();
-                        console.log(`❌ API error at: ${endpoint}`, errorText);
-                        showDebug(`API error at ${endpoint}: ${response.status} - ${errorText}`);
-                    }
-                } catch (error) {
-                    console.log(`❌ API failed at: ${endpoint}`, error.message);
-                    showDebug(`API failed at ${endpoint}: ${error.message}`);
-                }
-            }
-        }
-
-        // Show debug information
-        function showDebug(message) {
-            const debugDisplay = document.getElementById('debugDisplay');
-            const debugContent = document.getElementById('debugContent');
-            
-            if (debugDisplay && debugContent) {
-                debugContent.innerHTML += '<div>' + message + '</div>';
-                debugDisplay.style.display = 'block';
-            }
-            
-            console.log('🐛 DEBUG:', message);
-        }
-
-        // Check environment on load
-        window.addEventListener('load', function() {
-            console.log('🌍 Environment check:');
-            console.log('Domain:', window.location.origin);
-            console.log('Path:', window.location.pathname);
-            console.log('Scripts loaded:', !!window.fetchPosts);
-            
-            // Test logo paths immediately
-            setTimeout(() => {
-                const logos = document.querySelectorAll('img[id*="Logo"]');
-                logos.forEach(logo => {
-                    if (!logo.complete || logo.naturalHeight === 0) {
-                        console.log('⚠️ Logo not loaded properly:', logo.id);
-                        handleLogoError(logo);
-                    }
-                });
-            }, 1000);
-        });
-    </script>
-
-    <!-- External JavaScript -->
-    <script src="scripts.js" onerror="console.error('❌ Failed to load scripts.js'); showDebug('scripts.js failed to load. Check if file exists.');"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>
