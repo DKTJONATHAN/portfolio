@@ -1,32 +1,5 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "content/articles.json",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "content/articles/*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "images/*",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.html",
-      "use": "@vercel/static"
-    }
-  ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
     {
       "src": "/content/articles.json",
       "dest": "/content/articles.json",
@@ -35,26 +8,24 @@
       }
     },
     {
-      "src": "/content/articles/(.*)\\.html",
-      "dest": "/content/articles/$1.html",
-      "headers": {
-        "Cache-Control": "public, max-age=3600"
-      }
+      "src": "/images/(.*)",
+      "dest": "/images/$1"
     },
     {
       "src": "/articles/([^/.]+)",
       "dest": "/content/articles/$1.html"
     },
     {
-      "src": "/images/(.*)",
-      "dest": "/images/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
-      }
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "src": "/admin",
+      "dest": "/admin/index.html"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "/admin/$1"
     }
   ]
 }
