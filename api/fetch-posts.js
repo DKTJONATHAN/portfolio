@@ -1,5 +1,3 @@
-// fetch-posts.js - API endpoint to fetch posts from GitHub repository
-
 import { Octokit } from '@octokit/rest';
 
 export default async function handler(req, res) {
@@ -8,14 +6,7 @@ export default async function handler(req, res) {
     const metadataPath = 'content/articles.json';
 
     // Get query parameters
-    const { 
-      page = 1, 
-      limit = 10, 
-      category = '', 
-      search = '', 
-      sort = 'newest',
-      tag = ''
-    } = req.query;
+    const { page = 1, limit = 10, category = '', search = '', sort = 'newest' } = req.query;
 
     // Fetch metadata from GitHub
     let metadata = [];
@@ -24,95 +15,71 @@ export default async function handler(req, res) {
         owner: process.env.GITHUB_OWNER,
         repo: process.env.GITHUB_REPO,
         path: metadataPath,
+        headers: {
+          'Accept': 'application/vnd.github.v3.raw' // Get raw JSON
+        }
       });
-      metadata = JSON.parse(Buffer.from(data.content, 'base64').toString('utf-8'));
+      
+      // If using getContent with raw header, data is already parsed
+      metadata = typeof data === 'string' ? JSON.parse(data) : data;
+      
     } catch (error) {
-      console.error('Error fetching articles metadata:', error);
-      if (error.status === 404) {
-        return res.status(200).json({ 
-          posts: [], 
-          totalPosts: 0,
-          totalPages: 0,
-          currentPage: 1
-        });
-      }
-      return res.status(500).json({ error: 'Failed to fetch posts metadata' });
+      console.error('Error fetching articles:', error);
+      return res.status(500).json({ 
+        error: 'Failed to fetch posts',
+        details: error.message 
+      });
     }
 
-    // Filter posts based on query parameters
-    let filteredPosts = metadata.map(post => {
-      // Ensure all posts have required fields with fallbacks
-      return {
-        ...post,
-        title: post.title || 'Untitled Post',
-        description: post.description || '',
-        image: post.image || 'https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png',
-        date: post.date || new Date().toISOString(),
-        category: post.category || 'Uncategorized',
-        tags: post.tags || '',
-        slug: post.slug || ''
-      };
-    });
-
-    // Apply category filter
+    // Filter and sort logic
+    let filteredPosts = [...metadata];
+    
     if (category) {
       filteredPosts = filteredPosts.filter(post => 
-        post.category.toLowerCase() === category.toLowerCase()
+        post.category?.toLowerCase() === category.toLowerCase()
       );
     }
 
-    // Apply tag filter
-    if (tag) {
-      filteredPosts = filteredPosts.filter(post => 
-        post.tags && post.tags.toLowerCase().includes(tag.toLowerCase())
-      );
-    }
-
-    // Apply search filter
     if (search) {
       const searchTerm = search.toLowerCase();
       filteredPosts = filteredPosts.filter(post => 
-        post.title.toLowerCase().includes(searchTerm) || 
-        (post.description && post.description.toLowerCase().includes(searchTerm)) ||
-        (post.tags && post.tags.toLowerCase().includes(searchTerm))
+        post.title?.toLowerCase().includes(searchTerm) || 
+        post.description?.toLowerCase().includes(searchTerm)
       );
     }
 
-    // Sort posts
-    if (sort === 'newest') {
-      filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-    } else if (sort === 'oldest') {
-      filteredPosts.sort((a, b) => new Date(a.date) - new Date(b.date));
-    }
+    // Sort by date
+    filteredPosts.sort((a, b) => {
+      const dateA = new Date(a.date || 0);
+      const dateB = new Date(b.date || 0);
+      return sort === 'oldest' ? dateA - dateB : dateB - dateA;
+    });
 
-    // Pagination logic
+    // Pagination
     const totalPosts = filteredPosts.length;
     const totalPages = Math.ceil(totalPosts / limit);
-    const currentPage = Math.min(Math.max(parseInt(page), totalPages);
+    const currentPage = Math.min(Math.max(parseInt(page), 1), totalPages);
     const startIndex = (currentPage - 1) * limit;
-    const endIndex = startIndex + parseInt(limit);
-    const paginatedPosts = filteredPosts.slice(startIndex, endIndex);
+    const paginatedPosts = filteredPosts.slice(startIndex, startIndex + parseInt(limit));
 
-    // Format response
-    const response = {
+    return res.status(200).json({
       posts: paginatedPosts.map(post => ({
         title: post.title,
         description: post.description,
-        image: post.image,
+        image: post.image || '/images/Jonathan-Mwaniki-logo.png',
         date: post.date,
         category: post.category,
         tags: post.tags,
         slug: post.slug,
-        url: `https://www.jonathanmwaniki.co.ke/content/articles/${post.slug}.html`
+        url: `/content/articles/${post.slug}.html`
       })),
       totalPosts,
       totalPages,
       currentPage
-    };
+    });
 
-    return res.status(200).json(response);
   } catch (error) {
-    console.error('Error in fetch-posts handler:', error);
+    console.error('Server error:', error);
     return res.status(500).json({ 
       error: 'Internal server error',
       details: error.message 
