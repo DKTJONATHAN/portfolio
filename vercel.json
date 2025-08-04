@@ -9,26 +9,11 @@
   "routes": [
     {
       "src": "/images/logo.png",
-      "dest": "/images/Jonathan-Mwaniki-logo.png"
-    }
-  ],
-  "functions": {
-    "pages/api/fetch-posts.js": {
-      "memory": 1024,
-      "maxDuration": 30
+      "dest": "/public/images/Jonathan-Mwaniki-logo.png"
     },
-    "pages/api/save-post.js": {
-      "memory": 1024,
-      "maxDuration": 60
-    },
-    "pages/api/test.js": {
-      "memory": 1024,
-      "maxDuration": 10
+    {
+      "src": "/(.*)",
+      "dest": "/"
     }
-  },
-  "env": {
-    "GITHUB_TOKEN": "@your-github-token",
-    "GITHUB_OWNER": "@github-owner",
-    "GITHUB_REPO": "@github-repo"
-  }
+  ]
 }
