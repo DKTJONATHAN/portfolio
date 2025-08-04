@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     currentTag = urlParams.get('tag') || '';
     
     // Set filters from URL
-    if (currentCategory) {
+    if (categoryFilter && currentCategory) {
         categoryFilter.value = currentCategory;
     }
     
@@ -37,46 +37,56 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchPosts();
     
     // Event listeners
-    searchInput.addEventListener('input', debounce(() => {
-        currentSearch = searchInput.value.trim();
-        currentPage = 1;
-        fetchPosts();
-    }, 500));
-    
-    categoryFilter.addEventListener('change', () => {
-        currentCategory = categoryFilter.value;
-        currentPage = 1;
-        updateURL();
-        fetchPosts();
-    });
-    
-    sortFilter.addEventListener('change', () => {
-        currentSort = sortFilter.value;
-        currentPage = 1;
-        fetchPosts();
-    });
-    
-    prevBtn.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--;
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(() => {
+            currentSearch = searchInput.value.trim();
+            currentPage = 1;
             fetchPosts();
-        }
-    });
+        }, 500));
+    }
     
-    nextBtn.addEventListener('click', () => {
-        if (currentPage < totalPages) {
-            currentPage++;
+    if (categoryFilter) {
+        categoryFilter.addEventListener('change', () => {
+            currentCategory = categoryFilter.value;
+            currentPage = 1;
+            updateURL();
             fetchPosts();
-        }
-    });
+        });
+    }
+    
+    if (sortFilter) {
+        sortFilter.addEventListener('change', () => {
+            currentSort = sortFilter.value;
+            currentPage = 1;
+            fetchPosts();
+        });
+    }
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                fetchPosts();
+            }
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                fetchPosts();
+            }
+        });
+    }
     
     // Enable debug panel if debug parameter exists
-    if (urlParams.has('debug')) {
-        if (debugPanel) debugPanel.style.display = 'block';
+    if (urlParams.has('debug') && debugPanel) {
+        debugPanel.style.display = 'block';
     }
 });
 
-// Fetch posts from articles.json
+// Fetch posts from articles.json (Solution 1) or API (Solution 2)
 async function fetchPosts() {
     try {
         // Show loading state
@@ -85,13 +95,14 @@ async function fetchPosts() {
         loadingState.classList.remove('hidden');
         pagination.classList.add('hidden');
         
-        // Use full URL to avoid relative path issues
+        // Solution 1: Fetch from content/articles.json
         const url = 'https://jonathanmwaniki.co.ke/content/articles.json';
-        console.log('Fetching posts from:', url);
+        console.log('Attempting to fetch posts from:', url);
         const response = await fetch(url, {
+            method: 'GET',
             headers: {
                 'Accept': 'application/json',
-                'Cache-Control': 'no-cache' // Avoid cached responses
+                'Cache-Control': 'no-cache'
             }
         });
 
@@ -102,6 +113,11 @@ async function fetchPosts() {
         const posts = await response.json();
         console.log('Posts fetched successfully:', posts);
 
+        // Validate posts data
+        if (!Array.isArray(posts)) {
+            throw new Error('Invalid data format: posts is not an array');
+        }
+
         // Filter posts by category, search, and tag
         let filteredPosts = posts;
         if (currentCategory) {
@@ -109,20 +125,24 @@ async function fetchPosts() {
         }
         if (currentSearch) {
             const searchLower = currentSearch.toLowerCase();
-            filteredPosts = filteredPosts.filter(post =>
-                post.title.toLowerCase().includes(searchLower) ||
-                post.description.toLowerCase().includes(searchLower) ||
-                post.tags.toLowerCase().includes(searchLower)
-            );
+            filteredPosts = filteredPosts.filter(post => {
+                return (post.title && post.title.toLowerCase().includes(searchLower)) ||
+                       (post.description && post.description.toLowerCase().includes(searchLower)) ||
+                       (post.tags && post.tags.toLowerCase().includes(searchLower));
+            });
         }
         if (currentTag) {
-            filteredPosts = filteredPosts.filter(post => post.tags.toLowerCase().includes(currentTag.toLowerCase()));
+            filteredPosts = filteredPosts.filter(post => post.tags && post.tags.toLowerCase().includes(currentTag.toLowerCase()));
         }
 
         // Sort posts
         filteredPosts.sort((a, b) => {
             const dateA = new Date(a.date);
             const dateB = new Date(b.date);
+            if (isNaN(dateA) || isNaN(dateB)) {
+                console.warn('Invalid date detected:', a.date, b.date);
+                return 0;
+            }
             return currentSort === 'newest' ? dateB - dateA : dateA - dateB;
         });
 
@@ -138,16 +158,63 @@ async function fetchPosts() {
         // Render posts
         renderPosts(paginatedPosts.map(post => ({
             ...post,
-            url: `/articles/${post.slug}` // Construct URL for each post
+            url: `/articles/${post.slug}`
         })));
 
         // Update debug info
         updateDebugInfo({ posts: paginatedPosts, totalPages });
+
+        /*
+        // Solution 2: Fetch from /api/fetch-posts (uncomment to use API)
+        const params = new URLSearchParams({
+            page: currentPage,
+            limit: 10,
+            ...(currentCategory && { category: currentCategory }),
+            ...(currentSearch && { search: currentSearch }),
+            ...(currentTag && { tag: currentTag }),
+            sort: currentSort
+        });
+        
+        const url = `https://jonathanmwaniki.co.ke/api/fetch-posts?${params.toString()}`;
+        console.log('Fetching posts from:', url);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Cache-Control': 'no-cache'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Posts fetched successfully:', data);
+
+        // Validate response
+        if (!data.posts || !Array.isArray(data.posts)) {
+            throw new Error('Invalid response format: posts is not an array');
+        }
+
+        // Update pagination
+        totalPages = data.totalPages || 1;
+        updatePagination();
+
+        // Render posts
+        renderPosts(data.posts);
+
+        // Update debug info
+        updateDebugInfo(data);
+        */
         
     } catch (error) {
-        console.error('Error fetching posts:', error);
+        console.error('Error in fetchPosts:', error);
         showErrorState();
         updateDebugInfo({ error: error.message });
+    } finally {
+        // Ensure loading state is cleared
+        loadingState.classList.add('hidden');
     }
 }
 
@@ -175,13 +242,13 @@ function renderPosts(posts) {
             <div class="md:flex">
                 ${post.image ? `
                 <div class="md:flex-shrink-0 md:w-1/3">
-                    <img class="h-48 w-full object-cover md:h-full" src="${post.image}" alt="${post.title}" onerror="this.src='https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png'">
+                    <img class="h-48 w-full object-cover md:h-full" src="${post.image}" alt="${post.title || 'Article image'}" onerror="this.src='https://www.jonathanmwaniki.co.ke/images/Jonathan-Mwaniki-logo.png'">
                 </div>
                 ` : ''}
                 <div class="p-8 ${post.image ? 'md:w-2/3' : ''}">
-                    <div class="uppercase tracking-wide text-sm text-primary-500 font-semibold">${post.category}</div>
-                    <a href="${post.url}" class="block mt-1 text-xl leading-tight font-medium text-gray-900 hover:text-primary-500">${post.title}</a>
-                    <p class="mt-2 text-gray-500">${post.description}</p>
+                    <div class="uppercase tracking-wide text-sm text-primary-500 font-semibold">${post.category || 'Uncategorized'}</div>
+                    <a href="${post.url}" class="block mt-1 text-xl leading-tight font-medium text-gray-900 hover:text-primary-500">${post.title || 'Untitled'}</a>
+                    <p class="mt-2 text-gray-500">${post.description || 'No description available'}</p>
                     <div class="mt-4 flex items-center">
                         <div class="text-sm text-gray-500">
                             <time datetime="${post.date}">${postDate}</time>
@@ -292,20 +359,19 @@ function scrollToTop() {
 // Newsletter subscription
 function subscribeNewsletter() {
     const emailInput = document.getElementById('newsletterEmail');
-    const email = emailInput.value.trim();
+    const email = emailInput ? emailInput.value.trim() : '';
     
     if (!email) {
         alert('Please enter your email address');
         return;
     }
     
-    // In a real implementation, you would send this to your backend
     console.log('Subscribing email:', email);
     alert('Thank you for subscribing! You will receive updates soon.');
     emailInput.value = '';
 }
 
-// Debug API function (for manual testing)
+// Debug API function
 function debugAPI() {
     console.log('Debugging API...');
     fetchPosts();
