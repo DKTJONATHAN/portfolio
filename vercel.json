@@ -1,39 +1,34 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
   "routes": [
-    {
-      "src": "/api/fetch-posts",
-      "dest": "/api/fetch-posts.js",
-      "timeout": 30
-    },
-    {
-      "src": "/api/save-post",
-      "dest": "/api/save-post.js",
-      "timeout": 60
-    },
-    {
-      "src": "/api/test",
-      "dest": "/api/test.js",
-      "timeout": 10
-    },
     {
       "src": "/images/logo.png",
       "dest": "/images/Jonathan-Mwaniki-logo.png"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
     }
   ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Service-Worker-Allowed",
-          "value": "/"
-        }
-      ]
+  "functions": {
+    "pages/api/fetch-posts.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    },
+    "pages/api/save-post.js": {
+      "memory": 1024,
+      "maxDuration": 60
+    },
+    "pages/api/test.js": {
+      "memory": 1024,
+      "maxDuration": 10
     }
-  ]
+  },
+  "env": {
+    "GITHUB_TOKEN": "@your-github-token",
+    "GITHUB_OWNER": "@github-owner",
+    "GITHUB_REPO": "@github-repo"
+  }
 }
