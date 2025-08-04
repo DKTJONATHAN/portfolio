@@ -2,10 +2,24 @@
 
 export default async function handler(req, res) {
     try {
-        // Read articles.json from the content directory
-        const filePath = require('path').join(process.cwd(), 'content', 'articles.json');
-        const fs = require('fs');
-        const articles = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+        // Fetch articles.json from the static route
+        const response = await fetch('https://jonathanmwaniki.co.ke/content/articles.json', {
+            headers: {
+                'Accept': 'application/json',
+                'Cache-Control': 'no-cache'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch articles.json: ${response.statusText}`);
+        }
+
+        const articles = await response.json();
+
+        // Validate articles data
+        if (!Array.isArray(articles)) {
+            throw new Error('Invalid data format: articles is not an array');
+        }
 
         // Extract query parameters
         const { page = 1, limit = 10, category, search, tag, sort = 'newest' } = req.query;
