@@ -12,10 +12,6 @@
     {
       "src": "scripts.js",
       "use": "@vercel/static"
-    },
-    {
-      "src": "images/*",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -27,10 +23,5 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "env": {
-    "GITHUB_TOKEN": "@github-token",
-    "GITHUB_OWNER": "@github-owner",
-    "GITHUB_REPO": "@github-repo"
-  }
+  ]
 }
