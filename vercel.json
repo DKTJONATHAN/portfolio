@@ -11,7 +11,7 @@
       "use": "@vercel/static"
     },
     {
-      "src": "!(api)/*.js",
+      "src": "*.js",
       "use": "@vercel/static"
     },
     {
@@ -27,58 +27,38 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "source": "/blogs",
+      "destination": "/index.html"
     },
     {
-      "src": "/",
-      "dest": "/index.html"
+      "source": "/blogs.html",
+      "destination": "/index.html"
     },
     {
-      "src": "/blogs",
-      "dest": "/index.html"
+      "source": "/category/(.*)",
+      "destination": "/index.html?category=$1"
     },
     {
-      "src": "/blogs.html",
-      "dest": "/index.html"
+      "source": "/tag/(.*)",
+      "destination": "/index.html?tag=$1"
     },
     {
-      "src": "/content/articles/(.*).html",
-      "dest": "/content/articles/$1.html"
+      "source": "/search/(.*)",
+      "destination": "/index.html?search=$1"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/blog",
+      "destination": "/",
+      "permanent": true
     },
     {
-      "src": "/images/(.*)",
-      "dest": "/images/$1"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/(.*).js",
-      "dest": "/$1.js"
-    },
-    {
-      "src": "/(.*).css",
-      "dest": "/$1.css"
-    },
-    {
-      "src": "/sw.js",
-      "dest": "/sw.js",
-      "headers": {
-        "Cache-Control": "public, max-age=0, must-revalidate",
-        "Service-Worker-Allowed": "/"
-      }
-    },
-    {
-      "src": "/favicon.ico",
-      "dest": "/favicon.ico"
-    },
-    {
-      "src": "/manifest.json",
-      "dest": "/manifest.json"
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "headers": [
@@ -121,6 +101,10 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
         }
       ]
     },
@@ -158,30 +142,50 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/blogs/:path*",
-      "destination": "/index.html"
     },
     {
-      "source": "/category/:category",
-      "destination": "/index.html?category=:category"
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
+      ]
     },
     {
-      "source": "/tag/:tag",
-      "destination": "/index.html?tag=:tag"
-    },
-    {
-      "source": "/search/:query",
-      "destination": "/index.html?search=:query"
+      "source": "/manifest.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json"
+        }
+      ]
     }
   ],
   "cleanUrls": true,
   "trailingSlash": false,
+  "functions": {
+    "api/fetch-posts.js": {
+      "maxDuration": 30
+    },
+    "api/save-post.js": {
+      "maxDuration": 60
+    },
+    "api/test.js": {
+      "maxDuration": 10
+    }
+  },
   "env": {
     "NODE_ENV": "production"
   },
-  "regions": ["iad1"]
+  "regions": ["iad1"],
+  "outputDirectory": "public"
 }
