@@ -1,32 +1,6 @@
 {
   "version": 2,
   "name": "mwaniki-reports",
-  "builds": [
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.js",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.css",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "images/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "assets/**",
-      "use": "@vercel/static"
-    }
-  ],
   "rewrites": [
     {
       "source": "/blogs",
@@ -186,6 +160,5 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "regions": ["iad1"],
-  "outputDirectory": "public"
+  "regions": ["iad1"]
 }
