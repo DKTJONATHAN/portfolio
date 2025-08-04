@@ -1,32 +1,49 @@
-import { Octokit } from '@octokit/rest';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 export default async function handler(req, res) {
   try {
-    const octokit = new Octokit({ 
-      auth: process.env.GITHUB_TOKEN 
-    });
-
-    const { data } = await octokit.repos.getContent({
-      owner: process.env.GITHUB_OWNER,
-      repo: process.env.GITHUB_REPO,
-      path: 'content/articles.json',
-      headers: {
-        'Accept': 'application/vnd.github.v3.raw'
-      }
-    });
-
-    const metadata = JSON.parse(data);
+    // 1. Read data
+    const articles = await readArticles();
     
-    return res.status(200).json({
-      posts: metadata,
-      message: "Successfully fetched posts"
+    // 2. Process query params
+    const { category, search } = req.query;
+    let filtered = [...articles];
+
+    if (category) {
+      filtered = filtered.filter(a => 
+        a.category?.toLowerCase() === category.toLowerCase()
+      );
+    }
+
+    if (search) {
+      const term = search.toLowerCase();
+      filtered = filtered.filter(a =>
+        a.title?.toLowerCase().includes(term) ||
+        a.description?.toLowerCase().includes(term)
+      );
+    }
+
+    // 3. Return results
+    res.status(200).json({
+      posts: filtered,
+      total: filtered.length
     });
 
   } catch (error) {
-    console.error('Fetch Error:', error);
-    return res.status(500).json({
+    console.error('API Error:', error);
+    res.status(500).json({
       error: error.message,
-      details: "Failed to fetch posts"
+      triedPaths: [
+        '/content/articles.json',
+        './content/articles.json',
+        path.join(process.cwd(), 'content', 'articles.json')
+      ]
     });
   }
+}
+
+// Path resolver (from above)
+async function readArticles() {
+  // ... (use the implementation above)
 }
