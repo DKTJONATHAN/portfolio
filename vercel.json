@@ -1,19 +1,29 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
   "routes": [
     {
-      "src": "/images/logo.png",
-      "dest": "/public/images/Jonathan-Mwaniki-logo.png"
+      "src": "/api/fetch-posts",
+      "dest": "/api/fetch-posts.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS"
+      }
+    },
+    {
+      "src": "/api/save-post",
+      "dest": "/api/save-post.js"
+    },
+    {
+      "src": "/api/test",
+      "dest": "/api/test.js"
+    },
+    {
+      "src": "/images/(.*)",
+      "dest": "/images/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "/index.html"
     }
   ]
 }
