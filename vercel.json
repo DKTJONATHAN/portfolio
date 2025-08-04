@@ -1,17 +1,6 @@
 {
   "routes": [
     {
-      "src": "/content/articles.json",
-      "dest": "/content/articles.json",
-      "headers": {
-        "Cache-Control": "public, max-age=3600"
-      }
-    },
-    {
-      "src": "/images/(.*)",
-      "dest": "/images/$1"
-    },
-    {
       "src": "/articles/([^/.]+)",
       "dest": "/content/articles/$1.html"
     },
@@ -20,12 +9,12 @@
       "dest": "/api/$1"
     },
     {
-      "src": "/admin",
-      "dest": "/admin/index.html"
-    },
-    {
-      "src": "/admin/(.*)",
-      "dest": "/admin/$1"
+      "src": "/content/articles.json",
+      "dest": "/content/articles.json",
+      "headers": {
+        "Cache-Control": "public, max-age=3600",
+        "Access-Control-Allow-Origin": "*"
+      }
     }
   ]
 }
