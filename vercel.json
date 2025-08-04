@@ -35,15 +35,22 @@
       }
     },
     {
-      "src": "/images/(.*)",
-      "dest": "/images/$1",
+      "src": "/content/articles/(.*)\\.html",
+      "dest": "/content/articles/$1.html",
       "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
+        "Cache-Control": "public, max-age=3600"
       }
     },
     {
       "src": "/articles/([^/.]+)",
       "dest": "/content/articles/$1.html"
+    },
+    {
+      "src": "/images/(.*)",
+      "dest": "/images/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
     },
     {
       "src": "/(.*)",
