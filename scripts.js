@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Fetch posts from API
+// Fetch posts from articles.json
 async function fetchPosts() {
     try {
         // Show loading state
@@ -85,56 +85,55 @@ async function fetchPosts() {
         loadingState.classList.remove('hidden');
         pagination.classList.add('hidden');
         
-        // Build API URL with query parameters
-        const params = new URLSearchParams({
-            page: currentPage,
-            limit: 10,
-            ...(currentCategory && { category: currentCategory }),
-            ...(currentSearch && { search: currentSearch }),
-            ...(currentTag && { tag: currentTag }),
-            sort: currentSort
+        // Fetch articles.json
+        const response = await fetch('/content/articles.json');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch articles.json: ${response.statusText}`);
+        }
+        const posts = await response.json();
+        console.log('Posts fetched successfully:', posts);
+
+        // Filter posts by category, search, and tag
+        let filteredPosts = posts;
+        if (currentCategory) {
+            filteredPosts = filteredPosts.filter(post => post.category === currentCategory);
+        }
+        if (currentSearch) {
+            const searchLower = currentSearch.toLowerCase();
+            filteredPosts = filteredPosts.filter(post =>
+                post.title.toLowerCase().includes(searchLower) ||
+                post.description.toLowerCase().includes(searchLower) ||
+                post.tags.toLowerCase().includes(searchLower)
+            );
+        }
+        if (currentTag) {
+            filteredPosts = filteredPosts.filter(post => post.tags.toLowerCase().includes(currentTag.toLowerCase()));
+        }
+
+        // Sort posts
+        filteredPosts.sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return currentSort === 'newest' ? dateB - dateA : dateA - dateB;
         });
-        
-        // Try multiple potential API endpoints
-        const endpoints = [
-            '/api/fetch-posts',
-            './api/fetch-posts',
-            window.location.origin + '/api/fetch-posts'
-        ];
-        
-        let response;
-        let data;
-        
-        for (const endpoint of endpoints) {
-            try {
-                const url = `${endpoint}?${params.toString()}`;
-                console.log('Fetching posts from:', url);
-                response = await fetch(url);
-                
-                if (response.ok) {
-                    data = await response.json();
-                    console.log('Posts fetched successfully:', data);
-                    break;
-                }
-            } catch (error) {
-                console.error(`Error fetching from ${endpoint}:`, error);
-                continue;
-            }
-        }
-        
-        if (!response || !response.ok) {
-            throw new Error('Failed to fetch posts from all endpoints');
-        }
-        
+
+        // Paginate posts
+        const postsPerPage = 10;
+        totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+        const start = (currentPage - 1) * postsPerPage;
+        const paginatedPosts = filteredPosts.slice(start, start + postsPerPage);
+
         // Update pagination
-        totalPages = data.totalPages;
         updatePagination();
-        
+
         // Render posts
-        renderPosts(data.posts);
-        
+        renderPosts(paginatedPosts.map(post => ({
+            ...post,
+            url: `/articles/${post.slug}` // Construct URL for each post
+        })));
+
         // Update debug info
-        updateDebugInfo(data);
+        updateDebugInfo({ posts: paginatedPosts, totalPages });
         
     } catch (error) {
         console.error('Error fetching posts:', error);
