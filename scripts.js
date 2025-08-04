@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Enable debug panel if debug parameter exists
     if (urlParams.has('debug')) {
-        debugPanel.style.display = 'block';
+        if (debugPanel) debugPanel.style.display = 'block';
     }
 });
 
@@ -85,11 +85,20 @@ async function fetchPosts() {
         loadingState.classList.remove('hidden');
         pagination.classList.add('hidden');
         
-        // Fetch articles.json
-        const response = await fetch('/content/articles.json');
+        // Use full URL to avoid relative path issues
+        const url = 'https://jonathanmwaniki.co.ke/content/articles.json';
+        console.log('Fetching posts from:', url);
+        const response = await fetch(url, {
+            headers: {
+                'Accept': 'application/json',
+                'Cache-Control': 'no-cache' // Avoid cached responses
+            }
+        });
+
         if (!response.ok) {
-            throw new Error(`Failed to fetch articles.json: ${response.statusText}`);
+            throw new Error(`HTTP error! Status: ${response.status} ${response.statusText}`);
         }
+
         const posts = await response.json();
         console.log('Posts fetched successfully:', posts);
 
@@ -294,6 +303,12 @@ function subscribeNewsletter() {
     console.log('Subscribing email:', email);
     alert('Thank you for subscribing! You will receive updates soon.');
     emailInput.value = '';
+}
+
+// Debug API function (for manual testing)
+function debugAPI() {
+    console.log('Debugging API...');
+    fetchPosts();
 }
 
 // Expose functions to window for debugging
