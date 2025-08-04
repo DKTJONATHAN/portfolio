@@ -1,13 +1,21 @@
-
+// next.config.js
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
   reactStrictMode: true,
-  trailingSlash: true,
-  env: {
-    GITHUB_OWNER: "DKTJONATHAN",
-    GITHUB_REPO: "portfolio",
-    GITHUB_TOKEN: process.env.GITHUB_TOKEN,
+  swcMinify: true,
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: '/api/:path*'
+      }
+    ]
   },
-};
+  env: {
+    GITHUB_TOKEN: process.env.GITHUB_TOKEN,
+    GITHUB_OWNER: process.env.GITHUB_OWNER,
+    GITHUB_REPO: process.env.GITHUB_REPO
+  }
+}
 
-export default nextConfig;
+module.exports = nextConfig
