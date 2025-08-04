@@ -1,0 +1,100 @@
+export default async function handler(req, res) {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // Only allow GET requests
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    // Basic environment check
+    const envCheck = {
+      GITHUB_TOKEN: !!process.env.GITHUB_TOKEN,
+      GITHUB_OWNER: !!process.env.GITHUB_OWNER,
+      GITHUB_REPO: !!process.env.GITHUB_REPO,
+    };
+
+    // Test data
+    const testPosts = [
+      {
+        slug: 'test-post-1',
+        title: 'Test Article 1',
+        description: 'This is a test article to verify the blog is working correctly.',
+        image: 'https://via.placeholder.com/400x200/1a73e8/ffffff?text=Test+Article+1',
+        date: new Date().toISOString(),
+        category: 'Tech',
+        tags: 'test, demo, blog',
+        url: '/content/articles/test-post-1.html',
+        excerpt: 'This is a test article...',
+        readingTime: 2,
+        isRecent: true,
+      },
+      {
+        slug: 'test-post-2',
+        title: 'Another Test Article',
+        description: 'This is another test article to show multiple posts.',
+        image: 'https://via.placeholder.com/400x200/34a853/ffffff?text=Test+Article+2',
+        date: new Date(Date.now() - 86400000).toISOString(), // Yesterday
+        category: 'News',
+        tags: 'test, news, sample',
+        url: '/content/articles/test-post-2.html',
+        excerpt: 'This is another test article...',
+        readingTime: 3,
+        isRecent: true,
+      }
+    ];
+
+    const response = {
+      posts: testPosts,
+      pagination: {
+        page: 1,
+        limit: 50,
+        total: testPosts.length,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false,
+        nextPage: null,
+        prevPage: null,
+      },
+      filters: {
+        category: null,
+        tag: null,
+        search: null,
+        sortBy: 'date',
+        sortOrder: 'desc'
+      },
+      meta: {
+        totalPosts: testPosts.length,
+        filteredPosts: testPosts.length,
+        categories: ['Tech', 'News'],
+        tags: ['test', 'demo', 'blog', 'news', 'sample'],
+        timestamp: new Date().toISOString(),
+        environment: envCheck,
+        status: 'Test API working correctly'
+      }
+    };
+
+    return res.status(200).json(response);
+
+  } catch (error) {
+    console.error('Error in test API:', error);
+    
+    return res.status(500).json({
+      error: 'Test API failed',
+      message: error.message,
+      posts: [],
+      meta: {
+        status: 'Test API error',
+        timestamp: new Date().toISOString()
+      }
+    });
+  }
+}
