@@ -152,9 +152,6 @@
     },
     "api/save-post.js": {
       "maxDuration": 60
-    },
-    "api/test.js": {
-      "maxDuration": 10
     }
   },
   "env": {
