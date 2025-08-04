@@ -2,6 +2,10 @@
   "name": "mwaniki-reports",
   "version": "1.0.0",
   "description": "Mwaniki Reports - News Platform",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "serve -p $PORT",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,6 +16,7 @@
     "serve": "^14.2.1"
   },
   "devDependencies": {
-    "@vercel/node": "^2.8.4"
+    "@vercel/node": "^2.8.4",
+    "node-fetch": "^3.3.2"
   }
 }
