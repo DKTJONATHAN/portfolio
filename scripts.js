@@ -1,3 +1,11 @@
+// ===== DEBUG MODE =====
+const DEBUG_MODE = true; // Set to false in production
+function debugLog(message, data = null) {
+    if (DEBUG_MODE) {
+        console.log('🐛 [MWANIKI DEBUG]', message, data || '');
+    }
+}
+
 // ===== STATE MANAGEMENT =====
 let allPosts = [];
 let filteredPosts = [];
@@ -5,43 +13,65 @@ let currentPage = 1;
 const postsPerPage = 9;
 
 // ===== DOM ELEMENTS =====
-const searchInput = document.getElementById('searchInput');
-const categoryFilter = document.getElementById('categoryFilter');
-const sortFilter = document.getElementById('sortFilter');
-const postsContainer = document.getElementById('postsContainer');
-const loadingState = document.getElementById('loadingState');
-const noPostsState = document.getElementById('noPostsState');
-const pagination = document.getElementById('pagination');
-const pageInfo = document.getElementById('pageInfo');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
+let searchInput, categoryFilter, sortFilter, postsContainer, loadingState, noPostsState, pagination, pageInfo, prevBtn, nextBtn;
 
-// ===== EVENT LISTENERS =====
+// ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', function() {
+    debugLog('DOM Content Loaded');
+    initializeElements();
     handleUrlParams();
     fetchPosts();
     initEventListeners();
 });
 
+function initializeElements() {
+    searchInput = document.getElementById('searchInput');
+    categoryFilter = document.getElementById('categoryFilter');
+    sortFilter = document.getElementById('sortFilter');
+    postsContainer = document.getElementById('postsContainer');
+    loadingState = document.getElementById('loadingState');
+    noPostsState = document.getElementById('noPostsState');
+    pagination = document.getElementById('pagination');
+    pageInfo = document.getElementById('pageInfo');
+    prevBtn = document.getElementById('prevBtn');
+    nextBtn = document.getElementById('nextBtn');
+
+    // Check if all elements exist
+    const elements = {
+        searchInput, categoryFilter, sortFilter, postsContainer, 
+        loadingState, noPostsState, pagination, pageInfo, prevBtn, nextBtn
+    };
+    
+    Object.entries(elements).forEach(([name, element]) => {
+        if (!element) {
+            debugLog(`❌ Missing element: ${name}`);
+        } else {
+            debugLog(`✅ Found element: ${name}`);
+        }
+    });
+}
+
 function initEventListeners() {
-    searchInput.addEventListener('input', debounce(filterPosts, 300));
-    categoryFilter.addEventListener('change', filterPosts);
-    sortFilter.addEventListener('change', filterPosts);
+    if (searchInput) searchInput.addEventListener('input', debounce(filterPosts, 300));
+    if (categoryFilter) categoryFilter.addEventListener('change', filterPosts);
+    if (sortFilter) sortFilter.addEventListener('change', filterPosts);
     
     // Keyboard shortcuts
     document.addEventListener('keydown', function(e) {
         if (e.key === '/') {
             e.preventDefault();
-            searchInput.focus();
+            if (searchInput) searchInput.focus();
         }
         if (e.key === 'Escape') {
-            searchInput.blur();
+            if (searchInput) searchInput.blur();
         }
     });
     
     // Pagination event listeners
-    prevBtn.addEventListener('click', () => changePage(-1));
-    nextBtn.addEventListener('click', () => changePage(1));
+    if (prevBtn) prevBtn.addEventListener('click', () => changePage(-1));
+    if (nextBtn) nextBtn.addEventListener('click', () => changePage(1));
+    
+    debugLog('Event listeners initialized');
 }
 
 // ===== UTILITY FUNCTIONS =====
@@ -58,12 +88,17 @@ function debounce(func, wait) {
 }
 
 function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } catch (error) {
+        debugLog('Date formatting error:', error);
+        return 'Unknown date';
+    }
 }
 
 function truncateText(text, maxLength) {
@@ -80,6 +115,7 @@ function getImageUrl(post) {
 }
 
 function escapeHtml(text) {
+    if (!text) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
@@ -87,68 +123,148 @@ function escapeHtml(text) {
 
 // ===== API FUNCTIONS =====
 async function fetchPosts() {
+    debugLog('Starting to fetch posts...');
+    
     try {
         showLoading();
-        const response = await fetch('/api/fetch-posts');
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        // Try multiple API endpoints
+        const endpoints = [
+            '/api/fetch-posts',
+            './api/fetch-posts',
+            `${window.location.origin}/api/fetch-posts`
+        ];
+        
+        let lastError = null;
+        
+        for (const endpoint of endpoints) {
+            try {
+                debugLog(`Trying endpoint: ${endpoint}`);
+                
+                const response = await fetch(endpoint, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                debugLog(`Response status: ${response.status} for ${endpoint}`);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    debugLog(`API Error Response: ${errorText}`);
+                    
+                    if (response.status === 404) {
+                        lastError = new Error(`API endpoint not found: ${endpoint}`);
+                        continue;
+                    } else if (response.status === 500) {
+                        lastError = new Error(`Server error: ${errorText}`);
+                        continue;
+                    } else {
+                        lastError = new Error(`HTTP ${response.status}: ${errorText}`);
+                        continue;
+                    }
+                }
+                
+                const data = await response.json();
+                debugLog('API Response received:', data);
+                
+                allPosts = data.posts || [];
+                filteredPosts = [...allPosts];
+                
+                debugLog(`Loaded ${allPosts.length} posts`);
+                
+                if (allPosts.length === 0) {
+                    showNoPosts('No articles available yet. Posts will appear here once published.');
+                } else {
+                    filterPosts();
+                }
+                
+                return; // Success - exit the function
+                
+            } catch (networkError) {
+                debugLog(`Network error for ${endpoint}:`, networkError);
+                lastError = networkError;
+                continue;
+            }
         }
         
-        const data = await response.json();
-        allPosts = data.posts || [];
-        filteredPosts = [...allPosts];
-        
-        if (allPosts.length === 0) {
-            showNoPosts();
-        } else {
-            filterPosts();
-        }
+        // If we get here, all endpoints failed
+        throw lastError || new Error('All API endpoints failed');
         
     } catch (error) {
-        console.error('Error fetching posts:', error);
-        showError('Failed to load articles. Please try again later.');
+        debugLog('Final error in fetchPosts:', error);
+        showError(`Failed to load articles: ${error.message}`);
     }
 }
 
 // ===== DISPLAY FUNCTIONS =====
 function showLoading() {
-    loadingState.classList.remove('hidden');
-    postsContainer.classList.add('hidden');
-    noPostsState.classList.add('hidden');
-    pagination.classList.add('hidden');
+    debugLog('Showing loading state');
+    if (loadingState) loadingState.classList.remove('hidden');
+    if (postsContainer) postsContainer.classList.add('hidden');
+    if (noPostsState) noPostsState.classList.add('hidden');
+    if (pagination) pagination.classList.add('hidden');
 }
 
-function showNoPosts() {
-    loadingState.classList.add('hidden');
-    postsContainer.classList.add('hidden');
-    noPostsState.classList.remove('hidden');
-    pagination.classList.add('hidden');
+function showNoPosts(customMessage = null) {
+    debugLog('Showing no posts state');
+    if (loadingState) loadingState.classList.add('hidden');
+    if (postsContainer) postsContainer.classList.add('hidden');
+    if (noPostsState) {
+        noPostsState.classList.remove('hidden');
+        if (customMessage) {
+            const messageElement = noPostsState.querySelector('p');
+            if (messageElement) {
+                messageElement.textContent = customMessage;
+            }
+        }
+    }
+    if (pagination) pagination.classList.add('hidden');
 }
 
 function showPosts() {
-    loadingState.classList.add('hidden');
-    postsContainer.classList.remove('hidden');
-    noPostsState.classList.add('hidden');
-    pagination.classList.toggle('hidden', filteredPosts.length <= postsPerPage);
+    debugLog('Showing posts');
+    if (loadingState) loadingState.classList.add('hidden');
+    if (postsContainer) postsContainer.classList.remove('hidden');
+    if (noPostsState) noPostsState.classList.add('hidden');
+    if (pagination) pagination.classList.toggle('hidden', filteredPosts.length <= postsPerPage);
 }
 
 function showError(message) {
-    loadingState.classList.add('hidden');
-    postsContainer.classList.add('hidden');
-    noPostsState.classList.remove('hidden');
-    pagination.classList.add('hidden');
+    debugLog('Showing error:', message);
+    if (loadingState) loadingState.classList.add('hidden');
+    if (postsContainer) postsContainer.classList.add('hidden');
+    if (pagination) pagination.classList.add('hidden');
     
-    noPostsState.innerHTML = `
-        <div class="text-center py-20">
-            <i class="fas fa-exclamation-triangle text-6xl text-red-400 mb-6"></i>
-            <h2 class="text-2xl font-semibold text-gray-700 mb-2">Error Loading Articles</h2>
-            <p class="text-gray-500 mb-6">${escapeHtml(message)}</p>
-            <button onclick="fetchPosts()" class="px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors duration-200 font-semibold">
-                <i class="fas fa-refresh mr-2"></i>Try Again
-            </button>
-        </div>
-    `;
+    if (noPostsState) {
+        noPostsState.classList.remove('hidden');
+        noPostsState.innerHTML = `
+            <div class="text-center py-20">
+                <i class="fas fa-exclamation-triangle text-6xl text-red-400 mb-6"></i>
+                <h2 class="text-2xl font-semibold text-gray-700 mb-2">Error Loading Articles</h2>
+                <p class="text-gray-500 mb-6">${escapeHtml(message)}</p>
+                <div class="space-y-3">
+                    <button onclick="fetchPosts()" class="px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors duration-200 font-semibold mr-3">
+                        <i class="fas fa-refresh mr-2"></i>Try Again
+                    </button>
+                    <button onclick="debugAPI()" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 font-semibold">
+                        <i class="fas fa-bug mr-2"></i>Debug Info
+                    </button>
+                </div>
+                <div class="mt-6 text-left bg-gray-100 p-4 rounded-lg max-w-2xl mx-auto">
+                    <h3 class="font-semibold mb-2">Troubleshooting:</h3>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• Check if your Vercel environment variables are set (GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO)</li>
+                        <li>• Verify that content/articles.json exists in your GitHub repository</li>
+                        <li>• Ensure your GitHub token has proper repository access</li>
+                        <li>• Check the browser console for detailed error messages</li>
+                    </ul>
+                </div>
+            </div>
+        `;
+    }
 }
 
 // ===== POST CARD CREATION =====
@@ -177,7 +293,7 @@ function createPostCard(post, isFeatured = false) {
                         </div>
                     </div>
                     <div class="lg:order-last">
-                        <img src="${imageUrl}" alt="${escapeHtml(post.title)}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" loading="lazy">
+                        <img src="${imageUrl}" alt="${escapeHtml(post.title)}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300/1a73e8/ffffff?text=Image+Not+Available'">
                     </div>
                 </div>
             </article>
@@ -187,7 +303,7 @@ function createPostCard(post, isFeatured = false) {
     return `
         <article class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer animate-slide-in group" onclick="openPost('${post.slug}')">
             <div class="relative overflow-hidden">
-                <img src="${imageUrl}" alt="${escapeHtml(post.title)}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                <img src="${imageUrl}" alt="${escapeHtml(post.title)}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.src='https://via.placeholder.com/400x200/1a73e8/ffffff?text=Image+Not+Available'">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
             
@@ -218,6 +334,8 @@ function createPostCard(post, isFeatured = false) {
 }
 
 function renderPosts() {
+    debugLog(`Rendering posts: ${filteredPosts.length} total, page ${currentPage}`);
+    
     const startIndex = (currentPage - 1) * postsPerPage;
     const endIndex = startIndex + postsPerPage;
     const postsToShow = filteredPosts.slice(startIndex, endIndex);
@@ -243,7 +361,10 @@ function renderPosts() {
     
     html += '</div>';
 
-    postsContainer.innerHTML = html;
+    if (postsContainer) {
+        postsContainer.innerHTML = html;
+    }
+    
     showPosts();
     updatePagination();
 }
@@ -252,14 +373,14 @@ function updatePagination() {
     const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
     
     if (totalPages <= 1) {
-        pagination.classList.add('hidden');
+        if (pagination) pagination.classList.add('hidden');
         return;
     }
 
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-    prevBtn.disabled = currentPage === 1;
-    nextBtn.disabled = currentPage === totalPages;
-    pagination.classList.remove('hidden');
+    if (pageInfo) pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    if (prevBtn) prevBtn.disabled = currentPage === 1;
+    if (nextBtn) nextBtn.disabled = currentPage === totalPages;
+    if (pagination) pagination.classList.remove('hidden');
 }
 
 function changePage(direction) {
@@ -275,9 +396,11 @@ function changePage(direction) {
 
 // ===== FILTER FUNCTIONS =====
 function filterPosts() {
-    const searchTerm = searchInput.value.toLowerCase().trim();
-    const selectedCategory = categoryFilter.value;
-    const sortOrder = sortFilter.value;
+    const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const selectedCategory = categoryFilter ? categoryFilter.value : '';
+    const sortOrder = sortFilter ? sortFilter.value : 'newest';
+
+    debugLog('Filtering posts:', { searchTerm, selectedCategory, sortOrder });
 
     // Filter posts
     filteredPosts = allPosts.filter(post => {
@@ -303,6 +426,8 @@ function filterPosts() {
         }
     });
 
+    debugLog(`Filtered to ${filteredPosts.length} posts`);
+
     currentPage = 1;
     renderPosts();
     
@@ -313,8 +438,8 @@ function filterPosts() {
 }
 
 function filterByTag(tag) {
-    searchInput.value = tag;
-    categoryFilter.value = '';
+    if (searchInput) searchInput.value = tag;
+    if (categoryFilter) categoryFilter.value = '';
     filterPosts();
     
     // Update URL
@@ -325,6 +450,8 @@ function filterByTag(tag) {
 
 // ===== NAVIGATION FUNCTIONS =====
 function openPost(slug) {
+    debugLog('Opening post:', slug);
+    
     // Track post click
     const post = allPosts.find(p => p.slug === slug);
     if (post) {
@@ -340,15 +467,13 @@ function scrollToTop() {
 }
 
 function subscribeNewsletter() {
-    const email = document.getElementById('newsletterEmail').value;
+    const emailInput = document.getElementById('newsletterEmail');
+    const email = emailInput ? emailInput.value : '';
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
     if (email && emailRegex.test(email)) {
-        // Here you would typically send the email to your backend
         showNotification('Thank you for subscribing! We\'ll keep you updated.', 'success');
-        document.getElementById('newsletterEmail').value = '';
-        
-        // Track newsletter signup
+        if (emailInput) emailInput.value = '';
         trackEvent('newsletter_signup', { email: email });
     } else {
         showNotification('Please enter a valid email address.', 'error');
@@ -356,7 +481,6 @@ function subscribeNewsletter() {
 }
 
 function showNotification(message, type = 'info') {
-    // Create notification element
     const notification = document.createElement('div');
     notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 max-w-sm ${
         type === 'success' ? 'bg-green-500 text-white' : 
@@ -375,19 +499,10 @@ function showNotification(message, type = 'info') {
     
     document.body.appendChild(notification);
     
-    // Animate in
-    setTimeout(() => {
-        notification.classList.remove('translate-x-full');
-    }, 10);
-    
-    // Auto remove after 5 seconds
+    setTimeout(() => notification.classList.remove('translate-x-full'), 10);
     setTimeout(() => {
         notification.classList.add('translate-x-full');
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-        }, 300);
+        setTimeout(() => notification.remove(), 300);
     }, 5000);
 }
 
@@ -398,128 +513,25 @@ function handleUrlParams() {
     const tag = urlParams.get('tag');
     const search = urlParams.get('search');
 
-    if (category) {
+    debugLog('URL Parameters:', { category, tag, search });
+
+    if (category && categoryFilter) {
         categoryFilter.value = category;
     }
-    if (tag) {
+    if (tag && searchInput) {
         searchInput.value = tag;
     }
-    if (search) {
+    if (search && searchInput) {
         searchInput.value = search;
-    }
-}
-
-// ===== SEARCH ENHANCEMENTS =====
-function setupSearchSuggestions() {
-    let searchTimeout;
-    const suggestionsContainer = document.createElement('div');
-    suggestionsContainer.className = 'absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-xl shadow-lg z-10 hidden max-h-64 overflow-y-auto';
-    searchInput.parentElement.appendChild(suggestionsContainer);
-    
-    searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            const query = this.value.toLowerCase().trim();
-            if (query.length > 2) {
-                showSearchSuggestions(query, suggestionsContainer);
-            } else {
-                suggestionsContainer.classList.add('hidden');
-            }
-        }, 300);
-    });
-    
-    // Hide suggestions when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!searchInput.parentElement.contains(e.target)) {
-            suggestionsContainer.classList.add('hidden');
-        }
-    });
-    
-    // Hide suggestions on escape
-    searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            suggestionsContainer.classList.add('hidden');
-        }
-    });
-}
-
-function showSearchSuggestions(query, container) {
-    const suggestions = allPosts
-        .filter(post => 
-            post.title.toLowerCase().includes(query) ||
-            post.description.toLowerCase().includes(query) ||
-            (post.tags && post.tags.toLowerCase().includes(query))
-        )
-        .slice(0, 5)
-        .map(post => ({
-            title: post.title,
-            type: 'post',
-            slug: post.slug
-        }));
-    
-    // Add tag suggestions
-    const tagSuggestions = [];
-    allPosts.forEach(post => {
-        if (post.tags) {
-            const tags = post.tags.split(',').map(tag => tag.trim());
-            tags.forEach(tag => {
-                if (tag.toLowerCase().includes(query) && !tagSuggestions.find(t => t.title === tag)) {
-                    tagSuggestions.push({
-                        title: tag,
-                        type: 'tag'
-                    });
-                }
-            });
-        }
-    });
-    
-    const allSuggestions = [...suggestions, ...tagSuggestions.slice(0, 3)];
-    
-    if (allSuggestions.length > 0) {
-        container.innerHTML = allSuggestions.map(suggestion => `
-            <div class="px-4 py-3 hover:bg-gray-100 cursor-pointer flex items-center gap-3 border-b border-gray-100 last:border-b-0" onclick="handleSuggestionClick('${suggestion.type}', '${escapeHtml(suggestion.title)}', '${suggestion.slug || ''}')">
-                <i class="fas fa-${suggestion.type === 'post' ? 'newspaper' : 'tag'} text-gray-400"></i>
-                <div class="flex-1">
-                    <div class="font-medium text-gray-900">${escapeHtml(truncateText(suggestion.title, 60))}</div>
-                </div>
-                <span class="text-xs text-gray-500 uppercase font-semibold">${suggestion.type}</span>
-            </div>
-        `).join('');
-        container.classList.remove('hidden');
-    } else {
-        container.innerHTML = `
-            <div class="px-4 py-3 text-gray-500 text-center">
-                <i class="fas fa-search text-gray-300 mb-2"></i>
-                <div>No suggestions found</div>
-            </div>
-        `;
-        container.classList.remove('hidden');
-    }
-}
-
-function handleSuggestionClick(type, title, slug = '') {
-    if (type === 'tag') {
-        filterByTag(title);
-    } else if (type === 'post' && slug) {
-        openPost(slug);
-    }
-    
-    // Hide suggestions
-    const container = document.querySelector('.absolute.top-full');
-    if (container) {
-        container.classList.add('hidden');
     }
 }
 
 // ===== ANALYTICS & TRACKING =====
 function trackEvent(eventName, eventData = {}) {
-    // Google Analytics 4 event tracking
     if (typeof gtag !== 'undefined') {
         gtag('event', eventName, eventData);
     }
-    
-    // Console log for development
-    console.log('Event tracked:', eventName, eventData);
+    debugLog('Event tracked:', eventName, eventData);
 }
 
 function trackPostView(slug, title) {
@@ -536,68 +548,69 @@ function trackSearch(query, resultsCount) {
     });
 }
 
-// ===== ACCESSIBILITY FEATURES =====
-function addSkipLink() {
-    const skipLink = document.createElement('a');
-    skipLink.href = '#main-content';
-    skipLink.textContent = 'Skip to main content';
-    skipLink.className = 'sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-500 text-white px-4 py-2 rounded-lg z-50 font-semibold';
-    skipLink.setAttribute('tabindex', '1');
-    document.body.insertBefore(skipLink, document.body.firstChild);
-}
-
-// ===== PROGRESSIVE WEB APP FEATURES =====
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js').then(function(registration) {
-            console.log('ServiceWorker registration successful');
-        }).catch(function(err) {
-            console.log('ServiceWorker registration failed: ', err);
-        });
+// ===== DEBUG FUNCTIONS =====
+window.debugAPI = async function() {
+    debugLog('Manual API debug triggered');
+    
+    console.group('🔍 API Debug Information');
+    
+    // Environment info
+    console.log('Environment:', {
+        domain: window.location.origin,
+        pathname: window.location.pathname,
+        userAgent: navigator.userAgent
     });
-}
-
-// ===== INITIALIZATION =====
-document.addEventListener('DOMContentLoaded', function() {
-    addSkipLink();
-    setupSearchSuggestions();
     
-    // Add main content ID for accessibility
-    const mainElement = document.querySelector('main');
-    if (mainElement) {
-        mainElement.id = 'main-content';
-    }
+    // Test different endpoints
+    const endpoints = [
+        '/api/fetch-posts',
+        './api/fetch-posts',
+        window.location.origin + '/api/fetch-posts'
+    ];
     
-    // Initialize lazy loading
-    setupLazyLoading();
-});
-
-// ===== PERFORMANCE OPTIMIZATIONS =====
-function setupLazyLoading() {
-    if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    if (img.dataset.src) {
-                        img.src = img.dataset.src;
-                        img.classList.remove('lazy');
-                        imageObserver.unobserve(img);
-                    }
+    for (const endpoint of endpoints) {
+        try {
+            console.log(`\n🔗 Testing: ${endpoint}`);
+            
+            const response = await fetch(endpoint, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
                 }
             });
-        });
-
-        // Observe images with data-src attribute
-        document.querySelectorAll('img[data-src]').forEach(img => {
-            imageObserver.observe(img);
-        });
+            
+            console.log(`Status: ${response.status} ${response.statusText}`);
+            console.log('Headers:', Object.fromEntries(response.headers.entries()));
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ Success! Data:', data);
+                
+                if (data.posts && data.posts.length > 0) {
+                    console.log(`Found ${data.posts.length} posts`);
+                    console.log('Sample post:', data.posts[0]);
+                } else {
+                    console.log('⚠️ No posts in response');
+                }
+            } else {
+                const errorText = await response.text();
+                console.log('❌ Error response:', errorText);
+            }
+            
+        } catch (error) {
+            console.log('❌ Network error:', error);
+        }
     }
-}
+    
+    console.groupEnd();
+    
+    // Show debug info on page
+    showNotification('Debug info logged to console. Press F12 to view.', 'info');
+};
 
 // ===== ERROR HANDLING =====
 window.addEventListener('error', function(e) {
-    console.error('JavaScript error:', e.error);
+    debugLog('JavaScript error:', e);
     trackEvent('javascript_error', {
         error_message: e.error?.message || 'Unknown error',
         error_filename: e.filename || 'Unknown file',
@@ -606,51 +619,14 @@ window.addEventListener('error', function(e) {
 });
 
 window.addEventListener('unhandledrejection', function(e) {
-    console.error('Unhandled promise rejection:', e.reason);
+    debugLog('Unhandled promise rejection:', e);
     trackEvent('promise_rejection', {
         error_message: e.reason?.message || 'Unknown rejection'
     });
 });
 
-// ===== NETWORK STATUS =====
-window.addEventListener('online', function() {
-    showNotification('Connection restored!', 'success');
-    // Retry failed requests
-    if (allPosts.length === 0) {
-        fetchPosts();
-    }
-});
+// Make functions globally available for debugging
+window.fetchPosts = fetchPosts;
+window.debugLog = debugLog;
 
-window.addEventListener('offline', function() {
-    showNotification('You are currently offline. Some features may not work.', 'error');
-});
-
-// ===== THEME DETECTION =====
-function detectTheme() {
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.classList.add('dark');
-    }
-}
-
-// Listen for theme changes
-if (window.matchMedia) {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', detectTheme);
-}
-
-// ===== PERFORMANCE MONITORING =====
-window.addEventListener('load', function() {
-    // Track page load time
-    if (window.performance) {
-        const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
-        trackEvent('page_load_time', {
-            load_time: loadTime,
-            page_type: 'blog_index'
-        });
-    }
-});
-
-// ===== CLEANUP =====
-window.addEventListener('beforeunload', function() {
-    // Clean up any running intervals or timeouts
-    // This is good practice for SPA navigation
-});
+debugLog('Scripts loaded successfully');
