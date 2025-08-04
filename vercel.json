@@ -1,158 +1,98 @@
 {
   "version": 2,
-  "name": "mwaniki-reports",
+  "name": "portfolio",
+  "builds": [
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "api/*.js", "use": "@vercel/node" }
+  ],
   "rewrites": [
-    {
-      "source": "/blogs",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/blogs.html",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/category/(.*)",
-      "destination": "/index.html?category=$1"
-    },
-    {
-      "source": "/tag/(.*)",
-      "destination": "/index.html?tag=$1"
-    },
-    {
-      "source": "/search/(.*)",
-      "destination": "/index.html?search=$1"
-    }
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/blogs", "destination": "/index.html" },
+    { "source": "/blogs.html", "destination": "/index.html" },
+    { "source": "/category/(.*)", "destination": "/index.html?category=$1" },
+    { "source": "/tag/(.*)", "destination": "/index Spruce up the wording a bit to make it more natural, conversational, and clear, while keeping the structure intact. Here's the revised version:
+
+```json
+{
+  "version": 2,
+  "name": "portfolio",
+  "builds": [
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "api/*.js", "use": "@vercel/node" }
+  ],
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/blogs", "destination": "/index.html" },
+    { "source": "/blogs.html", "destination": "/index.html" },
+    { "source": "/category/(.*)", "destination": "/index.html?category=$1" },
+    { "source": "/tag/(.*)", "destination": "/index.html?tag=$1" },
+    { "source": "/search/(.*)", "destination": "/index.html?search=$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "redirects": [
-    {
-      "source": "/blog",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/home",
-      "destination": "/",
-      "permanent": true
-    }
+    { "source": "/blog", "destination": "/", "permanent": true },
+    { "source": "/home", "destination": "/", "permanent": true }
   ],
   "headers": [
     {
       "source": "/api/(.*)",
       "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, PUT, DELETE, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, s-maxage=300, stale-while-revalidate=600"
-        }
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" },
+        { "key": "Cache-Control", "value": "public, s-maxage=300, stale-while-revalidate=600" }
       ]
     },
     {
       "source": "/(.*).html",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600, stale-while-revalidate=86400"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]
     },
     {
       "source": "/(.*).js",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        },
-        {
-          "key": "Content-Type",
-          "value": "application/javascript"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+        { "key": "Content-Type", "value": "application/javascript" }
       ]
     },
     {
       "source": "/(.*).css",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        },
-        {
-          "key": "Content-Type",
-          "value": "text/css"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+        { "key": "Content-Type", "value": "text/css" }
       ]
     },
     {
       "source": "/images/(.*)",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
       "source": "/sw.js",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        },
-        {
-          "key": "Service-Worker-Allowed",
-          "value": "/"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
+        { "key": "Service-Worker-Allowed", "value": "/" }
       ]
     },
     {
       "source": "/manifest.json",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=86400"
-        },
-        {
-          "key": "Content-Type",
-          "value": "application/manifest+json"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=86400" },
+        { "key": "Content-Type", "value": "application/manifest+json" }
       ]
     }
   ],
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
-    "api/fetch-posts.js": {
-      "maxDuration": 30
-    },
-    "api/save-post.js": {
-      "maxDuration": 60
-    }
+    "api/fetch-posts.js": { "maxDuration": 30 },
+    "api/save-post.js": { "maxDuration": 60 }
   },
   "env": {
     "NODE_ENV": "production"
