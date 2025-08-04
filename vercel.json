@@ -9,31 +9,12 @@
       "dest": "/admin/index.html"
     },
     {
-      "src": "/admin/(.*)",
-      "dest": "/admin/$1"
-    },
-    {
       "src": "/articles/([^/.]+)",
       "dest": "/content/articles/$1.html"
     },
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
-    },
-    {
-      "src": "/content/articles.json",
-      "dest": "/content/articles.json",
-      "headers": {
-        "Cache-Control": "public, max-age=3600",
-        "Access-Control-Allow-Origin": "*"
-      }
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1",
-      "headers": {
-        "X-Vercel-Route": "Static file catch-all"
-      }
     }
   ]
 }
