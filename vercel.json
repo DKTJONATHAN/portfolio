@@ -1,6 +1,18 @@
 {
   "routes": [
     {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/admin",
+      "dest": "/admin/index.html"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "/admin/$1"
+    },
+    {
       "src": "/articles/([^/.]+)",
       "dest": "/content/articles/$1.html"
     },
@@ -14,6 +26,13 @@
       "headers": {
         "Cache-Control": "public, max-age=3600",
         "Access-Control-Allow-Origin": "*"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1",
+      "headers": {
+        "X-Vercel-Route": "Static file catch-all"
       }
     }
   ]
