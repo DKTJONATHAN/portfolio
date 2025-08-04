@@ -1,29 +1,27 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "api/*.js",
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
-      "src": "/api/fetch-posts",
-      "dest": "/api/fetch-posts.js",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, OPTIONS"
-      }
-    },
-    {
-      "src": "/api/save-post",
-      "dest": "/api/save-post.js"
-    },
-    {
-      "src": "/api/test",
-      "dest": "/api/test.js"
-    },
-    {
-      "src": "/images/(.*)",
-      "dest": "/images/$1"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
     }
-  ]
+  ],
+  "env": {
+    "GITHUB_TOKEN": "@github-token",
+    "GITHUB_OWNER": "@github-owner",
+    "GITHUB_REPO": "@github-repo"
+  }
 }
