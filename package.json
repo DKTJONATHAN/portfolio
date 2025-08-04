@@ -1,61 +1,23 @@
+// package.json
 {
-  "name": "portfolio",
+  "name": "jonathanmwaniki.co.ke",
   "version": "1.0.0",
-  "description": "Mwaniki Reports - Your trusted source for news, sports, tech, and entertainment",
-  "main": "index.html",
+  "private": true,
   "scripts": {
-    "dev": "vercel dev",
-    "build": "echo 'Static site - no build required'",
-    "start": "vercel dev",
-    "deploy": "vercel --prod",
-    "preview": "vercel",
-    "test": "echo 'No tests specified'"
-  },
-  "keywords": [
-    "news",
-    "blog",
-    "journalism",
-    "kenya",
-    "sports",
-    "tech",
-    "entertainment",
-    "mwaniki",
-    "reports"
-  ],
-  "author": {
-    "name": "Jonathan Mwaniki",
-    "email": "contact@jonathanmwaniki.co.ke",
-    "url": "https://www.jonathanmwaniki.co.ke"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/DKTJONATHAN/portfolio.git"
-  },
-  "homepage": "https://www.jonathanmwaniki.co.ke",
-  "bugs": {
-    "url": "https://github.com/DKTJONATHAN/portfolio/issues",
-    "email": "contact@jonathanmwaniki.co.ke"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "vercel-build": "next build"
   },
   "dependencies": {
-    "@octokit/rest": "^20.0.2",
-    "cheerio": "^1.0.0-rc.12"
+    "@octokit/rest": "^20.1.1",
+    "next": "^14.2.13",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@vercel/node": "^3.0.21"
-  },
-  "engines": {
-    "node": "22.x",
-    "npm": ">=8.0.0"
-  },
-  "vercel": {
-    "functions": {
-      "api/fetch-posts.js": {
-        "maxDuration": 30
-      },
-      "api/save-post.js": {
-        "maxDuration": 60
-      }
-    }
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.10"
   }
 }
