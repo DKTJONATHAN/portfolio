@@ -3,25 +3,16 @@
   "builds": [
     {
       "src": "api/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "scripts.js",
-      "use": "@vercel/static"
+      "use": "@vercel/node",
+      "config": { 
+        "includeFiles": ["content/**"] 
+      }
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
     }
   ]
 }
