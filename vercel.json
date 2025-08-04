@@ -1,12 +1,15 @@
 {
   "version": 2,
   "builds": [
+    // API endpoints
     {
       "src": "api/*.js",
       "use": "@vercel/node"
     },
+    
+    // Static content handlers
     {
-      "src": "*.html",
+      "src": "content/articles.json",
       "use": "@vercel/static"
     },
     {
@@ -14,27 +17,26 @@
       "use": "@vercel/static"
     },
     {
-      "src": "content/*.json",
+      "src": "scripts/*.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "styles/*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.html",
       "use": "@vercel/static"
     }
   ],
   "routes": [
-    // API Routes
+    // API routes (first - highest priority)
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
     
-    // Image Assets
-    {
-      "src": "/images/(.*)",
-      "dest": "/images/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
-      }
-    },
-    
-    // Content Data
+    // Core content routes
     {
       "src": "/content/(.*)",
       "dest": "/content/$1",
@@ -42,8 +44,29 @@
         "Cache-Control": "public, max-age=3600"
       }
     },
+    {
+      "src": "/images/(.*)",
+      "dest": "/images/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/scripts/(.*)",
+      "dest": "/scripts/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/styles/(.*)",
+      "dest": "/styles/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
     
-    // Frontend Routes
+    // HTML routes (last - lowest priority)
     {
       "src": "/(.*)",
       "dest": "/index.html",
@@ -54,7 +77,16 @@
   ],
   "headers": [
     {
-      "source": "/(.*).(jpg|jpeg|png|gif|webp)",
+      "source": "/.*\\.(jpg|jpeg|png|gif|webp|svg|ico)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/.*\\.(js|css)",
       "headers": [
         {
           "key": "Cache-Control",
